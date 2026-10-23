@@ -41,7 +41,7 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="scroll-mt-20 border-y border-white/5 bg-gradient-to-b from-slate-950/70 via-black to-black px-6 py-24 text-white"
+      className="scroll-mt-24 border-t border-white/[0.07] bg-[#090e18] px-5 py-16 text-white sm:px-8 sm:py-20"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
