@@ -10,7 +10,7 @@ export async function GET() {
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
   const response = await fetch(`${config.url}/rest/v1/projects?select=id,name,description,status,created_at&order=created_at.desc`, {
-    headers: { apikey: config.anonKey, Authorization: `Bearer ${session.access_token}` },
+    headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
     cache: "no-store",
   });
   const data = await response.json().catch(() => null);
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
   const response = await fetch(`${config.url}/rest/v1/projects?select=id,name,description,status,created_at`, {
     method: "POST",
-    headers: { apikey: config.anonKey, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
+    headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
     body: JSON.stringify({ name, description, user_id: session.user.id }),
     cache: "no-store",
   });
