@@ -22,8 +22,8 @@ export default function Home() {
       <Process />
       <Portfolio />
       <Certifications />
-      <Footer />
       <FinalCTA />
+      <Footer />
     </main>
   );
 }
