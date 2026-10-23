@@ -1,11 +1,12 @@
 import DashboardApp from "../../components/dashboard/DashboardApp";
-import { readSession } from "../../lib/session";
+import { hasSessionCookie } from "../../lib/session";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const session = await readSession();
-  if (!session) redirect("/login?next=%2Fdashboard");
+  // Only inspect cookie presence during server rendering. Token refresh writes cookies,
+  // which are only permitted in Route Handlers, and the client validates the session.
+  if (!(await hasSessionCookie())) redirect("/login?next=%2Fdashboard");
   return <DashboardApp />;
 }
