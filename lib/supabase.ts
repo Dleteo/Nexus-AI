@@ -37,12 +37,16 @@ export async function supabaseFetch(path: string, init: RequestInit = {}) {
 export async function getValidSession(session: AuthSession): Promise<AuthSession | null> {
   const config = getSupabaseConfig();
   if (!config) return null;
+
   if (session.expires_at && session.expires_at > Math.floor(Date.now() / 1000) + 30) {
     const response = await fetch(`${config.url}/auth/v1/user`, {
       headers: { apikey: config.anonKey, Authorization: `Bearer ${session.access_token}` },
       cache: "no-store",
     });
-    if (response.ok) return session;
+    if (response.ok) {
+      const verifiedUser = await response.json() as SupabaseUser;
+      return { ...session, user: verifiedUser };
+    }
   }
 
   if (!session.refresh_token) return null;
@@ -59,6 +63,7 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
     expires_in?: number;
     user: SupabaseUser;
   };
+  if (!data.access_token || !data.refresh_token || !data.user?.id) return null;
   return {
     access_token: data.access_token,
     refresh_token: data.refresh_token,

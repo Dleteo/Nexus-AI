@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type AuthFormProps = { mode: "login" | "register" };
 
 export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const isRegister = mode === "register";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,8 +36,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         setPassword("");
         return;
       }
-      const next = searchParams.get("next");
-      router.replace(next?.startsWith("/") && !next.startsWith("//") ? next : "/dashboard");
+      router.replace("/dashboard");
       router.refresh();
     } catch {
       setError("Could not connect to the account service. Check your connection and try again.");
