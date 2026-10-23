@@ -6,7 +6,7 @@ Nexus AI is an evolving portfolio project by Joshua Vallejo Sanchez, built to de
 
 - Responsive landing page and reusable typed UI components
 - Portfolio section and certificate previews
-- Login and registration API routes powered by Supabase Auth
+- Login, registration, and email-based password recovery/reset routes powered by Supabase Auth
 - Server-managed HTTP-only session cookie and protected dashboard
 - User-owned project creation, listing, and deletion through Supabase Postgres REST
 - PostgreSQL row-level security policies and tracked SQL migration
