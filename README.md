@@ -1,46 +1,93 @@
 # Nexus AI
 
-Nexus AI is an evolving portfolio project by Joshua Vallejo Sanchez, built to demonstrate practical Junior Web Developer skills with Next.js, React, TypeScript, and Tailwind CSS.
+Nexus AI is a portfolio project built with Next.js, React, TypeScript, Tailwind CSS, Supabase, and a server-side AI provider. It demonstrates a practical web application with authentication, user-owned data, an AI assistant, and documented security boundaries.
 
-## What is implemented
+## Implemented features
 
-- Responsive landing page and reusable typed UI components
-- Portfolio section and certificate previews
-- Login, registration, and email-based password recovery/reset routes powered by Supabase Auth
-- Server-managed HTTP-only session cookie and protected dashboard
-- User-owned project creation, listing, and deletion through Supabase Postgres REST
-- PostgreSQL row-level security policies and tracked SQL migration
-- GitHub Actions checks for ESLint, TypeScript, and production build
+- Responsive portfolio landing page with reusable, typed UI components.
+- Certificate and training section with credential-type filters, verification links where available, and a transparent distinction between course completions and attendance certificates.
+- Email/password registration and sign-in, sign-out, and email-based password recovery.
+- Server-managed HTTP-only session cookie and a protected dashboard.
+- User-owned project creation, editing, archiving, restoration, and deletion, backed by Supabase Postgres and row-level security.
+- AI Assistant with modes for Copilot, planning, debugging, learning, and interview practice.
+- Persistent assistant conversations, message history, and a per-user daily request limit.
+- Gemini provider support, with optional OpenAI provider configuration; provider API keys remain server-side.
+- GitHub Actions CI for ESLint, TypeScript, and production builds.
 
-## Roadmap, not yet implemented
-
-AI chat, AI summaries, semantic search, admin analytics, and production deployment/monitoring are future milestones. The landing page describes these as planned rather than claiming they are already live.
-
-## Stack
+## Tech stack
 
 - Next.js App Router and React
-- TypeScript
-- Tailwind CSS
+- TypeScript and Tailwind CSS
 - Supabase Auth and PostgreSQL
-- ESLint and GitHub Actions CI
+- Server-side Gemini or OpenAI API integration
+- ESLint and GitHub Actions
 
-## Quick start
+## Local setup
 
-1. Install Node.js 22 or later.
-2. Install dependencies: npm ci
-3. Copy .env.example to .env.local.
-4. In the Supabase dashboard, get the project publishable key and replace the placeholder in .env.local. The project URL is https://hyrvilrthpyyrtcgthzq.supabase.co.
-5. Configure Auth Site URL and allowed redirect URLs as described in docs/supabase-setup.md.
-6. Run npm run dev and open http://localhost:3000.
+Requirements: Node.js 22 or later and npm.
 
-Never commit .env.local. The public portfolio and production build work without local secrets, but account and project features need the environment variables.
+1. Install dependencies:
 
-## Validation
+   ```bash
+   npm ci
+   ```
 
-    npm run lint
-    npx tsc --noEmit
-    npm run build
+2. Copy `.env.example` to `.env.local`. In PowerShell, use:
 
-## Security
+   ```powershell
+   Copy-Item .env.example .env.local
+   ```
 
-Never commit .env.local, passwords, access tokens, or a Supabase secret/service-role key. The app uses a publishable key with user-scoped tokens and RLS. See docs/supabase-setup.md.
+3. Fill in the environment variables in `.env.local`:
+
+   - `NEXT_PUBLIC_SUPABASE_URL`: your Supabase project URL.
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: the project's publishable key.
+   - `NEXT_PUBLIC_SITE_URL`: `http://localhost:3000` for local development.
+   - `SUPABASE_SECRET_KEY`: a Supabase secret key used only by server-side assistant endpoints. Never prefix it with `NEXT_PUBLIC_`.
+   - `AI_PROVIDER=gemini` and `GEMINI_API_KEY` for Gemini. `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`.
+   - To use OpenAI instead, set `AI_PROVIDER=openai` and provide `OPENAI_API_KEY`; choose `OPENAI_MODEL` as appropriate.
+
+4. Configure Supabase Auth Site URL and allowed redirect URLs, email confirmation, and password recovery as described in [docs/supabase-setup.md](docs/supabase-setup.md).
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open `http://localhost:3000`.
+
+The current Supabase project used during development has its schema and RLS policies configured. If you connect a different Supabase project, apply the tracked SQL migrations in timestamp order and update the environment variables.
+
+## Main routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Public portfolio, projects, and certificates |
+| `/register` | Create an account |
+| `/login` | Sign in |
+| `/forgot-password` | Request a recovery email |
+| `/reset-password` | Set a new password from a recovery link |
+| `/dashboard` | Manage personal projects |
+| `/assistant` | AI assistant and conversation history |
+
+## Validate changes
+
+Run all three checks before opening a pull request:
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
+
+GitHub Actions runs the same checks for pull requests and pushes to `main`.
+
+## Security notes
+
+- Never commit `.env.local`, passwords, access tokens, or secret/service-role keys.
+- Publishable keys may use the `NEXT_PUBLIC_` prefix. Supabase secret keys and AI provider API keys must remain server-only.
+- Assistant conversations and project records use user-scoped access controls; keep row-level security enabled.
+- The assistant enforces a per-user daily request limit. Keep provider keys and credentials out of prompts, source control, and client-side code.
+- Email recovery redirects must match the URLs allowed in Supabase Auth settings.
+- Production deployment and production-domain configuration are separate steps; this repository's local setup does not mean the app has been deployed.
