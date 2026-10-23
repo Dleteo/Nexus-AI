@@ -66,9 +66,42 @@ export async function POST(request: Request) {
     cache: "no-store",
   }).catch(() => null);
   if (!providerResponse) return NextResponse.json({ error: "The AI provider did not respond in time. Please try again." }, { status: 504 });
-  const providerData = await providerResponse.json().catch(() => null) as { output_text?: string; error?: { message?: string } } | null;
+  const providerData = await providerResponse.json().catch(() => null) as {
+    output_text?: string;
+    error?: { message?: string; type?: string; code?: string };
+  } | null;
   if (!providerResponse.ok) {
-    if (providerResponse.status === 429) return NextResponse.json({ error: "The AI provider is busy or its usage limit has been reached. Try again later." }, { status: 429 });
+    if (providerResponse.status === 429) {
+      const errorCode = providerData?.error?.code ?? "";
+      const errorType = providerData?.error?.type ?? "";
+      const quotaCodes = new Set([
+        "insufficient_quota",
+        "credit_balance_exhausted",
+        "organization_usage_limit_exceeded",
+        "organization_spend_limit_exceeded",
+        "project_spend_limit_exceeded",
+        "billing_hard_limit_reached",
+      ]);
+
+      if (errorType === "insufficient_quota" || quotaCodes.has(errorCode)) {
+        return NextResponse.json({
+          error: "OpenAI API billing or quota limit reached. Check API billing, available credits, and organization/project usage limits.",
+          code: "OPENAI_QUOTA_OR_BILLING_LIMIT",
+        }, { status: 402 });
+      }
+
+      if (errorCode === "rate_limit_exceeded" || /rate limit/i.test(providerData?.error?.message ?? "")) {
+        return NextResponse.json({
+          error: "OpenAI request or token rate limit reached. Wait before retrying and check your API Limits page.",
+          code: "OPENAI_RATE_LIMIT",
+        }, { status: 429 });
+      }
+
+      return NextResponse.json({
+        error: "OpenAI returned HTTP 429. Check API billing, credits, and request/token rate limits.",
+        code: "OPENAI_HTTP_429",
+      }, { status: 429 });
+    }
     return NextResponse.json({ error: "The AI service could not complete this request. Check provider configuration and billing." }, { status: 502 });
   }
   const answer = providerData?.output_text?.trim();
