@@ -36,10 +36,10 @@ export default function Navbar() {
           Nexus<span className="text-cyan-400">AI</span>
         </Link>
         <div className="hidden items-center gap-6 text-sm text-gray-400 lg:flex">
-          <a className="transition hover:text-white" href="/#features">Features</a>
-          <a className="transition hover:text-white" href="/#tech">Tech Stack</a>
-          <a className="transition hover:text-white" href="/#portfolio">Portfolio</a>
-          <a className="transition hover:text-white" href="/#certifications">Certifications</a>
+          <Link className="transition hover:text-white" href="/#features">Features</Link>
+          <Link className="transition hover:text-white" href="/#tech">Tech Stack</Link>
+          <Link className="transition hover:text-white" href="/#portfolio">Portfolio</Link>
+          <Link className="transition hover:text-white" href="/#certifications">Certifications</Link>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           {!checking && user ? (
