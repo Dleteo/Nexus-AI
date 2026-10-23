@@ -3,16 +3,16 @@
 These tests do NOT verify live Supabase authentication or the AI provider.
 They check the real compiled React UI using isolated, in-memory API responses.
 """
-from datetime import datetime, timezone
 import json
 from pathlib import Path
 import re
 import shutil
+import os
 from urllib.parse import urlparse
 
 from playwright.sync_api import sync_playwright
 
-BASE = "http://127.0.0.1:3100"
+BASE = os.environ.get("NEXUS_QA_BASE", "http://127.0.0.1:3101")
 SHOTS = Path("qa-screenshots")
 SHOTS.mkdir(exist_ok=True)
 FIRST_ID = "11111111-1111-4111-8111-111111111111"
@@ -147,6 +147,7 @@ def dashboard_test(browser, width, label):
     page.get_by_text("Project created successfully.").wait_for()
     project = page.locator("li").filter(has_text="Interactive QA project").first
     project.get_by_role("button", name="Edit").click()
+    project = page.locator("#projects ul > li").first
     project.get_by_role("textbox", name="Project name").fill("QA project updated")
     project.get_by_role("button", name="Save changes").click()
     page.get_by_text("Project updated and saved.").wait_for()
