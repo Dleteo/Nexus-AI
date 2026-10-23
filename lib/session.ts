@@ -50,7 +50,12 @@ export async function readSession(): Promise<AuthSession | null> {
   }
 }
 
-export async function hasSessionCookie() {\n  const jar = await cookies();\n  return Boolean(jar.get(SESSION_COOKIE)?.value);\n}\n\nexport async function requireUser() {
+export async function hasSessionCookie() {
+  const jar = await cookies();
+  return Boolean(jar.get(SESSION_COOKIE)?.value);
+}
+
+export async function requireUser() {
   const session = await readSession();
   if (!session) redirect("/login?next=%2Fdashboard");
   return session;
