@@ -60,12 +60,12 @@ export default function AuthForm({ mode, showPasswordResetNotice = false }: Auth
       {isRegister && (
         <div>
           <label htmlFor="name" className="mb-2 block text-sm text-gray-300">Full name</label>
-          <input id="name" name="name" type="text" autoComplete="name" required minLength={2} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Your full name" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
+          <input id="name" name="name" type="text" autoComplete="name" required minLength={2} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Your full name" className="nexus-field" />
         </div>
       )}
       <div>
         <label htmlFor="email" className="mb-2 block text-sm text-gray-300">Email</label>
-        <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
+        <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="nexus-field" />
       </div>
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
@@ -89,7 +89,7 @@ export default function AuthForm({ mode, showPasswordResetNotice = false }: Auth
       {error && <p role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</p>}
       {notice && <p role="status" className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">{notice}</p>}
 
-      <button type="submit" disabled={busy} className="w-full rounded-full bg-white px-8 py-3 font-semibold text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60">
+      <button type="submit" disabled={busy} className="nexus-primary-button w-full disabled:cursor-not-allowed disabled:opacity-60">
         {busy ? "Please wait…" : isRegister ? "Create account" : "Sign in"}
       </button>
     </form>

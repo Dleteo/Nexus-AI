@@ -53,11 +53,11 @@ export default function ResetPasswordForm() {
     <form className="space-y-5" onSubmit={submit}>
       <div>
         <label htmlFor="new-password" className="mb-2 block text-sm text-gray-300">New password</label>
-        <input id="new-password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 10 characters" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
+        <input id="new-password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 10 characters" className="nexus-field" />
       </div>
       <div>
         <label htmlFor="confirm-password" className="mb-2 block text-sm text-gray-300">Confirm new password</label>
-        <input id="confirm-password" name="confirmation" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="Repeat your new password" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
+        <input id="confirm-password" name="confirmation" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="Repeat your new password" className="nexus-field" />
       </div>
       <label className="flex items-center gap-2 text-sm text-gray-400">
         <input type="checkbox" checked={showPassword} onChange={(event) => setShowPassword(event.target.checked)} className="accent-cyan-400" />
@@ -66,7 +66,7 @@ export default function ResetPasswordForm() {
 
       {error && <p role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-200">{error}</p>}
 
-      <button type="submit" disabled={busy} className="w-full rounded-full bg-white px-8 py-3 font-semibold text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60">{busy ? "Updating…" : "Update password"}</button>
+      <button type="submit" disabled={busy} className="nexus-primary-button w-full disabled:cursor-not-allowed disabled:opacity-60">{busy ? "Updating…" : "Update password"}</button>
     </form>
   );
 }
