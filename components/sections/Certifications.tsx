@@ -5,7 +5,7 @@ import { useState } from "react";
 import { certifications, totalTrainingHours } from "../../data/certifications";
 import SectionHeader from "../ui/SectionHeader";
 
-type CertificationFilter = "all" | "Course completion" | "Attendance certificate";
+type CertificationFilter = "all" | "Course completion" | "Attendance certificate" | "Training record";
 
 function formatHours(hours: number) {
   return `${Number.isInteger(hours) ? hours : hours.toFixed(1)} ${hours === 1 ? "hour" : "hours"}`;
@@ -23,6 +23,9 @@ export default function Certifications() {
   const attendanceCertificates = certifications.filter(
     (certification) => certification.credentialType === "Attendance certificate",
   );
+  const trainingRecords = certifications.filter(
+    (certification) => certification.credentialType === "Training record",
+  );
   const filteredCertifications =
     filter === "all"
       ? certifications
@@ -32,6 +35,7 @@ export default function Certifications() {
     { value: "all", label: "All records", count: certifications.length },
     { value: "Course completion", label: "Course completions", count: courseCompletions.length },
     { value: "Attendance certificate", label: "Attendance certificates", count: attendanceCertificates.length },
+    { value: "Training record", label: "Training records", count: trainingRecords.length },
   ];
 
   return (
@@ -44,7 +48,7 @@ export default function Certifications() {
           centered
           label="Continuous learning"
           title="Certifications & Training"
-          description="Structured learning in web development, software engineering, and AI-assisted development. Course hours represent training time, not professional work experience."
+          description="Structured learning in web development, software engineering, AI-assisted development, and cybersecurity. Course hours represent training time, not professional work experience."
         />
 
         <div className="mx-auto mb-10 grid max-w-5xl gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -206,7 +210,7 @@ export default function Certifications() {
         )}
 
         <p className="mt-8 text-center text-xs leading-5 text-gray-500">
-          Training durations come from the source certificates. Attendance certificates are identified as such and are not represented as course-completion credentials.
+          Training hours reflect certificate details or information provided by the learner. Training records without verified issuers or dates are labeled transparently and are not presented as course-completion credentials.
         </p>
       </div>
     </section>
