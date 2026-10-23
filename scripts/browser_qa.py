@@ -1,0 +1,82 @@
+"""Browser QA against a locally built Next.js server, without credentials."""
+from pathlib import Path
+from urllib.parse import urlparse
+import os
+import shutil
+import subprocess
+import time
+
+from playwright.sync_api import sync_playwright
+
+BASE = "http://127.0.0.1:3100"
+ARTIFACTS = Path("qa-screenshots")
+ARTIFACTS.mkdir(exist_ok=True)
+
+def expect(condition, reason):
+    if not condition:
+        raise AssertionError(reason)
+
+def audit(browser, width, label):
+    context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
+    page = context.new_page()
+    page.goto(BASE, wait_until="networkidle")
+    expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing certificates heading")
+    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).count() == 1, "Missing cybersecurity training")
+    expect(page.get_by_text("92", exact=True).count() >= 1, "Incorrect training hours")
+    page.evaluate("document.fonts.ready")
+    dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
+    expect(dimensions["page"] <= dimensions["viewport"] + 2,
+           f"Horizontal overflow at {width}px: {dimensions}")
+    if width < 1024:
+        button = page.get_by_role("button", name="Open navigation menu")
+        expect(button.is_visible(), "Mobile menu toggle is missing")
+        button.click()
+        expect(page.get_by_role("button", name="Close navigation menu").get_attribute("aria-expanded") == "true",
+               "Mobile navigation not expanded")
+        menu = page.get_by_role("navigation", name="Mobile navigation")
+        expect(menu.is_visible(), "Mobile navigation not visible")
+        menu.get_by_role("link", name="Certificates").click()
+        expect(page.get_by_role("button", name="Open navigation menu").get_attribute("aria-expanded") == "false",
+               "Mobile menu did not close after navigation")
+    else:
+        expect(page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="Certificates").is_visible(),
+               "Desktop navigation missing certificates")
+    group = page.get_by_role("group", name="Filter certificates by record type")
+    group.get_by_role("button", name="Training records").click()
+    expect(group.get_by_role("button", name="Training records").get_attribute("aria-pressed") == "true",
+           "Training filter did not activate")
+    expect(page.get_by_text("Showing 1 record").is_visible(), "Training records filter count incorrect")
+    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).is_visible(),
+           "Training record filtered out")
+    group.get_by_role("button", name="All records").click()
+    expect(page.get_by_text("Showing 6 records").is_visible(), "All records filter did not restore")
+    expect(page.locator('img[alt="Certificate for Cybersecurity Fundamentals"]').count() == 1,
+           "Cybersecurity image missing")
+    page.screenshot(path=str(ARTIFACTS / f"home-{label}.png"), full_page=True)
+    print(f"PASS home navigation, filters, image and overflow at {width}px", flush=True)
+    page.goto(BASE + "/login", wait_until="networkidle")
+    expect(page.get_by_role("heading", name="Welcome back.").is_visible(), "Login heading missing")
+    expect(page.get_by_role("link", name="Forgot password?").is_visible(), "Recovery navigation missing")
+    page.screenshot(path=str(ARTIFACTS / f"login-{label}.png"), full_page=True)
+    page.goto(BASE + "/register", wait_until="networkidle")
+    expect(page.get_by_role("heading", name="Create your account.").is_visible(), "Register heading missing")
+    expect(page.get_by_role("button", name="Create account").is_visible(), "Registration button missing")
+    page.screenshot(path=str(ARTIFACTS / f"register-{label}.png"), full_page=True)
+    context.close()
+    print(f"PASS auth pages at {width}px", flush=True)
+
+def main():
+    binary = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
+    expect(binary is not None, "Chrome/Chromium not installed on runner")
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=True, executable_path=binary, args=["--no-sandbox"])
+        try:
+            audit(browser, 375, "mobile")
+            audit(browser, 768, "tablet")
+            audit(browser, 1440, "desktop")
+        finally:
+            browser.close()
+    print("All browser QA checks passed.", flush=True)
+
+if __name__ == "__main__":
+    main()
