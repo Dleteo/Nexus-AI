@@ -2,7 +2,12 @@ import Link from "next/link";
 import AuthCard from "../../components/auth/AuthCard";
 import AuthForm from "../../components/auth/AuthForm";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ passwordReset?: string }>;
+}) {
+  const params = await searchParams;
   return (
     <AuthCard
       label="Nexus AI · Account"
@@ -10,7 +15,7 @@ export default function LoginPage() {
       description="Sign in to access your private dashboard and projects."
       footer={<>Do not have an account? <Link href="/register" className="text-cyan-400 hover:text-cyan-300">Create one</Link></>}
     >
-      <AuthForm mode="login" />
+      <AuthForm mode="login" showPasswordResetNotice={params.passwordReset === "success"} />
     </AuthCard>
   );
 }
