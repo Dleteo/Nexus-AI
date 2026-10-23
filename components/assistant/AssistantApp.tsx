@@ -170,7 +170,7 @@ export default function AssistantApp() {
               <div className="flex items-center gap-2 rounded-full border border-[#B6D7BD] bg-[#E6F3E8] px-3 py-1.5 text-[10px] text-[#3D7654]"><span className="size-1.5 rounded-full bg-emerald-300" /> READY TO HELP</div>
             </div>
             <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
-              {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#E6BDA7] bg-[#FBE3D3] text-[#AD5637] shadow-[inset_0_0_18px_rgba(103,232,249,0.03)]" : "border-[#E9D9CC] bg-[#FFF2E8] text-[#756155] hover:border-[#E9D9CC] hover:text-[#40342E]"}`}>{item.label}</button>)}
+              {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#E6BDA7] bg-[#FBE3D3] text-[#AD5637] shadow-none" : "border-[#E9D9CC] bg-[#FFF2E8] text-[#756155] hover:border-[#E9D9CC] hover:text-[#40342E]"}`}>{item.label}</button>)}
             </div>
           </header>
 
