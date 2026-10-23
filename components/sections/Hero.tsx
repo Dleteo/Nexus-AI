@@ -10,7 +10,7 @@ const modes = [
 export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden px-5 pb-20 pt-20 text-[#302923] sm:px-8 sm:pb-24 sm:pt-28">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[550px] bg-[radial-gradient(ellipse_at_65%_15%,rgba(56,114,240,.12),transparent_60%)]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[550px] bg-[radial-gradient(ellipse_at_65%_15%,rgba(244,171,134,.15),transparent_60%)]" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
         <div className="min-w-0">
           <p className="mb-6 inline-flex rounded-full border border-[#E6BDA7] bg-[#FBE3D3] px-3 py-1.5 text-xs font-medium text-[#AD5637]">✦ Your AI workspace</p>
@@ -22,7 +22,7 @@ export default function Hero() {
           </div>
           <p className="mt-7 text-xs leading-6 text-[#756155]">Project workspace · Saved conversations · Five assistant modes</p>
         </div>
-        <div className="min-w-0 rounded-[1.65rem] border border-white/[0.10] bg-[#FFFCF8] p-3 shadow-[0_25px_80px_-50px_rgba(57,131,239,.55)] sm:p-4">
+        <div className="min-w-0 rounded-[1.65rem] border border-white/[0.10] bg-[#FFFCF8] p-3 shadow-[0_25px_80px_-50px_rgba(119,72,45,.25)] sm:p-4">
           <div className="flex items-center justify-between border-b border-[#E9D9CC] px-3 pb-4 pt-2">
             <div><p className="text-sm font-semibold text-[#40342E]">Nexus AI Copilot</p><p className="mt-1 text-xs text-[#756155]">Interface preview · Illustrative content</p></div>
             <span className="rounded-lg border border-[#E6BDA7] bg-[#FBE3D3] px-2.5 py-1.5 text-xs text-[#AD5637]">✦</span>
