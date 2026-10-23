@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-type AuthFormProps = { mode: "login" | "register" };
+type AuthFormProps = { mode: "login" | "register"; showPasswordResetNotice?: boolean };
 
-export default function AuthForm({ mode }: AuthFormProps) {
+export default function AuthForm({ mode, showPasswordResetNotice = false }: AuthFormProps) {
   const router = useRouter();
   const isRegister = mode === "register";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordResetNotice, setPasswordResetNotice] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    setPasswordResetNotice(new URLSearchParams(window.location.search).get("passwordReset") === "success");
-  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,7 +85,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         {isRegister && <p className="mt-2 text-xs text-gray-500">Use at least 10 characters.</p>}
       </div>
 
-      {passwordResetNotice && !isRegister && <p role="status" className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">Password updated successfully. Sign in with your new password.</p>}
+      {showPasswordResetNotice && !isRegister && <p role="status" className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">Password updated successfully. Sign in with your new password.</p>}
       {error && <p role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</p>}
       {notice && <p role="status" className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">{notice}</p>}
 
