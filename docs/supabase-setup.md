@@ -15,7 +15,7 @@ Use .env.example as the template and replace the placeholder with the publishabl
 
 ## 2. Configure email authentication
 
-In Supabase **Authentication → URL Configuration**, set Site URL to http://localhost:3000 for local development, then add http://localhost:3000/** to the allowed redirect URLs. When the application is deployed, add its exact production origin and callback URLs as well; do not use a made-up deployment domain.
+In Supabase **Authentication → URL Configuration**, set Site URL to http://localhost:3000 for local development, then add http://localhost:3000/** to the allowed redirect URLs. Add `http://localhost:3000/reset-password` explicitly if you prefer exact redirect entries. Set `NEXT_PUBLIC_SITE_URL=http://localhost:3000` in `.env.local`; in production, set it to the exact HTTPS origin of the deployed app and add that origin and its `/reset-password` URL to Supabase allowed redirect URLs. When the application is deployed, add its exact production origin and callback URLs as well; do not use a made-up deployment domain.
 
 In **Authentication → Providers → Email**, choose whether email confirmation is required. If enabled, users must confirm their address before signing in. Configure SMTP for reliable production email delivery.
 
