@@ -22,7 +22,7 @@ export default function ResetPasswordForm() {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const accessToken = params.get("access_token") ?? "";
     const tokenType = params.get("type");
-    if (!accessToken || (tokenType && tokenType !== "recovery")) {
+    if (!accessToken || tokenType !== "recovery") {
       setError("This recovery link is invalid or expired. Request a new password reset email.");
       return;
     }
