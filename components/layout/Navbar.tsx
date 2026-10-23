@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 export default function Navbar() {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [checking, setChecking] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -49,6 +50,48 @@ export default function Navbar() {
               <Button className="min-h-10 rounded-xl px-4 py-2 text-xs sm:px-5" href="/register">Get started <span aria-hidden="true">↗</span></Button>
             </>
           ) : <span className="text-xs text-slate-600" aria-live="polite">Checking session…</span>}
+          <button
+            type="button"
+            className="inline-flex size-10 items-center justify-center rounded-xl border border-white/15 text-slate-200 transition hover:border-cyan-300/40 hover:text-white focus-visible:outline-2 focus-visible:outline-cyan-300 lg:hidden"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-controls="mobile-navigation"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+          >
+            <span aria-hidden="true" className="text-xl leading-none">{mobileMenuOpen ? "×" : "☰"}</span>
+          </button>
+        </div>
+      </nav>
+      <nav
+        id="mobile-navigation"
+        aria-label="Mobile navigation"
+        hidden={!mobileMenuOpen}
+        className="border-t border-white/10 bg-[#080d17] px-5 py-3 shadow-2xl lg:hidden"
+      >
+        <div className="mx-auto grid max-w-[1440px] gap-1">
+          {[
+            { href: "/#features", label: "Features" },
+            { href: "/#tech", label: "Technology" },
+            { href: "/#portfolio", label: "Portfolio" },
+            { href: "/#certifications", label: "Certificates" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-xl px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/[0.06] hover:text-cyan-200 focus-visible:outline-2 focus-visible:outline-cyan-300"
+            >
+              {item.label}
+            </Link>
+          ))}
+          {!checking && user ? (
+            <>
+              <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 text-sm font-medium text-cyan-200 hover:bg-white/[0.06]">Workspace</Link>
+              <Link href="/assistant" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 text-sm font-medium text-cyan-200 hover:bg-white/[0.06]">AI Copilot</Link>
+            </>
+          ) : !checking ? (
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 text-sm font-medium text-cyan-200 hover:bg-white/[0.06] sm:hidden">Sign in</Link>
+          ) : null}
         </div>
       </nav>
     </header>
