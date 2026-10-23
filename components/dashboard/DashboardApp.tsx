@@ -17,7 +17,6 @@ export default function DashboardApp() {
   const [notice, setNotice] = useState("");
 
   const load = useCallback(async () => {
-    setError("");
     try {
       const [sessionResponse, projectsResponse] = await Promise.all([
         fetch("/api/auth/session", { cache: "no-store" }),
