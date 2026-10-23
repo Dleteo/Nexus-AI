@@ -52,10 +52,10 @@ jobs:
 
       - name: Verify mocked dashboard and assistant interactions
         run: |
-          npm run start -- --port 3100 > /tmp/nexus-workspace.log 2>&1 &
+          npm run start -- --port 3101 > /tmp/nexus-workspace.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          python scripts/workspace_qa.py || { cat /tmp/nexus-workspace.log; exit 1; }
+          NEXUS_QA_BASE=http://127.0.0.1:3101 python scripts/workspace_qa.py || { cat /tmp/nexus-workspace.log; exit 1; }
 
       - name: Upload browser screenshots
         if: always()
