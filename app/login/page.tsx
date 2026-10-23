@@ -13,7 +13,7 @@ export default async function LoginPage({
       label="Nexus AI · Account"
       title="Welcome back."
       description="Sign in to access your private dashboard and projects."
-      footer={<>Do not have an account? <Link href="/register" className="text-cyan-400 hover:text-cyan-300">Create one</Link></>}
+      footer={<>Do not have an account? <Link href="/register" className="text-[#AD5637] hover:text-[#AD5637]">Create one</Link></>}
     >
       <AuthForm mode="login" showPasswordResetNotice={params.passwordReset === "success"} />
     </AuthCard>
