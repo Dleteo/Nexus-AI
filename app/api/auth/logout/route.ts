@@ -8,7 +8,7 @@ export async function POST() {
   if (session && config) {
     await fetch(`${config.url}/auth/v1/logout`, {
       method: "POST",
-      headers: { apikey: config.anonKey, Authorization: `Bearer ${session.access_token}` },
+      headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
       cache: "no-store",
     }).catch(() => undefined);
   }

@@ -13,11 +13,20 @@ export type AuthSession = {
   user: SupabaseUser;
 };
 
-export function getSupabaseConfig() {
+export type SupabaseConfig = {
+  url: string;
+  apiKey: string;
+};
+
+export function getSupabaseConfig(): SupabaseConfig | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
-  if (!url || !anonKey) return null;
-  return { url: url.replace(/\/$/, ""), anonKey };
+  const apiKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    process.env.SUPABASE_PUBLISHABLE_KEY ??
+    process.env.SUPABASE_ANON_KEY;
+  if (!url || !apiKey) return null;
+  return { url: url.replace(/\/$/, ""), apiKey };
 }
 
 export async function supabaseFetch(path: string, init: RequestInit = {}) {
@@ -26,7 +35,7 @@ export async function supabaseFetch(path: string, init: RequestInit = {}) {
   return fetch(`${config.url}${path}`, {
     ...init,
     headers: {
-      apikey: config.anonKey,
+      apikey: config.apiKey,
       "Content-Type": "application/json",
       ...(init.headers ?? {}),
     },
@@ -40,7 +49,7 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
 
   if (session.expires_at && session.expires_at > Math.floor(Date.now() / 1000) + 30) {
     const response = await fetch(`${config.url}/auth/v1/user`, {
-      headers: { apikey: config.anonKey, Authorization: `Bearer ${session.access_token}` },
+      headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
       cache: "no-store",
     });
     if (response.ok) {
@@ -52,7 +61,7 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
   if (!session.refresh_token) return null;
   const response = await fetch(`${config.url}/auth/v1/token?grant_type=refresh_token`, {
     method: "POST",
-    headers: { apikey: config.anonKey, "Content-Type": "application/json" },
+    headers: { apikey: config.apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token: session.refresh_token }),
     cache: "no-store",
   });

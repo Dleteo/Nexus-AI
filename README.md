@@ -9,7 +9,7 @@ Nexus AI is an evolving portfolio project by Joshua Vallejo Sanchez, built to de
 - Login and registration API routes powered by Supabase Auth
 - Server-managed HTTP-only session cookie and protected dashboard
 - User-owned project creation, listing, and deletion through Supabase Postgres REST
-- PostgreSQL row-level security policy setup
+- PostgreSQL row-level security policies and tracked SQL migration
 - GitHub Actions checks for ESLint, TypeScript, and production build
 
 ## Roadmap, not yet implemented
@@ -21,27 +21,26 @@ AI chat, AI summaries, semantic search, admin analytics, and production deployme
 - Next.js App Router and React
 - TypeScript
 - Tailwind CSS
-- Supabase Auth and PostgreSQL (external service configuration required)
+- Supabase Auth and PostgreSQL
 - ESLint and GitHub Actions CI
 
 ## Quick start
 
 1. Install Node.js 22 or later.
-2. Install dependencies: `npm ci`
-3. Copy `.env.example` to `.env.local` and set your Supabase project URL and public anon key.
-4. Follow [the Supabase setup guide](docs/supabase-setup.md) and run its SQL in the Supabase SQL Editor.
-5. Run `npm run dev` and open http://localhost:3000.
+2. Install dependencies: npm ci
+3. Copy .env.example to .env.local.
+4. In the Supabase dashboard, get the project publishable key and replace the placeholder in .env.local. The project URL is https://hyrvilrthpyyrtcgthzq.supabase.co.
+5. Configure Auth Site URL and allowed redirect URLs as described in docs/supabase-setup.md.
+6. Run npm run dev and open http://localhost:3000.
 
-Without Supabase environment variables, the public portfolio and production build still work, but account APIs return a clear configuration message and authenticated project features cannot run.
+Never commit .env.local. The public portfolio and production build work without local secrets, but account and project features need the environment variables.
 
 ## Validation
 
-```bash
-npm run lint
-npx tsc --noEmit
-npm run build
-```
+    npm run lint
+    npx tsc --noEmit
+    npm run build
 
 ## Security
 
-Never commit `.env.local`, passwords, access tokens, or a Supabase service-role key. Use the public/anon key with row-level security enabled. See [docs/supabase-setup.md](docs/supabase-setup.md) for deployment and security configuration.
+Never commit .env.local, passwords, access tokens, or a Supabase secret/service-role key. The app uses a publishable key with user-scoped tokens and RLS. See docs/supabase-setup.md.
