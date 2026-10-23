@@ -76,9 +76,9 @@ export default function AuthForm({ mode, showPasswordResetNotice = false }: Auth
             </Link>
           )}
         </div>
-        <div className="flex rounded-xl border border-[#E9D9CC] bg-black transition focus-within:border-cyan-400">
+        <div className="flex rounded-xl border border-[#E9D9CC] bg-[#FFFCF9] transition focus-within:border-[#CE8F70]">
           <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} required minLength={isRegister ? 10 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? "At least 10 characters" : "Your password"} className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-[#302923] outline-none placeholder:text-[#756155]" />
-          <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="shrink-0 px-4 text-xs font-semibold text-[#756155] transition hover:text-[#AD5637] focus-visible:outline-2 focus-visible:outline-cyan-300">
+          <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="shrink-0 px-4 text-xs font-semibold text-[#756155] transition hover:text-[#AD5637] focus-visible:outline-2 focus-visible:outline-[#9D4E35]">
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
