@@ -11,6 +11,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -36,7 +37,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
         setPassword("");
         return;
       }
-      router.replace("/dashboard");
+      const params = new URLSearchParams(window.location.search);
+      const requestedPath = params.get("next");
+      const destination =
+        requestedPath?.startsWith("/") &&
+        !requestedPath.startsWith("//") &&
+        !requestedPath.includes("\\")
+          ? requestedPath
+          : "/dashboard";
+      router.replace(destination);
       router.refresh();
     } catch {
       setError("Could not connect to the account service. Check your connection and try again.");
@@ -46,7 +55,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       {isRegister && (
         <div>
           <label htmlFor="name" className="mb-2 block text-sm text-gray-300">Full name</label>
@@ -58,8 +67,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
         <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
       </div>
       <div>
-        <label htmlFor="password" className="mb-2 block text-sm text-gray-300">Password</label>
-        <input id="password" name="password" type="password" autoComplete={isRegister ? "new-password" : "current-password"} required minLength={isRegister ? 10 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? "At least 10 characters" : "Your password"} className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-cyan-400" />
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <label htmlFor="password" className="block text-sm text-gray-300">Password</label>
+          {!isRegister && (
+            <Link href="/forgot-password" className="text-xs text-cyan-300 transition hover:text-white">
+              Forgot password?
+            </Link>
+          )}
+        </div>
+        <div className="flex rounded-xl border border-white/10 bg-black transition focus-within:border-cyan-400">
+          <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} required minLength={isRegister ? 10 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? "At least 10 characters" : "Your password"} className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-white outline-none placeholder:text-gray-600" />
+          <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="shrink-0 px-4 text-xs font-semibold text-gray-400 transition hover:text-cyan-300 focus-visible:outline-2 focus-visible:outline-cyan-300">
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
         {isRegister && <p className="mt-2 text-xs text-gray-500">Use at least 10 characters.</p>}
       </div>
 
