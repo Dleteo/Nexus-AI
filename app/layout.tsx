@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus AI | Junior Web Developer Portfolio",
+  title: "Nexus AI | Your AI Project Workspace",
   description:
-    "Explore Nexus AI, a portfolio project by Joshua Vallejo Sanchez showcasing modern web development, reusable UI components, TypeScript, authentication, and database-backed features.",
+    "Nexus AI brings projects, AI-assisted planning, debugging, learning and interview preparation together in one organized workspace.",
 };
 
 export default function RootLayout({

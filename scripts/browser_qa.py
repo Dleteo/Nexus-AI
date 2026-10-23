@@ -20,14 +20,12 @@ def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing certificates heading")
-    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).count() == 1, "Missing cybersecurity training")
-    expect(page.get_by_text("92", exact=True).count() >= 1, "Incorrect training hours")
+    expect(page.get_by_role("heading", name="Build your next project with more clarity.").count() == 1, "Missing main heading")
     page.evaluate("document.fonts.ready")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Horizontal overflow at {width}px: {dimensions}")
-    if width < 1024:
+    if width < 768:
         button = page.get_by_role("button", name="Open navigation menu")
         expect(button.is_visible(), "Mobile menu toggle is missing")
         button.click()
@@ -35,12 +33,18 @@ def audit(browser, width, label):
                "Mobile navigation not expanded")
         menu = page.get_by_role("navigation", name="Mobile navigation")
         expect(menu.is_visible(), "Mobile navigation not visible")
-        menu.get_by_role("link", name="Certificates").click()
+        menu.get_by_role("link", name="My portfolio").click()
         expect(page.get_by_role("button", name="Open navigation menu").get_attribute("aria-expanded") == "false",
                "Mobile menu did not close after navigation")
     else:
-        expect(page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="Certificates").is_visible(),
+        expect(page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="My portfolio").is_visible(),
                "Desktop navigation missing certificates")
+    page.goto(BASE + "/portfolio", wait_until="networkidle")
+    expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing portfolio certificates heading")
+    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).count() == 1, "Missing cybersecurity training")
+    expect(page.get_by_text("92", exact=True).count() >= 1, "Incorrect training hours")
+    dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
+    expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Portfolio horizontal overflow: {dimensions}")
     group = page.get_by_role("group", name="Filter certificates by record type")
     group.get_by_role("button", name="Training records").click()
     expect(group.get_by_role("button", name="Training records").get_attribute("aria-pressed") == "true",
@@ -52,8 +56,8 @@ def audit(browser, width, label):
     expect(page.get_by_text("Showing 6 records").is_visible(), "All records filter did not restore")
     expect(page.locator('img[alt="Certificate for Cybersecurity Fundamentals"]').count() == 1,
            "Cybersecurity image missing")
-    page.screenshot(path=str(ARTIFACTS / f"home-{label}.png"), full_page=True)
-    print(f"PASS home navigation, filters, image and overflow at {width}px", flush=True)
+    page.screenshot(path=str(ARTIFACTS / f"portfolio-{label}.png"), full_page=True)
+    print(f"PASS home and separate portfolio navigation, filters, image and overflow at {width}px", flush=True)
     page.goto(BASE + "/login", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Welcome back.").is_visible(), "Login heading missing")
     expect(page.get_by_role("link", name="Forgot password?").is_visible(), "Recovery navigation missing")

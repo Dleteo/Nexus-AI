@@ -57,10 +57,10 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkPublicPage("/", [
-  "Nexus AI workspace",
-  "Cybersecurity Fundamentals",
-  "Certifications &amp; Training",
+  "Build your next project",
+  "Everything in its place.",
 ]);
+await checkPublicPage("/portfolio", ["Hello, I", "Cybersecurity Fundamentals", "Certifications &amp; Training"]);
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
