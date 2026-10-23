@@ -1,35 +1,16 @@
+import Link from "next/link";
 import AuthCard from "../../components/auth/AuthCard";
-import Button from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
+import AuthForm from "../../components/auth/AuthForm";
 
 export default function RegisterPage() {
   return (
     <AuthCard
-      label="Register"
+      label="Nexus AI · Account"
       title="Create your account."
-      description="Join Nexus AI and start building with modern AI-powered tools."
-      footer={
-        <>
-          Already have an account?{" "}
-          <a href="/login" className="text-cyan-400 hover:text-cyan-300">
-            Sign in
-          </a>
-        </>
-      }
+      description="Create an account to keep your own Nexus AI projects in one place."
+      footer={<>Already have an account? <Link href="/login" className="text-cyan-400 hover:text-cyan-300">Sign in</Link></>}
     >
-      <form className="space-y-5">
-        <Input
-          label="Full name"
-          type="text"
-          placeholder="Joshua Vallejo Sanchez"
-        />
-
-        <Input label="Email" type="email" placeholder="you@example.com" />
-
-        <Input label="Password" type="password" placeholder="••••••••" />
-
-        <Button className="w-full">Create Account</Button>
-      </form>
+      <AuthForm mode="register" />
     </AuthCard>
   );
 }

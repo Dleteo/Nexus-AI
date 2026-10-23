@@ -1,13 +1,11 @@
-import DashboardCardGrid from "../../components/dashboard/DashboardCardGrid";
-import DashboardHeader from "../../components/dashboard/DashboardHeader";
+import DashboardApp from "../../components/dashboard/DashboardApp";
+import { readSession } from "../../lib/session";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-  return (
-    <main className="min-h-screen bg-black px-6 py-10 text-white">
-      <div className="mx-auto max-w-7xl">
-        <DashboardHeader />
-        <DashboardCardGrid />
-      </div>
-    </main>
-  );
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const session = await readSession();
+  if (!session) redirect("/login?next=%2Fdashboard");
+  return <DashboardApp />;
 }

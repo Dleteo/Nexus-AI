@@ -1,22 +1,22 @@
 export const features = [
   {
-    title: "AI Assistant",
+    title: "Personal Project Workspace",
     description:
-      "Chat inteligente con respuestas rápidas, contexto y soporte para usuarios.",
+      "Create, view, and delete projects saved to your own account. Project data is isolated by database row-level security.",
   },
   {
-    title: "Smart Summaries",
+    title: "Account Authentication",
     description:
-      "Genera resúmenes claros de textos, documentos y contenido largo usando IA.",
+      "Email and password sign-up and sign-in through Supabase Auth, with server-managed HTTP-only session cookies.",
   },
   {
-    title: "Semantic Search",
+    title: "Responsive Interface",
     description:
-      "Encuentra información por significado, no solo por palabras exactas.",
+      "Reusable React components and a responsive dark interface built with Next.js, TypeScript, and Tailwind CSS.",
   },
   {
-    title: "Admin Dashboard",
+    title: "AI Features — Roadmap",
     description:
-      "Panel privado para gestionar usuarios, actividad, métricas y configuración.",
+      "AI chat, summaries, and semantic search are planned milestones, not live features yet. The portfolio marks them as future work.",
   },
 ];
