@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 type AuthFormProps = { mode: "login" | "register" };
@@ -17,12 +17,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useState(() => {
-    if (typeof window !== "undefined") {
-      setPasswordResetNotice(new URLSearchParams(window.location.search).get("passwordReset") === "success");
-    }
-    return undefined;
-  });
+  useEffect(() => {
+    setPasswordResetNotice(new URLSearchParams(window.location.search).get("passwordReset") === "success");
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
