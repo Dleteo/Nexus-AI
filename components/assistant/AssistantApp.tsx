@@ -98,6 +98,27 @@ export default function AssistantApp() {
     }
   }
 
+  async function chooseMode(nextMode: Mode) {
+    if (nextMode === mode) return;
+    if (!current) {
+      setMode(nextMode);
+      return;
+    }
+
+    setError("");
+    const response = await fetch(`/api/assistant/conversations/${current.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: nextMode }),
+    });
+    const data = await response.json().catch(() => null) as { error?: string } | null;
+    if (!response.ok) throw new Error(data?.error ?? "No se pudo guardar el modo de la conversación.");
+
+    setMode(nextMode);
+    setCurrent({ ...current, mode: nextMode });
+    setConversations((list) => list.map((item) => item.id === current.id ? { ...item, mode: nextMode } : item));
+  }
+
   async function removeConversation(id: string) {
     if (!window.confirm("¿Eliminar esta conversación y su historial permanentemente?")) return;
     const response = await fetch(`/api/assistant/conversations/${id}`, { method: "DELETE" });
@@ -134,7 +155,7 @@ export default function AssistantApp() {
             <p className="text-xs uppercase tracking-[0.3em] text-cyan-400">Nexus AI · Copiloto</p>
             <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{activeMode.label}</h2>
             <p className="mt-2 text-sm text-gray-400">{activeMode.description}</p>
-            <div className="mt-5 flex flex-wrap gap-2">{modes.map((item) => <button key={item.id} onClick={() => { setMode(item.id); if (current) setCurrent({ ...current, mode: item.id }); }} className={`rounded-full border px-3 py-2 text-xs transition ${mode === item.id ? "border-cyan-300/50 bg-cyan-300/10 text-cyan-100" : "border-white/10 text-gray-400 hover:text-white"}`}>{item.label}</button>)}</div>
+            <div className="mt-5 flex flex-wrap gap-2">{modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} className={`rounded-full border px-3 py-2 text-xs transition ${mode === item.id ? "border-cyan-300/50 bg-cyan-300/10 text-cyan-100" : "border-white/10 text-gray-400 hover:text-white"}`}>{item.label}</button>)}</div>
           </header>
 
           <div className="flex-1 space-y-5 p-4 sm:p-7">
