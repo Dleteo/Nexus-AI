@@ -1,13 +1,12 @@
-import DashboardCardGrid from "../../components/dashboard/DashboardCardGrid";
-import DashboardHeader from "../../components/dashboard/DashboardHeader";
+import DashboardApp from "../../components/dashboard/DashboardApp";
+import { hasSessionCookie } from "../../lib/session";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-  return (
-    <main className="min-h-screen bg-black px-6 py-10 text-white">
-      <div className="mx-auto max-w-7xl">
-        <DashboardHeader />
-        <DashboardCardGrid />
-      </div>
-    </main>
-  );
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  // Only inspect cookie presence during server rendering. Token refresh writes cookies,
+  // which are only permitted in Route Handlers, and the client validates the session.
+  if (!(await hasSessionCookie())) redirect("/login?next=%2Fdashboard");
+  return <DashboardApp />;
 }

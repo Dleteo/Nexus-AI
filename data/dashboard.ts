@@ -1,17 +1,14 @@
 export const dashboardCards = [
   {
-    title: "AI Assistant",
-    description:
-      "Chat interface for future AI-powered support and productivity tools.",
+    title: "Project workspace",
+    description: "Create, review, and remove projects saved to your account.",
   },
   {
-    title: "Smart Summaries",
-    description:
-      "Generate clean summaries from documents, notes and long content.",
+    title: "Account security",
+    description: "Sign-in is handled by Supabase Auth with an HTTP-only session cookie.",
   },
   {
-    title: "Semantic Search",
-    description:
-      "Search information by meaning instead of only matching exact words.",
+    title: "AI assistant — planned",
+    description: "An AI chat experience is a future milestone and is not enabled yet.",
   },
 ];

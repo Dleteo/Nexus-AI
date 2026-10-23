@@ -1,61 +1,47 @@
 # Nexus AI
 
-Nexus AI is a futuristic full stack web application designed to demonstrate modern software engineering, clean frontend architecture, reusable UI components, and AI-ready product thinking.
+Nexus AI is an evolving portfolio project by Joshua Vallejo Sanchez, built to demonstrate practical Junior Web Developer skills with Next.js, React, TypeScript, and Tailwind CSS.
 
-This project is being built as a professional portfolio project by Joshua Vallejo Sanchez.
+## What is implemented
 
----
+- Responsive landing page and reusable typed UI components
+- Portfolio section and certificate previews
+- Login and registration API routes powered by Supabase Auth
+- Server-managed HTTP-only session cookie and protected dashboard
+- User-owned project creation, listing, and deletion through Supabase Postgres REST
+- PostgreSQL row-level security policy setup
+- GitHub Actions checks for ESLint, TypeScript, and production build
 
-## Overview
+## Roadmap, not yet implemented
 
-Nexus AI is a modern SaaS-style landing page and future AI platform built with Next.js, TypeScript and Tailwind CSS.
+AI chat, AI summaries, semantic search, admin analytics, and production deployment/monitoring are future milestones. The landing page describes these as planned rather than claiming they are already live.
 
-The goal of this project is to demonstrate real-world full stack development skills, including frontend architecture, reusable components, responsive design, database integration, authentication, AI features, testing and deployment.
+## Stack
 
----
-
-## Current Features
-
-- Futuristic responsive landing page
-- Modern dark UI
-- Reusable UI components
-- Clean project structure
-- Organized data layer
-- Professional section-based architecture
-- Developer portfolio section
-- Roadmap section
-- Process section
-- Final call-to-action section
-
----
-
-## Tech Stack
-
-- Next.js
-- React
+- Next.js App Router and React
 - TypeScript
 - Tailwind CSS
-- ESLint
-- Future: PostgreSQL
-- Future: Prisma
-- Future: Authentication
-- Future: OpenAI API
-- Future: Docker
-- Future: Testing
-- Future: Deployment
+- Supabase Auth and PostgreSQL (external service configuration required)
+- ESLint and GitHub Actions CI
 
----
+## Quick start
 
-## Project Structure
+1. Install Node.js 22 or later.
+2. Install dependencies: `npm ci`
+3. Copy `.env.example` to `.env.local` and set your Supabase project URL and public anon key.
+4. Follow [the Supabase setup guide](docs/supabase-setup.md) and run its SQL in the Supabase SQL Editor.
+5. Run `npm run dev` and open http://localhost:3000.
 
-```text
-nexus-ai/
-├── app/
-├── components/
-│   ├── layout/
-│   ├── sections/
-│   └── ui/
-├── data/
-├── lib/
-├── public/
-└── README.md
+Without Supabase environment variables, the public portfolio and production build still work, but account APIs return a clear configuration message and authenticated project features cannot run.
+
+## Validation
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
+
+## Security
+
+Never commit `.env.local`, passwords, access tokens, or a Supabase service-role key. Use the public/anon key with row-level security enabled. See [docs/supabase-setup.md](docs/supabase-setup.md) for deployment and security configuration.
