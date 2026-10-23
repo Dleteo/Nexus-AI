@@ -2,6 +2,8 @@
 
 This guide prepares Nexus AI for a public production deployment. The repository is not considered deployed until a Vercel deployment URL is available and the production smoke tests below pass.
 
+Official references: [Deploy a Next.js app on Vercel](https://vercel.com/docs/frameworks/nextjs), [Vercel environment variables](https://vercel.com/docs/environment-variables), and [Supabase Auth redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls).
+
 ## 1. Import the repository into Vercel
 
 1. Sign in to [Vercel](https://vercel.com/) and choose **Add New → Project**.
@@ -63,7 +65,7 @@ Use a test account you control and check each item on the deployed HTTPS URL:
 
 - **Account services not configured / 503:** verify the Supabase URL and publishable key exist in the deployment environment, then redeploy.
 - **Password recovery fails to start:** confirm `NEXT_PUBLIC_SITE_URL` is the exact HTTPS production origin and the `/reset-password` URL is allowed in Supabase.
-- **Assistant configuration error / 503:** verify `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL`, and `SUPABASE_SECRET_KEY) are configured in the correct environment. Keep the two secret keys server-side.
+- **Assistant configuration error / 503:** verify `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_MODEL`, and `SUPABASE_SECRET_KEY` are configured in the correct environment. Keep the two secret keys server-side.
 - **Build succeeds but a server route fails:** inspect the Vercel Function logs for that deployment and check Supabase/provider logs. Never paste raw secrets into an issue.
 - **AI requests time out:** review the assistant route and Vercel Function duration/runtime logs; do not disable authentication or quota controls as a workaround.
 
