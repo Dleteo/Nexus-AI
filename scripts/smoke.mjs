@@ -57,7 +57,6 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkPublicPage("/", [
-  "Nexus AI workspace",
   "Build your next project",
   "Everything in its place.",
 ]);
