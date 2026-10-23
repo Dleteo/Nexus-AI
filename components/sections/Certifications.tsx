@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { certifications, totalTrainingHours } from "../../data/certifications";
 import SectionHeader from "../ui/SectionHeader";
 
@@ -44,50 +45,41 @@ export default function Certifications() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {certifications.map((certification, index) => (
+          {certifications.map((certification) => (
             <article
               key={certification.id}
               className="group overflow-hidden rounded-3xl border border-white/10 bg-[#080d15] transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_20px_70px_-35px_rgba(34,211,238,0.25)]"
             >
-              <div className="relative flex min-h-52 flex-col justify-between overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-900 via-[#090f1a] to-black p-6 sm:min-h-56">
-                <div
-                  aria-hidden="true"
-                  className="absolute -right-12 -top-16 h-48 w-48 rounded-full border border-cyan-400/10"
+              <a
+                href={certification.image}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open certificate image: ${certification.title}`}
+                className="relative block aspect-[4/3] overflow-hidden border-b border-white/10 bg-white/[0.025] p-3"
+              >
+                <Image
+                  src={certification.image}
+                  alt={`Certificate for ${certification.title}`}
+                  fill
+                  sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-contain p-3 transition duration-500 group-hover:scale-[1.015]"
                 />
-                <div
-                  aria-hidden="true"
-                  className="absolute -right-5 -top-9 h-32 w-32 rounded-full border border-cyan-400/10"
-                />
-
-                <div className="relative flex items-center justify-between gap-3">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-300">
-                    Learning record
-                  </span>
-                  <span className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-gray-300">
-                    {certification.credentialType}
-                  </span>
-                </div>
-
-                <div className="relative mt-7">
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-gray-500">
-                    {certification.issuer}
-                  </p>
-                  <div className="mt-3 flex items-end justify-between gap-4">
-                    <p className="max-w-xs text-2xl font-semibold tracking-tight text-white">
-                      {String(index + 1).padStart(2, "0")}
-                      <span className="ml-2 text-base font-normal text-gray-400">
-                        / {String(certifications.length).padStart(2, "0")}
-                      </span>
-                    </p>
-                    <span className="text-right text-sm font-medium text-cyan-200">
-                      {formatHours(certification.hours)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                <span className="absolute left-5 top-5 rounded-full border border-white/10 bg-black/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-cyan-300">
+                  {certification.credentialType}
+                </span>
+              </a>
 
               <div className="p-6">
-                <h3 className="text-lg font-semibold leading-snug text-white">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-400">
+                    {certification.issuer}
+                  </p>
+                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-gray-300">
+                    {formatHours(certification.hours)}
+                  </span>
+                </div>
+
+                <h3 className="mt-4 text-lg font-semibold leading-snug text-white">
                   {certification.title}
                 </h3>
 
@@ -117,10 +109,15 @@ export default function Certifications() {
                       <span aria-hidden="true">↗</span>
                     </a>
                   ) : (
-                    <span className="inline-flex items-center gap-2 text-sm font-medium text-gray-500">
-                      <span aria-hidden="true">◆</span>
-                      Certificate of attendance
-                    </span>
+                    <a
+                      href={certification.image}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 transition hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+                    >
+                      Open certificate
+                      <span aria-hidden="true">↗</span>
+                    </a>
                   )}
                 </div>
               </div>
