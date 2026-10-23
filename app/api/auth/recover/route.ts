@@ -45,8 +45,14 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
-      // Avoid exposing whether the email exists or leaking provider details.
-      return NextResponse.json({ ok: true });
+      // Do not expose provider details or whether the email belongs to an account.
+      // A non-success response can mean the redirect URL is not allowlisted or
+      // the auth service is rate-limiting requests, so do not report false success.
+      const status = response.status === 429 ? 429 : 502;
+      return NextResponse.json(
+        { error: "We could not start password recovery right now. Check the recovery URL configuration and try again later." },
+        { status },
+      );
     }
 
     return NextResponse.json({ ok: true });
