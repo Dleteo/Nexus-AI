@@ -41,7 +41,7 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="scroll-mt-24 border-t border-white/[0.07] bg-[#090e18] px-5 py-16 text-white sm:px-8 sm:py-20"
+      className="scroll-mt-24 border-t border-[#E9D9CC] bg-[#FFF8F2] px-5 py-16 text-[#302923] sm:px-8 sm:py-20"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
@@ -52,38 +52,38 @@ export default function Certifications() {
         />
 
         <div className="mx-auto mb-10 grid max-w-5xl gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-5 text-center">
-            <p className="text-3xl font-semibold tabular-nums text-white sm:text-4xl">
+          <div className="rounded-2xl border border-[#E9D9CC] bg-[#FFF2E8] px-5 py-5 text-center">
+            <p className="text-3xl font-semibold tabular-nums text-[#302923] sm:text-4xl">
               {certifications.length}
             </p>
-            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-gray-400">
+            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-[#756155]">
               Total records
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-5 text-center">
-            <p className="text-3xl font-semibold tabular-nums text-white sm:text-4xl">
+          <div className="rounded-2xl border border-[#E9D9CC] bg-[#FFF2E8] px-5 py-5 text-center">
+            <p className="text-3xl font-semibold tabular-nums text-[#302923] sm:text-4xl">
               {courseCompletions.length}
             </p>
-            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-gray-400">
+            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-[#756155]">
               Course completions
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-5 text-center">
-            <p className="text-3xl font-semibold tabular-nums text-white sm:text-4xl">
+          <div className="rounded-2xl border border-[#E9D9CC] bg-[#FFF2E8] px-5 py-5 text-center">
+            <p className="text-3xl font-semibold tabular-nums text-[#302923] sm:text-4xl">
               {attendanceCertificates.length}
             </p>
-            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-gray-400">
+            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-[#756155]">
               Attendance certificates
             </p>
           </div>
 
-          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.04] px-5 py-5 text-center">
-            <p className="text-3xl font-semibold tabular-nums text-cyan-300 sm:text-4xl">
+          <div className="rounded-2xl border border-[#E6BDA7] bg-[#FBE3D3] px-5 py-5 text-center">
+            <p className="text-3xl font-semibold tabular-nums text-[#AD5637] sm:text-4xl">
               {formatTotalHours(totalTrainingHours)}
             </p>
-            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-gray-400">
+            <p className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-[#756155]">
               Total training hours
             </p>
           </div>
@@ -105,19 +105,19 @@ export default function Certifications() {
                   onClick={() => setFilter(item.value)}
                   className={
                     selected
-                      ? "rounded-full border border-cyan-300 bg-cyan-300 px-4 py-2.5 text-sm font-semibold text-slate-950 transition"
-                      : "rounded-full border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-cyan-300/50 hover:text-white"
+                      ? "rounded-full border border-cyan-300 bg-[#C97955] px-4 py-2.5 text-sm font-semibold text-[#302923] transition"
+                      : "rounded-full border border-[#E9D9CC] bg-[#FFF2E8] px-4 py-2.5 text-sm font-medium text-[#40342E] transition hover:border-[#E6BDA7] hover:text-[#302923]"
                   }
                 >
                   {item.label}
-                  <span className={selected ? "ml-2 text-slate-700" : "ml-2 text-gray-500"}>
+                  <span className={selected ? "ml-2 text-[#816B5E]" : "ml-2 text-[#756155]"}>
                     {item.count}
                   </span>
                 </button>
               );
             })}
           </div>
-          <p aria-live="polite" className="text-xs text-gray-500">
+          <p aria-live="polite" className="text-xs text-[#756155]">
             Showing {filteredCertifications.length} {filteredCertifications.length === 1 ? "record" : "records"}
           </p>
         </div>
@@ -127,14 +127,14 @@ export default function Certifications() {
             {filteredCertifications.map((certification) => (
               <article
                 key={certification.id}
-                className="group overflow-hidden rounded-3xl border border-white/10 bg-[#080d15] transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_20px_70px_-35px_rgba(34,211,238,0.25)]"
+                className="group overflow-hidden rounded-3xl border border-[#E9D9CC] bg-[#FFFCF8] transition duration-300 hover:-translate-y-1 hover:border-[#E6BDA7] hover:shadow-[0_20px_70px_-35px_rgba(34,211,238,0.25)]"
               >
                 <a
                   href={certification.image}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Open certificate image: ${certification.title}`}
-                  className="relative block aspect-[4/3] overflow-hidden border-b border-white/10 bg-white/[0.025] p-3"
+                  className="relative block aspect-[4/3] overflow-hidden border-b border-[#E9D9CC] bg-[#FFF2E8] p-3"
                 >
                   <Image
                     src={certification.image}
@@ -143,30 +143,30 @@ export default function Certifications() {
                     sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="object-contain p-3 transition duration-500 group-hover:scale-[1.015]"
                   />
-                  <span className="absolute left-5 top-5 rounded-full border border-white/10 bg-black/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-cyan-300">
+                  <span className="absolute left-5 top-5 rounded-full border border-[#E9D9CC] bg-[#F8EEE6] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#AD5637]">
                     {certification.credentialType}
                   </span>
                 </a>
 
                 <div className="p-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-400">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#AD5637]">
                       {certification.issuer}
                     </p>
-                    <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-gray-300">
+                    <span className="rounded-full border border-[#E9D9CC] bg-[#FFF2E8] px-3 py-1 text-xs font-medium text-[#40342E]">
                       {formatHours(certification.hours)}
                     </span>
                   </div>
 
-                  <h3 className="mt-4 text-lg font-semibold leading-snug text-white">
+                  <h3 className="mt-4 text-lg font-semibold leading-snug text-[#302923]">
                     {certification.title}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-gray-400">
+                  <p className="mt-3 text-sm leading-6 text-[#756155]">
                     {certification.description}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500">
+                  <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#756155]">
                     <span>{certification.date}</span>
                     {certification.instructor ? (
                       <>
@@ -176,13 +176,13 @@ export default function Certifications() {
                     ) : null}
                   </div>
 
-                  <div className="mt-6 border-t border-white/10 pt-4">
+                  <div className="mt-6 border-t border-[#E9D9CC] pt-4">
                     {certification.credentialUrl ? (
                       <a
                         href={certification.credentialUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 transition hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#AD5637] transition hover:text-[#302923] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
                       >
                         Verify credential
                         <span aria-hidden="true">↗</span>
@@ -192,7 +192,7 @@ export default function Certifications() {
                         href={certification.image}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 transition hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#AD5637] transition hover:text-[#302923] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
                       >
                         Open certificate
                         <span aria-hidden="true">↗</span>
@@ -204,12 +204,12 @@ export default function Certifications() {
             ))}
           </div>
         ) : (
-          <p className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-gray-400">
+          <p className="rounded-2xl border border-dashed border-[#E9D9CC] p-10 text-center text-[#756155]">
             No records match this filter.
           </p>
         )}
 
-        <p className="mt-8 text-center text-xs leading-5 text-gray-500">
+        <p className="mt-8 text-center text-xs leading-5 text-[#756155]">
           Training hours reflect certificate details or information provided by the learner. Training records without verified issuers or dates are labeled transparently and are not presented as course-completion credentials.
         </p>
       </div>
