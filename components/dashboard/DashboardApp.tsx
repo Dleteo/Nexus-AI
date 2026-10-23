@@ -38,7 +38,7 @@ export default function DashboardApp() {
     }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  // This effect starts an asynchronous request; state updates happen only after network responses.\n  // eslint-disable-next-line react-hooks/set-state-in-effect\n  useEffect(() => { void load(); }, [load]);
 
   async function createProject(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
