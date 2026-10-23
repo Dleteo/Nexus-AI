@@ -17,6 +17,7 @@ export default function DashboardApp() {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [projectQuery, setProjectQuery] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -105,15 +106,19 @@ export default function DashboardApp() {
     window.location.replace("/");
   }
 
-  const visibleProjects = projects.filter((project) => showArchived || project.status !== "archived");
+  const visibleProjects = projects.filter((project) =>
+    (showArchived || project.status !== "archived") &&
+    `${project.name} ${project.description}`.toLowerCase().includes(projectQuery.trim().toLowerCase()),
+  );
   const activeProjects = projects.filter((project) => project.status === "active");
   const archivedProjects = projects.filter((project) => project.status === "archived");
   const displayName = user?.name?.trim().split(/\s+/)[0] || "Developer";
+  const activePercentage = projects.length ? Math.round((activeProjects.length / projects.length) * 100) : 0;
 
   if (loading) return <main className="min-h-screen px-5 py-16 text-white sm:px-8"><div className="mx-auto max-w-7xl animate-pulse"><div className="h-8 w-48 rounded-lg bg-white/5" /><div className="mt-8 grid gap-4 md:grid-cols-3"><div className="h-28 rounded-2xl bg-white/5" /><div className="h-28 rounded-2xl bg-white/5" /><div className="h-28 rounded-2xl bg-white/5" /></div><div className="mt-5 h-80 rounded-2xl bg-white/5" /></div></main>;
 
   return (
-    <main className="min-h-screen px-4 pb-10 pt-24 text-white sm:px-6 lg:px-8">
+    <main className="nexus-workspace-shell min-h-screen px-4 pb-10 pt-24 text-white sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="nexus-panel flex h-fit flex-col p-4 lg:sticky lg:top-24">
           <Link href="/" className="flex items-center gap-3 px-2 py-2">
@@ -140,7 +145,7 @@ export default function DashboardApp() {
         </aside>
 
         <div className="min-w-0">
-          <header className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <header className="nexus-workspace-heading mb-6 flex flex-col justify-between gap-4 rounded-2xl px-5 py-6 sm:flex-row sm:items-end sm:px-7">
             <div>
               <p className="nexus-kicker mb-3">Workspace overview</p>
               <h1 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Good to see you, {displayName}.</h1>
@@ -164,22 +169,66 @@ export default function DashboardApp() {
             ].map((stat) => <article key={stat.label} className="nexus-panel p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-slate-500">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-white/[0.07] bg-white/[0.025] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-slate-500">{stat.detail}</p></article>)}
           </section>
 
+          <section aria-label="Project overview" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)]">
+            <div className="nexus-panel relative overflow-hidden p-5 sm:p-6">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-blue-500/10 blur-[80px]" />
+              <div className="relative flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                <div>
+                  <p className="nexus-kicker mb-3">Project activity</p>
+                  <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Your work at a glance.</h2>
+                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-400">Only your saved projects are counted here. The overview updates when you create, archive, restore or delete a project.</p>
+                  <div className="mt-5 flex flex-wrap items-center gap-2">
+                    <span className="nexus-status-chip"><span className="size-1.5 rounded-full bg-cyan-300" /> {activeProjects.length} active</span>
+                    <span className="nexus-status-chip"><span className="size-1.5 rounded-full bg-violet-400" /> {archivedProjects.length} archived</span>
+                  </div>
+                </div>
+                <a href="#projects" className="nexus-ghost-button shrink-0 text-xs">Manage projects <span aria-hidden="true">↗</span></a>
+              </div>
+              <div className="mt-7 flex h-3 overflow-hidden rounded-full bg-white/[0.05]" role="img" aria-label={`${activePercentage}% of saved projects are active`}>
+                <div className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-300 transition-[width] duration-300" style={{ width: `${activePercentage}%` }} />
+              </div>
+            </div>
+            <div className="nexus-panel flex items-center justify-between gap-5 p-5 sm:p-6">
+              <div className="min-w-0">
+                <p className="nexus-kicker mb-3">Status mix</p>
+                <p className="text-3xl font-semibold tabular-nums text-white">{activePercentage}<span className="text-base font-medium text-slate-500">%</span></p>
+                <p className="mt-2 text-xs text-slate-400">Projects currently active</p>
+                <p className="mt-3 text-[11px] text-slate-500">{projects.length === 0 ? "Create a project to start tracking." : `${projects.length} saved project${projects.length === 1 ? "" : "s"}`}</p>
+              </div>
+              <div className="relative grid size-28 shrink-0 place-items-center rounded-full sm:size-32" role="img" aria-label={`${activeProjects.length} active and ${archivedProjects.length} archived projects`} style={{ background: projects.length ? `conic-gradient(#38bdf8 0% ${activePercentage}%, #9274ee ${activePercentage}% 100%)` : "conic-gradient(#263245 0% 100%)" }}>
+                <div className="grid size-[78%] place-items-center rounded-full border border-white/10 bg-[#0b1220]">
+                  <span className="text-xl font-semibold tabular-nums text-slate-100">{projects.length}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(290px,0.75fr)]">
             <div id="projects" className="nexus-panel min-w-0 p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div><p className="nexus-kicker mb-2">Project space</p><h2 className="text-xl font-semibold">Your projects <span className="ml-1 text-sm font-normal text-slate-500">({visibleProjects.length})</span></h2></div>
-                <button type="button" onClick={() => setShowArchived((value) => !value)} className="nexus-ghost-button text-xs">{showArchived ? "Hide archived" : "Show archived"} <span aria-hidden="true">⌄</span></button>
+                <button type="button" aria-pressed={showArchived} onClick={() => setShowArchived((value) => !value)} className="nexus-ghost-button text-xs">{showArchived ? "Hide archived" : "Show archived"} <span aria-hidden="true">⌄</span></button>
               </div>
+              <label className="mt-5 block">
+                <span className="sr-only">Search projects by name or description</span>
+                <input
+                  type="search"
+                  value={projectQuery}
+                  onChange={(event) => setProjectQuery(event.target.value)}
+                  placeholder="Search your projects..."
+                  className="nexus-field w-full"
+                />
+              </label>
               {visibleProjects.length === 0 ? (
                 <div className="mt-6 rounded-xl border border-dashed border-white/[0.12] bg-black/10 px-5 py-12 text-center">
                   <div className="mx-auto grid size-12 place-items-center rounded-xl border border-cyan-200/15 bg-cyan-200/[0.05] text-xl text-cyan-200">▦</div>
-                  <h3 className="mt-4 text-base font-semibold">{showArchived ? "No archived projects yet" : "Start with one idea"}</h3>
-                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">{showArchived ? "Archived projects will appear here." : "Create your first project using the form. It will be saved to your personal account."}</p>
+                  <h3 className="mt-4 text-base font-semibold">{projectQuery.trim() ? "No matching projects" : showArchived ? "No saved projects yet" : "Start with one idea"}</h3>
+                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">{projectQuery.trim() ? "Try a different project name or description." : showArchived ? "Your saved projects will appear here." : "Create your first project using the form. It will be saved to your personal account."}</p>
                 </div>
               ) : (
                 <ul className="mt-5 space-y-3">
                   {visibleProjects.map((project) => (
-                    <li key={project.id} className="rounded-xl border border-white/[0.07] bg-[#080d17]/80 p-4 transition hover:border-cyan-200/15">
+                    <li key={project.id} className="nexus-project-row rounded-xl border border-white/[0.07] bg-[#080d17]/80 p-4 transition hover:border-cyan-200/30">
                       {editingId === project.id ? (
                         <form onSubmit={(event) => { event.preventDefault(); void updateProject(project.id, { name: editName, description: editDescription }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project.")); }} className="space-y-3">
                           <label className="block text-xs font-medium text-slate-400">Project name<input value={editName} onChange={(event) => setEditName(event.target.value)} required minLength={2} maxLength={80} className="nexus-field mt-2" /></label>
