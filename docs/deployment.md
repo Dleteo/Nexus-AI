@@ -5,7 +5,7 @@ This guide prepares Nexus AI for a public production deployment. The repository 
 ## 1. Import the repository into Vercel
 
 1. Sign in to [Vercel](https://vercel.com/) and choose **Add New → Project**.
-2. Import `Dleteo/Nexus-AI` from GitHub and select `main) as the production branch.
+2. Import `Dleteo/Nexus-AI` from GitHub and select `main` as the production branch.
 3. Confirm Vercel detects **Next.js**. Keep the standard build command (`npm run build`) and output settings unless Vercel reports a concrete build error.
 4. Use Node.js 22 or a newer supported LTS version.
 5. Before launching publicly, add the environment variables in the next section, then deploy.
