@@ -1,5 +1,6 @@
 import Footer from "../components/layout/Footer";
 import Navbar from "../components/layout/Navbar";
+import Certifications from "../components/sections/Certifications";
 import Features from "../components/sections/Features";
 import FinalCTA from "../components/sections/FinalCTA";
 import Hero from "../components/sections/Hero";
@@ -11,7 +12,7 @@ import TechStack from "../components/sections/TechStack";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black">
+    <main id="top" className="min-h-screen bg-black">
       <Navbar />
       <Hero />
       <StatsSection />
@@ -20,6 +21,7 @@ export default function Home() {
       <Roadmap />
       <Process />
       <Portfolio />
+      <Certifications />
       <FinalCTA />
       <Footer />
     </main>
