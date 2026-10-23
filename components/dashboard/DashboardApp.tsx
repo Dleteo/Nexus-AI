@@ -195,7 +195,7 @@ export default function DashboardApp() {
                 <p className="mt-2 text-xs text-[#756155]">Projects currently active</p>
                 <p className="mt-3 text-[11px] text-[#756155]">{projects.length === 0 ? "Create a project to start tracking." : `${projects.length} saved project${projects.length === 1 ? "" : "s"}`}</p>
               </div>
-              <div className="relative grid size-28 shrink-0 place-items-center rounded-full sm:size-32" role="img" aria-label={`${activeProjects.length} active and ${archivedProjects.length} archived projects`} style={{ background: projects.length ? `conic-gradient(#38bdf8 0% ${activePercentage}%, #9274ee ${activePercentage}% 100%)` : "conic-gradient(#263245 0% 100%)" }}>
+              <div className="relative grid size-28 shrink-0 place-items-center rounded-full sm:size-32" role="img" aria-label={`${activeProjects.length} active and ${archivedProjects.length} archived projects`} style={{ background: projects.length ? `conic-gradient(#DB8C73 0% ${activePercentage}%, #E3C6B3 ${activePercentage}% 100%)` : "conic-gradient(#EBDDD1 0% 100%)" }}>
                 <div className="grid size-[78%] place-items-center rounded-full border border-[#E9D9CC] bg-[#FFFDF9]">
                   <span className="text-xl font-semibold tabular-nums text-[#40342E]">{projects.length}</span>
                 </div>
@@ -267,7 +267,7 @@ export default function DashboardApp() {
                 <button disabled={saving} type="submit" className="nexus-primary-button mt-4 w-full">{saving ? "Saving…" : "Create project"} <span aria-hidden="true">↗</span></button>
               </form>
 
-              <article className="relative overflow-hidden rounded-2xl border border-[#E6BDA7] bg-gradient-to-br from-[#111d32] to-[#0b101d] p-5">
+              <article className="relative overflow-hidden rounded-2xl border border-[#E6BDA7] bg-gradient-to-br from-[#FDE6D7] to-[#FFF9F3] p-5">
                 <div aria-hidden="true" className="absolute -right-8 -top-10 size-36 rounded-full bg-[#F9D8C5] blur-3xl" />
                 <div className="relative"><p className="nexus-kicker mb-3">Next step</p><h3 className="text-lg font-semibold">Think it through with AI.</h3><p className="mt-2 text-sm leading-6 text-[#756155]">Turn a vague idea into a plan, or ask the copilot to help untangle a bug.</p><Link href="/assistant" className="mt-4 inline-flex text-sm font-semibold text-[#AD5637] hover:text-[#302923]">Open assistant <span className="ml-2">↗</span></Link></div>
               </article>
