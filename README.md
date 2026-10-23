@@ -59,6 +59,10 @@ Requirements: Node.js 22 or later and npm.
 
 The current Supabase project used during development has its schema and RLS policies configured. If you connect a different Supabase project, apply the tracked SQL migrations in timestamp order and update the environment variables.
 
+## Deployment
+
+For the production release process, environment variables, Supabase Auth redirect configuration, preview/production separation, smoke tests, and security checklist, follow the [production deployment guide](docs/deployment.md). Keep production credentials out of GitHub and do not treat local CI success as proof that the live deployment has been verified.
+
 ## Main routes
 
 | Route | Purpose |
