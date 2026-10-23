@@ -38,12 +38,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await supabaseFetch("/auth/v1/recover", {
+    const redirectTo = `${origin}/reset-password`;
+    const response = await supabaseFetch(`/auth/v1/recover?redirect_to=${encodeURIComponent(redirectTo)}`, {
       method: "POST",
-      body: JSON.stringify({
-        email,
-        redirect_to: `${origin}/reset-password`,
-      }),
+      body: JSON.stringify({ email }),
     });
 
     if (!response.ok) {
