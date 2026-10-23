@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readSession } from "../../../../lib/session";
-import { getSupabaseConfig } from "../../../../lib/supabase";
+import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabase";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -47,10 +47,26 @@ export async function POST(request: Request) {
   if (!Array.isArray(conversations) || !conversations[0]) return NextResponse.json({ error: "Conversation not found." }, { status: 404 });
   const conversation = conversations[0] as { id: string; mode: Mode; project_id: string | null };
 
-  const usageResponse = await fetch(`${config.url}/rest/v1/rpc/claim_assistant_request`, {
+  const supabaseSecretKey = getSupabaseSecretKey();
+  if (!supabaseSecretKey) {
+    return NextResponse.json({
+      error: "Server-side Supabase secret is not configured. Add SUPABASE_SECRET_KEY to .env.local and restart the server.",
+      code: "SUPABASE_SERVER_SECRET_MISSING",
+    }, { status: 503 });
+  }
+  const adminHeaders: Record<string, string> = {
+    apikey: supabaseSecretKey,
+    "Content-Type": "application/json",
+  };
+  // Legacy service_role keys are JWTs and require Authorization; new sb_secret_ keys are not JWTs.
+  if (!supabaseSecretKey.startsWith("sb_secret_")) {
+    adminHeaders.Authorization = `Bearer ${supabaseSecretKey}`;
+  }
+
+  const usageResponse = await fetch(`${config.url}/rest/v1/rpc/claim_assistant_request_for_user`, {
     method: "POST",
-    headers: { ...authHeaders, "Content-Type": "application/json" },
-    body: "{}",
+    headers: adminHeaders,
+    body: JSON.stringify({ p_user_id: session.user.id }),
     cache: "no-store",
   });
   const usage = await usageResponse.json().catch(() => null) as { allowed?: boolean; requests_remaining?: number }[] | null;
@@ -172,10 +188,15 @@ export async function POST(request: Request) {
     : providerData?.output_text?.trim();
   if (!answer) return NextResponse.json({ error: "The AI returned an empty response. Please try again." }, { status: 502 });
 
-  const saveResponse = await fetch(`${config.url}/rest/v1/rpc/save_assistant_exchange`, {
+  const saveResponse = await fetch(`${config.url}/rest/v1/rpc/save_assistant_exchange_for_user`, {
     method: "POST",
-    headers: { ...authHeaders, "Content-Type": "application/json" },
-    body: JSON.stringify({ p_conversation_id: conversationId, p_user_content: message, p_assistant_content: answer }),
+    headers: adminHeaders,
+    body: JSON.stringify({
+      p_user_id: session.user.id,
+      p_conversation_id: conversationId,
+      p_user_content: message,
+      p_assistant_content: answer,
+    }),
     cache: "no-store",
   });
   if (!saveResponse.ok) return NextResponse.json({ error: "The answer was generated but could not be saved. Please try again before leaving this conversation." }, { status: 502 });
