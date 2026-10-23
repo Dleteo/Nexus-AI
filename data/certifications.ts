@@ -2,7 +2,7 @@ export type Certification = {
   id: string;
   title: string;
   issuer: string;
-  credentialType: "Course completion" | "Attendance certificate";
+  credentialType: "Course completion" | "Attendance certificate" | "Training record";
   date: string;
   hours: number;
   image: string;
@@ -72,6 +72,17 @@ export const certifications: Certification[] = [
     image: "/certificates/ai-new-programmer.webp",
     description:
       "An introductory course on AI-assisted programming and the evolving role of the developer.",
+  },
+  {
+    id: "cybersecurity-fundamentals",
+    title: "Cybersecurity Fundamentals",
+    issuer: "Issuer not specified",
+    credentialType: "Training record",
+    date: "Date not provided",
+    hours: 6,
+    image: "/certificates/Cibersecurity.webp",
+    description:
+      "Six hours of cybersecurity training. The display title is provisional; the official course name and issuing organization have not been confirmed.",
   },
 ];
 
