@@ -34,3 +34,10 @@ jobs:
 
       - name: Build production app
         run: npm run build
+
+      - name: Smoke-test compiled pages and signed-out routes
+        run: |
+          npm run start -- --port 3100 > /tmp/nexus-smoke.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node scripts/smoke.mjs http://127.0.0.1:3100 || { cat /tmp/nexus-smoke.log; exit 1; }
