@@ -10,7 +10,7 @@ import shutil
 import os
 from urllib.parse import urlparse
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect as playwright_expect, sync_playwright
 
 BASE = os.environ.get("NEXUS_QA_BASE", "http://127.0.0.1:3101")
 SHOTS = Path("qa-screenshots")
@@ -180,8 +180,9 @@ def assistant_test(browser, width, label):
     page.get_by_role("button", name=re.compile("New conversation", re.I)).first.click()
     page.get_by_role("heading", name="Let’s make the next step clear.").wait_for()
     page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar").click()
-    ensure(page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar").get_attribute("aria-pressed") == "true",
-           "Assistant mode did not change")
+    playwright_expect(
+        page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar")
+    ).to_have_attribute("aria-pressed", "true")
     page.locator("#assistant-message").fill("Plan a small portfolio feature")
     page.get_by_role("button", name="Send message").click()
     page.get_by_text("QA simulated assistant answer.").wait_for()
