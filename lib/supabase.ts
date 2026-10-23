@@ -29,6 +29,11 @@ export function getSupabaseConfig(): SupabaseConfig | null {
   return { url: url.replace(/\/$/, ""), apiKey };
 }
 
+// Server-only privileged key. Never expose this value through NEXT_PUBLIC_* variables.
+export function getSupabaseSecretKey(): string | null {
+  return process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY ?? null;
+}
+
 export async function supabaseFetch(path: string, init: RequestInit = {}) {
   const config = getSupabaseConfig();
   if (!config) throw new Error("AUTH_NOT_CONFIGURED");
