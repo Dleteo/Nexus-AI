@@ -106,80 +106,126 @@ export default function DashboardApp() {
   }
 
   const visibleProjects = projects.filter((project) => showArchived || project.status !== "archived");
+  const activeProjects = projects.filter((project) => project.status === "active");
+  const archivedProjects = projects.filter((project) => project.status === "archived");
+  const displayName = user?.name?.trim().split(/\s+/)[0] || "Developer";
 
-  if (loading) return <main className="min-h-screen bg-black px-6 py-16 text-white"><p className="mx-auto max-w-5xl text-gray-400">Loading your dashboard…</p></main>;
+  if (loading) return <main className="min-h-screen px-5 py-16 text-white sm:px-8"><div className="mx-auto max-w-7xl animate-pulse"><div className="h-8 w-48 rounded-lg bg-white/5" /><div className="mt-8 grid gap-4 md:grid-cols-3"><div className="h-28 rounded-2xl bg-white/5" /><div className="h-28 rounded-2xl bg-white/5" /><div className="h-28 rounded-2xl bg-white/5" /></div><div className="mt-5 h-80 rounded-2xl bg-white/5" /></div></main>;
 
   return (
-    <main className="min-h-screen bg-black px-6 py-10 text-white">
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
-          <div>
-            <Link href="/" className="text-sm text-cyan-300 hover:text-white">← Back to Nexus AI</Link>
-            <p className="mb-3 mt-6 text-sm uppercase tracking-[0.35em] text-cyan-400">Private dashboard</p>
-            <h1 className="text-4xl font-bold tracking-tight md:text-6xl">Your projects.</h1>
-            <p className="mt-4 max-w-2xl text-gray-400">{user?.name ? `Welcome, ${user.name}.` : "Welcome to Nexus AI."} Create and manage projects saved to your account.</p>
-            {user?.email && <p className="mt-2 text-sm text-gray-500">{user.email}</p>}
+    <main className="min-h-screen px-4 pb-10 pt-24 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="nexus-panel flex h-fit flex-col p-4 lg:sticky lg:top-24">
+          <Link href="/" className="flex items-center gap-3 px-2 py-2">
+            <span className="grid size-10 place-items-center rounded-xl border border-cyan-200/15 bg-gradient-to-br from-blue-500/30 to-violet-500/20 text-xl text-cyan-100">✦</span>
+            <span><span className="block text-sm font-bold tracking-tight">Nexus<span className="text-cyan-300">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-slate-500">YOUR WORKSPACE</span></span>
+          </Link>
+          <div className="my-5 border-t border-white/[0.07]" />
+          <p className="mb-2 px-3 text-[10px] font-bold tracking-[0.17em] text-slate-600">WORKSPACE</p>
+          <nav aria-label="Workspace navigation" className="space-y-1">
+            <Link href="/dashboard" aria-current="page" className="nexus-sidebar-link"><span className="text-base">⌂</span> Overview</Link>
+            <a href="#projects" className="nexus-sidebar-link"><span className="text-base">▦</span> Projects</a>
+            <Link href="/assistant" className="nexus-sidebar-link"><span className="text-base">✦</span> AI Assistant</Link>
+          </nav>
+          <div className="my-5 border-t border-white/[0.07]" />
+          <p className="mb-2 px-3 text-[10px] font-bold tracking-[0.17em] text-slate-600">ACCOUNT</p>
+          <button type="button" onClick={() => void signOut()} className="nexus-sidebar-link w-full text-left"><span className="text-base">↪</span> Sign out</button>
+          <div className="mt-8 rounded-xl border border-cyan-100/10 bg-gradient-to-br from-blue-500/[0.10] to-violet-500/[0.08] p-4">
+            <span className="text-lg text-cyan-200">✧</span>
+            <p className="mt-2 text-xs font-semibold text-slate-200">Keep the momentum</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">Break a big idea into one clear next step.</p>
+            <Link href="/assistant" className="mt-3 inline-flex text-xs font-semibold text-cyan-200 hover:text-white">Ask the copilot ↗</Link>
           </div>
-          <button onClick={() => void signOut()} className="rounded-full border border-white/20 px-5 py-3 text-sm font-semibold transition hover:bg-white/10">Sign out</button>
-        </header>
+          <p className="mt-6 px-2 text-[10px] text-slate-600">NEXUS AI · PRIVATE WORKSPACE</p>
+        </aside>
 
-        {error && <p role="alert" className="mb-6 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</p>}
-        {notice && <p role="status" className="mb-6 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">{notice}</p>}
-
-        <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.8fr)]">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-2xl font-semibold">Your projects <span className="text-base font-normal text-gray-500">({visibleProjects.length})</span></h2>
-              <button type="button" onClick={() => setShowArchived((value) => !value)} className="rounded-full border border-white/15 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">{showArchived ? "Hide archived" : "Show archived"}</button>
+        <div className="min-w-0">
+          <header className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="nexus-kicker mb-3">Workspace overview</p>
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Good to see you, {displayName}.</h1>
+              <p className="mt-2 text-sm leading-6 text-slate-400">A clear view of your ideas, your projects, and what to work on next.</p>
             </div>
-            {visibleProjects.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center">
-                <h3 className="text-lg font-semibold">{showArchived ? "No projects here yet." : "A clean slate."}</h3>
-                <p className="mt-2 text-sm leading-6 text-gray-400">{showArchived ? "Archived projects will appear here." : "Create your first project with the form. It will be saved to your account."}</p>
-              </div>
-            ) : (
-              <ul className="mt-6 space-y-4">
-                {visibleProjects.map((project) => (
-                  <li key={project.id} className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                    {editingId === project.id ? (
-                      <form onSubmit={(event) => { event.preventDefault(); void updateProject(project.id, { name: editName, description: editDescription }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project.")); }} className="space-y-3">
-                        <label className="block text-sm text-gray-300">Project name<input value={editName} onChange={(event) => setEditName(event.target.value)} required minLength={2} maxLength={80} className="mt-2 w-full rounded-xl border border-white/10 bg-black px-3 py-2 text-white" /></label>
-                        <label className="block text-sm text-gray-300">Description<textarea value={editDescription} onChange={(event) => setEditDescription(event.target.value)} maxLength={500} rows={3} className="mt-2 w-full rounded-xl border border-white/10 bg-black px-3 py-2 text-white" /></label>
-                        <div className="flex flex-wrap gap-2"><button className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">Save changes</button><button type="button" onClick={() => setEditingId(null)} className="rounded-full border border-white/20 px-4 py-2 text-sm">Cancel</button></div>
-                      </form>
-                    ) : (
-                      <>
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2"><h3 className="break-words text-lg font-semibold">{project.name}</h3><span className={project.status === "archived" ? "rounded-full bg-gray-500/15 px-2 py-1 text-xs text-gray-400" : "rounded-full bg-emerald-400/10 px-2 py-1 text-xs text-emerald-300"}>{project.status}</span></div>
-                            {project.description && <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-gray-400">{project.description}</p>}
-                            <p className="mt-3 text-xs text-gray-500">Created {new Date(project.created_at).toLocaleDateString()}</p>
-                          </div>
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <button onClick={() => { setEditingId(project.id); setEditName(project.name); setEditDescription(project.description); }} className="rounded-full border border-white/20 px-3 py-2 text-xs hover:bg-white/10">Edit</button>
-                          <button onClick={() => void updateProject(project.id, { status: project.status === "archived" ? "active" : "archived" }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project."))} className="rounded-full border border-cyan-400/30 px-3 py-2 text-xs text-cyan-200 hover:bg-cyan-400/10">{project.status === "archived" ? "Restore" : "Archive"}</button>
-                          <button onClick={() => void deleteProject(project.id)} className="rounded-full border border-red-400/30 px-3 py-2 text-xs text-red-200 hover:bg-red-400/10">Delete</button>
-                        </div>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-lg border border-white/[0.08] bg-white/[0.025] px-3 py-2 text-xs text-slate-400">{user?.email}</span>
+              <Link href="/assistant" className="nexus-primary-button">✦ Open AI copilot <span aria-hidden="true">↗</span></Link>
+            </div>
+          </header>
 
-          <form onSubmit={createProject} className="h-fit rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
-            <h2 className="text-2xl font-semibold">New project</h2>
-            <p className="mt-2 text-sm leading-6 text-gray-400">Add a project to your personal workspace.</p>
-            <label htmlFor="project-name" className="mb-2 mt-6 block text-sm text-gray-300">Project name</label>
-            <input id="project-name" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={80} placeholder="My next idea" className="w-full rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none placeholder:text-gray-600 focus:border-cyan-400" />
-            <label htmlFor="project-description" className="mb-2 mt-5 block text-sm text-gray-300">Description <span className="text-gray-500">(optional)</span></label>
-            <textarea id="project-description" value={description} onChange={(event) => setDescription(event.target.value)} maxLength={500} rows={4} placeholder="What are you planning to build?" className="w-full resize-y rounded-xl border border-white/10 bg-black px-4 py-3 text-white outline-none placeholder:text-gray-600 focus:border-cyan-400" />
-            <p className="mt-2 text-right text-xs text-gray-500">{description.length}/500</p>
-            <button disabled={saving} type="submit" className="mt-5 w-full rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60">{saving ? "Saving…" : "Create project"}</button>
-          </form>
-        </section>
+          {error && <p role="alert" className="mb-5 rounded-xl border border-red-400/30 bg-red-400/[0.07] px-4 py-3 text-sm text-red-200">{error}</p>}
+          {notice && <p role="status" className="mb-5 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-4 py-3 text-sm text-emerald-200">{notice}</p>}
+
+          <section aria-label="Workspace summary" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              { label: "Total projects", value: projects.length, detail: "Saved to your workspace", tone: "text-cyan-200", icon: "▦" },
+              { label: "Active projects", value: activeProjects.length, detail: "Ready for your next step", tone: "text-emerald-200", icon: "↗" },
+              { label: "Archived", value: archivedProjects.length, detail: "Stored for later", tone: "text-violet-200", icon: "◷" },
+              { label: "Workspace", value: "Private", detail: "Account-linked project data", tone: "text-blue-200", icon: "◇" },
+            ].map((stat) => <article key={stat.label} className="nexus-panel p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-slate-500">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-white/[0.07] bg-white/[0.025] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-slate-500">{stat.detail}</p></article>)}
+          </section>
+
+          <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(290px,0.75fr)]">
+            <div id="projects" className="nexus-panel min-w-0 p-5 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div><p className="nexus-kicker mb-2">Project space</p><h2 className="text-xl font-semibold">Your projects <span className="ml-1 text-sm font-normal text-slate-500">({visibleProjects.length})</span></h2></div>
+                <button type="button" onClick={() => setShowArchived((value) => !value)} className="nexus-ghost-button text-xs">{showArchived ? "Hide archived" : "Show archived"} <span aria-hidden="true">⌄</span></button>
+              </div>
+              {visibleProjects.length === 0 ? (
+                <div className="mt-6 rounded-xl border border-dashed border-white/[0.12] bg-black/10 px-5 py-12 text-center">
+                  <div className="mx-auto grid size-12 place-items-center rounded-xl border border-cyan-200/15 bg-cyan-200/[0.05] text-xl text-cyan-200">▦</div>
+                  <h3 className="mt-4 text-base font-semibold">{showArchived ? "No archived projects yet" : "Start with one idea"}</h3>
+                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">{showArchived ? "Archived projects will appear here." : "Create your first project using the form. It will be saved to your personal account."}</p>
+                </div>
+              ) : (
+                <ul className="mt-5 space-y-3">
+                  {visibleProjects.map((project) => (
+                    <li key={project.id} className="rounded-xl border border-white/[0.07] bg-[#080d17]/80 p-4 transition hover:border-cyan-200/15">
+                      {editingId === project.id ? (
+                        <form onSubmit={(event) => { event.preventDefault(); void updateProject(project.id, { name: editName, description: editDescription }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project.")); }} className="space-y-3">
+                          <label className="block text-xs font-medium text-slate-400">Project name<input value={editName} onChange={(event) => setEditName(event.target.value)} required minLength={2} maxLength={80} className="nexus-field mt-2" /></label>
+                          <label className="block text-xs font-medium text-slate-400">Description<textarea value={editDescription} onChange={(event) => setEditDescription(event.target.value)} maxLength={500} rows={3} className="nexus-field mt-2" /></label>
+                          <div className="flex flex-wrap gap-2"><button className="nexus-primary-button">Save changes</button><button type="button" onClick={() => setEditingId(null)} className="nexus-ghost-button">Cancel</button></div>
+                        </form>
+                      ) : (
+                        <>
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div className="flex min-w-0 items-start gap-3">
+                              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-blue-200/10 bg-blue-300/[0.06] text-lg text-blue-200">▦</span>
+                              <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="break-words font-semibold text-slate-100">{project.name}</h3><span className={project.status === "archived" ? "rounded-full border border-white/10 px-2 py-1 text-[10px] text-slate-500" : "rounded-full border border-emerald-200/15 bg-emerald-200/[0.05] px-2 py-1 text-[10px] text-emerald-200"}>{project.status}</span></div>{project.description && <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-400">{project.description}</p>}<p className="mt-3 text-[11px] text-slate-600">Created {new Date(project.created_at).toLocaleDateString()}</p></div>
+                            </div>
+                          </div>
+                          <div className="mt-4 flex flex-wrap gap-2 border-t border-white/[0.06] pt-3">
+                            <button onClick={() => { setEditingId(project.id); setEditName(project.name); setEditDescription(project.description); }} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs">Edit</button>
+                            <button onClick={() => void updateProject(project.id, { status: project.status === "archived" ? "active" : "archived" }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project."))} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs">{project.status === "archived" ? "Restore" : "Archive"}</button>
+                            <button onClick={() => void deleteProject(project.id)} className="inline-flex min-h-9 items-center rounded-xl border border-red-300/15 px-3 py-1.5 text-xs text-red-200 transition hover:bg-red-300/[0.06]">Delete</button>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="space-y-5">
+              <form onSubmit={createProject} className="nexus-panel h-fit p-5 sm:p-6">
+                <p className="nexus-kicker mb-3">Make it real</p><h2 className="text-xl font-semibold">Create a project</h2><p className="mt-2 text-sm leading-6 text-slate-500">Capture an idea while it is fresh. You can edit it later.</p>
+                <label htmlFor="project-name" className="mb-2 mt-5 block text-xs font-medium text-slate-400">Project name</label>
+                <input id="project-name" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={80} placeholder="e.g. Portfolio v2" className="nexus-field" />
+                <label htmlFor="project-description" className="mb-2 mt-4 block text-xs font-medium text-slate-400">What is it about? <span className="text-slate-600">(optional)</span></label>
+                <textarea id="project-description" value={description} onChange={(event) => setDescription(event.target.value)} maxLength={500} rows={4} placeholder="The problem, idea, or next milestone…" className="nexus-field resize-y" />
+                <p className="mt-2 text-right text-[10px] text-slate-600">{description.length}/500 characters</p>
+                <button disabled={saving} type="submit" className="nexus-primary-button mt-4 w-full">{saving ? "Saving…" : "Create project"} <span aria-hidden="true">↗</span></button>
+              </form>
+
+              <article className="relative overflow-hidden rounded-2xl border border-cyan-100/10 bg-gradient-to-br from-[#111d32] to-[#0b101d] p-5">
+                <div aria-hidden="true" className="absolute -right-8 -top-10 size-36 rounded-full bg-blue-500/10 blur-3xl" />
+                <div className="relative"><p className="nexus-kicker mb-3">Next step</p><h3 className="text-lg font-semibold">Think it through with AI.</h3><p className="mt-2 text-sm leading-6 text-slate-400">Turn a vague idea into a plan, or ask the copilot to help untangle a bug.</p><Link href="/assistant" className="mt-4 inline-flex text-sm font-semibold text-cyan-200 hover:text-white">Open assistant <span className="ml-2">↗</span></Link></div>
+              </article>
+            </div>
+          </section>
+          <footer className="mt-7 flex flex-wrap justify-between gap-3 border-t border-white/[0.06] pt-4 text-[11px] text-slate-600"><span>Private by design · Your projects are linked to your account.</span><Link href="/" className="hover:text-slate-300">Nexus AI home ↗</Link></footer>
+        </div>
       </div>
     </main>
   );

@@ -130,45 +130,81 @@ export default function AssistantApp() {
 
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
 
-  if (loading) return <main className="min-h-screen bg-black px-6 py-24 text-white"><p className="mx-auto max-w-7xl text-gray-400">Cargando Nexus AI…</p></main>;
+  if (loading) return <main className="min-h-screen px-4 py-28 text-white sm:px-6"><div className="mx-auto grid max-w-7xl animate-pulse gap-5 lg:grid-cols-[260px_minmax(0,1fr)]"><div className="h-96 rounded-2xl bg-white/5" /><div className="h-[70vh] rounded-2xl bg-white/5" /></div></main>;
 
   return (
-    <main className="min-h-screen bg-black px-4 py-24 text-white sm:px-6">
-      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="h-fit rounded-3xl border border-white/10 bg-white/[0.03] p-4">
-          <Link href="/" className="text-sm text-cyan-300 hover:text-white">← Volver a Nexus AI</Link>
-          <div className="mt-6 flex items-center justify-between gap-2"><h1 className="text-lg font-semibold">Tus conversaciones</h1><button onClick={() => void newConversation().catch((e) => setError(e.message))} className="rounded-full bg-cyan-300 px-3 py-2 text-sm font-semibold text-black">+ Nueva</button></div>
-          <p className="mt-2 text-xs leading-5 text-gray-500">Tu historial es privado y está vinculado a tu cuenta.</p>
-          <ul className="mt-4 space-y-2">
-            {conversations.map((item) => <li key={item.id} className="flex gap-1">
-              <button onClick={() => void openConversation(item.id).catch((e) => setError(e.message))} className={`min-w-0 flex-1 rounded-xl px-3 py-3 text-left text-sm ${current?.id === item.id ? "bg-cyan-300/10 text-cyan-100" : "text-gray-400 hover:bg-white/5 hover:text-white"}`}>
-                <span className="block truncate">{item.title}</span><span className="mt-1 block text-xs opacity-60">{modes.find((m) => m.id === item.mode)?.label ?? "Copilot"}</span>
-              </button>
-              <button aria-label={`Eliminar ${item.title}`} onClick={() => void removeConversation(item.id)} className="rounded-lg px-2 text-gray-500 hover:bg-red-400/10 hover:text-red-200">×</button>
-            </li>)}
-          </ul>
-          <div className="mt-8 border-t border-white/10 pt-4"><Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">Ir a tus proyectos →</Link></div>
+    <main className="min-h-screen px-3 pb-5 pt-20 text-white sm:px-5 sm:pt-24">
+      <div className="mx-auto grid max-w-[1500px] gap-4 lg:grid-cols-[250px_minmax(0,1fr)]">
+        <aside className="nexus-panel flex min-h-0 flex-col p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/" className="flex min-w-0 items-center gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-cyan-100/15 bg-gradient-to-br from-blue-500/30 to-violet-500/20 text-xl text-cyan-100">✦</span>
+              <span><span className="block text-sm font-bold">Nexus<span className="text-cyan-300">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-slate-500">AI WORKSPACE</span></span>
+            </Link>
+            <Link href="/dashboard" aria-label="Open projects dashboard" title="Projects dashboard" className="grid size-9 shrink-0 place-items-center rounded-lg border border-white/[0.08] text-slate-400 transition hover:border-cyan-200/20 hover:text-cyan-100">▦</Link>
+          </div>
+
+          <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ New conversation</button>
+
+          <div className="mt-7 flex items-center justify-between px-1"><p className="text-[10px] font-bold tracking-[0.17em] text-slate-500">RECENT HISTORY</p><span className="text-[10px] text-slate-600">{conversations.length}</span></div>
+          <div className="mt-3 min-h-0 flex-1 overflow-y-auto">
+            {conversations.length === 0 ? <div className="rounded-xl border border-dashed border-white/10 px-3 py-6 text-center text-xs leading-5 text-slate-500">Your saved conversations will appear here.</div> : <ul className="space-y-1.5">
+              {conversations.map((item) => <li key={item.id} className="group flex min-w-0 items-center gap-1">
+                <button onClick={() => void openConversation(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo abrir la conversación."))} aria-current={current?.id === item.id ? "page" : undefined} className={`min-w-0 flex-1 rounded-xl border px-3 py-3 text-left transition ${current?.id === item.id ? "border-blue-300/15 bg-blue-400/[0.09] text-slate-100" : "border-transparent text-slate-400 hover:border-white/[0.06] hover:bg-white/[0.025] hover:text-slate-200"}`}>
+                  <span className="block truncate text-xs font-medium">{item.title}</span><span className="mt-1.5 block text-[10px] text-slate-600">{modes.find((modeItem) => modeItem.id === item.mode)?.label ?? "Copilot"}</span>
+                </button>
+                <button aria-label={`Delete conversation ${item.title}`} title="Delete conversation" onClick={() => void removeConversation(item.id)} className="grid size-8 shrink-0 place-items-center rounded-lg text-slate-600 opacity-100 transition hover:bg-red-300/[0.06] hover:text-red-200 sm:opacity-0 sm:group-hover:opacity-100">×</button>
+              </li>)}
+            </ul>}
+          </div>
+          <div className="mt-5 border-t border-white/[0.07] pt-4">
+            <div className="rounded-xl border border-cyan-100/[0.08] bg-gradient-to-br from-blue-500/[0.08] to-violet-500/[0.05] p-3.5"><p className="text-xs font-semibold text-slate-200">A little progress adds up.</p><p className="mt-1.5 text-[11px] leading-5 text-slate-500">Describe the next problem. The copilot will help you break it down.</p></div>
+            <Link href="/dashboard" className="mt-4 flex items-center gap-2 px-1 text-xs text-slate-500 transition hover:text-cyan-200">← Back to your projects</Link>
+          </div>
         </aside>
 
-        <section className="flex min-h-[72vh] flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025]">
-          <header className="border-b border-white/10 p-5 sm:p-7">
-            <p className="text-xs uppercase tracking-[0.3em] text-cyan-400">Nexus AI · Copiloto</p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{activeMode.label}</h2>
-            <p className="mt-2 text-sm text-gray-400">{activeMode.description}</p>
-            <div className="mt-5 flex flex-wrap gap-2">{modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} className={`rounded-full border px-3 py-2 text-xs transition ${mode === item.id ? "border-cyan-300/50 bg-cyan-300/10 text-cyan-100" : "border-white/10 text-gray-400 hover:text-white"}`}>{item.label}</button>)}</div>
+        <section className="nexus-panel flex min-h-[calc(100vh-7rem)] min-w-0 flex-col overflow-hidden lg:min-h-[calc(100vh-7.5rem)]">
+          <header className="border-b border-white/[0.07] bg-[#0b111d]/70 px-4 py-4 sm:px-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-slate-500 sm:text-sm">{activeMode.description}</p></div>
+              <div className="flex items-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-200/[0.04] px-3 py-1.5 text-[10px] text-emerald-200"><span className="size-1.5 rounded-full bg-emerald-300" /> READY TO HELP</div>
+            </div>
+            <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
+              {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-cyan-200/20 bg-cyan-200/[0.08] text-cyan-100 shadow-[inset_0_0_18px_rgba(103,232,249,0.03)]" : "border-white/[0.07] bg-white/[0.015] text-slate-500 hover:border-white/15 hover:text-slate-200"}`}>{item.label}</button>)}
+            </div>
           </header>
 
-          <div className="flex-1 space-y-5 p-4 sm:p-7">
-            {!current && <div className="mx-auto max-w-xl py-12 text-center"><div className="mx-auto grid size-14 place-items-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-2xl">✦</div><h3 className="mt-5 text-xl font-semibold">¿Qué quieres resolver hoy?</h3><p className="mt-2 text-sm leading-6 text-gray-400">Pide ayuda con una idea, comparte un error, aprende un concepto o practica para una entrevista.</p><button onClick={() => void newConversation().catch((e) => setError(e.message))} className="mt-5 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black">Empezar conversación</button></div>}
-            {current && messages.length === 0 && <div className="mx-auto max-w-xl py-10 text-center"><h3 className="text-xl font-semibold">Empecemos por tu objetivo</h3><p className="mt-2 text-sm leading-6 text-gray-400">Cuéntame qué quieres construir o qué problema quieres solucionar.</p></div>}
-            {messages.map((message, index) => <div key={message.id ?? `${message.role}-${index}`} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[92%] whitespace-pre-wrap break-words rounded-2xl px-4 py-3 text-sm leading-7 sm:max-w-[82%] sm:px-5 ${message.role === "user" ? "bg-cyan-300/10 text-cyan-50" : "border border-white/10 bg-black/40 text-gray-200"}`}><p className="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-300">{message.role === "user" ? "Tú" : "Nexus AI"}</p>{message.content}</div></div>)}
-            {sending && <p className="text-sm text-gray-500" aria-live="polite">Nexus AI está pensando…</p>}
-            {error && <p role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</p>}
+          <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            {!current && <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center sm:py-20">
+              <div className="relative grid size-16 place-items-center rounded-2xl border border-cyan-100/15 bg-gradient-to-br from-blue-400/15 to-violet-400/10 text-3xl text-cyan-100"><span className="absolute inset-0 rounded-2xl shadow-[0_0_45px_-20px_rgba(103,232,249,.55)]" aria-hidden="true" />✦</div>
+              <p className="nexus-kicker mt-6">Start with a question</p><h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">What are we working on?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-slate-400">Plan a project, untangle an error, learn a concept step by step, or get ready for a technical interview.</p>
+              <div className="mt-7 grid w-full gap-3 text-left sm:grid-cols-2">
+                {[
+                  { title: "Plan a project", text: "Turn an idea into clear tasks.", mode: "plan" as Mode, icon: "⌘" },
+                  { title: "Debug an issue", text: "Find likely causes and next checks.", mode: "debug" as Mode, icon: "⌕" },
+                  { title: "Learn a concept", text: "Understand code in plain language.", mode: "explain" as Mode, icon: "◇" },
+                  { title: "Practice interviews", text: "Prepare structured technical answers.", mode: "interview" as Mode, icon: "↗" },
+                ].map((item) => <button key={item.mode} onClick={() => { setMode(item.mode); setDraft(item.title === "Plan a project" ? "Help me plan a project step by step." : item.title === "Debug an issue" ? "Help me debug an issue. Ask me for the relevant code and error." : item.title === "Learn a concept" ? "Explain a web development concept step by step in simple language." : "Start a junior web developer mock interview, one question at a time."); }} className="group rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition hover:border-cyan-200/20 hover:bg-cyan-200/[0.025]"><span className="grid size-9 place-items-center rounded-lg border border-white/[0.08] bg-white/[0.025] text-lg text-cyan-200">{item.icon}</span><span className="mt-3 block text-sm font-semibold text-slate-200">{item.title} <span className="ml-1 text-slate-600 transition group-hover:translate-x-1 group-hover:text-cyan-200">↗</span></span><span className="mt-1.5 block text-xs leading-5 text-slate-500">{item.text}</span></button>)}
+              </div>
+              <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-7">Start a conversation ↗</button>
+            </div>}
+
+            {current && messages.length === 0 && <div className="mx-auto max-w-xl py-12 text-center"><div className="mx-auto grid size-12 place-items-center rounded-xl border border-cyan-100/10 bg-cyan-100/[0.04] text-xl text-cyan-100">✦</div><h2 className="mt-4 text-xl font-semibold">Let’s make the next step clear.</h2><p className="mt-2 text-sm leading-6 text-slate-500">Write a question or use one of the suggestions below.</p><div className="mt-5 flex flex-wrap justify-center gap-2"><button type="button" onClick={() => setDraft("Help me plan my next step.")} className="nexus-ghost-button text-xs">Help me plan</button><button type="button" onClick={() => setDraft("Explain this code to me step by step.")} className="nexus-ghost-button text-xs">Explain code</button><button type="button" onClick={() => setDraft("Help me debug an error. What should I check first?")} className="nexus-ghost-button text-xs">Debug an error</button></div></div>}
+
+            {messages.map((message, index) => <div key={message.id ?? `${message.role}-${index}`} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[96%] rounded-2xl border px-4 py-3.5 text-sm leading-7 sm:max-w-[85%] sm:px-5 ${message.role === "user" ? "border-blue-200/15 bg-gradient-to-br from-blue-500/[0.12] to-violet-500/[0.08] text-slate-100" : "border-white/[0.08] bg-[#080e19]/90 text-slate-300"}`}><div className="mb-2 flex items-center gap-2"><span className={`grid size-6 place-items-center rounded-lg text-[11px] ${message.role === "user" ? "bg-blue-300/10 text-blue-200" : "bg-cyan-300/10 text-cyan-100"}`}>{message.role === "user" ? "JS" : "✦"}</span><p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">{message.role === "user" ? "You" : "Nexus AI"}</p></div><p className="whitespace-pre-wrap break-words">{message.content}</p></div></div>)}
+            {sending && <div className="flex items-center gap-3 text-xs text-slate-500" aria-live="polite"><span className="flex gap-1"><span className="size-1.5 animate-pulse rounded-full bg-cyan-300" /><span className="size-1.5 animate-pulse rounded-full bg-blue-300 [animation-delay:120ms]" /><span className="size-1.5 animate-pulse rounded-full bg-violet-300 [animation-delay:240ms]" /></span>Nexus AI is thinking…</div>}
+            {error && <p role="alert" className="rounded-xl border border-red-300/15 bg-red-300/[0.05] px-4 py-3 text-sm text-red-200">{error}</p>}
           </div>
-          <form onSubmit={sendMessage} className="border-t border-white/10 p-4 sm:p-6">
-            <label htmlFor="assistant-message" className="sr-only">Tu mensaje</label>
-            <textarea id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={4000} rows={3} placeholder="Escribe tu pregunta, idea o error…" className="w-full resize-y rounded-2xl border border-white/10 bg-black/50 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 focus:border-cyan-300/50" />
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-gray-500">{remaining === null ? "Límite inicial: 10 solicitudes de IA al día." : `Te quedan ${remaining} solicitudes hoy.`} No compartas contraseñas ni claves privadas.</p><button disabled={!current || !draft.trim() || sending} type="submit" className="rounded-full bg-cyan-300 px-5 py-3 text-sm font-bold text-black transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-40">{sending ? "Enviando…" : "Enviar mensaje ↗"}</button></div>
+
+          <form onSubmit={sendMessage} className="border-t border-white/[0.07] bg-[#080d17]/80 p-3 sm:p-5">
+            <label htmlFor="assistant-message" className="sr-only">Your message</label>
+            <div className="rounded-2xl border border-white/[0.10] bg-[#070b13] p-3 transition focus-within:border-cyan-200/25 focus-within:shadow-[0_0_0_3px_rgba(103,232,249,0.035)] sm:p-4">
+              <textarea id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={4000} rows={3} placeholder="Ask a question, describe an idea, or paste an error…" className="nexus-field min-h-20 resize-y border-0 bg-transparent px-1 py-1 text-sm shadow-none focus:border-transparent focus:shadow-none" />
+              <div className="mt-3 flex flex-col justify-between gap-3 border-t border-white/[0.06] pt-3 sm:flex-row sm:items-center">
+                <p className="text-[10px] leading-5 text-slate-600">{remaining === null ? "Daily limit: 10 AI requests per user." : `${remaining} AI requests remaining today.`} Never share passwords or private keys.</p>
+                <button disabled={!current || !draft.trim() || sending} type="submit" className="nexus-primary-button w-full sm:w-auto">{sending ? "Thinking…" : "Send message"} <span aria-hidden="true">↗</span></button>
+              </div>
+            </div>
           </form>
         </section>
       </div>

@@ -8,12 +8,10 @@ type CardProps = {
 
 export default function Card({ children, className }: CardProps) {
   return (
-    <div
-      className={cn(
-        "rounded-3xl border border-white/10 bg-white/[0.03] p-8 transition hover:border-cyan-400/40 hover:bg-white/[0.06]",
-        className || ""
-      )}
-    >
+    <div className={cn(
+      "rounded-2xl border border-white/[0.09] bg-gradient-to-br from-[#101a2b]/95 via-[#0c1321]/95 to-[#090e18] shadow-[0_24px_80px_-60px_rgba(67,145,255,.28)] transition duration-300 hover:border-cyan-200/20",
+      className || ""
+    )}>
       {children}
     </div>
   );
