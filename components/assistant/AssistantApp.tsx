@@ -25,17 +25,6 @@ export default function AssistantApp() {
   const [error, setError] = useState("");
   const [remaining, setRemaining] = useState<number | null>(null);
 
-  const loadConversations = useCallback(async () => {
-    const response = await fetch("/api/assistant/conversations", { cache: "no-store" });
-    const data = await response.json() as { conversations?: Conversation[]; error?: string };
-    if (response.status === 401) { window.location.replace("/login?next=%2Fassistant"); return; }
-    if (!response.ok) throw new Error(data.error ?? "No se pudieron cargar las conversaciones.");
-    const list = data.conversations ?? [];
-    setConversations(list);
-    if (list.length && !current) await openConversation(list[0].id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
-
   const openConversation = useCallback(async (id: string) => {
     setError("");
     const response = await fetch(`/api/assistant/conversations/${id}`, { cache: "no-store" });
@@ -45,6 +34,17 @@ export default function AssistantApp() {
     setMode(data.conversation.mode);
     setMessages(data.messages ?? []);
   }, []);
+
+  const loadConversations = useCallback(async () => {
+    const response = await fetch("/api/assistant/conversations", { cache: "no-store" });
+    const data = await response.json() as { conversations?: Conversation[]; error?: string };
+    if (response.status === 401) { window.location.replace("/login?next=%2Fassistant"); return; }
+    if (!response.ok) throw new Error(data.error ?? "No se pudieron cargar las conversaciones.");
+    const list = data.conversations ?? [];
+    setConversations(list);
+    if (list.length && !current) await openConversation(list[0].id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current, openConversation]);
 
   useEffect(() => {
     let active = true;
