@@ -127,7 +127,7 @@ export default function Certifications() {
             {filteredCertifications.map((certification) => (
               <article
                 key={certification.id}
-                className="group overflow-hidden rounded-3xl border border-[#E9D9CC] bg-[#FFFCF8] transition duration-300 hover:-translate-y-1 hover:border-[#E6BDA7] hover:shadow-[0_20px_70px_-35px_rgba(34,211,238,0.25)]"
+                className="group overflow-hidden rounded-3xl border border-[#E9D9CC] bg-[#FFFCF8] transition duration-300 hover:-translate-y-1 hover:border-[#E6BDA7] hover:shadow-[0_20px_70px_-35px_rgba(119,72,45,0.18)]"
               >
                 <a
                   href={certification.image}
