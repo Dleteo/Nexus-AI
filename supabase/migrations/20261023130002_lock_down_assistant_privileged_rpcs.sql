@@ -1,7 +1,7 @@
 -- Move privileged assistant quota and exchange writes behind a server-only API key.
 -- Existing authenticated callers can no longer execute the SECURITY DEFINER functions directly.
-revoke execute on function public.claim_assistant_request() from public, anon, authenticated;
-revoke execute on function public.save_assistant_exchange(uuid, text, text) from public, anon, authenticated;
+revoke execute on function public.claim_assistant_request() from public, anon, authenticated, service_role;
+revoke execute on function public.save_assistant_exchange(uuid, text, text) from public, anon, authenticated, service_role;
 
 create or replace function public.claim_assistant_request_for_user(p_user_id uuid)
 returns table (allowed boolean, requests_used integer, requests_remaining integer)
@@ -80,7 +80,7 @@ begin
 end;
 $$;
 
-revoke execute on function public.claim_assistant_request_for_user(uuid) from public, anon, authenticated;
-revoke execute on function public.save_assistant_exchange_for_user(uuid, uuid, text, text) from public, anon, authenticated;
+revoke execute on function public.claim_assistant_request_for_user(uuid) from public, anon, authenticated, service_role;
+revoke execute on function public.save_assistant_exchange_for_user(uuid, uuid, text, text) from public, anon, authenticated, service_role;
 grant execute on function public.claim_assistant_request_for_user(uuid) to service_role;
 grant execute on function public.save_assistant_exchange_for_user(uuid, uuid, text, text) to service_role;
