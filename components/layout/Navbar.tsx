@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const links = [
   { href: "/", label: "Home" },
@@ -11,6 +12,7 @@ const links = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [checking, setChecking] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,7 +31,8 @@ export default function Navbar() {
     try {
       const response = await fetch("/api/auth/logout", { method: "POST" });
       if (!response.ok) throw new Error("Sign-out failed");
-      window.location.assign("/");
+      router.push("/");
+      router.refresh();
     } catch {
       window.alert("Could not sign out. Please try again.");
     }
