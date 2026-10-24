@@ -35,7 +35,7 @@ export default function Certifications() {
     { value: "all", label: "All records", count: certifications.length },
     { value: "Course completion", label: "Course completions", count: courseCompletions.length },
     { value: "Attendance certificate", label: "Attendance certificates", count: attendanceCertificates.length },
-    { value: "Training record", label: "Training records", count: trainingRecords.length },
+    ...(trainingRecords.length > 0 ? [{ value: "Training record" as const, label: "Training records", count: trainingRecords.length }] : []),
   ];
 
   return (
