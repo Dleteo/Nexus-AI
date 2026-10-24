@@ -23,12 +23,22 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="Build your next project with more clarity.").count() == 1, "Missing main heading")
     page.evaluate("document.fonts.ready")
     expect(page.evaluate("getComputedStyle(document.documentElement).colorScheme") == "dark",
-           "Obsidian Gold should enable dark-native browser controls")
-    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(17, 18, 20)",
-           "Wrong base background for Obsidian Gold")
-    expect(page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(217, 183, 123)",
-           "Primary call-to-action must use Obsidian Gold accent")
+           "Royal Black should enable dark-native browser controls")
+    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(9, 9, 9)",
+           "Wrong base background for Royal Black")
+    expect("linear-gradient" in page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundImage"),
+           "Primary call-to-action must use the Royal Black golden gradient")
+    expect(page.locator('nav[aria-label="Main navigation"] svg').count() >= 1,
+           "Crown logo missing from navigation")
+    hero = page.locator("#top .nexus-royal-orbit")
+    expect(hero.count() == 1, "Royal Black animated gold orbit is missing")
+    expect(page.locator("#top .nexus-royal-title").count() == 1,
+           "Premium editorial hero typography missing")
 
+    button = page.locator(".nexus-primary-button").first
+    button.hover()
+    expect(button.evaluate("(el) => getComputedStyle(el).boxShadow") != "none",
+           "Golden CTA hover glow is missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Horizontal overflow at {width}px: {dimensions}")
