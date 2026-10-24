@@ -60,16 +60,16 @@ await checkPublicPage("/", [
   "Build your next project",
   "Everything in its place.",
 ]);
-await checkPublicPage("/portfolio", ["Hello, I", "Cybersecurity Fundamentals", "Certifications &amp; Training"]);
+await checkPublicPage("/portfolio", ["Hello, I", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
 await checkPublicPage("/reset-password", ["Choose a new password.", "Confirm new password"]);
 
-const image = await request("/certificates/Cibersecurity.webp", { method: "HEAD" });
-assert.equal(image.status, 200, "Cybersecurity certificate image must exist");
+const image = await request("/certificates/ethical-hacking.webp", { method: "HEAD" });
+assert.equal(image.status, 200, "Ethical hacking certificate image must exist");
 assert.match(image.headers.get("content-type") ?? "", /^image\/webp/i);
-console.log("PASS cybersecurity certificate image");
+console.log("PASS ethical hacking certificate image");
 
 await checkSignedOutRedirect("/dashboard");
 await checkSignedOutRedirect("/assistant");

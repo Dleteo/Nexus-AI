@@ -75,14 +75,14 @@ export const certifications: Certification[] = [
   },
   {
     id: "cybersecurity-fundamentals",
-    title: "Cybersecurity Fundamentals",
-    issuer: "Issuer not specified",
-    credentialType: "Training record",
-    date: "Date not provided",
-    hours: 6,
-    image: "/certificates/Cibersecurity.webp",
+    title: "Hacking Ético — Certificado de Asistencia",
+    issuer: "BIG HACKING",
+    credentialType: "Attendance certificate",
+    date: "October 12, 2024",
+    hours: 8,
+    image: "/certificates/ethical-hacking.webp",
     description:
-      "Six hours of cybersecurity training. The display title is provisional; the official course name and issuing organization have not been confirmed.",
+      "Eight hours of ethical hacking training, documented by a certificate of attendance issued by BIG HACKING.",
   },
 ];
 
