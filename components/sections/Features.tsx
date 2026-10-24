@@ -8,19 +8,19 @@ const items = [
 
 export default function Features() {
   return (
-    <section id="features" className="scroll-mt-24 border-y border-[#E9D9CC] bg-[#FFF8F2] px-5 py-20 text-[#302923] sm:px-8 sm:py-24">
+    <section id="features" className="scroll-mt-24 border-y border-[#34322F] bg-[#171819] px-5 py-20 text-[#F4F1EB] sm:px-8 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <p className="nexus-kicker mb-4">What you can do</p>
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Everything in its place.</h2>
-          <p className="mt-4 text-base leading-7 text-[#756155]">Three connected parts, designed to help you make progress without a crowded interface.</p>
+          <p className="mt-4 text-base leading-7 text-[#BDB6AB]">Three connected parts, designed to help you make progress without a crowded interface.</p>
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {items.map((item) => <article key={item.number} className="nexus-panel flex h-full flex-col p-6 sm:p-7">
-            <div className="flex items-center justify-between"><span className="grid size-11 place-items-center rounded-xl border border-[#E6BDA7] bg-[#FBE3D3] text-xl text-[#AD5637]">{item.icon}</span><span className="text-xs tabular-nums text-[#816B5E]">{item.number}</span></div>
-            <h3 className="mt-6 text-xl font-semibold tracking-tight text-[#40342E]">{item.title}</h3>
-            <p className="mt-3 flex-1 text-sm leading-7 text-[#756155]">{item.description}</p>
-            <Link href={item.href} className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#AD5637] transition hover:text-[#302923]">{item.action} <span aria-hidden="true">↗</span></Link>
+            <div className="flex items-center justify-between"><span className="grid size-11 place-items-center rounded-xl border border-[#4B463D] bg-[#34322F] text-xl text-[#D9B77B]">{item.icon}</span><span className="text-xs tabular-nums text-[#AFA89E]">{item.number}</span></div>
+            <h3 className="mt-6 text-xl font-semibold tracking-tight text-[#E6E1D8]">{item.title}</h3>
+            <p className="mt-3 flex-1 text-sm leading-7 text-[#BDB6AB]">{item.description}</p>
+            <Link href={item.href} className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-[#D9B77B] transition hover:text-[#F4F1EB]">{item.action} <span aria-hidden="true">↗</span></Link>
           </article>)}
         </div>
       </div>
