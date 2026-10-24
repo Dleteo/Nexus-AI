@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CrownMark from "../ui/CrownMark";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 type User = { id: string; email?: string; name?: string | null };
@@ -138,7 +139,7 @@ export default function DashboardApp() {
       <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="nexus-panel flex h-fit flex-col p-4 lg:sticky lg:top-24">
           <Link href="/" className="flex items-center gap-3 px-2 py-2">
-            <span className="grid size-10 place-items-center rounded-xl border border-[#4B463D] bg-gradient-to-br from-[#34322F] to-[#34322F] text-xl text-[#D9B77B]">✦</span>
+            <span className="grid size-10 place-items-center rounded-xl border border-[#73552B] bg-[#211B13]"><CrownMark size={29}/></span>
             <span><span className="block text-sm font-bold tracking-tight">Nexus<span className="text-[#D9B77B]">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-[#BDB6AB]">YOUR WORKSPACE</span></span>
           </Link>
           <div className="my-5 border-t border-[#34322F]" />
@@ -164,7 +165,7 @@ export default function DashboardApp() {
           <header className="nexus-workspace-heading mb-6 flex flex-col justify-between gap-4 rounded-2xl px-5 py-6 sm:flex-row sm:items-end sm:px-7">
             <div>
               <p className="nexus-kicker mb-3">Workspace overview</p>
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Good to see you, {displayName}.</h1>
+              <h1 className="nexus-royal-title text-3xl sm:text-4xl">Good to see you, {displayName}.</h1>
               <p className="mt-2 text-sm leading-6 text-[#BDB6AB]">A clear view of your ideas, your projects, and what to work on next.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
