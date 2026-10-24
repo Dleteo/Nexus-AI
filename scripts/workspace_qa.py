@@ -89,7 +89,14 @@ class FakeWorkspace:
                 {"id": "message-1", "role": "user", "content": payload["message"], "created_at": STAMP},
                 {"id": "message-2", "role": "assistant", "content": "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```", "created_at": STAMP},
             ])
-            return ok({"answer": "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```", "requestsRemaining": 9})
+            answer = "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```"
+            frames = [
+                "event: delta\ndata: " + json.dumps({"text": answer[:23]}) + "\n\n",
+                "event: delta\ndata: " + json.dumps({"text": answer[23:]}) + "\n\n",
+                "event: done\ndata: " + json.dumps({"requestsRemaining": 9}) + "\n\n",
+            ]
+            route.fulfill(status=200, content_type="text/event-stream", body="".join(frames))
+            return
         if path == "/api/auth/logout" and method == "POST":
             return ok({"ok": True})
         return ok({"error": "Unexpected mocked request", "path": path, "method": method}, status=404)
@@ -196,6 +203,24 @@ def assistant_test(browser, width, label):
            "Assistant code block did not render")
     ensure(page.get_by_role("button", name="Copy message 2").is_visible(),
            "Assistant response is missing a copy button")
+    chat = page.locator("#assistant-messages")
+    ensure(chat.count() == 1, "Assistant must have an independently scrollable message area")
+    # The jump control must appear if someone reads older messages in a long chat.
+    fake.messages = [
+        {"id": f"history-{n}", "role": "assistant", "content": f"Historical response {n} " + ("details " * 65), "created_at": STAMP}
+        for n in range(24)
+    ]
+    if width < 1024:
+        page.get_by_role("button", name=re.compile("Recent chats")).click()
+    page.locator("#assistant-history").get_by_role("button", name="Plan a small portfolio feature", exact=False).first.click()
+    page.get_by_text("Historical response 23", exact=False).wait_for()
+    chat.evaluate("(element) => element.scrollTop = 0")
+    jump = page.get_by_role("button", name="Jump to latest message")
+    jump.wait_for()
+    jump.click()
+    playwright_expect(jump).to_have_count(0)
+    ensure(chat.evaluate("(element) => element.scrollHeight - element.clientHeight - element.scrollTop < 110"),
+           "Jump to latest must reach the final message")
     if width < 1024:
         history_toggle = page.get_by_role("button", name=re.compile("Recent chats"))
         history_toggle.click()

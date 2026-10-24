@@ -21,14 +21,27 @@ function splitCodeFences(value: string): Block[] {
   return result;
 }
 
+/** Small, safe inline Markdown renderer: no raw HTML or unsafe URL schemes. */
+function InlineContent({ value }: { value: string }) {
+  const tokens = value.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)|\*[^*\n]+\*)/g);
+  return <>{tokens.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={index} className="font-semibold text-[#F7F0E4]">{part.slice(2, -2)}</strong>;
+    if (part.startsWith("`") && part.endsWith("`")) return <code key={index} className="rounded bg-[#3B3226] px-1.5 py-0.5 font-mono text-[.9em] text-[#F6D397]">{part.slice(1, -1)}</code>;
+    if (part.startsWith("*") && part.endsWith("*")) return <em key={index}>{part.slice(1, -1)}</em>;
+    const link = /^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/.exec(part);
+    if (link) return <a key={index} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-[#F3CA7A] underline decoration-[#896B3A] underline-offset-4 hover:text-[#FFF2D4]">{link[1]}</a>;
+    return <span key={index}>{part}</span>;
+  })}</>;
+}
+
 function TextLines({ value }: { value: string }) {
   return (
     <div className="space-y-2.5 break-words text-sm leading-7">
       {value.trim().split(/\n{2,}/).map((paragraph, index) => {
         const trimmed = paragraph.trim();
-        if (trimmed.startsWith("### ")) return <h4 key={index} className="pt-2 text-sm font-bold text-[#F4F1EB]">{trimmed.slice(4)}</h4>;
-        if (trimmed.startsWith("## ")) return <h3 key={index} className="pt-2 text-base font-bold text-[#F4F1EB]">{trimmed.slice(3)}</h3>;
-        if (trimmed.startsWith("# ")) return <h2 key={index} className="pt-2 text-lg font-bold text-[#F4F1EB]">{trimmed.slice(2)}</h2>;
+        if (trimmed.startsWith("### ")) return <h4 key={index} className="pt-2 text-sm font-bold text-[#F4F1EB]"><InlineContent value={trimmed.slice(4)} /></h4>;
+        if (trimmed.startsWith("## ")) return <h3 key={index} className="pt-2 text-base font-bold text-[#F4F1EB]"><InlineContent value={trimmed.slice(3)} /></h3>;
+        if (trimmed.startsWith("# ")) return <h2 key={index} className="pt-2 text-lg font-bold text-[#F4F1EB]"><InlineContent value={trimmed.slice(2)} /></h2>;
         const lines = trimmed.split("\n");
         if (lines.every((line) => /^[-*]\s/.test(line))) {
           return <ul key={index} className="list-disc space-y-1 pl-5">{lines.map((line, li) => <li key={li}>{line.replace(/^[-*]\s/, "")}</li>)}</ul>;
@@ -36,7 +49,7 @@ function TextLines({ value }: { value: string }) {
         if (lines.every((line) => /^\d+[.)]\s/.test(line))) {
           return <ol key={index} className="list-decimal space-y-1 pl-5">{lines.map((line, li) => <li key={li}>{line.replace(/^\d+[.)]\s/, "")}</li>)}</ol>;
         }
-        return <p key={index} className="whitespace-pre-wrap">{trimmed}</p>;
+        return <p key={index} className="whitespace-pre-wrap"><InlineContent value={trimmed}/></p>;
       })}
     </div>
   );
