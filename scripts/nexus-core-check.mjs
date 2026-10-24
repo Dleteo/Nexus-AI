@@ -7,7 +7,7 @@ const route = readFileSync(new URL("../app/api/assistant/chat/route.ts", import.
 
 assert.match(adapter, /127\.0\.0\.1:11434\/api\/chat/);
 assert.match(adapter, /env\.NODE_ENV !== "production"/);
-assert.match(adapter, /:cloud\$/);
+assert.ok(adapter.includes(":cloud$"), "Cloud-model suffix must be rejected");
 assert.match(route, /aiProvider === "ollama"/);
 assert.match(route, /NEXUS_CORE_ENABLED/);
 assert.match(route, /save_assistant_exchange_for_user/);
