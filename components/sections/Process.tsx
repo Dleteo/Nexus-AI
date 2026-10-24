@@ -6,10 +6,10 @@ const steps = [
 
 export default function Process() {
   return (
-    <section id="how-it-works" className="scroll-mt-24 px-5 py-20 text-[#302923] sm:px-8 sm:py-24">
+    <section id="how-it-works" className="scroll-mt-24 px-5 py-20 text-[#F4F1EB] sm:px-8 sm:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="max-w-xl"><p className="nexus-kicker mb-4">Simple workflow</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">A clear place to start.</h2><p className="mt-4 text-base leading-7 text-[#756155]">No complicated setup on the screen. Just a straightforward path from idea to action.</p></div>
-        <ol className="mt-10 grid gap-4 md:grid-cols-3">{steps.map((item) => <li key={item.number} className="rounded-2xl border border-[#E9D9CC] bg-[#FFFCF8] p-6"><span className="text-sm font-semibold text-[#AD5637]">{item.number}</span><h3 className="mt-5 text-lg font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-7 text-[#756155]">{item.description}</p></li>)}</ol>
+        <div className="max-w-xl"><p className="nexus-kicker mb-4">Simple workflow</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">A clear place to start.</h2><p className="mt-4 text-base leading-7 text-[#BDB6AB]">No complicated setup on the screen. Just a straightforward path from idea to action.</p></div>
+        <ol className="mt-10 grid gap-4 md:grid-cols-3">{steps.map((item) => <li key={item.number} className="rounded-2xl border border-[#34322F] bg-[#1D1E20] p-6"><span className="text-sm font-semibold text-[#D9B77B]">{item.number}</span><h3 className="mt-5 text-lg font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-7 text-[#BDB6AB]">{item.description}</p></li>)}</ol>
       </div>
     </section>
   );
