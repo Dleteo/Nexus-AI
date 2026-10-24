@@ -89,11 +89,11 @@ class FakeWorkspace:
                 {"id": "message-1", "role": "user", "content": payload["message"], "created_at": STAMP},
                 {"id": "message-2", "role": "assistant", "content": "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```", "created_at": STAMP},
             ])
-            answer = "QA simulated assistant answer.\\n\\n```javascript\\nconsole.log(42);\\n```"
+            answer = "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```"
             frames = [
-                "event: delta\\ndata: " + json.dumps({"text": answer[:23]}) + "\\n\\n",
-                "event: delta\\ndata: " + json.dumps({"text": answer[23:]}) + "\\n\\n",
-                "event: done\\ndata: " + json.dumps({"requestsRemaining": 9}) + "\\n\\n",
+                "event: delta\ndata: " + json.dumps({"text": answer[:23]}) + "\n\n",
+                "event: delta\ndata: " + json.dumps({"text": answer[23:]}) + "\n\n",
+                "event: done\ndata: " + json.dumps({"requestsRemaining": 9}) + "\n\n",
             ]
             route.fulfill(status=200, content_type="text/event-stream", body="".join(frames))
             return
