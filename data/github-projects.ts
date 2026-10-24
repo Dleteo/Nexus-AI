@@ -7,6 +7,9 @@ export type GithubProject = {
   repoUrl: string;
   demoUrl: string;
   detail: string;
+  previewImage: string;
+  previewDescription: string;
+  previewKind: "screenshot" | "artwork";
 };
 
 export const selectedGithubProjects: GithubProject[] = [
@@ -19,6 +22,9 @@ export const selectedGithubProjects: GithubProject[] = [
     repoUrl: "https://github.com/Dleteo/-To-Do-App-whit-JavaScript",
     demoUrl: "https://dleteo.github.io/-To-Do-App-whit-JavaScript/",
     detail: "Shows DOM events, UI state and local persistence.",
+    previewImage: "https://raw.githubusercontent.com/Dleteo/-To-Do-App-whit-JavaScript/main/images/Present.img.png",
+    previewDescription: "Original screenshot of the JavaScript task tracker.",
+    previewKind: "screenshot",
   },
   {
     id: "hangman",
@@ -29,6 +35,9 @@ export const selectedGithubProjects: GithubProject[] = [
     repoUrl: "https://github.com/Dleteo/hangman-game",
     demoUrl: "https://dleteo.github.io/hangman-game/",
     detail: "Shows game flow, conditionals and interactive feedback.",
+    previewImage: "https://raw.githubusercontent.com/Dleteo/hangman-game/main/image/castel.png",
+    previewDescription: "Original castle artwork used in the Hangman Game.",
+    previewKind: "artwork",
   },
   {
     id: "encoder",
@@ -39,5 +48,8 @@ export const selectedGithubProjects: GithubProject[] = [
     repoUrl: "https://github.com/Dleteo/Encriptor",
     demoUrl: "https://dleteo.github.io/Encriptor/",
     detail: "Shows input validation and reversible string manipulation.",
+    previewImage: "https://raw.githubusercontent.com/Dleteo/Encriptor/main/image/Screenshot%202025-05-07%20225205.png",
+    previewDescription: "Original screenshot of the text encoder and decoder interface.",
+    previewKind: "screenshot",
   },
 ];
