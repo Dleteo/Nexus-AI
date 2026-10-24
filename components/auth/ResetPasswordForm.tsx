@@ -52,19 +52,19 @@ export default function ResetPasswordForm() {
   return (
     <form className="space-y-5" onSubmit={submit}>
       <div>
-        <label htmlFor="new-password" className="mb-2 block text-sm text-[#40342E]">New password</label>
+        <label htmlFor="new-password" className="mb-2 block text-sm text-[#E6E1D8]">New password</label>
         <input id="new-password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 10 characters" className="nexus-field" />
       </div>
       <div>
-        <label htmlFor="confirm-password" className="mb-2 block text-sm text-[#40342E]">Confirm new password</label>
+        <label htmlFor="confirm-password" className="mb-2 block text-sm text-[#E6E1D8]">Confirm new password</label>
         <input id="confirm-password" name="confirmation" type={showPassword ? "text" : "password"} autoComplete="new-password" required minLength={10} maxLength={128} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="Repeat your new password" className="nexus-field" />
       </div>
-      <label className="flex items-center gap-2 text-sm text-[#756155]">
+      <label className="flex items-center gap-2 text-sm text-[#BDB6AB]">
         <input type="checkbox" checked={showPassword} onChange={(event) => setShowPassword(event.target.checked)} className="accent-cyan-400" />
         Show passwords
       </label>
 
-      {error && <p role="alert" className="rounded-xl border border-[#EEB8B0] bg-[#FCE8E6] px-4 py-3 text-sm leading-6 text-[#A93636]">{error}</p>}
+      {error && <p role="alert" className="rounded-xl border border-[#8D5456] bg-[#3C2628] px-4 py-3 text-sm leading-6 text-[#FFB0A9]">{error}</p>}
 
       <button type="submit" disabled={busy} className="nexus-primary-button w-full disabled:cursor-not-allowed disabled:opacity-60">{busy ? "Updating…" : "Update password"}</button>
     </form>
