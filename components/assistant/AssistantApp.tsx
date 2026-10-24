@@ -24,6 +24,7 @@ export default function AssistantApp() {
   const [mode, setMode] = useState<Mode>("assistant");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const activeRequest = useRef<AbortController | null>(null);
   const [error, setError] = useState("");
   const [remaining, setRemaining] = useState<number | null>(null);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
@@ -114,6 +115,10 @@ export default function AssistantApp() {
     return data.conversation;
   }
 
+  function stopResponse() {
+    activeRequest.current?.abort();
+  }
+
   async function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const content = draft.trim();
@@ -122,24 +127,70 @@ export default function AssistantApp() {
     setDraft("");
     setSending(true);
     const optimistic: Message = { role: "user", content };
+    const abort = new AbortController();
+    activeRequest.current = abort;
+    let partial: Message | null = null;
+    let completed = false;
     try {
       // First message can create its own conversation, just like a modern chat.
       const conversation = current ?? await newConversation(mode);
       setMessages((list) => [...list, optimistic]);
       const response = await fetch("/api/assistant/chat", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
         body: JSON.stringify({ conversationId: conversation.id, message: content, mode }),
+        signal: abort.signal,
       });
-      const data = await response.json() as { answer?: string; error?: string; requestsRemaining?: number };
-      if (!response.ok || !data.answer) throw new Error(data.error ?? "No se pudo obtener una respuesta.");
-      setMessages((list) => [...list, { role: "assistant", content: data.answer! }]);
-      setRemaining(data.requestsRemaining ?? null);
+      if (!response.ok || !response.body) {
+        const data = await response.json().catch(() => null) as { error?: string } | null;
+        throw new Error(data?.error ?? "No se pudo iniciar la respuesta.");
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          buffer += decoder.decode(value, { stream: !done }).replace(/\r\n/g, "\n");
+          let boundary = buffer.indexOf("\n\n");
+          while (boundary >= 0) {
+            const frame = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
+            const kind = frame.split("\n").find((line) => line.startsWith("event:"))?.slice(6).trim();
+            const raw = frame.split("\n").filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trimStart()).join("\n");
+            if (raw) {
+              const data = JSON.parse(raw) as { text?: string; error?: string; requestsRemaining?: number };
+              if (kind === "delta" && data.text) {
+                if (!partial) {
+                  partial = { role: "assistant", content: data.text };
+                  const first = partial;
+                  setMessages((list) => [...list, first]);
+                } else {
+                  partial = { ...partial, content: partial.content + data.text };
+                  const next = partial;
+                  setMessages((list) => [...list.slice(0, -1), next]);
+                }
+              }
+              if (kind === "error") throw new Error(data.error ?? "No se pudo completar la respuesta.");
+              if (kind === "done") {
+                completed = true;
+                setRemaining(data.requestsRemaining ?? null);
+              }
+            }
+            boundary = buffer.indexOf("\n\n");
+          }
+          if (done) break;
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      if (!completed) throw new Error("La respuesta se interrumpió antes de guardarse.");
       setConversations((list) => list.map((item) => item.id === conversation.id ? { ...item, mode, title: item.title === "New conversation" ? content.slice(0, 80) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
     } catch (cause) {
-      setMessages((list) => list.filter((item) => item !== optimistic));
+      setMessages((list) => list.filter((item) => item !== optimistic && item !== partial));
       setDraft(content);
-      setError(cause instanceof Error ? cause.message : "No se pudo enviar el mensaje.");
+      setError(abort.signal.aborted ? "Respuesta detenida. Puedes volver a enviar tu mensaje." : cause instanceof Error ? cause.message : "No se pudo enviar el mensaje.");
     } finally {
+      if (activeRequest.current === abort) activeRequest.current = null;
       setSending(false);
     }
   }
@@ -276,7 +327,7 @@ export default function AssistantApp() {
               <textarea ref={draftInput} id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} maxLength={4000} rows={1} placeholder="Message Nexus AI…" className="nexus-field min-h-14 max-h-[220px] resize-none overflow-y-auto border-0 bg-transparent px-1 py-2 text-sm shadow-none focus:border-transparent focus:shadow-none" />
               <div className="mt-3 flex flex-col justify-between gap-3 border-t border-[#34322F] pt-3 sm:flex-row sm:items-center">
                 <p className="text-[10px] leading-5 text-[#AFA89E]">{remaining === null ? "Daily limit: 10 AI requests per user." : `${remaining} AI requests remaining today.`} Enter to send · Shift + Enter for a new line. Never share passwords or private keys.</p>
-                <button disabled={!draft.trim() || sending} type="submit" className="nexus-primary-button w-full sm:w-auto">{sending ? "Thinking…" : "Send message"} <span aria-hidden="true">↗</span></button>
+                {sending ? <button type="button" onClick={stopResponse} aria-label="Stop generating" className="nexus-ghost-button w-full sm:w-auto">■ Stop generating</button> : <button disabled={!draft.trim()} type="submit" className="nexus-primary-button w-full sm:w-auto">Send message <span aria-hidden="true">↗</span></button>}
               </div>
             </div>
           </form>
