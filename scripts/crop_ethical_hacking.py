@@ -1,7 +1,7 @@
 """Crop the original phone screenshot to the intact certificate (no fabrication).
 
 Source image: public/certificates/Cibersecurity.webp. The certificate fills
-the screenshot width and occupies roughly 37%-73% of its height.
+the screenshot width and occupies approximately 27%-73% of its height.
 """
 from pathlib import Path
 from PIL import Image
@@ -14,8 +14,8 @@ with Image.open(source) as screenshot:
     w, h = picture.size
     # The original screenshot has phone/browser chrome above the certificate
     # and gray margins below it. Crop inside those boundaries.
-    top = round(h * 0.365)
-    bottom = round(h * 0.735)
+    top = round(h * 0.27)
+    bottom = round(h * 0.73)
     if w < 200 or bottom - top < 140:
         raise ValueError(f"Unexpected cybersecurity screenshot dimensions: {w}x{h}")
     crop = picture.crop((0, top, w, bottom))
