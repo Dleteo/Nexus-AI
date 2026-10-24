@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import MessageContent from "./MessageContent";
 
 type Mode = "assistant" | "plan" | "debug" | "explain" | "interview";
 type Conversation = { id: string; title: string; mode: Mode; project_id: string | null; updated_at: string };
@@ -24,6 +25,9 @@ export default function AssistantApp() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [remaining, setRemaining] = useState<number | null>(null);
+  const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
+  const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
+  const endOfMessages = useRef<HTMLDivElement>(null);
 
   const openConversation = useCallback(async (id: string) => {
     setError("");
@@ -33,6 +37,7 @@ export default function AssistantApp() {
     setCurrent(data.conversation);
     setMode(data.conversation.mode);
     setMessages(data.messages ?? []);
+    setMobileHistoryOpen(false);
   }, []);
 
   const loadConversations = useCallback(async () => {
@@ -68,6 +73,7 @@ export default function AssistantApp() {
     setCurrent(data.conversation);
     setMessages([]);
     setMode(nextMode);
+    setMobileHistoryOpen(false);
   }
 
   async function sendMessage(event: FormEvent<HTMLFormElement>) {
@@ -129,6 +135,13 @@ export default function AssistantApp() {
   }
 
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
+  useEffect(() => {
+    if (sending || messages.length > 0) endOfMessages.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, sending]);
+  async function copyMessage(content: string, index: number) {
+    try { await navigator.clipboard.writeText(content); setCopiedMessage(index); }
+    catch { setError("Could not copy the message. Please check browser clipboard permissions."); }
+  }
 
   if (loading) return <main className="min-h-screen px-4 py-28 text-[#302923] sm:px-6"><div className="mx-auto grid max-w-7xl animate-pulse gap-5 lg:grid-cols-[260px_minmax(0,1fr)]"><div className="h-96 rounded-2xl bg-[#FFF2E8]" /><div className="h-[70vh] rounded-2xl bg-[#FFF2E8]" /></div></main>;
 
@@ -146,8 +159,9 @@ export default function AssistantApp() {
 
           <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ New conversation</button>
 
-          <div className="mt-7 flex items-center justify-between px-1"><p className="text-[10px] font-bold tracking-[0.17em] text-[#756155]">RECENT HISTORY</p><span className="text-[10px] text-[#816B5E]">{conversations.length}</span></div>
-          <div className="mt-3 min-h-0 flex-1 overflow-y-auto">
+          <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#E9D9CC] bg-[#FFF6EE] px-3 py-2 text-left text-xs font-semibold text-[#634D3E] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Recent chats ({conversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
+          <div className="mt-7 hidden items-center justify-between px-1 lg:flex"><p className="text-[10px] font-bold tracking-[0.17em] text-[#756155]">RECENT HISTORY</p><span className="text-[10px] text-[#816B5E]">{conversations.length}</span></div>
+          <div id="assistant-history" className={`mt-3 min-h-0 flex-1 overflow-y-auto ${mobileHistoryOpen ? "block max-h-56" : "hidden lg:block"}`}>
             {conversations.length === 0 ? <div className="rounded-xl border border-dashed border-[#E9D9CC] px-3 py-6 text-center text-xs leading-5 text-[#756155]">Your saved conversations will appear here.</div> : <ul className="space-y-1.5">
               {conversations.map((item) => <li key={item.id} className="group flex min-w-0 items-center gap-1">
                 <button onClick={() => void openConversation(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo abrir la conversación."))} aria-current={current?.id === item.id ? "page" : undefined} className={`min-w-0 flex-1 rounded-xl border px-3 py-3 text-left transition ${current?.id === item.id ? "border-[#E7C9B5] bg-[#F9D8C5] text-[#40342E]" : "border-transparent text-[#756155] hover:border-[#E9D9CC] hover:bg-[#FFF2E8] hover:text-[#40342E]"}`}>
@@ -157,7 +171,7 @@ export default function AssistantApp() {
               </li>)}
             </ul>}
           </div>
-          <div className="mt-5 border-t border-[#E9D9CC] pt-4">
+          <div className="mt-5 hidden border-t border-[#E9D9CC] pt-4 lg:block">
             <div className="rounded-xl border border-[#E6BDA7] bg-gradient-to-br from-[#F8D6C3] to-[#FBECE3] p-3.5"><p className="text-xs font-semibold text-[#40342E]">A little progress adds up.</p><p className="mt-1.5 text-[11px] leading-5 text-[#756155]">Describe the next problem. The copilot will help you break it down.</p></div>
             <Link href="/dashboard" className="mt-4 flex items-center gap-2 px-1 text-xs text-[#756155] transition hover:text-[#AD5637]">← Back to your projects</Link>
           </div>
@@ -174,7 +188,7 @@ export default function AssistantApp() {
             </div>
           </header>
 
-          <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto bg-[#FFFDFA] p-4 sm:p-6 lg:p-8">
             {!current && <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center sm:py-20">
               <div className="relative grid size-16 place-items-center rounded-2xl border border-[#E6BDA7] bg-gradient-to-br from-[#F8D6C3] to-[#FBECE3] text-3xl text-[#AD5637]"><span className="absolute inset-0 rounded-2xl shadow-[0_0_45px_-20px_rgba(103,232,249,.55)]" aria-hidden="true" />✦</div>
               <p className="nexus-kicker mt-6">Start with a question</p><h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">What are we working on?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-[#756155]">Plan a project, untangle an error, learn a concept step by step, or get ready for a technical interview.</p>
