@@ -13,6 +13,13 @@ assert.match(route, /NEXUS_CORE_ENABLED/);
 assert.match(route, /save_assistant_exchange_for_user/);
 assert.match(route, /parseOllamaNdjson/);
 assert.match(route, /AI_PROVIDER must be gemini, openai, or ollama/);
+assert.match(route, /const frame = encodeNexusCoreEvent;/);
+assert.match(adapter, /export function encodeNexusCoreEvent/);
+assert.match(adapter, /event: \${kind}\\ndata: \${JSON.stringify\(payload\)}\\n\\n/);
+// Check the emitted TypeScript template uses actual LF escapes, not double-escaped slashes.
+const fn = adapter.slice(adapter.indexOf("export function encodeNexusCoreEvent"), adapter.indexOf("export type OllamaPacket"));
+assert.ok(fn.includes('\\n'), "Expected newline separators");
+assert.ok(!fn.includes('\\\\n'), "Double-escaped line separators would break the browser SSE parser");
 
 // Minimal JS mirror of the line-oriented protocol for boundary behavior;
 // TypeScript CI and app smoke tests additionally compile the real adapter.
