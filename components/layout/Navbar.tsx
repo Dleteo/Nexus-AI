@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CrownMark from "../ui/CrownMark";
 import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -51,10 +52,10 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#34322F] bg-[#1D1E20] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-[#6B4B22]/50 bg-[#090909]/95 shadow-[0_8px_36px_-25px_rgba(215,151,53,.24)] backdrop-blur-xl">
       <nav aria-label="Main navigation" className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
         <Link href="/" onClick={(event) => handleNavigation(event, "/")} className="flex shrink-0 items-center gap-2.5" aria-label="Nexus AI home">
-          <span className="grid size-9 place-items-center rounded-xl border border-[#4B463D] bg-[#34322F] text-lg text-[#D9B77B]">✦</span>
+          <span className="grid size-10 place-items-center rounded-xl border border-[#73552B] bg-[#211B13] shadow-[0_0_22px_-12px_rgba(227,174,75,.75)]"><CrownMark size={28}/></span>
           <span className="text-base font-semibold tracking-tight text-[#F4F1EB]">Nexus<span className="text-[#D9B77B]">AI</span></span>
         </Link>
         <div className="hidden items-center gap-1 md:flex">
