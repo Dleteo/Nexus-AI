@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GithubProjects from "./GithubProjects";
 import { professionalProfile as profile } from "../../data/profile";
 
 const skills = [
@@ -28,6 +29,7 @@ export default function Portfolio() {
             <p className="nexus-kicker">Portfolio / About me</p>
             <nav aria-label="Portfolio sections" className="flex flex-wrap items-center gap-4 text-xs font-semibold sm:text-sm">
               <a href="#work" className="text-[#756155] hover:text-[#9B4F38]">Project</a>
+              <a href="#other-projects" className="text-[#756155] hover:text-[#9B4F38]">More projects</a>
               <a href="#skills" className="text-[#756155] hover:text-[#9B4F38]">Skills</a>
               <a href="#certifications" className="text-[#756155] hover:text-[#9B4F38]">Certificates</a>
               <a href="#contact" className="text-[#756155] hover:text-[#9B4F38]">Contact</a>
@@ -83,6 +85,7 @@ export default function Portfolio() {
           <div className="mt-8 flex flex-wrap gap-3"><Link href="/" className="nexus-ghost-button">Explore Nexus AI ↗</Link><a href="https://github.com/Dleteo/Nexus-AI/actions" target="_blank" rel="noopener noreferrer" className="nexus-ghost-button">See automated checks ↗</a></div>
         </div>
       </section>
+      <GithubProjects />
       <section id="skills" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-6xl"><p className="nexus-kicker mb-4">My toolkit</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Technologies I’m learning and using.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-[#756155]">Tools represented in the project and my training. These are learning and project skills, not claims of years of professional experience.</p>
           <div className="mt-9 grid gap-4 md:grid-cols-3">{skills.map((group) => <div key={group.label} className="nexus-panel p-6"><h3 className="text-base font-semibold">{group.label}</h3><div className="mt-5 flex flex-wrap gap-2">{group.values.map((item) => <span key={item} className="rounded-lg border border-[#EDDCCD] bg-[#FFF4EB] px-3 py-2 text-xs font-medium text-[#65483A]">{item}</span>)}</div></div>)}</div>

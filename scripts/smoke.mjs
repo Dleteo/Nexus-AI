@@ -60,7 +60,7 @@ await checkPublicPage("/", [
   "Build your next project",
   "Everything in its place.",
 ]);
-await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
+await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Professional summary", "Featured project: Nexus AI"]);
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);

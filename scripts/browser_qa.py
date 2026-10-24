@@ -64,6 +64,12 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="Interested in my work?").count() == 1, "Missing contact section")
     expect(page.get_by_role("link", name="View / save my CV").count() == 1, "Missing CV action")
     expect(page.get_by_role("link", name="GitHub", exact=True).count() >= 1, "Missing GitHub profile")
+    expect(page.locator("#other-projects article").count() == 3, "Expected exactly three curated project cards")
+    for project in ["Task Tracker", "Hangman Game", "Text Encoder / Decoder"]:
+        expect(page.get_by_role("link", name="Open live demo: " + project).count() == 1,
+               "Missing demo link: " + project)
+        expect(page.get_by_role("link", name="View source code: " + project).count() == 1,
+               "Missing repository link: " + project)
     group = page.get_by_role("group", name="Filter certificates by record type")
     group.get_by_role("button", name="Attendance certificates").click()
     expect(group.get_by_role("button", name="Attendance certificates").get_attribute("aria-pressed") == "true",
