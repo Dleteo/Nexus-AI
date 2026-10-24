@@ -70,6 +70,15 @@ def audit(browser, width, label):
                "Missing demo link: " + project)
         expect(page.get_by_role("link", name="View source code: " + project).count() == 1,
                "Missing repository link: " + project)
+    for project in ["Task Tracker", "Hangman Game", "Text Encoder / Decoder"]:
+        expect(page.get_by_role("link", name="View original project image: " + project).count() == 1,
+               "Project missing authentic image link: " + project)
+    expect(page.get_by_alt_text("Original screenshot of the JavaScript task tracker.").count() == 1,
+           "Missing authentic task tracker screenshot")
+    expect(page.get_by_alt_text("Original castle artwork used in the Hangman Game.").count() == 1,
+           "Missing project artwork")
+    expect(page.get_by_alt_text("Original screenshot of the text encoder and decoder interface.").count() == 1,
+           "Missing authentic encoder screenshot")
     group = page.get_by_role("group", name="Filter certificates by record type")
     group.get_by_role("button", name="Attendance certificates").click()
     expect(group.get_by_role("button", name="Attendance certificates").get_attribute("aria-pressed") == "true",
