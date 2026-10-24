@@ -8,7 +8,7 @@ import time
 
 from playwright.sync_api import sync_playwright
 
-BASE = "http://127.0.0.1:3100"
+BASE = os.environ.get("NEXUS_QA_BASE", "http://127.0.0.1:3102")
 ARTIFACTS = Path("qa-screenshots")
 ARTIFACTS.mkdir(exist_ok=True)
 
