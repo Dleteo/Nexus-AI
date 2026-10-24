@@ -83,6 +83,7 @@ export async function POST(request: Request) {
 
   type ProviderData = {
     output_text?: string;
+    output?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
     error?: { message?: string; type?: string; code?: string; status?: string };
   };
@@ -185,7 +186,14 @@ export async function POST(request: Request) {
 
   const answer = aiProvider === "gemini"
     ? providerData?.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim()
-    : providerData?.output_text?.trim();
+    : (
+      providerData?.output_text ||
+      providerData?.output
+        ?.flatMap((item) => item.content ?? [])
+        .filter((item) => item.type === "output_text" && typeof item.text === "string")
+        .map((item) => item.text ?? "")
+        .join("")
+    )?.trim();
   if (!answer) return NextResponse.json({ error: "The AI returned an empty response. Please try again." }, { status: 502 });
 
   const saveResponse = await fetch(`${config.url}/rest/v1/rpc/save_assistant_exchange_for_user`, {
