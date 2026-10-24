@@ -20,7 +20,7 @@ export default function ResumePage() {
             <Link href="/portfolio" className="text-sm font-semibold text-[#D9B77B] hover:underline">← Back to portfolio</Link>
             <a href="/Joshua-Vallejo-Sanchez-Resume.pdf" download="Joshua-Vallejo-Sanchez-Resume.pdf" className="nexus-primary-button">Download CV (PDF) ↓</a>
           </div>
-          <article className="rounded-2xl border border-[#34322F] bg-[#1D1E20] p-7 shadow-[0_15px_50px_-38px_rgba(95,52,31,.25)] sm:p-12 print:rounded-none print:border-0 print:bg-[#1D1E20] print:p-0 print:shadow-none">
+          <article id="resume-print-sheet" className="rounded-2xl border border-[#34322F] bg-[#1D1E20] p-7 shadow-[0_15px_50px_-38px_rgba(95,52,31,.25)] sm:p-12 print:rounded-none print:border-0 print:bg-white print:p-0 print:shadow-none">
             <header className="border-b-2 border-[#D9B77B] pb-7">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B77B]">Developer résumé</p>
               <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
