@@ -77,7 +77,7 @@ export default function Portfolio() {
             <a href={profile.repository} target="_blank" rel="noopener noreferrer" className="nexus-ghost-button w-fit">Explore the source on GitHub ↗</a>
           </div>
           <div className="mt-9 grid gap-4 sm:grid-cols-2">
-            {work.map((item) => <article key={item.number} className="nexus-panel group p-6 transition hover:-translate-y-1 hover:border-[#4B463D]">
+            {work.map((item) => <article key={item.number} className="nexus-royal-card nexus-panel group p-6 transition hover:-translate-y-1 hover:border-[#4B463D]">
               <div className="flex items-center justify-between"><span className="text-xs font-semibold text-[#D9B77B]">NEXUS AI / {item.number}</span><span className="rounded-full bg-[#34322F] px-3 py-1 text-[11px] font-medium text-[#D9B77B]">{item.tag}</span></div>
               <h3 className="mt-5 text-lg font-semibold">{item.title}</h3><p className="mt-3 text-sm leading-7 text-[#BDB6AB]">{item.description}</p>
             </article>)}

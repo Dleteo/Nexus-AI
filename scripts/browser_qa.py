@@ -8,7 +8,7 @@ import time
 
 from playwright.sync_api import sync_playwright
 
-BASE = "http://127.0.0.1:3100"
+BASE = os.environ.get("NEXUS_QA_BASE", "http://127.0.0.1:3102")
 ARTIFACTS = Path("qa-screenshots")
 ARTIFACTS.mkdir(exist_ok=True)
 
@@ -23,12 +23,25 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="Build your next project with more clarity.").count() == 1, "Missing main heading")
     page.evaluate("document.fonts.ready")
     expect(page.evaluate("getComputedStyle(document.documentElement).colorScheme") == "dark",
-           "Obsidian Gold should enable dark-native browser controls")
-    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(17, 18, 20)",
-           "Wrong base background for Obsidian Gold")
-    expect(page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(217, 183, 123)",
-           "Primary call-to-action must use Obsidian Gold accent")
+           "Royal Black should enable dark-native browser controls")
+    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(9, 9, 9)",
+           "Wrong base background for Royal Black")
+    expect("linear-gradient" in page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundImage"),
+           "Primary call-to-action must use the Royal Black golden gradient")
+    expect(page.locator('nav[aria-label="Main navigation"] svg').count() >= 1,
+           "Crown logo missing from navigation")
+    hero = page.locator("#top .nexus-royal-orbit")
+    expect(hero.count() == 1, "Royal Black animated gold orbit is missing")
+    expect(page.locator("#top h1").count() == 1,
+           "Premium editorial hero heading missing")
+    hero_class = page.locator("#top h1").get_attribute("class") or ""
+    expect("nexus-royal-title" in hero_class,
+           f"Premium editorial hero typography missing: {hero_class}")
 
+    button = page.locator(".nexus-primary-button").first
+    button.hover()
+    expect(button.evaluate("(el) => getComputedStyle(el).boxShadow") != "none",
+           "Golden CTA hover glow is missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Horizontal overflow at {width}px: {dimensions}")
