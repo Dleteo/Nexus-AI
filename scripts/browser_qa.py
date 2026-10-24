@@ -32,6 +32,11 @@ def audit(browser, width, label):
            "Crown logo missing from navigation")
     hero = page.locator("#top .royal-art-stage")
     expect(hero.count() == 1, "Dimensional crowned hero artwork is missing")
+    emblem = hero.locator("svg .royal-emblem-letter")
+    expect(emblem.count() == 1, "Gold N monogram must be drawn as SVG text inside the plaque")
+    expect(emblem.text_content().strip() == "N", "Royal emblem should display the letter N")
+    expect(emblem.evaluate("(node) => getComputedStyle(node).fill") != "none",
+           "Gold N SVG fill must be visible")
     expect(page.locator("#top .royal-showcase-landscape").count() == 1, "Lower landscape showcase is missing")
     expect(page.locator("#top .royal-art-light").count() == 1, "Animated golden trail is missing")
     expect(page.locator("#top h1").count() == 1,
