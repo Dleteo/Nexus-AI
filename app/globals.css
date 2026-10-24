@@ -254,6 +254,17 @@ button:disabled {
 .nexus-section { background:#111214; }
 .nexus-section-alt { background:#171819; border-color:#393938; }
 .nexus-flow-rail::before { border-color:#62533C; }
+@media print {
+  #resume-print-sheet,
+  #resume-print-sheet * {
+    color: #171717 !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
