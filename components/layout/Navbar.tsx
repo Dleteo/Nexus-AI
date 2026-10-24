@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type MouseEvent } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 const links = [
   { href: "/", label: "Home" },
@@ -13,6 +13,7 @@ const links = [
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [checking, setChecking] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,6 +27,17 @@ export default function Navbar() {
       .finally(() => { if (active) setChecking(false); });
     return () => { active = false; };
   }, []);
+
+  function handleNavigation(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    setMobileMenuOpen(false);
+    // Next's same-route <Link> navigation can preserve scroll position.
+    // Explicitly handle Home and the logo so they always return to the top.
+    if (href === "/" && pathname === "/" && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      window.history.replaceState(null, "", "/");
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  }
 
   async function signOut() {
     try {
@@ -41,12 +53,12 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#E9D9CC] bg-[#FFFCF8] backdrop-blur-xl">
       <nav aria-label="Main navigation" className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Nexus AI home">
+        <Link href="/" onClick={(event) => handleNavigation(event, "/")} className="flex shrink-0 items-center gap-2.5" aria-label="Nexus AI home">
           <span className="grid size-9 place-items-center rounded-xl border border-[#E6BDA7] bg-[#FBE3D3] text-lg text-[#AD5637]">✦</span>
           <span className="text-base font-semibold tracking-tight text-[#302923]">Nexus<span className="text-[#AD5637]">AI</span></span>
         </Link>
         <div className="hidden items-center gap-1 md:flex">
-          {links.map((item) => <Link key={item.href} href={item.href} className="rounded-lg px-3 py-2 text-sm font-medium text-[#756155] transition hover:bg-[#FFF2E8] hover:text-[#302923]">{item.label}</Link>)}
+          {links.map((item) => <Link key={item.href} href={item.href} onClick={(event) => handleNavigation(event, item.href)} className="rounded-lg px-3 py-2 text-sm font-medium text-[#756155] transition hover:bg-[#FFF2E8] hover:text-[#302923]">{item.label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
           {!checking && user ? (
@@ -68,7 +80,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <nav id="mobile-navigation" aria-label="Mobile navigation" className="border-t border-[#E9D9CC] bg-[#FFF9F3] px-5 py-3 md:hidden">
           <div className="mx-auto grid max-w-6xl gap-1">
-            {links.map((item) => <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-4 py-3 text-sm text-[#40342E] hover:bg-[#FFF2E8]">{item.label}</Link>)}
+            {links.map((item) => <Link key={item.href} href={item.href} onClick={(event) => handleNavigation(event, item.href)} className="rounded-lg px-4 py-3 text-sm text-[#40342E] hover:bg-[#FFF2E8]">{item.label}</Link>)}
             {!checking && user ? (
               <>
                 <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-4 py-3 text-sm text-[#AD5637]">Workspace</Link>
