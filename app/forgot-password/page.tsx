@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
       label="Nexus AI · Account recovery"
       title="Reset your password."
       description="Enter the email address associated with your account. If it exists, we will send a recovery link."
-      footer={<Link href="/login" className="text-[#AD5637] transition hover:text-[#AD5637]">Back to sign in</Link>}
+      footer={<Link href="/login" className="text-[#D9B77B] transition hover:text-[#D9B77B]">Back to sign in</Link>}
     >
       <ForgotPasswordForm />
     </AuthCard>

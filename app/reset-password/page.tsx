@@ -8,7 +8,7 @@ export default function ResetPasswordPage() {
       label="Nexus AI · Secure account"
       title="Choose a new password."
       description="Open this page from the recovery email, then choose a new password for your account."
-      footer={<Link href="/login" className="text-[#AD5637] transition hover:text-[#AD5637]">Back to sign in</Link>}
+      footer={<Link href="/login" className="text-[#D9B77B] transition hover:text-[#D9B77B]">Back to sign in</Link>}
     >
       <ResetPasswordForm />
     </AuthCard>

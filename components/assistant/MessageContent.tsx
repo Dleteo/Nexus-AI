@@ -26,9 +26,9 @@ function TextLines({ value }: { value: string }) {
     <div className="space-y-2.5 break-words text-sm leading-7">
       {value.trim().split(/\n{2,}/).map((paragraph, index) => {
         const trimmed = paragraph.trim();
-        if (trimmed.startsWith("### ")) return <h4 key={index} className="pt-2 text-sm font-bold text-[#302923]">{trimmed.slice(4)}</h4>;
-        if (trimmed.startsWith("## ")) return <h3 key={index} className="pt-2 text-base font-bold text-[#302923]">{trimmed.slice(3)}</h3>;
-        if (trimmed.startsWith("# ")) return <h2 key={index} className="pt-2 text-lg font-bold text-[#302923]">{trimmed.slice(2)}</h2>;
+        if (trimmed.startsWith("### ")) return <h4 key={index} className="pt-2 text-sm font-bold text-[#F4F1EB]">{trimmed.slice(4)}</h4>;
+        if (trimmed.startsWith("## ")) return <h3 key={index} className="pt-2 text-base font-bold text-[#F4F1EB]">{trimmed.slice(3)}</h3>;
+        if (trimmed.startsWith("# ")) return <h2 key={index} className="pt-2 text-lg font-bold text-[#F4F1EB]">{trimmed.slice(2)}</h2>;
         const lines = trimmed.split("\n");
         if (lines.every((line) => /^[-*]\s/.test(line))) {
           return <ul key={index} className="list-disc space-y-1 pl-5">{lines.map((line, li) => <li key={li}>{line.replace(/^[-*]\s/, "")}</li>)}</ul>;
