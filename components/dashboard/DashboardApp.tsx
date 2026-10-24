@@ -136,8 +136,8 @@ export default function DashboardApp() {
 
   return (
     <main className="nexus-workspace-shell min-h-screen px-4 pb-10 pt-24 text-[#F4F1EB] sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside className="nexus-panel flex h-fit flex-col p-4 lg:sticky lg:top-24">
+      <div className="royal-workspace-frame mx-auto grid max-w-[1440px] gap-0 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="royal-workspace-sidebar flex h-fit flex-col border-b border-[#5F492D] p-4 lg:sticky lg:top-24 lg:min-h-[calc(100vh-7.5rem)] lg:border-b-0 lg:border-r">
           <Link href="/" className="flex items-center gap-3 px-2 py-2">
             <span className="grid size-10 place-items-center rounded-xl border border-[#73552B] bg-[#211B13]"><CrownMark size={29}/></span>
             <span><span className="block text-sm font-bold tracking-tight">Nexus<span className="text-[#D9B77B]">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-[#BDB6AB]">YOUR WORKSPACE</span></span>
@@ -161,11 +161,11 @@ export default function DashboardApp() {
           <p className="mt-6 px-2 text-[10px] text-[#AFA89E]">NEXUS AI · PRIVATE WORKSPACE</p>
         </aside>
 
-        <div className="min-w-0">
-          <header className="nexus-workspace-heading mb-6 flex flex-col justify-between gap-4 rounded-2xl px-5 py-6 sm:flex-row sm:items-end sm:px-7">
+        <div className="royal-workspace-surface min-w-0 p-4 sm:p-6">
+          <header className="mb-6 flex flex-col justify-between gap-4 border-b border-[#4B3820] px-1 pb-6 pt-2 sm:flex-row sm:items-end">
             <div>
               <p className="nexus-kicker mb-3">Workspace overview</p>
-              <h1 className="nexus-royal-title text-3xl sm:text-4xl">Good to see you, {displayName}.</h1>
+              <h1 className="royal-workspace-title text-3xl sm:text-4xl">Good to see you, {displayName}.</h1>
               <p className="mt-2 text-sm leading-6 text-[#BDB6AB]">A clear view of your ideas, your projects, and what to work on next.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -183,11 +183,11 @@ export default function DashboardApp() {
               { label: "Active projects", value: activeProjects.length, detail: "Ready for your next step", tone: "text-[#A7D8B2]", icon: "↗" },
               { label: "Archived", value: archivedProjects.length, detail: "Stored for later", tone: "text-[#D9B77B]", icon: "◷" },
               { label: "Workspace", value: "Private", detail: "Account-linked project data", tone: "text-[#D9B77B]", icon: "◇" },
-            ].map((stat) => <article key={stat.label} className="nexus-panel p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-[#BDB6AB]">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-[#34322F] bg-[#34322F] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-[#BDB6AB]">{stat.detail}</p></article>)}
+            ].map((stat) => <article key={stat.label} className="nexus-royal-card royal-quick-card rounded-xl p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-[#BDB6AB]">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-[#34322F] bg-[#34322F] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-[#BDB6AB]">{stat.detail}</p></article>)}
           </section>
 
           <section aria-label="Project overview" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)]">
-            <div className="nexus-panel relative overflow-hidden p-5 sm:p-6">
+            <div className="nexus-royal-card relative overflow-hidden rounded-xl p-5 sm:p-6">
               <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-[#34322F] blur-[80px]" />
               <div className="relative flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                 <div>
@@ -205,7 +205,7 @@ export default function DashboardApp() {
                 <div className="rounded-full bg-gradient-to-r from-[#4B463D] to-[#D9B77B] transition-[width] duration-300" style={{ width: `${activePercentage}%` }} />
               </div>
             </div>
-            <div className="nexus-panel flex items-center justify-between gap-5 p-5 sm:p-6">
+            <div className="nexus-royal-card flex items-center justify-between gap-5 rounded-xl p-5 sm:p-6">
               <div className="min-w-0">
                 <p className="nexus-kicker mb-3">Status mix</p>
                 <p className="text-3xl font-semibold tabular-nums text-[#F4F1EB]">{activePercentage}<span className="text-base font-medium text-[#BDB6AB]">%</span></p>
@@ -221,7 +221,7 @@ export default function DashboardApp() {
           </section>
 
           <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(290px,0.75fr)]">
-            <div id="projects" className="nexus-panel min-w-0 p-5 sm:p-6">
+            <div id="projects" className="nexus-royal-card min-w-0 rounded-xl p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div><p className="nexus-kicker mb-2">Project space</p><h2 className="text-xl font-semibold">Your projects <span className="ml-1 text-sm font-normal text-[#BDB6AB]">({visibleProjects.length})</span></h2></div>
                 <button type="button" aria-pressed={showArchived} onClick={() => setShowArchived((value) => !value)} className="nexus-ghost-button text-xs">{showArchived ? "Hide archived" : "Show archived"} <span aria-hidden="true">⌄</span></button>
