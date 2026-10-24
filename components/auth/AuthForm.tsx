@@ -59,35 +59,35 @@ export default function AuthForm({ mode, showPasswordResetNotice = false }: Auth
     <form className="space-y-5" onSubmit={handleSubmit}>
       {isRegister && (
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm text-[#40342E]">Full name</label>
+          <label htmlFor="name" className="mb-2 block text-sm text-[#E6E1D8]">Full name</label>
           <input id="name" name="name" type="text" autoComplete="name" required minLength={2} maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Your full name" className="nexus-field" />
         </div>
       )}
       <div>
-        <label htmlFor="email" className="mb-2 block text-sm text-[#40342E]">Email</label>
+        <label htmlFor="email" className="mb-2 block text-sm text-[#E6E1D8]">Email</label>
         <input id="email" name="email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="nexus-field" />
       </div>
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <label htmlFor="password" className="block text-sm text-[#40342E]">Password</label>
+          <label htmlFor="password" className="block text-sm text-[#E6E1D8]">Password</label>
           {!isRegister && (
-            <Link href="/forgot-password" className="text-xs text-[#AD5637] transition hover:text-[#302923]">
+            <Link href="/forgot-password" className="text-xs text-[#D9B77B] transition hover:text-[#F4F1EB]">
               Forgot password?
             </Link>
           )}
         </div>
-        <div className="flex rounded-xl border border-[#E9D9CC] bg-[#FFFCF9] transition focus-within:border-[#CE8F70]">
-          <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} required minLength={isRegister ? 10 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? "At least 10 characters" : "Your password"} className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-[#302923] outline-none placeholder:text-[#756155]" />
-          <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="shrink-0 px-4 text-xs font-semibold text-[#756155] transition hover:text-[#AD5637] focus-visible:outline-2 focus-visible:outline-[#9D4E35]">
+        <div className="flex rounded-xl border border-[#34322F] bg-[#222326] transition focus-within:border-[#D9B77B]">
+          <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} required minLength={isRegister ? 10 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? "At least 10 characters" : "Your password"} className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-[#F4F1EB] outline-none placeholder:text-[#BDB6AB]" />
+          <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} className="shrink-0 px-4 text-xs font-semibold text-[#BDB6AB] transition hover:text-[#D9B77B] focus-visible:outline-2 focus-visible:outline-[#D9B77B]">
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
-        {isRegister && <p className="mt-2 text-xs text-[#756155]">Use at least 10 characters.</p>}
+        {isRegister && <p className="mt-2 text-xs text-[#BDB6AB]">Use at least 10 characters.</p>}
       </div>
 
-      {showPasswordResetNotice && !isRegister && <p role="status" className="rounded-xl border border-[#B6D7BD] bg-[#E6F3E8] px-4 py-3 text-sm text-[#3D7654]">Password updated successfully. Sign in with your new password.</p>}
-      {error && <p role="alert" className="rounded-xl border border-[#EEB8B0] bg-[#FCE8E6] px-4 py-3 text-sm text-[#A93636]">{error}</p>}
-      {notice && <p role="status" className="rounded-xl border border-[#B6D7BD] bg-[#E6F3E8] px-4 py-3 text-sm text-[#3D7654]">{notice}</p>}
+      {showPasswordResetNotice && !isRegister && <p role="status" className="rounded-xl border border-[#496F55] bg-[#1B3828] px-4 py-3 text-sm text-[#A7D8B2]">Password updated successfully. Sign in with your new password.</p>}
+      {error && <p role="alert" className="rounded-xl border border-[#8D5456] bg-[#3C2628] px-4 py-3 text-sm text-[#FFB0A9]">{error}</p>}
+      {notice && <p role="status" className="rounded-xl border border-[#496F55] bg-[#1B3828] px-4 py-3 text-sm text-[#A7D8B2]">{notice}</p>}
 
       <button type="submit" disabled={busy} className="nexus-primary-button w-full disabled:cursor-not-allowed disabled:opacity-60">
         {busy ? "Please wait…" : isRegister ? "Create account" : "Sign in"}
