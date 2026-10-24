@@ -165,8 +165,8 @@ export default function DashboardApp() {
           <header className="mb-6 flex flex-col justify-between gap-4 border-b border-[#4B3820] px-1 pb-6 pt-2 sm:flex-row sm:items-end">
             <div>
               <p className="nexus-kicker mb-3">Workspace overview</p>
-              <h1 className="royal-workspace-title text-3xl sm:text-4xl">Good to see you, {displayName}.</h1>
-              <p className="mt-2 text-sm leading-6 text-[#BDB6AB]">A clear view of your ideas, your projects, and what to work on next.</p>
+              <h1 className="royal-workspace-title text-3xl sm:text-4xl">Dashboard</h1>
+              <p className="mt-2 text-sm leading-6 text-[#BDB6AB]">Good to see you, {displayName}. Your AI workspace at a glance.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <span className="rounded-lg border border-[#34322F] bg-[#34322F] px-3 py-2 text-xs text-[#BDB6AB]">{user?.email}</span>
@@ -183,9 +183,41 @@ export default function DashboardApp() {
               { label: "Active projects", value: activeProjects.length, detail: "Ready for your next step", tone: "text-[#A7D8B2]", icon: "↗" },
               { label: "Archived", value: archivedProjects.length, detail: "Stored for later", tone: "text-[#D9B77B]", icon: "◷" },
               { label: "Workspace", value: "Private", detail: "Account-linked project data", tone: "text-[#D9B77B]", icon: "◇" },
-            ].map((stat) => <article key={stat.label} className="nexus-royal-card royal-quick-card rounded-xl p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-[#BDB6AB]">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-[#34322F] bg-[#34322F] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-[#BDB6AB]">{stat.detail}</p></article>)}
+            ].map((stat) => <article key={stat.label} className="royal-reference-stat-card rounded-xl p-4"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-[#BDB6AB]">{stat.label}</p><span className={`grid size-9 place-items-center rounded-xl border border-[#34322F] bg-[#34322F] text-lg ${stat.tone}`}>{stat.icon}</span></div><p className={`mt-4 text-3xl font-semibold tracking-tight ${stat.tone}`}>{stat.value}</p><p className="mt-1.5 text-xs text-[#BDB6AB]">{stat.detail}</p></article>)}
           </section>
 
+          <section aria-label="Recent projects" className="mt-7">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-base font-semibold text-[#F7F0E4]">Recent projects</h2>
+              <a href="#projects" className="text-xs font-semibold text-[#D7AD65] hover:text-[#FFE3A4]">View all ↗</a>
+            </div>
+            {projects.length === 0 ? (
+              <div className="royal-reference-project-card mt-4 rounded-xl p-6">
+                <p className="text-sm text-[#CFC2AB]">Your project previews will appear here after you create one.</p>
+                <a href="#create-project" className="mt-3 inline-flex text-xs font-semibold text-[#F1C880]">Create your first project ↗</a>
+              </div>
+            ) : (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {projects.slice(0, 4).map((project, index) => (
+                  <a key={project.id} href="#projects" className="royal-reference-project-card group min-w-0 overflow-hidden rounded-xl">
+                    <div className={`royal-project-thumbnail royal-project-thumbnail-${index % 4}`} aria-hidden="true"><span className="royal-thumbnail-glow" /></div>
+                    <div className="p-3">
+                      <p className="truncate text-xs font-semibold text-[#F8EFE0]">Project: {project.name}</p>
+                      <p className="mt-1 text-[11px] text-[#BEB1A1]">{project.status === "active" ? "Active" : "Archived"} · {new Date(project.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </section>
+          <section aria-label="Quick actions" className="mt-7">
+            <h2 className="text-base font-semibold text-[#F7F0E4]">Quick actions</h2>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <Link href="/assistant" className="royal-reference-action group rounded-xl p-4"><span className="mr-3 text-lg text-[#E8BF76]">✦</span><span className="text-sm font-semibold">Start a new chat</span><span className="mt-2 block text-xs text-[#AEA18F]">Get instant answers from your copilot ↗</span></Link>
+              <a href="#create-project" className="royal-reference-action group rounded-xl p-4"><span className="mr-3 text-lg text-[#E8BF76]">▱</span><span className="text-sm font-semibold">Create a project</span><span className="mt-2 block text-xs text-[#AEA18F]">Organize your next idea ↗</span></a>
+              <a href="#projects" className="royal-reference-action group rounded-xl p-4"><span className="mr-3 text-lg text-[#E8BF76]">▤</span><span className="text-sm font-semibold">Manage projects</span><span className="mt-2 block text-xs text-[#AEA18F]">Review your saved work ↗</span></a>
+            </div>
+          </section>
           <section aria-label="Project overview" className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)]">
             <div className="nexus-royal-card relative overflow-hidden rounded-xl p-5 sm:p-6">
               <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-[#34322F] blur-[80px]" />
@@ -212,7 +244,7 @@ export default function DashboardApp() {
                 <p className="mt-2 text-xs text-[#BDB6AB]">Projects currently active</p>
                 <p className="mt-3 text-[11px] text-[#BDB6AB]">{projects.length === 0 ? "Create a project to start tracking." : `${projects.length} saved project${projects.length === 1 ? "" : "s"}`}</p>
               </div>
-              <div className="relative grid size-28 shrink-0 place-items-center rounded-full sm:size-32" role="img" aria-label={`${activeProjects.length} active and ${archivedProjects.length} archived projects`} style={{ background: projects.length ? `conic-gradient(#D9B77B 0% ${activePercentage}%, #4B463D ${activePercentage}% 100%)` : "conic-gradient(#34322F 0% 100%)" }}>
+              <div className="relative grid size-24 shrink-0 place-items-center rounded-full sm:size-28" role="img" aria-label={`${activeProjects.length} active and ${archivedProjects.length} archived projects`} style={{ background: projects.length ? `conic-gradient(#D9B77B 0% ${activePercentage}%, #4B463D ${activePercentage}% 100%)` : "conic-gradient(#34322F 0% 100%)" }}>
                 <div className="grid size-[78%] place-items-center rounded-full border border-[#34322F] bg-[#222326]">
                   <span className="text-xl font-semibold tabular-nums text-[#E6E1D8]">{projects.length}</span>
                 </div>
@@ -274,7 +306,7 @@ export default function DashboardApp() {
             </div>
 
             <div className="space-y-5">
-              <form onSubmit={createProject} className="nexus-panel h-fit p-5 sm:p-6">
+              <form id="create-project" onSubmit={createProject} className="nexus-panel h-fit p-5 sm:p-6">
                 <p className="nexus-kicker mb-3">Make it real</p><h2 className="text-xl font-semibold">Create a project</h2><p className="mt-2 text-sm leading-6 text-[#BDB6AB]">Capture an idea while it is fresh. You can edit it later.</p>
                 <label htmlFor="project-name" className="mb-2 mt-5 block text-xs font-medium text-[#BDB6AB]">Project name</label>
                 <input id="project-name" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={80} placeholder="e.g. Portfolio v2" className="nexus-field" />
