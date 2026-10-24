@@ -8,7 +8,7 @@ export default function RegisterPage() {
       label="Nexus AI · Account"
       title="Create your account."
       description="Create an account to keep your own Nexus AI projects in one place."
-      footer={<>Already have an account? <Link href="/login" className="text-[#AD5637] hover:text-[#AD5637]">Sign in</Link></>}
+      footer={<>Already have an account? <Link href="/login" className="text-[#D9B77B] hover:text-[#D9B77B]">Sign in</Link></>}
     >
       <AuthForm mode="register" />
     </AuthCard>
