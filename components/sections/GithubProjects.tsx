@@ -15,7 +15,7 @@ export default function GithubProjects() {
         </div>
         <div className="mt-9 grid gap-5 md:grid-cols-3">
           {selectedGithubProjects.map((project, index) => (
-            <article key={project.id} className="group flex min-w-0 flex-col overflow-hidden rounded-[1.4rem] border border-[#34322F] bg-[#1D1E20] shadow-[0_12px_36px_-28px_rgba(71,39,24,.24)] transition duration-200 hover:-translate-y-1 hover:border-[#D9B77B] hover:shadow-[0_20px_40px_-30px_rgba(94,49,29,.35)]">
+            <article key={project.id} className="nexus-royal-card group flex min-w-0 flex-col overflow-hidden rounded-[1.4rem] border border-[#34322F] bg-[#1D1E20] shadow-[0_12px_36px_-28px_rgba(71,39,24,.24)] transition duration-200 hover:-translate-y-1 hover:border-[#D9B77B] hover:shadow-[0_20px_40px_-30px_rgba(94,49,29,.35)]">
               <div className="relative flex min-h-[200px] items-center justify-center overflow-hidden bg-gradient-to-br from-[#34322F] via-[#222326] to-[#34322F] px-6 py-7">
                 <span className="absolute left-5 top-4 rounded-full border border-[#4B463D] bg-[#222326]/90 px-2.5 py-1 text-[10px] font-bold tracking-widest text-[#D9B77B]">0{index + 1} / PROJECT</span>
                 <a href={project.previewImage} target="_blank" rel="noopener noreferrer" aria-label={`View original project image: ${project.title}`} className="relative mt-3 block h-40 w-full overflow-hidden rounded-xl border border-[#4B463D] bg-[#1D1E20] shadow-[0_12px_28px_-18px_rgba(67,36,22,.25)]">
