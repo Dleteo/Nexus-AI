@@ -13,6 +13,8 @@ export default function DashboardApp() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -72,8 +74,11 @@ export default function DashboardApp() {
   }
 
   async function updateProject(id: string, updates: { name?: string; description?: string; status?: "active" | "archived" }) {
+    if (pendingProjectId) return;
+    setPendingProjectId(id);
     setError("");
     setNotice("");
+    try {
     const response = await fetch(`/api/projects/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -84,10 +89,13 @@ export default function DashboardApp() {
     setProjects((current) => current.map((project) => project.id === id ? data.project! : project));
     setEditingId(null);
     setNotice("Project updated and saved.");
+    } finally { setPendingProjectId(null); }
   }
 
   async function deleteProject(id: string) {
+    if (pendingProjectId) return;
     if (!window.confirm("Delete this project permanently? This cannot be undone.")) return;
+    setPendingProjectId(id);
     setError("");
     setNotice("");
     try {
@@ -98,12 +106,20 @@ export default function DashboardApp() {
       setNotice("Project deleted.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not delete the project.");
-    }
+    } finally { setPendingProjectId(null); }
   }
 
   async function signOut() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.replace("/");
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Could not sign out. Please try again.");
+      window.location.replace("/");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not sign out.");
+      setSigningOut(false);
+    }
   }
 
   const visibleProjects = projects.filter((project) =>
@@ -134,7 +150,7 @@ export default function DashboardApp() {
           </nav>
           <div className="my-5 border-t border-[#E9D9CC]" />
           <p className="mb-2 px-3 text-[10px] font-bold tracking-[0.17em] text-[#816B5E]">ACCOUNT</p>
-          <button type="button" onClick={() => void signOut()} className="nexus-sidebar-link w-full text-left"><span className="text-base">↪</span> Sign out</button>
+          <button type="button" onClick={() => void signOut()} disabled={signingOut} className="nexus-sidebar-link w-full text-left disabled:opacity-50"><span className="text-base">↪</span> {signingOut ? "Signing out…" : "Sign out"}</button>
           <div className="mt-8 rounded-xl border border-[#E6BDA7] bg-gradient-to-br from-[#F8D6C3] to-[#FBECE3] p-4">
             <span className="text-lg text-[#AD5637]">✧</span>
             <p className="mt-2 text-xs font-semibold text-[#40342E]">Keep the momentum</p>
@@ -233,7 +249,7 @@ export default function DashboardApp() {
                         <form onSubmit={(event) => { event.preventDefault(); void updateProject(project.id, { name: editName, description: editDescription }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project.")); }} className="space-y-3">
                           <label className="block text-xs font-medium text-[#756155]">Project name<input value={editName} onChange={(event) => setEditName(event.target.value)} required minLength={2} maxLength={80} className="nexus-field mt-2" /></label>
                           <label className="block text-xs font-medium text-[#756155]">Description<textarea value={editDescription} onChange={(event) => setEditDescription(event.target.value)} maxLength={500} rows={3} className="nexus-field mt-2" /></label>
-                          <div className="flex flex-wrap gap-2"><button className="nexus-primary-button">Save changes</button><button type="button" onClick={() => setEditingId(null)} className="nexus-ghost-button">Cancel</button></div>
+                          <div className="flex flex-wrap gap-2"><button disabled={pendingProjectId !== null} className="nexus-primary-button disabled:opacity-50">{pendingProjectId === project.id ? "Saving…" : "Save changes"}</button><button type="button" disabled={pendingProjectId !== null} onClick={() => setEditingId(null)} className="nexus-ghost-button disabled:opacity-50">Cancel</button></div>
                         </form>
                       ) : (
                         <>
@@ -244,9 +260,9 @@ export default function DashboardApp() {
                             </div>
                           </div>
                           <div className="mt-4 flex flex-wrap gap-2 border-t border-[#E9D9CC] pt-3">
-                            <button onClick={() => { setEditingId(project.id); setEditName(project.name); setEditDescription(project.description); }} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs">Edit</button>
-                            <button onClick={() => void updateProject(project.id, { status: project.status === "archived" ? "active" : "archived" }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project."))} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs">{project.status === "archived" ? "Restore" : "Archive"}</button>
-                            <button onClick={() => void deleteProject(project.id)} className="inline-flex min-h-9 items-center rounded-xl border border-[#EEB8B0] px-3 py-1.5 text-xs text-[#A93636] transition hover:bg-[#FCE8E6]">Delete</button>
+                            <button disabled={pendingProjectId !== null} onClick={() => { setEditingId(project.id); setEditName(project.name); setEditDescription(project.description); }} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs disabled:opacity-50">Edit</button>
+                            <button onClick={() => void updateProject(project.id, { status: project.status === "archived" ? "active" : "archived" }).catch((cause) => setError(cause instanceof Error ? cause.message : "Could not update project."))} disabled={pendingProjectId !== null} className="nexus-ghost-button min-h-9 px-3 py-1.5 text-xs disabled:opacity-50">{pendingProjectId === project.id ? "Saving…" : project.status === "archived" ? "Restore" : "Archive"}</button>
+                            <button onClick={() => void deleteProject(project.id)} disabled={pendingProjectId !== null} className="inline-flex min-h-9 items-center rounded-xl border border-[#EEB8B0] px-3 py-1.5 text-xs text-[#A93636] transition hover:bg-[#FCE8E6] disabled:opacity-50">Delete</button>
                           </div>
                         </>
                       )}
