@@ -87,14 +87,14 @@ button:disabled {
 
 .nexus-section {
   position: relative;
-  background: linear-gradient(180deg, rgba(8, 12, 21, 0.96), rgba(7, 10, 18, 0.98));
+  background: linear-gradient(180deg, rgba(17, 18, 20, 0.96), rgba(17, 18, 20, 0.98));
 }
 
 .nexus-section-alt {
   position: relative;
-  border-top: 1px solid rgba(156, 177, 211, 0.08);
-  border-bottom: 1px solid rgba(156, 177, 211, 0.08);
-  background: linear-gradient(180deg, rgba(11, 17, 30, 0.96), rgba(8, 12, 21, 0.98));
+  border-top: 1px solid rgba(217, 183, 123, 0.10);
+  border-bottom: 1px solid rgba(217, 183, 123, 0.10);
+  background: linear-gradient(180deg, rgba(23, 24, 25, 0.96), rgba(8, 12, 21, 0.98));
 }
 
 .nexus-panel {
