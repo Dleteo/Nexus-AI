@@ -57,20 +57,20 @@ def audit(browser, width, label):
                "Desktop navigation missing certificates")
     page.goto(BASE + "/portfolio", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing portfolio certificates heading")
-    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).count() == 1, "Missing cybersecurity training")
-    expect(page.get_by_text("92", exact=True).count() >= 1, "Incorrect training hours")
+    expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).count() == 1, "Missing cybersecurity training")
+    expect(page.get_by_text("94", exact=True).count() >= 1, "Incorrect training hours")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Portfolio horizontal overflow: {dimensions}")
     group = page.get_by_role("group", name="Filter certificates by record type")
-    group.get_by_role("button", name="Training records").click()
-    expect(group.get_by_role("button", name="Training records").get_attribute("aria-pressed") == "true",
+    group.get_by_role("button", name="Attendance certificates").click()
+    expect(group.get_by_role("button", name="Attendance certificates").get_attribute("aria-pressed") == "true",
            "Training filter did not activate")
-    expect(page.get_by_text("Showing 1 record").is_visible(), "Training records filter count incorrect")
-    expect(page.get_by_text("Cybersecurity Fundamentals", exact=True).is_visible(),
+    expect(page.get_by_text("Showing 4 records").is_visible(), "Training records filter count incorrect")
+    expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).is_visible(),
            "Training record filtered out")
     group.get_by_role("button", name="All records").click()
     expect(page.get_by_text("Showing 6 records").is_visible(), "All records filter did not restore")
-    expect(page.locator('img[alt="Certificate for Cybersecurity Fundamentals"]').count() == 1,
+    expect(page.locator('img[alt="Certificate for Hacking Ético — Certificado de Asistencia"]').count() == 1,
            "Cybersecurity image missing")
     page.screenshot(path=str(ARTIFACTS / f"portfolio-{label}.png"), full_page=True)
     print(f"PASS home and separate portfolio navigation, filters, image and overflow at {width}px", flush=True)
