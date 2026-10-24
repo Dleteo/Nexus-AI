@@ -22,6 +22,13 @@ def audit(browser, width, label):
     page.goto(BASE, wait_until="networkidle")
     expect(page.get_by_role("heading", name="Build your next project with more clarity.").count() == 1, "Missing main heading")
     page.evaluate("document.fonts.ready")
+    expect(page.evaluate("getComputedStyle(document.documentElement).colorScheme") == "dark",
+           "Obsidian Gold should enable dark-native browser controls")
+    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(17, 18, 20)",
+           "Wrong base background for Obsidian Gold")
+    expect(page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(217, 183, 123)",
+           "Primary call-to-action must use Obsidian Gold accent")
+
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Horizontal overflow at {width}px: {dimensions}")
