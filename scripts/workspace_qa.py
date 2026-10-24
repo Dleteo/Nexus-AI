@@ -118,7 +118,13 @@ def dashboard_test(browser, width, label):
     page = ctx.new_page()
     page.on("dialog", lambda dialog: dialog.accept())
     page.goto(BASE + "/dashboard", wait_until="networkidle")
-    page.get_by_role("heading", name="Good to see you, QA.").wait_for()
+    page.get_by_role("heading", name="Dashboard", exact=True).wait_for()
+    ensure(page.get_by_text("Good to see you, QA.", exact=False).is_visible(),
+           "Personal dashboard greeting missing")
+    ensure(page.get_by_role("region", name="Recent projects").count() == 1,
+           "Recent project showcase missing")
+    ensure(page.get_by_role("region", name="Quick actions").count() == 1,
+           "Dashboard quick actions missing")
     ensure(page.get_by_text("Prototype dashboard", exact=True).is_visible(),
            "Active project did not render")
     ensure(not page.get_by_text("Documentation refresh", exact=True).is_visible(),
@@ -174,7 +180,9 @@ def assistant_test(browser, width, label):
     ctx = create_context(browser, width, fake)
     page = ctx.new_page()
     page.goto(BASE + "/assistant", wait_until="networkidle")
-    page.get_by_role("heading", name="What are we working on?").wait_for()
+    page.get_by_role("heading", name="Nexus AI Copilot", exact=True).wait_for()
+    ensure(page.locator(".royal-reference-prompt-card").count() == 4,
+           "Reference-style copilot cards missing")
     no_overflow(page, "assistant-" + label)
     page.screenshot(path=str(SHOTS / f"assistant-empty-{label}.png"), full_page=True)
     page.get_by_role("button", name=re.compile("New conversation", re.I)).first.click()
