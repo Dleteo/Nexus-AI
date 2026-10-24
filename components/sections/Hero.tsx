@@ -1,54 +1,71 @@
 import Link from "next/link";
-import CrownMark from "../ui/CrownMark";
+import RoyalArtwork from "./RoyalArtwork";
 
-const modes = [
-  { name: "Plan", detail: "Break down a project", mark: "01" },
-  { name: "Debug", detail: "Investigate an issue", mark: "02" },
-  { name: "Learn", detail: "Understand a concept", mark: "03" },
-  { name: "Interview", detail: "Practice for a role", mark: "04" },
+const highlights = [
+  { icon: "✦", title: "AI Copilot", detail: "Plan, debug and learn with your assistant.", href: "/assistant" },
+  { icon: "▱", title: "Your Projects", detail: "Keep ideas and active work in one place.", href: "/dashboard" },
+  { icon: "⌘", title: "Developer Portfolio", detail: "Explore the work and the code behind it.", href: "/portfolio" },
+  { icon: "◇", title: "Built to learn", detail: "Build skills through real project work.", href: "/portfolio#certifications" },
 ];
 
 export default function Hero() {
   return (
-    <section id="top" className="relative isolate overflow-hidden px-5 pb-20 pt-20 text-[#F7F0E4] sm:px-8 sm:pb-24 sm:pt-28">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[650px] bg-[radial-gradient(ellipse_at_76%_31%,rgba(195,133,45,.20),transparent_58%)]" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
-        <div className="min-w-0">
-          <p className="mb-6 inline-flex rounded-full border border-[#4B463D] bg-[#34322F] px-3 py-1.5 text-xs font-medium text-[#D9B77B]">♛ Your AI workspace</p>
-          <h1 className="nexus-royal-title max-w-2xl text-5xl sm:text-6xl lg:text-7xl">Build your next project with <span className="nexus-gradient-text nexus-royal-text-glow">more clarity.</span></h1>
-          <p className="mt-6 max-w-xl text-base leading-8 text-[#BDB6AB]">One organized place to manage projects, ask an AI copilot for help, understand code and prepare for developer interviews.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/register" className="nexus-primary-button">Get started <span aria-hidden="true">↗</span></Link>
-            <Link href="/#features" className="nexus-ghost-button">Explore features <span aria-hidden="true">↓</span></Link>
-          </div>
-          <p className="mt-7 text-xs leading-6 text-[#BDB6AB]">Project workspace · Saved conversations · Five assistant modes</p>
-        </div>
-        <div className="nexus-royal-shell relative min-w-0 overflow-hidden rounded-[1.75rem] p-3 sm:p-4">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-32 flex justify-center opacity-40">
-            <div className="nexus-royal-orbit relative" />
-          </div>
-          <div className="relative mx-auto mb-3 grid h-36 place-items-center sm:h-44">
-            <div aria-hidden="true" className="absolute size-32 rounded-full bg-[#B7853C]/20 blur-3xl" />
-            <CrownMark crownedLetter size={82} className="nexus-crown-float relative drop-shadow-[0_0_16px_rgba(230,178,89,.55)]" />
-          </div>
-          <div className="flex items-center justify-between border-b border-[#34322F] px-3 pb-4 pt-2">
-            <div><p className="text-sm font-semibold text-[#E6E1D8]">Nexus AI Copilot</p><p className="mt-1 text-xs text-[#BDB6AB]">Interface preview · Illustrative content</p></div>
-            <span className="rounded-lg border border-[#4B463D] bg-[#34322F] px-2.5 py-1.5 text-xs text-[#D9B77B]">✦</span>
-          </div>
-          <div className="space-y-4 px-2 py-6 sm:px-3">
-            <div className="ml-auto max-w-[84%] rounded-2xl rounded-br-md border border-[#4B463D] bg-[#34322F] px-4 py-3 text-sm leading-6 text-[#E6E1D8]">Help me turn my app idea into a clear development plan.</div>
-            <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-[#34322F] bg-[#111214] px-4 py-4">
-              <p className="mb-2 text-xs font-semibold text-[#D9B77B]">✦ Nexus AI</p>
-              <p className="text-sm leading-7 text-[#E6E1D8]">Start with a goal, then divide the work into small milestones you can implement and verify.</p>
-              <div className="mt-4 space-y-2 border-t border-[#34322F] pt-4">
-                {["Define the project", "Build the first feature", "Test and improve"].map((step, index) => <div key={step} className="flex items-center gap-3 text-xs text-[#BDB6AB]"><span className="grid size-6 shrink-0 place-items-center rounded-md bg-[#34322F] text-[#D9B77B]">{index+1}</span>{step}</div>)}
-              </div>
+    <section id="top" className="royal-home-hero relative isolate overflow-hidden px-3 pb-4 pt-5 text-[#F7F0E4] sm:px-6 sm:pt-7 lg:px-8">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_78%_22%,rgba(190,120,40,.13),transparent_49%)]" />
+      <div className="royal-stage-frame relative mx-auto max-w-[1520px] overflow-hidden rounded-[24px] border border-[#9C743A]/70 bg-[#080808]">
+        <div className="royal-stage-rays pointer-events-none absolute -right-24 -top-56 h-[830px] w-[1000px] opacity-80" aria-hidden="true"/>
+        <div className="relative grid min-h-[565px] items-center gap-2 px-5 pb-8 pt-10 sm:px-10 lg:grid-cols-[.96fr_1.04fr] lg:px-14 lg:pb-7 lg:pt-9">
+          <div className="relative z-10 max-w-[590px] pb-2 lg:pb-10">
+            <p className="mb-7 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[.28em] text-[#E7BF77] sm:text-xs"><span className="h-px w-7 bg-[#E7BF77]"/>The next era of intelligence<span className="h-px w-7 bg-[#E7BF77]"/></p>
+            <h1 className="nexus-royal-title max-w-[650px] text-[clamp(3.9rem,6.1vw,7.2rem)] leading-[.98] text-[#F8F1E6]">
+              Build with <span className="nexus-gradient-text nexus-royal-text-glow block pb-2">confidence.</span>
+            </h1>
+            <p className="mt-6 max-w-[460px] text-[15px] leading-7 text-[#D1C9BE] sm:text-base">
+              Your space to organize ideas, build projects and grow as a developer—with an AI copilot by your side.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/register" className="nexus-primary-button min-w-[155px] rounded-full px-7 py-3.5">Get started <span aria-hidden="true">↗</span></Link>
+              <Link href="/#features" className="nexus-ghost-button rounded-full border-[#A78049]/60 bg-black/50 px-6 py-3.5">Explore the workspace <span aria-hidden="true">↗</span></Link>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 border-t border-[#6C542F]/40 pt-6 text-xs text-[#D7CEBE]">
+              <span className="flex items-center gap-2"><span className="text-[#E9C17C]">◈</span>Private projects</span>
+              <span className="flex items-center gap-2"><span className="text-[#E9C17C]">✧</span>AI assistance</span>
+              <span className="flex items-center gap-2"><span className="text-[#E9C17C]">▣</span>Saved conversations</span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 border-t border-[#34322F] px-2 pb-2 pt-4 sm:px-3">
-            {modes.map((item) => <div key={item.name} className="rounded-xl border border-[#34322F] bg-[#34322F] px-3 py-3"><div className="flex items-center justify-between"><p className="text-sm font-semibold text-[#E6E1D8]">{item.name}</p><span className="text-[10px] text-[#AFA89E]">{item.mark}</span></div><p className="mt-1 text-xs text-[#BDB6AB]">{item.detail}</p></div>)}
+          <div className="relative z-0 -mx-4 flex min-w-0 items-center justify-center sm:mx-0">
+            <RoyalArtwork/>
+            <span className="absolute right-[2%] top-[23%] hidden rotate-[-7deg] font-serif text-lg italic text-[#F5D393]/80 xl:block">Ideas to impact</span>
           </div>
-          <p className="px-3 pb-2 pt-2 text-center text-[11px] text-[#AFA89E]">Sample conversation · Not real user data</p>
+        </div>
+        <div className="royal-showcase-landscape relative border-t border-[#72572E]/55 px-5 pb-9 pt-12 sm:px-10 lg:px-14">
+          <div aria-hidden="true" className="royal-mountain-backdrop pointer-events-none absolute inset-0" />
+          <div className="relative z-10 flex flex-wrap items-end justify-between gap-6">
+            <div className="max-w-xl">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[.22em] text-[#E2B76C]">A workspace with purpose</p>
+              <h2 className="nexus-royal-title max-w-md text-3xl sm:text-4xl">Your AI workspace for bigger possibilities.</h2>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-[#CFC5B5]">From quick questions to complete applications, turn ideas into meaningful progress.</p>
+            </div>
+            <Link href="/#features" className="group flex items-center gap-2 text-xs font-semibold uppercase tracking-[.13em] text-[#F4CF8A] underline decoration-[#BB8D46] underline-offset-8 hover:text-white">Explore features <span className="transition-transform group-hover:translate-x-1">↗</span></Link>
+          </div>
+          <div className="relative z-10 mt-9 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {highlights.map((item) => (
+              <Link key={item.title} href={item.href} className="nexus-royal-card group flex min-h-44 flex-col rounded-2xl p-5 backdrop-blur-sm">
+                <span className="grid size-11 place-items-center rounded-xl border border-[#826036]/50 bg-[#382919]/80 text-2xl text-[#F4CB7A] shadow-[0_0_19px_-12px_rgba(224,168,73,.8)]">{item.icon}</span>
+                <h3 className="mt-4 text-base font-semibold text-[#FAF4EA]">{item.title}</h3>
+                <p className="mt-2 flex-1 text-xs leading-5 text-[#CEC4B8]">{item.detail}</p>
+                <span className="mt-3 text-xs font-semibold text-[#F2CC81] transition-transform group-hover:translate-x-1">Explore ↗</span>
+              </Link>
+            ))}
+          </div>
+          <div className="relative z-10 mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#80603B]/25 bg-black/40 px-5 py-4 text-xs text-[#C9BDAB]">
+            <p className="font-serif text-lg text-[#F2E6D1]">A more capable you starts here.</p>
+            <div className="flex flex-wrap gap-5 sm:gap-9">
+              <span><strong className="block text-base text-[#EBC47E]">5</strong>Copilot modes</span>
+              <span><strong className="block text-base text-[#EBC47E]">6</strong>Training records</span>
+              <span><strong className="block text-base text-[#EBC47E]">GitHub</strong>Real project code</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
