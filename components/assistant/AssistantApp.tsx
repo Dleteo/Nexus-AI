@@ -165,7 +165,7 @@ export default function AssistantApp() {
                   const first = partial;
                   setMessages((list) => [...list, first]);
                 } else {
-                  partial = { ...partial, content: partial.content + data.text };
+                  partial = { role: "assistant", content: (partial as Message).content + data.text };
                   const next = partial;
                   setMessages((list) => [...list.slice(0, -1), next]);
                 }
