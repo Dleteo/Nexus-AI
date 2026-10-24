@@ -26,6 +26,9 @@ jobs:
       - name: Audit all dependencies
         run: npm audit --audit-level=high
 
+      - name: Check local Nexus Core adapter
+        run: node scripts/nexus-core-check.mjs
+
       - name: Run ESLint
         run: npm run lint
 
