@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import CrownMark from "../ui/CrownMark";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import MessageContent from "./MessageContent";
 
@@ -151,7 +152,7 @@ export default function AssistantApp() {
         <aside className="nexus-panel flex min-h-0 flex-col p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
           <div className="flex items-center justify-between gap-2">
             <Link href="/" className="flex min-w-0 items-center gap-3">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#4B463D] bg-gradient-to-br from-[#34322F] to-[#34322F] text-xl text-[#D9B77B]">✦</span>
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#73552B] bg-[#211B13]"><CrownMark size={29}/></span>
               <span><span className="block text-sm font-bold">Nexus<span className="text-[#D9B77B]">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-[#BDB6AB]">AI WORKSPACE</span></span>
             </Link>
             <Link href="/dashboard" aria-label="Open projects dashboard" title="Projects dashboard" className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#34322F] text-[#BDB6AB] transition hover:border-[#4B463D] hover:text-[#D9B77B]">▦</Link>
@@ -180,7 +181,7 @@ export default function AssistantApp() {
         <section className="nexus-panel flex min-h-[calc(100vh-7rem)] min-w-0 flex-col overflow-hidden lg:min-h-[calc(100vh-7.5rem)]">
           <header className="border-b border-[#34322F] bg-[#1D1E20] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{activeMode.description}</p></div>
+              <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{activeMode.description}</p></div>
               <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> READY TO HELP</div>
             </div>
             <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
