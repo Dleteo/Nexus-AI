@@ -105,12 +105,12 @@ export default function Certifications() {
                   onClick={() => setFilter(item.value)}
                   className={
                     selected
-                      ? "rounded-full border border-cyan-300 bg-[#D9B77B] px-4 py-2.5 text-sm font-semibold text-[#F4F1EB] transition"
+                      ? "rounded-full border border-[#E7C98E] bg-[#D9B77B] px-4 py-2.5 text-sm font-semibold text-[#21170D] shadow-[0_4px_16px_-8px_rgba(232,180,91,0.6)] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2D49B]"
                       : "rounded-full border border-[#34322F] bg-[#34322F] px-4 py-2.5 text-sm font-medium text-[#E6E1D8] transition hover:border-[#4B463D] hover:text-[#F4F1EB]"
                   }
                 >
                   {item.label}
-                  <span className={selected ? "ml-2 text-[#AFA89E]" : "ml-2 text-[#BDB6AB]"}>
+                  <span className={selected ? "ml-2 text-[#382A16]" : "ml-2 text-[#BDB6AB]"}>
                     {item.count}
                   </span>
                 </button>
