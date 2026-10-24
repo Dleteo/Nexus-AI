@@ -40,6 +40,7 @@ def audit(browser, width, label):
     }""")
     expect(page.locator("#top .royal-feature-tile").count() == 4,
            "Four actual feature cards should be present")
+    page.screenshot(path=str(ARTIFACTS / f"homepage-{label}.png"), full_page=True)
     expect(page.locator("#top h1").count() == 1,
            "Premium editorial hero heading missing")
     hero_class = page.locator("#top h1").get_attribute("class") or ""
