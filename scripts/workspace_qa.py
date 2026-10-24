@@ -87,9 +87,9 @@ class FakeWorkspace:
             self.last_sent = payload
             self.messages.extend([
                 {"id": "message-1", "role": "user", "content": payload["message"], "created_at": STAMP},
-                {"id": "message-2", "role": "assistant", "content": "QA simulated assistant answer.", "created_at": STAMP},
+                {"id": "message-2", "role": "assistant", "content": "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```", "created_at": STAMP},
             ])
-            return ok({"answer": "QA simulated assistant answer.", "requestsRemaining": 9})
+            return ok({"answer": "QA simulated assistant answer.\n\n```javascript\nconsole.log(42);\n```", "requestsRemaining": 9})
         if path == "/api/auth/logout" and method == "POST":
             return ok({"ok": True})
         return ok({"error": "Unexpected mocked request", "path": path, "method": method}, status=404)
@@ -190,6 +190,19 @@ def assistant_test(browser, width, label):
            "Assistant did not submit the selected mode")
     ensure(page.get_by_text("9 AI requests remaining today.", exact=False).is_visible(),
            "Remaining request counter did not update")
+    ensure(page.get_by_role("button", name="Copy javascript code").is_visible(),
+           "AI code block is missing its copy button")
+    ensure(page.get_by_text("console.log(42);", exact=True).is_visible(),
+           "Assistant code block did not render")
+    ensure(page.get_by_role("button", name="Copy message 2").is_visible(),
+           "Assistant response is missing a copy button")
+    if width < 1024:
+        history_toggle = page.get_by_role("button", name=re.compile("Recent chats"))
+        history_toggle.click()
+        playwright_expect(history_toggle).to_have_attribute("aria-expanded", "true")
+        ensure(page.locator("#assistant-history").is_visible(),
+               "Mobile history did not open")
+        history_toggle.click()
     no_overflow(page, "assistant-conversation-" + label)
     page.screenshot(path=str(SHOTS / f"assistant-conversation-{label}.png"), full_page=True)
     print(f"PASS mocked assistant conversation, mode and response at {width}px", flush=True)
