@@ -12,6 +12,13 @@ export default function RoyalArtwork() {
           <linearGradient id="royal-gold-line" x1="0" y1="0" x2="1" y2=".5"><stop stopColor="#714017" stopOpacity=".0"/><stop offset=".25" stopColor="#ECA943"/><stop offset=".52" stopColor="#FFF1BD"/><stop offset=".8" stopColor="#C38B3C"/><stop offset="1" stopColor="#FAD888" stopOpacity=".1"/></linearGradient>
           <linearGradient id="royal-onyx" x1=".1" y1="0" x2=".8" y2="1"><stop stopColor="#51515A"/><stop offset=".1" stopColor="#151519"/><stop offset=".55" stopColor="#08080A"/><stop offset=".88" stopColor="#272221"/><stop offset="1" stopColor="#61492D"/></linearGradient>
           <linearGradient id="royal-sheen" x1="0" y1="0" x2="1" y2=".9"><stop stopColor="#FFF2CF" stopOpacity=".72"/><stop offset=".19" stopColor="#C69148" stopOpacity=".16"/><stop offset=".64" stopColor="#020202" stopOpacity="0"/><stop offset="1" stopColor="#F7D08A" stopOpacity=".65"/></linearGradient>
+          <linearGradient id="royal-letter-gold" x1="0" y1="0" x2=".85" y2="1">
+            <stop stopColor="#FFF6D7"/>
+            <stop offset=".22" stopColor="#F9DA95"/>
+            <stop offset=".54" stopColor="#C98B37"/>
+            <stop offset=".77" stopColor="#F7C977"/>
+            <stop offset="1" stopColor="#8F571F"/>
+          </linearGradient>
           <filter id="royal-halo" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="11"/></filter>
           <filter id="royal-gold-bloom" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
           <filter id="royal-spark"><feGaussianBlur stdDeviation="1.5"/></filter>
@@ -30,6 +37,18 @@ export default function RoyalArtwork() {
         <path d="M190 255 211 192 224 194 198 285Z" fill="#FFF0BC" opacity=".1"/>
         <path d="M366 408 395 318 402 384Q399 413 366 408Z" fill="#FFC976" opacity=".26"/>
         <path d="M193 376C228 306 281 399 327 350S393 323 409 382" fill="none" stroke="#BD8A3A" strokeOpacity=".15" strokeWidth="2"/>
+        {/* Render the monogram as real SVG text. CSS background-clip can expose its
+            gradient as a solid rectangle when shorthand declarations override it. */}
+        <text x="295" y="355" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="164" fontWeight="700" fill="#E8A84F" filter="url(#royal-gold-bloom)" opacity=".48">N</text>
+        <text
+          className="royal-emblem-letter"
+          x="295" y="355" textAnchor="middle"
+          fontFamily="Georgia, 'Times New Roman', serif"
+          fontSize="164" fontWeight="700"
+          fill="url(#royal-letter-gold)"
+          stroke="#694019" strokeWidth="2.2" paintOrder="stroke"
+        >N</text>
+        <text x="295" y="355" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="164" fontWeight="700" fill="none" stroke="#FFE6AF" strokeWidth=".85" strokeOpacity=".8">N</text>
         <path d="M100 454 C180 425 260 463 361 447 S526 397 584 370" fill="none" stroke="#FFDDA0" strokeWidth="2" strokeOpacity=".78"/>
         <g fill="#FFD98F">
           <circle cx="77" cy="286" r="2.5"/><circle cx="109" cy="343" r="1.7"/><circle cx="454" cy="355" r="2"/><circle cx="494" cy="403" r="2.6"/><circle cx="533" cy="319" r="1.6"/><circle cx="47" cy="403" r="1.2"/><circle cx="434" cy="212" r="1.2"/><circle cx="161" cy="168" r="1.7"/><circle cx="480" cy="247" r="1.4"/>
@@ -40,9 +59,6 @@ export default function RoyalArtwork() {
       </svg>
       <div className="royal-art-crown absolute left-1/2 top-[5%] z-20 -translate-x-1/2 drop-shadow-[0_0_26px_rgba(252,195,106,.47)]">
         <CrownMark size={158} />
-      </div>
-      <div className="absolute left-1/2 top-[41%] z-20 -translate-x-1/2 font-serif text-[112px] font-semibold leading-none tracking-[-.08em] text-transparent [background:linear-gradient(110deg,#FFF4CE,#D5A258_56%,#FFE4A8)] [background-clip:text] drop-shadow-[0_0_23px_rgba(235,176,82,.31)] sm:text-[132px]">
-        N
       </div>
       <span className="absolute bottom-[8%] left-[14%] size-1.5 rounded-full bg-[#FFE7A8] shadow-[0_0_22px_7px_rgba(229,164,57,.63)]" />
       <span className="absolute right-[13%] top-[34%] size-1 rounded-full bg-[#FFE7A8] shadow-[0_0_17px_5px_rgba(229,164,57,.63)]" />
