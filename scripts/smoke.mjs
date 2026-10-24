@@ -60,11 +60,18 @@ await checkPublicPage("/", [
   "Build your next project",
   "Everything in its place.",
 ]);
-await checkPublicPage("/portfolio", ["Hello, I", "Hacking Ético", "Certifications &amp; Training"]);
+await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
+await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Professional summary", "Featured project: Nexus AI"]);
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
 await checkPublicPage("/reset-password", ["Choose a new password.", "Confirm new password"]);
+
+const pdf = await request("/Joshua-Vallejo-Sanchez-Resume.pdf");
+assert.equal(pdf.status, 200, "CV PDF must be downloadable");
+assert.match(pdf.headers.get("content-type") ?? "", /application\/pdf/i);
+assert.ok((await pdf.arrayBuffer()).byteLength > 1000, "CV PDF should not be empty");
+console.log("PASS downloadable CV PDF");
 
 const image = await request("/certificates/ethical-hacking.webp", { method: "HEAD" });
 assert.equal(image.status, 200, "Ethical hacking certificate image must exist");
