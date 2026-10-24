@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readSession } from "../../../../lib/session";
 import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabase";
-import { NEXUS_CORE_ENDPOINT, NEXUS_CORE_SYSTEM, getLocalModel, isNexusCoreReady, parseOllamaNdjson } from "../../../../lib/nexus-core";
+import { NEXUS_CORE_ENDPOINT, NEXUS_CORE_SYSTEM, getLocalModel, isNexusCoreReady, parseOllamaNdjson, encodeNexusCoreEvent } from "../../../../lib/nexus-core";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -149,8 +149,7 @@ export async function POST(request: Request) {
         code: "NEXUS_CORE_UNAVAILABLE",
       }, { status: 503 });
     }
-    const encoder = new TextEncoder();
-    const frame = (kind: string, payload: object) => encoder.encode(`event: ${kind}\\ndata: ${JSON.stringify(payload)}\\n\\n`);
+    const frame = encodeNexusCoreEvent;
     const run = async (onDelta: (text: string) => void): Promise<string> => {
       let text = "";
       let finished = false;
