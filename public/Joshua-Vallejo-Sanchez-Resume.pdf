@@ -1,0 +1,65 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 1 /Kids [3 0 R] >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Length 3505 >>
+stream
+0.20 0.16 0.13 rg BT /F2 22 Tf 1 0 0 1 46 740 Tm (JOSHUA VALLEJO SANCHEZ) Tj ET
+0.20 0.16 0.13 rg BT /F1 10 Tf 1 0 0 1 46 720 Tm (Aspiring Junior Web Developer  |  Pennsylvania, USA) Tj ET
+0.20 0.16 0.13 rg BT /F1 9 Tf 1 0 0 1 46 703 Tm (github.com/Dleteo   |   github.com/Dleteo/Nexus-AI) Tj ET
+0.87 0.74 0.66 RG 0.8 w 45 690 m 567 690 l S
+0.20 0.16 0.13 rg BT /F2 11 Tf 1 0 0 1 46 672 Tm (PROFESSIONAL SUMMARY) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 656 Tm (Junior web developer candidate building practical experience through a large full-stack) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 642 Tm (portfolio project. Interested in responsive design, clear user flows, web applications,) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 628 Tm (and reliable software delivery. Uses AI development tools with code review and testing.) Tj ET
+0.20 0.16 0.13 rg BT /F2 11 Tf 1 0 0 1 46 603 Tm (FEATURED PROJECT  /  NEXUS AI) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 586 Tm (Self-directed portfolio project  |  Next.js, React, TypeScript, Supabase) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 55 568 Tm (- Multi-page responsive UI, account workflows, and user-owned project management.) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 55 553 Tm (- Project creation, editing, archiving, restoration, deletion, and search.) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 55 538 Tm (- AI copilot with planning, debugging, learning, and interview-preparation modes.) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 55 523 Tm (- GitHub Actions checks: lint, TypeScript, production build, HTTP and browser QA.) Tj ET
+0.20 0.16 0.13 rg BT /F2 11 Tf 1 0 0 1 46 498 Tm (TECHNICAL TOOLKIT) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 481 Tm (Frontend: HTML, CSS, JavaScript, React, Next.js, TypeScript, Tailwind CSS) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 465 Tm (App & tools: Supabase, Next.js API routes, Git, GitHub, GitHub Actions, browser testing) Tj ET
+0.20 0.16 0.13 rg BT /F2 11 Tf 1 0 0 1 46 440 Tm (SELECTED TRAINING & CERTIFICATES) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 422 Tm (- The Complete 2024 Web Development Bootcamp - Udemy \(61.5 hours\)) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 405 Tm (- Software Engineering 101 - Udemy \(8.5 hours\)) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 388 Tm (- Desarrollo con IA: de 0 a Produccion - BIG school / Mouredev \(6 hours\)) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 371 Tm (- Desarrollo con IA: Programa con Agentes - BIG school / Mouredev \(6 hours\)) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 354 Tm (- Desarrollo con IA: El Nuevo Programador - BIG school / Mouredev \(4 hours\)) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.1 Tf 1 0 0 1 52 337 Tm (- Hacking Etico - BIG HACKING, attendance certificate \(8 hours\)) Tj ET
+0.87 0.74 0.66 RG 0.8 w 45 301 m 567 301 l S
+0.20 0.16 0.13 rg BT /F2 11 Tf 1 0 0 1 46 281 Tm (ADDITIONAL INFORMATION) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 264 Tm (Seeking Junior Web Developer opportunities. GitHub shows current project work.) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 246 Tm (Certificates represent training; course hours are not professional work experience.) Tj ET
+0.20 0.16 0.13 rg BT /F1 9.5 Tf 1 0 0 1 46 216 Tm (Portfolio: /portfolio   |   Project source: github.com/Dleteo/Nexus-AI) Tj ET
+0.45 0.38 0.33 rg BT /F1 8.5 Tf 1 0 0 1 46 68 Tm (This CV lists only verified public project details and documented course records.) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000321 00000 n 
+0000000396 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3952
+%%EOF
