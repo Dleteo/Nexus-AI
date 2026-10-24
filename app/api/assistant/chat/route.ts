@@ -235,7 +235,7 @@ export async function POST(request: Request) {
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:${streaming ? "streamGenerateContent?alt=sse" : "generateContent"}`,
       {
         method: "POST",
-        headers: { "x-goog-api-key": providerKey, "Content-Type": "application/json" },
+        headers: { "x-goog-api-key": providerKey!, "Content-Type": "application/json" },
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: systemInstructions }] },
           contents: [...history, { role: "user", content: message }].map((item) => ({
@@ -251,7 +251,7 @@ export async function POST(request: Request) {
   } else {
     providerResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
-      headers: { Authorization: `Bearer ${providerKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${providerKey!}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
         instructions: systemInstructions,
@@ -443,5 +443,5 @@ export async function POST(request: Request) {
     cache: "no-store",
   });
   if (!saveResponse.ok) return NextResponse.json({ error: "The answer was generated but could not be saved. Please try again before leaving this conversation." }, { status: 502 });
-  return NextResponse.json({ answer, requestsRemaining: usage[0].requests_remaining });
+  return NextResponse.json({ answer, requestsRemaining: usage?.[0]?.requests_remaining ?? null });
 }
