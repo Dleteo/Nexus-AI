@@ -28,7 +28,6 @@ export default function AssistantApp() {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
-  const [historyQuery, setHistoryQuery] = useState("");
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const chatViewport = useRef<HTMLDivElement>(null);
   const draftInput = useRef<HTMLTextAreaElement>(null);
@@ -177,10 +176,6 @@ export default function AssistantApp() {
   }
 
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
-  const filteredConversations = useMemo(
-    () => conversations.filter((item) => item.title.toLocaleLowerCase().includes(historyQuery.trim().toLocaleLowerCase())),
-    [conversations, historyQuery],
-  );
   async function copyMessage(content: string, index: number) {
     try { await navigator.clipboard.writeText(content); setCopiedMessage(index); }
     catch { setError("Could not copy the message. Please check browser clipboard permissions."); }
