@@ -20,7 +20,7 @@ def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Build your next project with more clarity.").count() == 1, "Missing main heading")
+    expect(page.get_by_role("heading", name="Build with confidence.").count() == 1, "Missing main heading")
     page.evaluate("document.fonts.ready")
     expect(page.evaluate("getComputedStyle(document.documentElement).colorScheme") == "dark",
            "Royal Black should enable dark-native browser controls")
@@ -30,8 +30,10 @@ def audit(browser, width, label):
            "Primary call-to-action must use the Royal Black golden gradient")
     expect(page.locator('nav[aria-label="Main navigation"] svg').count() >= 1,
            "Crown logo missing from navigation")
-    hero = page.locator("#top .nexus-royal-orbit")
-    expect(hero.count() == 1, "Royal Black animated gold orbit is missing")
+    hero = page.locator("#top .royal-art-stage")
+    expect(hero.count() == 1, "Dimensional crowned hero artwork is missing")
+    expect(page.locator("#top .royal-showcase-landscape").count() == 1, "Lower landscape showcase is missing")
+    expect(page.locator("#top .royal-art-light").count() == 1, "Animated golden trail is missing")
     expect(page.locator("#top h1").count() == 1,
            "Premium editorial hero heading missing")
     hero_class = page.locator("#top h1").get_attribute("class") or ""
