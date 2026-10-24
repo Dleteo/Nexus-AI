@@ -51,7 +51,6 @@ export default function AssistantApp() {
 
   useEffect(() => {
     shouldFollowLatest.current = true;
-    setShowJumpToLatest(false);
     const frame = requestAnimationFrame(scrollToLatest);
     return () => cancelAnimationFrame(frame);
   }, [current?.id, scrollToLatest]);
