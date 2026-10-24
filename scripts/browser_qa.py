@@ -25,6 +25,22 @@ def audit(browser, width, label):
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Horizontal overflow at {width}px: {dimensions}")
+    # Navigate within the current page: Home and the logo must always scroll up.
+    page.evaluate("window.scrollTo({top: 800, behavior: 'instant'})")
+    page.wait_for_function("window.scrollY > 300")
+    if width >= 768:
+        page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="Home", exact=True).click()
+    else:
+        page.get_by_role("button", name="Open navigation menu").click()
+        page.get_by_role("navigation", name="Mobile navigation").get_by_role("link", name="Home", exact=True).click()
+    page.wait_for_function("window.scrollY <= 2")
+    expect(not page.url.endswith("#features"), "Home must clear old anchor")
+    page.evaluate("window.scrollTo({top: 800, behavior: 'instant'})")
+    page.wait_for_function("window.scrollY > 300")
+    page.get_by_role("link", name="Nexus AI home").click()
+    page.wait_for_function("window.scrollY <= 2")
+    print(f"PASS Home and logo always return to top at {width}px", flush=True)
+
     if width < 768:
         button = page.get_by_role("button", name="Open navigation menu")
         expect(button.is_visible(), "Mobile menu toggle is missing")
