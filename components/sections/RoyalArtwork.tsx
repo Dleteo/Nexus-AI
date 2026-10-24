@@ -32,10 +32,10 @@ export default function RoyalArtwork() {
         <path className="royal-art-light-alt" d="M-22 362 C75 265 125 313 218 392 S455 484 578 336" stroke="#FFE4A7" strokeOpacity=".58" strokeWidth="1.8" fill="none"/>
         <path d="M115 408 C188 449 329 463 492 405" fill="none" stroke="#F7CE83" strokeOpacity=".48" strokeWidth="7" filter="url(#royal-gold-bloom)"/>
         <rect x="180" y="178" width="230" height="244" rx="42" fill="#030304" stroke="#CBA169" strokeOpacity=".7" strokeWidth="2"/>
-        <rect x="185" y="182" width="220" height="234" rx="39" fill="url(#royal-onyx)" stroke="url(#royal-sheen)" strokeWidth="4"/>
-        <path d="M204 192H374C386 192 396 201 396 214V383" fill="none" stroke="#FFF0C8" strokeOpacity=".53" strokeWidth="3"/>
+        <rect x="185" y="182" width="220" height="234" rx="39" fill="url(#royal-onyx)" stroke="#947345" strokeOpacity=".38" strokeWidth="1.5"/>
+        <path d="M204 192H374C386 192 396 201 396 214V383" fill="none" stroke="#FFF0C8" strokeOpacity=".15" strokeWidth="1.4"/>
         <path d="M190 255 211 192 224 194 198 285Z" fill="#FFF0BC" opacity=".1"/>
-        <path d="M366 408 395 318 402 384Q399 413 366 408Z" fill="#FFC976" opacity=".26"/>
+        <path d="M366 408 395 318 402 384Q399 413 366 408Z" fill="#FFC976" opacity=".09"/>
         <path d="M193 376C228 306 281 399 327 350S393 323 409 382" fill="none" stroke="#BD8A3A" strokeOpacity=".15" strokeWidth="2"/>
         {/* Render the monogram as real SVG text. CSS background-clip can expose its
             gradient as a solid rectangle when shorthand declarations override it. */}
@@ -46,9 +46,9 @@ export default function RoyalArtwork() {
           fontFamily="Georgia, 'Times New Roman', serif"
           fontSize="164" fontWeight="700"
           fill="url(#royal-letter-gold)"
-          stroke="#694019" strokeWidth="2.2" paintOrder="stroke"
+          stroke="#694019" strokeWidth=".9" paintOrder="stroke"
         >N</text>
-        <text x="295" y="355" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="164" fontWeight="700" fill="none" stroke="#FFE6AF" strokeWidth=".85" strokeOpacity=".8">N</text>
+        <text x="295" y="355" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="164" fontWeight="700" fill="none" stroke="#FFE6AF" strokeWidth=".55" strokeOpacity=".34">N</text>
         <path d="M100 454 C180 425 260 463 361 447 S526 397 584 370" fill="none" stroke="#FFDDA0" strokeWidth="2" strokeOpacity=".78"/>
         <g fill="#FFD98F">
           <circle cx="77" cy="286" r="2.5"/><circle cx="109" cy="343" r="1.7"/><circle cx="454" cy="355" r="2"/><circle cx="494" cy="403" r="2.6"/><circle cx="533" cy="319" r="1.6"/><circle cx="47" cy="403" r="1.2"/><circle cx="434" cy="212" r="1.2"/><circle cx="161" cy="168" r="1.7"/><circle cx="480" cy="247" r="1.4"/>
