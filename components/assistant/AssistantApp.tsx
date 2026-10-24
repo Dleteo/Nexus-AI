@@ -148,7 +148,7 @@ export default function AssistantApp() {
 
   return (
     <main className="min-h-screen px-3 pb-5 pt-20 text-[#F4F1EB] sm:px-5 sm:pt-24">
-      <div className="royal-workspace-frame mx-auto grid max-w-[1500px] gap-0 lg:grid-cols-[250px_minmax(0,1fr)]">
+      <div className="royal-workspace-frame royal-reference-assistant mx-auto grid max-w-[1500px] gap-0 lg:grid-cols-[210px_minmax(0,1fr)]">
         <aside className="royal-workspace-sidebar flex min-h-0 flex-col border-b border-[#5F492D] p-4 lg:h-[calc(100vh-7.5rem)] lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between gap-2">
             <Link href="/" className="flex min-w-0 items-center gap-3">
@@ -158,7 +158,7 @@ export default function AssistantApp() {
             <Link href="/dashboard" aria-label="Open projects dashboard" title="Projects dashboard" className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#34322F] text-[#BDB6AB] transition hover:border-[#4B463D] hover:text-[#D9B77B]">▦</Link>
           </div>
 
-          <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ New conversation</button>
+          <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="royal-new-chat mt-6 w-full">＋ New conversation</button>
 
           <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#34322F] bg-[#111214] px-3 py-2 text-left text-xs font-semibold text-[#D9B77B] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Recent chats ({conversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
           <div className="mt-7 hidden items-center justify-between px-1 lg:flex"><p className="text-[10px] font-bold tracking-[0.17em] text-[#BDB6AB]">RECENT HISTORY</p><span className="text-[10px] text-[#AFA89E]">{conversations.length}</span></div>
@@ -181,27 +181,27 @@ export default function AssistantApp() {
         <section className="royal-workspace-surface flex min-h-[calc(100vh-7rem)] min-w-0 flex-col overflow-hidden lg:min-h-[calc(100vh-7.5rem)]">
           <header className="border-b border-[#4D3A23] bg-[#0F0E0C] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{activeMode.description}</p></div>
+              <div className="flex items-center gap-3"><span className="hidden size-9 place-items-center rounded-xl border border-[#6F512B] bg-[#2A2014] text-[#F4CE87] sm:grid">✦</span><div><p className="royal-workspace-title text-base text-[#F8EDDA]">Nexus AI Copilot</p><p className="mt-1 flex items-center gap-1.5 text-[11px] text-[#B8AB97]"><span className="size-1.5 rounded-full bg-[#63CC7E]" />{activeMode.label} mode · {activeMode.description}</p></div></div>
               <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> READY TO HELP</div>
             </div>
-            <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
+            <div className="royal-mode-selector mt-4 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
               {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#4B463D] bg-[#34322F] text-[#D9B77B] shadow-none" : "border-[#34322F] bg-[#34322F] text-[#BDB6AB] hover:border-[#34322F] hover:text-[#E6E1D8]"}`}>{item.label}</button>)}
             </div>
           </header>
 
           <div className="royal-workspace-surface min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
-            {!current && <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center sm:py-20">
+            {!current && <div className="royal-assistant-welcome mx-auto flex max-w-5xl flex-col items-center py-10 text-center sm:py-14">
               <div className="relative grid size-20 place-items-center"><span className="absolute size-20 rounded-full bg-[#E0A74E]/15 blur-xl" aria-hidden="true"/><CrownMark size={70} className="relative drop-shadow-[0_0_20px_rgba(232,178,88,.55)]"/></div>
-              <p className="nexus-kicker mt-6">Start with a question</p><h2 className="royal-workspace-title mt-3 text-3xl sm:text-4xl">What are we working on?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-[#BDB6AB]">Plan a project, untangle an error, learn a concept step by step, or get ready for a technical interview.</p>
-              <div className="mt-7 grid w-full gap-3 text-left sm:grid-cols-2">
+              <h2 className="royal-workspace-title mt-4 text-4xl text-[#F6EAD7] sm:text-5xl">Nexus AI Copilot</h2><p className="mt-3 max-w-xl text-sm leading-7 text-[#ADA59B]">Think deeper. Create faster. Go further.</p><p className="mt-1 max-w-xl text-xs leading-6 text-[#9B9284]">Choose a task below or start a conversation with your personal development copilot.</p>
+              <div className="mt-10 grid w-full gap-3 text-left sm:grid-cols-2 xl:grid-cols-4">
                 {[
-                  { title: "Plan a project", text: "Turn an idea into clear tasks.", mode: "plan" as Mode, icon: "⌘" },
-                  { title: "Debug an issue", text: "Find likely causes and next checks.", mode: "debug" as Mode, icon: "⌕" },
-                  { title: "Learn a concept", text: "Understand code in plain language.", mode: "explain" as Mode, icon: "◇" },
-                  { title: "Practice interviews", text: "Prepare structured technical answers.", mode: "interview" as Mode, icon: "↗" },
-                ].map((item) => <button key={item.mode} onClick={() => { setMode(item.mode); setDraft(item.title === "Plan a project" ? "Help me plan a project step by step." : item.title === "Debug an issue" ? "Help me debug an issue. Ask me for the relevant code and error." : item.title === "Learn a concept" ? "Explain a web development concept step by step in simple language." : "Start a junior web developer mock interview, one question at a time."); }} className="nexus-royal-card royal-quick-card group rounded-xl p-4"><span className="grid size-9 place-items-center rounded-lg border border-[#34322F] bg-[#34322F] text-lg text-[#D9B77B]">{item.icon}</span><span className="mt-3 block text-sm font-semibold text-[#E6E1D8]">{item.title} <span className="ml-1 text-[#AFA89E] transition group-hover:translate-x-1 group-hover:text-[#D9B77B]">↗</span></span><span className="mt-1.5 block text-xs leading-5 text-[#BDB6AB]">{item.text}</span></button>)}
+                  { title: "Plan a project", text: "Brainstorm new ideas", mode: "plan" as Mode, icon: "♧" },
+                  { title: "Debug an issue", text: "Find and fix errors", mode: "debug" as Mode, icon: "⌕" },
+                  { title: "Learn a concept", text: "Understand complex code", mode: "explain" as Mode, icon: "▤" },
+                  { title: "Practice interviews", text: "Build your career skills", mode: "interview" as Mode, icon: "✦" },
+                ].map((item) => <button key={item.mode} onClick={() => { setMode(item.mode); setDraft(item.title === "Plan a project" ? "Help me plan a project step by step." : item.title === "Debug an issue" ? "Help me debug an issue. Ask me for the relevant code and error." : item.title === "Learn a concept" ? "Explain a web development concept step by step in simple language." : "Start a junior web developer mock interview, one question at a time."); }} className="royal-reference-prompt-card royal-quick-card group rounded-2xl p-4"><span className="grid size-9 place-items-center rounded-lg border border-[#34322F] bg-[#34322F] text-lg text-[#D9B77B]">{item.icon}</span><span className="mt-3 block text-sm font-semibold text-[#E6E1D8]">{item.title} <span className="ml-1 text-[#AFA89E] transition group-hover:translate-x-1 group-hover:text-[#D9B77B]">↗</span></span><span className="mt-1.5 block text-xs leading-5 text-[#BDB6AB]">{item.text}</span></button>)}
               </div>
-              <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-7">Start a conversation ↗</button>
+              <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-ghost-button mt-7 rounded-full border-[#715636] px-6">Start a conversation ↗</button>
             </div>}
 
             {current && messages.length === 0 && <div className="mx-auto max-w-xl py-12 text-center"><div className="mx-auto grid size-12 place-items-center rounded-xl border border-[#4B463D] bg-[#34322F] text-xl text-[#D9B77B]">✦</div><h2 className="mt-4 text-xl font-semibold">Let’s make the next step clear.</h2><p className="mt-2 text-sm leading-6 text-[#BDB6AB]">Write a question or use one of the suggestions below.</p><div className="mt-5 flex flex-wrap justify-center gap-2"><button type="button" onClick={() => setDraft("Help me plan my next step.")} className="nexus-ghost-button text-xs">Help me plan</button><button type="button" onClick={() => setDraft("Explain this code to me step by step.")} className="nexus-ghost-button text-xs">Explain code</button><button type="button" onClick={() => setDraft("Help me debug an error. What should I check first?")} className="nexus-ghost-button text-xs">Debug an error</button></div></div>}
@@ -222,7 +222,7 @@ export default function AssistantApp() {
 
           <form onSubmit={sendMessage} className="border-t border-[#493A25] bg-[#0B0A09] p-3 sm:p-5">
             <label htmlFor="assistant-message" className="sr-only">Your message</label>
-            <div className="rounded-2xl border border-[#B58749]/80 bg-[#121110] p-3 shadow-[0_0_22px_-15px_rgba(242,185,92,.7)] transition focus-within:border-[#F1C77E] focus-within:shadow-[0_0_18px_-10px_rgba(240,183,83,.8)] sm:p-4">
+            <div className="royal-composer-glow rounded-2xl border border-[#B58749]/80 bg-[#121110] p-3 shadow-[0_0_22px_-15px_rgba(242,185,92,.7)] transition focus-within:border-[#F1C77E] focus-within:shadow-[0_0_18px_-10px_rgba(240,183,83,.8)] sm:p-4">
               <textarea id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} maxLength={4000} rows={3} placeholder="Ask a question, describe an idea, or paste an error…" className="nexus-field min-h-20 resize-y border-0 bg-transparent px-1 py-1 text-sm shadow-none focus:border-transparent focus:shadow-none" />
               <div className="mt-3 flex flex-col justify-between gap-3 border-t border-[#34322F] pt-3 sm:flex-row sm:items-center">
                 <p className="text-[10px] leading-5 text-[#AFA89E]">{remaining === null ? "Daily limit: 10 AI requests per user." : `${remaining} AI requests remaining today.`} Ctrl/⌘ + Enter to send. Never share passwords or private keys.</p>
