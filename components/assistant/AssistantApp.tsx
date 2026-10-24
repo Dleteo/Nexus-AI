@@ -28,7 +28,46 @@ export default function AssistantApp() {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
-  const endOfMessages = useRef<HTMLDivElement>(null);
+  const [historyQuery, setHistoryQuery] = useState("");
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const chatViewport = useRef<HTMLDivElement>(null);
+  const draftInput = useRef<HTMLTextAreaElement>(null);
+  const shouldFollowLatest = useRef(true);
+
+  const updateScrollPosition = useCallback(() => {
+    const viewport = chatViewport.current;
+    if (!viewport) return;
+    const awayFromLatest = viewport.scrollHeight - viewport.clientHeight - viewport.scrollTop > 110;
+    shouldFollowLatest.current = !awayFromLatest;
+    setShowJumpToLatest(awayFromLatest);
+  }, []);
+
+  const scrollToLatest = useCallback(() => {
+    const viewport = chatViewport.current;
+    if (!viewport) return;
+    shouldFollowLatest.current = true;
+    viewport.scrollTo({ top: viewport.scrollHeight, behavior: "instant" });
+    setShowJumpToLatest(false);
+  }, []);
+
+  useEffect(() => {
+    shouldFollowLatest.current = true;
+    setShowJumpToLatest(false);
+    const frame = requestAnimationFrame(scrollToLatest);
+    return () => cancelAnimationFrame(frame);
+  }, [current?.id, scrollToLatest]);
+
+  useEffect(() => {
+    if (shouldFollowLatest.current) scrollToLatest();
+    else updateScrollPosition();
+  }, [messages, sending, scrollToLatest, updateScrollPosition]);
+
+  useEffect(() => {
+    const field = draftInput.current;
+    if (!field) return;
+    field.style.height = "auto";
+    field.style.height = `${Math.min(field.scrollHeight, 220)}px`;
+  }, [draft]);
 
   const openConversation = useCallback(async (id: string) => {
     setError("");
@@ -48,9 +87,8 @@ export default function AssistantApp() {
     if (!response.ok) throw new Error(data.error ?? "No se pudieron cargar las conversaciones.");
     const list = data.conversations ?? [];
     setConversations(list);
-    if (list.length && !current) await openConversation(list[0].id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current, openConversation]);
+    if (list.length) await openConversation(list[0].id);
+  }, [openConversation]);
 
   useEffect(() => {
     let active = true;
@@ -75,27 +113,30 @@ export default function AssistantApp() {
     setMessages([]);
     setMode(nextMode);
     setMobileHistoryOpen(false);
+    return data.conversation;
   }
 
   async function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const content = draft.trim();
-    if (!content || !current || sending) return;
+    if (!content || sending) return;
     setError("");
     setDraft("");
     setSending(true);
     const optimistic: Message = { role: "user", content };
-    setMessages((list) => [...list, optimistic]);
     try {
+      // First message can create its own conversation, just like a modern chat.
+      const conversation = current ?? await newConversation(mode);
+      setMessages((list) => [...list, optimistic]);
       const response = await fetch("/api/assistant/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: current.id, message: content, mode }),
+        body: JSON.stringify({ conversationId: conversation.id, message: content, mode }),
       });
       const data = await response.json() as { answer?: string; error?: string; requestsRemaining?: number };
       if (!response.ok || !data.answer) throw new Error(data.error ?? "No se pudo obtener una respuesta.");
       setMessages((list) => [...list, { role: "assistant", content: data.answer! }]);
       setRemaining(data.requestsRemaining ?? null);
-      setConversations((list) => list.map((item) => item.id === current.id ? { ...item, mode, title: item.title === "New conversation" ? content.slice(0, 80) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
+      setConversations((list) => list.map((item) => item.id === conversation.id ? { ...item, mode, title: item.title === "New conversation" ? content.slice(0, 80) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
     } catch (cause) {
       setMessages((list) => list.filter((item) => item !== optimistic));
       setDraft(content);
@@ -136,9 +177,10 @@ export default function AssistantApp() {
   }
 
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
-  useEffect(() => {
-    if (sending || messages.length > 0) endOfMessages.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, sending]);
+  const filteredConversations = useMemo(
+    () => conversations.filter((item) => item.title.toLocaleLowerCase().includes(historyQuery.trim().toLocaleLowerCase())),
+    [conversations, historyQuery],
+  );
   async function copyMessage(content: string, index: number) {
     try { await navigator.clipboard.writeText(content); setCopiedMessage(index); }
     catch { setError("Could not copy the message. Please check browser clipboard permissions."); }
@@ -178,18 +220,19 @@ export default function AssistantApp() {
           </div>
         </aside>
 
-        <section className="royal-workspace-surface flex min-h-[calc(100vh-7rem)] min-w-0 flex-col overflow-hidden lg:min-h-[calc(100vh-7.5rem)]">
+        <section className="royal-workspace-surface flex h-[calc(100dvh-7.5rem)] min-h-[500px] min-w-0 flex-col overflow-hidden lg:h-[calc(100dvh-7.5rem)]">
           <header className="border-b border-[#4D3A23] bg-[#0F0E0C] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{activeMode.description}</p></div>
-              <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> READY TO HELP</div>
+              <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> PRIVATE WORKSPACE</div>
             </div>
             <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
               {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#4B463D] bg-[#34322F] text-[#D9B77B] shadow-none" : "border-[#34322F] bg-[#34322F] text-[#BDB6AB] hover:border-[#34322F] hover:text-[#E6E1D8]"}`}>{item.label}</button>)}
             </div>
           </header>
 
-          <div className="royal-workspace-surface min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="relative min-h-0 flex-1">
+          <div ref={chatViewport} id="assistant-messages" role="log" aria-label="Conversation messages" aria-relevant="additions" onScroll={updateScrollPosition} className="royal-workspace-surface h-full space-y-5 overflow-y-auto overscroll-contain p-4 pb-8 sm:p-6 sm:pb-10 lg:p-8">
             {!current && <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center sm:py-20">
               <div className="relative grid size-20 place-items-center"><span className="absolute size-20 rounded-full bg-[#E0A74E]/15 blur-xl" aria-hidden="true"/><CrownMark size={70} className="relative drop-shadow-[0_0_20px_rgba(232,178,88,.55)]"/></div>
               <p className="nexus-kicker mt-6">Start with a question</p><h2 className="royal-workspace-title mt-3 text-3xl sm:text-4xl">What are we working on?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-[#BDB6AB]">Plan a project, untangle an error, learn a concept step by step, or get ready for a technical interview.</p>
@@ -215,18 +258,31 @@ export default function AssistantApp() {
                 <MessageContent content={message.content} />
               </article>
             </div>)}
-            <div ref={endOfMessages} aria-hidden="true" />
             {sending && <div className="flex items-center gap-3 text-xs text-[#BDB6AB]" aria-live="polite"><span className="flex gap-1"><span className="size-1.5 animate-pulse rounded-full bg-[#D9B77B]" /><span className="size-1.5 animate-pulse rounded-full bg-[#D9B77B] [animation-delay:120ms]" /><span className="size-1.5 animate-pulse rounded-full bg-[#4B463D] [animation-delay:240ms]" /></span>Nexus AI is thinking…</div>}
             {error && <p role="alert" className="rounded-xl border border-[#8D5456] bg-[#3C2628] px-4 py-3 text-sm text-[#FFB0A9]">{error}</p>}
+          </div>
+          {showJumpToLatest && (
+            <button
+              type="button"
+              onClick={scrollToLatest}
+              aria-label="Jump to latest message"
+              title="Jump to latest message"
+              className="absolute bottom-4 left-1/2 z-20 grid size-11 -translate-x-1/2 place-items-center rounded-full border border-[#9A7843] bg-[#211D17] text-[#F7D89B] shadow-[0_8px_30px_rgba(0,0,0,.75)] transition hover:scale-105 hover:border-[#E9BD72] hover:bg-[#382C1A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F7D89B]"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 4v13m-6-6 6 6 6-6M5 21h14" />
+              </svg>
+            </button>
+          )}
           </div>
 
           <form onSubmit={sendMessage} className="border-t border-[#493A25] bg-[#0B0A09] p-3 sm:p-5">
             <label htmlFor="assistant-message" className="sr-only">Your message</label>
             <div className="rounded-2xl border border-[#B58749]/80 bg-[#121110] p-3 shadow-[0_0_22px_-15px_rgba(242,185,92,.7)] transition focus-within:border-[#F1C77E] focus-within:shadow-[0_0_18px_-10px_rgba(240,183,83,.8)] sm:p-4">
-              <textarea id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} maxLength={4000} rows={3} placeholder="Ask a question, describe an idea, or paste an error…" className="nexus-field min-h-20 resize-y border-0 bg-transparent px-1 py-1 text-sm shadow-none focus:border-transparent focus:shadow-none" />
+              <textarea ref={draftInput} id="assistant-message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} maxLength={4000} rows={1} placeholder="Message Nexus AI…" className="nexus-field min-h-14 max-h-[220px] resize-none overflow-y-auto border-0 bg-transparent px-1 py-2 text-sm shadow-none focus:border-transparent focus:shadow-none" />
               <div className="mt-3 flex flex-col justify-between gap-3 border-t border-[#34322F] pt-3 sm:flex-row sm:items-center">
-                <p className="text-[10px] leading-5 text-[#AFA89E]">{remaining === null ? "Daily limit: 10 AI requests per user." : `${remaining} AI requests remaining today.`} Ctrl/⌘ + Enter to send. Never share passwords or private keys.</p>
-                <button disabled={!current || !draft.trim() || sending} type="submit" className="nexus-primary-button w-full sm:w-auto">{sending ? "Thinking…" : "Send message"} <span aria-hidden="true">↗</span></button>
+                <p className="text-[10px] leading-5 text-[#AFA89E]">{remaining === null ? "Daily limit: 10 AI requests per user." : `${remaining} AI requests remaining today.`} Enter to send · Shift + Enter for a new line. Never share passwords or private keys.</p>
+                <button disabled={!draft.trim() || sending} type="submit" className="nexus-primary-button w-full sm:w-auto">{sending ? "Thinking…" : "Send message"} <span aria-hidden="true">↗</span></button>
               </div>
             </div>
           </form>
