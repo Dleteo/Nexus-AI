@@ -73,6 +73,12 @@ assert.match(pdf.headers.get("content-type") ?? "", /application\/pdf/i);
 assert.ok((await pdf.arrayBuffer()).byteLength > 1000, "CV PDF should not be empty");
 console.log("PASS downloadable CV PDF");
 
+const crown = await request("/royal/reference-crown.jpg");
+assert.equal(crown.status, 200, "Approved reference crown artwork must be served");
+assert.match(crown.headers.get("content-type") ?? "", /image\/jpeg/);
+assert.ok((await crown.arrayBuffer()).byteLength > 2500, "Reference crown artwork should not be empty");
+console.log("PASS approved reference crown artwork");
+
 const image = await request("/certificates/ethical-hacking.webp", { method: "HEAD" });
 assert.equal(image.status, 200, "Ethical hacking certificate image must exist");
 assert.match(image.headers.get("content-type") ?? "", /^image\/webp/i);
