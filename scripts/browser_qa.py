@@ -32,8 +32,11 @@ def audit(browser, width, label):
            "Crown logo missing from navigation")
     hero = page.locator("#top .nexus-royal-orbit")
     expect(hero.count() == 1, "Royal Black animated gold orbit is missing")
-    expect(page.locator("#top .nexus-royal-title").count() == 1,
-           "Premium editorial hero typography missing")
+    expect(page.locator("#top h1").count() == 1,
+           "Premium editorial hero heading missing")
+    hero_class = page.locator("#top h1").get_attribute("class") or ""
+    expect("nexus-royal-title" in hero_class,
+           f"Premium editorial hero typography missing: {hero_class}")
 
     button = page.locator(".nexus-primary-button").first
     button.hover()
