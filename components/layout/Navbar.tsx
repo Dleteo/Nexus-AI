@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
@@ -28,7 +28,7 @@ export default function Navbar() {
     return () => { active = false; };
   }, []);
 
-  function handleNavigation(event: React.MouseEvent<HTMLAnchorElement>, href: string) {
+  function handleNavigation(event: MouseEvent<HTMLAnchorElement>, href: string) {
     setMobileMenuOpen(false);
     // Next's same-route <Link> navigation can preserve scroll position.
     // Explicitly handle Home and the logo so they always return to the top.
