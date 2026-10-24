@@ -33,7 +33,13 @@ def audit(browser, width, label):
     hero = page.locator("#top .royal-art-stage")
     expect(hero.count() == 1, "Dimensional crowned hero artwork is missing")
     expect(page.locator("#top .royal-showcase-landscape").count() == 1, "Lower landscape showcase is missing")
-    expect(page.locator("#top .royal-art-light").count() == 1, "Animated golden trail is missing")
+    expect(page.locator("#top .royal-reference-art").count() == 1, "Real photographic crown crop is missing")
+    page.wait_for_function("""() => {
+        const photo = document.querySelector('.royal-reference-art');
+        return photo && photo.complete && photo.naturalWidth > 0 && photo.naturalHeight > 0;
+    }""")
+    expect(page.locator("#top .royal-feature-tile").count() == 4,
+           "Four actual feature cards should be present")
     expect(page.locator("#top h1").count() == 1,
            "Premium editorial hero heading missing")
     hero_class = page.locator("#top h1").get_attribute("class") or ""
