@@ -102,9 +102,26 @@ def audit(browser, width, label):
     expect(page.get_by_alt_text("Original screenshot of the text encoder and decoder interface.").count() == 1,
            "Missing authentic encoder screenshot")
     group = page.get_by_role("group", name="Filter certificates by record type")
-    group.get_by_role("button", name="Attendance certificates").click()
-    expect(group.get_by_role("button", name="Attendance certificates").get_attribute("aria-pressed") == "true",
+    selected_filter = group.get_by_role("button", name="Attendance certificates")
+    selected_filter.click()
+    expect(selected_filter.get_attribute("aria-pressed") == "true",
            "Training filter did not activate")
+    ratios = selected_filter.evaluate("""(button) => {
+        const luminance = (color) => {
+            const rgb = color.match(/[0-9.]+/g).slice(0, 3).map((v) => Number(v) / 255);
+            const linear = rgb.map((v) => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+            return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+        };
+        const background = luminance(getComputedStyle(button).backgroundColor);
+        const contrast = (element) => {
+            const foreground = luminance(getComputedStyle(element).color);
+            return (Math.max(foreground, background) + 0.05) /
+                   (Math.min(foreground, background) + 0.05);
+        };
+        return { label: contrast(button), count: contrast(button.querySelector("span")) };
+    }""")
+    expect(ratios["label"] >= 4.5 and ratios["count"] >= 4.5,
+           f"Selected certificate filter fails WCAG AA text contrast: {ratios}")
     expect(page.get_by_text("Showing 4 records").is_visible(), "Training records filter count incorrect")
     expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).is_visible(),
            "Training record filtered out")
