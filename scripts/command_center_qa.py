@@ -26,6 +26,7 @@ def run():
             page = browser.new_page(viewport=dimensions, reduced_motion="reduce")
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
+            page.add_init_script("localStorage.setItem(\'nexus-language-welcome-seen\', \'yes\')")
             response = page.goto(BASE + "/command-center", wait_until="domcontentloaded")
             assert response is not None and response.status == 200, f"Route unavailable: {response}"
             assert page.locator(".ncc-stage").count() == 1
