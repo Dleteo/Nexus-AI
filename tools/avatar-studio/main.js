@@ -43,7 +43,7 @@ function status(text) { state.textContent = text; }
 function animateExpression(name, value) { if (vrm?.expressionManager) vrm.expressionManager.setValue(name, value); }
 function bone(name) { return vrm?.humanoid?.getNormalizedBoneNode(name) ?? null; }
 function resetState(){
-  speechSynthesis?.cancel(); talk=false;
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel(); talk=false;
   if(modelRoot){scene.remove(modelRoot); VRMUtils.deepDispose(modelRoot);modelRoot=null;}
   vrm=null;for(const button of [greet,wave,blink,voice])button.disabled=true;
 }
@@ -106,7 +106,6 @@ function render(){
  const animate=!reducedMotion.matches;
  rings.rotation.y+=dt*.08;floor.material.opacity=.7;
  if(vrm){
-   vrm.update(dt);
    const head=bone("head");
    if(head){head.rotation.y=THREE.MathUtils.damp(head.rotation.y,animate?look.x*.22:0,4,dt);head.rotation.x=THREE.MathUtils.damp(head.rotation.x,animate?-look.y*.12:0,4,dt);}
    const chest=bone("chest");
@@ -114,10 +113,11 @@ function render(){
    const right=bone("rightUpperArm");
    if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,now<waveUntil?-1.0:0,5,dt);
    const left=bone("leftUpperArm");
-   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,now<waveUntil?.26:0,5,dt);
+   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,now<waveUntil ? .26 : 0,5,dt);
    if(now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
    animateExpression("blink",now<blinkUntil?1:0);
-   animateExpression("aa",talk?.32+.24*Math.abs(Math.sin(t*8)):0);
+   animateExpression("aa",talk ? .32+.24*Math.abs(Math.sin(t*8)) : 0);
+   vrm.update(dt);
  }
  renderer.render(scene,camera);
 }
