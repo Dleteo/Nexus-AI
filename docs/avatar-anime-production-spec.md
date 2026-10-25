@@ -42,3 +42,21 @@ No third-party model should be committed without confirming commercial permissio
 - **Gate E:** lint, typecheck, production build, functional browser QA, mobile GPU fallback, performance audit, security review; merge only when green.
 
 The Nexus AI assistant, CV, public creator info, interview coach, news feed, authenticated chats and their access controls remain in place. Nexus Foundation research remains separate.
+
+
+## Chosen visual identity — reference #8 (25 October 2026)
+
+The user selected **the last of the eight original generated illustrations** as the official **visual reference**, not a 3D deliverable. Working title: **Nexus — Guardiana AI**.
+
+- Adult-proportioned, high-fidelity anime heroine; **never chibi**.
+- Long flowing pale-silver hair, expressive eyes and a gentle confident expression.
+- Elegant futuristic white/navy attire with gold filigree, luminous blue accents and layered translucent fabrics; refined and non-revealing game-character presentation.
+- Blue/gold holographic interfaces around her with floating globe/data and subtle energy ornaments, celestial science-fiction chamber.
+- Target visual standard: premium stylized anime game character; polished face, hairstyle and garments are higher priority than crowded surrounding UI.
+- On production pages: clean readable holographic controls independent of the model, not baked into an image.
+- Motion concept: soft idle breathing, blinking and eye tracking, flowing hair and fabric simulation subject to mobile performance budget, hand-cast panel activation, clear facial speaking expressions, warm feminine voice in selected language.
+
+**Critical distinction:** The original reference is 2D artwork generated during the chat. It is not an existing commercial-ready VRM mesh or a working animation file. No exact identical 3D reconstruction or rig can be claimed until a model has been created, inspected and actually loaded. Do not substitute the earlier rudimentary procedural robot.
+
+### Acceptance test before swapping homepage
+A licensed/custom-created VRM/GLB must visually match this art direction and demonstrate on video or in browser: 3/4 body, face close-up, natural blink, look-at, conversational gesture, voice-synchronized mouth movement and touchscreen-compatible controls. Keep a visual approval gate before activating publicly.
