@@ -46,7 +46,9 @@ def run():
             assert page.locator('.ncc-actions a[href="https://github.com/Dleteo/Nexus-AI"]').count() == 1
             page.keyboard.press("Escape")
             assert page.locator("#ncc-drawer").count() == 0
-            page.locator("#ncc-language").select_option("en")
+            page.locator(".ncc-hud-actions button").first.click()
+            assert page.locator(".ncc-language-card").is_visible()
+            page.locator(".ncc-language-options button").nth(1).click()
             if kind == "desktop":
                 page.locator('.ncc-hotspot').nth(0).click()
             else:
