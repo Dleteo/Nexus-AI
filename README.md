@@ -95,3 +95,7 @@ GitHub Actions runs the same checks for pull requests and pushes to `main`.
 - The assistant enforces a per-user daily request limit. Keep provider keys and credentials out of prompts, source control, and client-side code.
 - Email recovery redirects must match the URLs allowed in Supabase Auth settings.
 - Production deployment and production-domain configuration are separate steps; this repository's local setup does not mean the app has been deployed.
+
+## Portfolio accuracy and case study
+
+Nexus AI is the principal featured case study for an aspiring Junior Web Developer. The portfolio distinguishes browser skills practiced directly from React/Next.js/Supabase features implemented using AI-assisted development. See [docs/portfolio-evidence.md](docs/portfolio-evidence.md) for the evidence and future visual redesign acceptance criteria. Nexus Foundation is described separately as experimental research; the hosted assistant uses an external provider, not that unfinished model. No paid developer experience, customers, published live product or unverified credentials are claimed.

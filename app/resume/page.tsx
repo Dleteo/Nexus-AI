@@ -4,6 +4,7 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { professionalProfile as profile } from "../../data/profile";
 import { certifications } from "../../data/certifications";
+import { professionalExperience, foundationResearch } from "../../data/portfolio-evidence";
 
 export const metadata: Metadata = {
   title: "Joshua Vallejo Sanchez | CV",
@@ -40,8 +41,13 @@ export default function ResumePage() {
               </ul>
             </section>
             <section className="mt-7"><h2 className="text-lg font-bold">Technical toolkit</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Frontend:</strong> HTML, CSS, JavaScript, React, Next.js, TypeScript, Tailwind CSS</p>
-              <p className="text-sm leading-7 text-[#D9B77B]"><strong>App and tools:</strong> Supabase, Git, GitHub, GitHub Actions, Next.js API routes, browser testing, AI-assisted development</p>
+              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Frontend practiced:</strong> HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript ES6, DOM. <strong>Project-integrated with AI assistance:</strong> React, Next.js, TypeScript, Tailwind CSS</p>
+              <p className="text-sm leading-7 text-[#D9B77B]"><strong>Application and workflow:</strong> Supabase authentication, PostgreSQL/RLS, Next.js API routes, Gemini integration, Git/GitHub, CI, linting, type checking and browser QA. <strong>PC background:</strong> Windows setup, drivers and basic troubleshooting.</p>
+            </section>
+            <section className="mt-7"><h2 className="text-lg font-bold">Work experience and research</h2>
+              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{professionalExperience.title}:</strong> {professionalExperience.summary} {professionalExperience.note}</p>
+              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{foundationResearch.title}:</strong> {foundationResearch.summary} {foundationResearch.limitation}</p>
+              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Languages:</strong> Spanish (native), English (intermediate).</p>
             </section>
             <section className="mt-7"><h2 className="text-lg font-bold">Education and professional learning</h2>
               <p className="mt-2 text-sm text-[#CBC3B7]">Selected certificates and training records, not professional employment experience:</p>

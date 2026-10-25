@@ -1,12 +1,8 @@
 import Link from "next/link";
 import GithubProjects from "./GithubProjects";
 import { professionalProfile as profile } from "../../data/profile";
+import { evidenceGroups, foundationResearch, nexusCaseStudy, professionalExperience } from "../../data/portfolio-evidence";
 
-const skills = [
-  { label: "Frontend", values: ["HTML", "CSS", "JavaScript", "React", "Next.js", "TypeScript", "Tailwind CSS"] },
-  { label: "Backend & data", values: ["Next.js API routes", "Supabase", "Authentication", "Database access"] },
-  { label: "Workflow", values: ["Git & GitHub", "GitHub Actions", "Browser testing", "AI-assisted development"] },
-];
 const work = [
   { number: "01", title: "Responsive application", description: "A clean multi-page interface with mobile navigation, reusable components and a cohesive design system.", tag: "Frontend" },
   { number: "02", title: "Accounts and project management", description: "Authentication, user-owned projects, project search and create, update, archive, restore and delete flows.", tag: "Full-stack features" },
@@ -30,7 +26,9 @@ export default function Portfolio() {
             <nav aria-label="Portfolio sections" className="flex flex-wrap items-center gap-4 text-xs font-semibold sm:text-sm">
               <a href="#work" className="text-[#BDB6AB] hover:text-[#D9B77B]">Project</a>
               <a href="#other-projects" className="text-[#BDB6AB] hover:text-[#D9B77B]">More projects</a>
+              <a href="#case-study" className="text-[#BDB6AB] hover:text-[#D9B77B]">Decisions</a>
               <a href="#skills" className="text-[#BDB6AB] hover:text-[#D9B77B]">Skills</a>
+              <a href="#experience" className="text-[#BDB6AB] hover:text-[#D9B77B]">Experience</a>
               <a href="#certifications" className="text-[#BDB6AB] hover:text-[#D9B77B]">Certificates</a>
               <a href="#contact" className="text-[#BDB6AB] hover:text-[#D9B77B]">Contact</a>
             </nav>
@@ -86,9 +84,57 @@ export default function Portfolio() {
         </div>
       </section>
       <GithubProjects />
+      <section id="case-study" className="scroll-mt-24 border-b border-[#34322F] bg-[#171819] px-5 py-16 text-[#F4F1EB] sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="nexus-kicker mb-4">Nexus AI / Engineering decisions</p>
+          <h2 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">The problem, the architecture, the tradeoffs.</h2>
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-[#BDB6AB]">{nexusCaseStudy.problem}</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {nexusCaseStudy.choices.map((choice, index) => (
+              <div key={choice} className="nexus-panel p-6">
+                <p className="text-xs font-semibold tracking-widest text-[#D9B77B]">DECISION 0{index + 1}</p>
+                <p className="mt-3 text-sm leading-7 text-[#F4F1EB]">{choice}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 max-w-3xl border-l-2 border-[#D9B77B] pl-4 text-sm leading-7 text-[#BDB6AB]">{nexusCaseStudy.scope} I work with AI coding tools and verify the generated changes through code review and automated tests.</p>
+        </div>
+      </section>
       <section id="skills" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-6xl"><p className="nexus-kicker mb-4">My toolkit</p><h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Technologies I’m learning and using.</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-[#BDB6AB]">Tools represented in the project and my training. These are learning and project skills, not claims of years of professional experience.</p>
-          <div className="mt-9 grid gap-4 md:grid-cols-3">{skills.map((group) => <div key={group.label} className="nexus-panel p-6"><h3 className="text-base font-semibold">{group.label}</h3><div className="mt-5 flex flex-wrap gap-2">{group.values.map((item) => <span key={item} className="rounded-lg border border-[#34322F] bg-[#34322F] px-3 py-2 text-xs font-medium text-[#D9B77B]">{item}</span>)}</div></div>)}</div>
+        <div className="mx-auto max-w-6xl">
+          <p className="nexus-kicker mb-4">Skills with evidence</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">What I have practiced and implemented.</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-[#BDB6AB]">I distinguish skills practiced in smaller projects from technologies integrated into Nexus AI with AI assistance. These are not claims of independent mastery or years of professional developer experience.</p>
+          <div className="mt-9 grid gap-4 md:grid-cols-2">
+            {evidenceGroups.map((group) => (
+              <article key={group.title} className="nexus-panel p-6">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#D9B77B]">{group.status}</p>
+                <h3 className="mt-3 text-lg font-semibold">{group.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#BDB6AB]">{group.description}</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {group.items.map(item => <span key={item} className="rounded-lg border border-[#34322F] bg-[#34322F] px-3 py-2 text-xs font-medium text-[#D9B77B]">{item}</span>)}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section id="experience" className="scroll-mt-24 border-t border-[#34322F] px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
+          <article className="nexus-panel p-7">
+            <p className="nexus-kicker">Professional experience</p>
+            <h2 className="mt-4 text-2xl font-semibold">{professionalExperience.title}</h2>
+            <p className="mt-2 text-xs font-semibold text-[#D9B77B]">{professionalExperience.type}</p>
+            <p className="mt-4 text-sm leading-7 text-[#BDB6AB]">{professionalExperience.summary}</p>
+            <p className="mt-4 text-sm leading-7 text-[#D9B77B]">{professionalExperience.note}</p>
+          </article>
+          <article className="nexus-panel p-7">
+            <p className="nexus-kicker">Independent technical research</p>
+            <h2 className="mt-4 text-2xl font-semibold">{foundationResearch.title}</h2>
+            <p className="mt-2 text-xs font-semibold text-[#D9B77B]">{foundationResearch.status}</p>
+            <p className="mt-4 text-sm leading-7 text-[#BDB6AB]">{foundationResearch.summary}</p>
+            <p className="mt-4 text-sm leading-7 text-[#D9B77B]">{foundationResearch.limitation}</p>
+          </article>
         </div>
       </section>
       <section id="contact" className="scroll-mt-24 border-y border-[#34322F] bg-[#171819] px-5 py-16 sm:px-8 sm:py-20">
