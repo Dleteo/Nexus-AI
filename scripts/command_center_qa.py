@@ -32,10 +32,9 @@ def run():
             assert page.locator(".ncc-stage").count() == 1
             assert page.locator(".ncc-hotspot").count() == 6
             assert page.locator(".ncc-stage").bounding_box()["width"] >= dimensions["width"] * 0.9
-            art = page.locator(".ncc-scene-art")
-            assert "/nexus-command-center.png" in art.evaluate("element => getComputedStyle(element).backgroundImage")
-            image_resp = page.request.get(BASE + "/nexus-command-center.png")
-            assert image_resp.status == 200 and image_resp.headers.get("content-type", "").startswith("image/"), "Missing art"
+            assert page.locator(".ncc-next-scene").count() == 1
+            assert page.locator(".ncc-main-avatar canvas").count() == 1
+            assert page.locator(".ncc-hotspot").count() == 6
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 2"), "Horizontal overflow"
             if kind == "desktop":
                 page.locator('.ncc-hotspot').nth(3).click()
