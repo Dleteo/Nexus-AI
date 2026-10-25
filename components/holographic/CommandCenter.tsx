@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import NexusAvatar3D from "./NexusAvatar3D";
+import NexusAIChat from "./NexusAIChat";
+import NexusNewsBoard from "./NexusNewsBoard";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { setGuideLanguage, useGuideLanguage } from "./guidePreferences";
 
@@ -16,6 +18,8 @@ type Hologram = {
   intro: Localized;
   details: Localized[];
   links: { label: string; href: string; external?: boolean }[];
+  action?: "chat" | "news";
+  mode?: "assistant" | "explain" | "debug" | "interview" | "plan";
 };
 
 const languages: Record<Language, string> = { es: "Español", en: "English", pt: "Português", fr: "Français" };
@@ -23,73 +27,50 @@ const localized = (es: string, en: string, pt: string, fr: string): Localized =>
 
 const zones: Hologram[] = [
   {
-    id: "cognition", number: "01", rect: { left: "5.8%", top: "2.4%", width: "21.2%", height: "22%" },
-    title: localized("Sobre el creador", "About the developer", "Sobre o criador", "À propos du créateur"),
-    intro: localized("Joshua Vallejo Sanchez está desarrollando su carrera como Junior Web Developer. Nexus AI es su proyecto principal de portafolio.", "Joshua Vallejo Sanchez is pursuing a Junior Web Developer career. Nexus AI is his flagship portfolio project.", "Joshua Vallejo Sanchez está construindo sua carreira como desenvolvedor web júnior. Nexus AI é seu principal projeto.", "Joshua Vallejo Sanchez développe sa carrière de développeur web junior. Nexus AI est son projet principal."),
+    id: "cognition", number: "01", rect: { left:"5.8%",top:"2.4%",width:"21.2%",height:"22%" },
+    title: localized("Mi creador Josh","My creator Josh","Meu criador Josh","Mon créateur Josh"),
+    intro: localized("Mi creador, Josh, es un desarrollador web junior en formación. Su nombre completo es Joshua Vallejo Sanchez. Aquí puedes explorar su CV, conocimientos, certificados y vías profesionales de contacto.","My creator, Josh, is an aspiring Junior Web Developer. His full name is Joshua Vallejo Sanchez. Explore his CV, skills, training and professional contact links.","Meu criador, Josh, está se formando como desenvolvedor web júnior. Nome completo: Joshua Vallejo Sanchez.","Mon créateur, Josh, se forme au développement web. Nom complet : Joshua Vallejo Sanchez."),
     details: [
-      localized("Ubicación profesional: Pensilvania, Estados Unidos.", "Professional location: Pennsylvania, United States.", "Localização: Pensilvânia, EUA.", "Localisation : Pennsylvanie, États-Unis."),
-      localized("Español nativo, inglés intermedio; experiencia laboral en hostelería, cocina, supermercado y otros entornos.", "Native Spanish and intermediate English; work experience in hospitality, kitchens, supermarkets and other settings.", "Espanhol nativo, inglês intermediário; experiência em hotelaria e comércio.", "Espagnol natif, anglais intermédiaire ; expérience en hôtellerie et commerce."),
-      localized("No se afirma experiencia remunerada como desarrollador ni habilidades que no estén demostradas.", "No claim of paid developer employment or unverified skills.", "Sem alegar emprego pago em desenvolvimento ou competências não verificadas.", "Pas de revendication d'emploi rémunéré en développement ou de compétences non vérifiées."),
+      localized("Nombre completo escrito: Joshua Vallejo Sanchez. Presentación hablada: «mi creador, Josh».","Full written name: Joshua Vallejo Sanchez. Spoken introduction: «my creator, Josh».","Nome completo: Joshua Vallejo Sanchez.","Nom complet : Joshua Vallejo Sanchez."),
+      localized("HTML, CSS, JavaScript, DOM, Flexbox, Grid y Bootstrap; integración de Next.js, TypeScript, Supabase e IA con asistencia técnica.","HTML, CSS, JavaScript, DOM, Flexbox, Grid, Bootstrap; assisted integration of Next.js, TypeScript, Supabase and AI.","HTML, CSS, JavaScript e ferramentas modernas integradas com assistência de IA.","HTML, CSS, JavaScript et outils modernes intégrés avec assistance IA."),
+      localized("Idiomas: español e inglés. Certificados y CV disponibles sin cuenta ni suscripción.","Languages: Spanish and English. Certificates and CV available without signup or payment.","Idiomas: espanhol e inglês. Certificados públicos.","Langues : espagnol et anglais. Certifications publiques."),
     ],
-    links: [{ label: "Portfolio", href: "/portfolio" }, { label: "Résumé / CV", href: "/resume" }, { label: "GitHub", href: "https://github.com/Dleteo", external: true }],
+    links: [{label:"Portfolio / Skills / Certificates",href:"/portfolio"},{label:"CV / Résumé",href:"/resume"},{label:"GitHub",href:"https://github.com/Dleteo",external:true}],
   },
   {
-    id: "knowledge", number: "02", rect: { left: "3.8%", top: "25.3%", width: "19.8%", height: "25%" },
-    title: localized("Conocimientos y certificados", "Skills and credentials", "Conhecimentos e certificados", "Compétences et certificats"),
-    intro: localized("Habilidades de frontend practicadas en proyectos personales y herramientas avanzadas integradas en Nexus AI con ayuda de IA.", "Frontend skills practiced in personal projects and advanced tools integrated into Nexus AI with AI assistance.", "Habilidades de frontend praticadas e tecnologias modernas usadas no Nexus AI com ajuda de IA.", "Compétences frontend pratiquées et technologies modernes intégrées avec l'assistance de l'IA."),
-    details: [
-      localized("Práctica directa: HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript ES6, DOM y localStorage.", "Direct practice: HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript ES6, DOM and localStorage.", "Prática direta: HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript, DOM e localStorage.", "Pratique directe : HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript, DOM et localStorage."),
-      localized("Integración asistida: React, Next.js, TypeScript, Tailwind CSS, Supabase y Gemini.", "AI-assisted integration: React, Next.js, TypeScript, Tailwind CSS, Supabase and Gemini.", "Integração assistida: React, Next.js, TypeScript, Tailwind, Supabase e Gemini.", "Intégration assistée : React, Next.js, TypeScript, Tailwind, Supabase et Gemini."),
-      localized("Los certificados se muestran con sus horas y credenciales reales.", "Credentials show verified titles, types and recorded training hours.", "Os certificados exibem títulos e horas reais.", "Les certificats indiquent leurs intitulés et heures réels."),
-    ],
-    links: [{ label: "Skills & Certificates", href: "/portfolio#skills" }, { label: "All certificates", href: "/portfolio#certifications" }],
+    id:"knowledge",number:"02",rect:{left:"3.8%",top:"25.3%",width:"19.8%",height:"25%"},
+    title:localized("Estudia con Nexus","Learn with Nexus","Aprenda com Nexus","Apprendre avec Nexus"),
+    intro:localized("Aprende programación, software y hardware paso a paso con Nexus AI. Crea una cuenta gratuita para guardar tus conversaciones.","Study programming, software and hardware with Nexus AI. Register for free to save conversations.","Aprenda programação e tecnologia com Nexus AI.","Apprenez la programmation et la technologie avec Nexus AI."),
+    details:[localized("Explicaciones, ejemplos, ejercicios y corrección de código mediante el asistente autenticado.","Explanations, exercises and code feedback through the signed-in assistant.","Explicações, exercícios e feedback.","Explications, exercices et corrections."),localized("El acceso gratuito tiene un límite diario aplicado por el servidor.","Free access has a server-enforced daily quota.","Acesso gratuito com limite diário.","Accès gratuit avec quota quotidien.")],
+    links:[{label:"Create free account",href:"/register"},{label:"Learning workspace",href:"/assistant"}],action:"chat",mode:"explain",
   },
   {
-    id: "experience", number: "03", rect: { left: "5.1%", top: "61.7%", width: "24.8%", height: "22.8%" },
-    title: localized("Experiencia y trayectoria", "Work experience", "Experiência profissional", "Expérience professionnelle"),
-    intro: localized("Experiencia real en un hotel de Bedford, Pensilvania, y en labores de pizzería, flores y supermercado. El aprendizaje técnico continúa mediante proyectos propios.", "Real work experience at a hotel in Bedford, Pennsylvania, and in pizza making, floral work and supermarket operations. Technical learning continues through personal projects.", "Experiência real em hotel em Bedford, pizzaria, flores e supermercado.", "Expérience réelle dans un hôtel à Bedford, dans une pizzeria, les fleurs et un supermarché."),
-    details: [
-      localized("Organización, responsabilidades de turno, coordinación con colegas y resolución práctica de problemas.", "Organization, shift responsibilities, coordinating with colleagues and practical problem-solving.", "Organização, responsabilidade e trabalho em equipe.", "Organisation, responsabilités et travail en équipe."),
-      localized("Estas funciones no se presentan como empleo previo en desarrollo web.", "These roles are not described as previous software developer employment.", "Esses cargos não são apresentados como emprego de desenvolvedor.", "Ces postes ne sont pas présentés comme un emploi de développeur."),
-    ],
-    links: [{ label: "Experience", href: "/portfolio#experience" }, { label: "Résumé / CV", href: "/resume" }],
+    id:"experience",number:"03",rect:{left:"5.1%",top:"61.7%",width:"24.8%",height:"22.8%"},
+    title:localized("Entrevistas y mejora de proyectos","Interview & project coach","Entrevistas e projetos","Entretiens et projets"),
+    intro:localized("Prepárate para entrevistas de programación, revisa la calidad de tus proyectos y descubre cómo mejorar tu portafolio.","Practice software interviews and get guidance for improving projects and portfolios.","Prepare entrevistas e melhore seus projetos.","Préparez les entretiens et améliorez vos projets."),
+    details:[localized("Nexus evalúa tus respuestas de entrevista y propone pasos de mejora sin garantizar empleo.","Nexus provides interview feedback and practical improvements without promising a job.","Feedback de entrevistas e sugestões.","Retours d'entretiens et conseils concrets.")],
+    links:[{label:"Start free",href:"/register"},{label:"Open interview assistant",href:"/assistant"}],action:"chat",mode:"interview",
   },
   {
-    id: "creative", number: "04", rect: { left: "72%", top: "3.8%", width: "22.5%", height: "20%" },
-    title: localized("Mis proyectos", "My projects", "Meus projetos", "Mes projets"),
-    intro: localized("Nexus AI es el proyecto destacado: gestión privada de proyectos, autenticación, un asistente integrado e historial. Los proyectos de aprendizaje documentan el camino recorrido.", "Nexus AI is the flagship: private project management, authentication, an integrated assistant and conversation history. Smaller projects document the learning journey.", "Nexus AI é o projeto principal com autenticação e assistente. Os demais mostram o aprendizado.", "Nexus AI est le projet principal avec authentification et assistant. Les autres retracent l'apprentissage."),
-    details: [
-      localized("Task Tracker: eventos DOM, tareas y almacenamiento local.", "Task Tracker: DOM events, tasks and browser persistence.", "Task Tracker: DOM e armazenamento local.", "Task Tracker : DOM et stockage local."),
-      localized("Hangman Game: lógica de juego interactivo con JavaScript.", "Hangman Game: interactive JavaScript game logic.", "Hangman Game: lógica de jogo em JavaScript.", "Hangman Game : logique de jeu JavaScript."),
-      localized("Text Encoder / Decoder: transformación de cadenas; no es criptografía segura.", "Text Encoder / Decoder: reversible string transformation, not secure cryptography.", "Text Encoder: transformação de texto, não criptografia segura.", "Text Encoder : transformation de texte, pas un chiffrement sûr."),
-    ],
-    links: [
-      { label: "Nexus AI source", href: "https://github.com/Dleteo/Nexus-AI", external: true },
-      { label: "Task Tracker", href: "https://github.com/Dleteo/-To-Do-App-whit-JavaScript", external: true },
-      { label: "Hangman Game", href: "https://github.com/Dleteo/hangman-game", external: true },
-      { label: "Text Encoder", href: "https://github.com/Dleteo/Encriptor", external: true },
-      { label: "Portfolio case study", href: "/portfolio#work" },
-    ],
+    id:"creative",number:"04",rect:{left:"72%",top:"3.8%",width:"22.5%",height:"20%"},
+    title:localized("Proyectos y redes","Projects & socials","Projetos e redes","Projets et réseaux"),
+    intro:localized("Explora Nexus AI, los mejores proyectos reales de mi creador Josh y sus perfiles profesionales verificados.","Explore Nexus AI, the real projects built by my creator Josh, and verified professional links.","Explore Nexus AI e os projetos de Josh.","Explorez Nexus AI et les projets de Josh."),
+    details:[localized("Nexus AI: autenticación, gestión de proyectos, asistente técnico y pruebas automatizadas.","Nexus AI: authentication, project workspace, AI and automated QA.","Nexus AI com autenticação e testes.","Nexus AI avec authentification et tests."),localized("También: Task Tracker, Hangman Game y Text Encoder. Instagram y LinkedIn se añadirán cuando se confirmen los enlaces.","Also: Task Tracker, Hangman Game and Text Encoder. LinkedIn/Instagram links are added only after verification.","Outros projetos com código real no GitHub.","Autres projets avec code sur GitHub.")],
+    links:[{label:"Nexus AI code",href:"https://github.com/Dleteo/Nexus-AI",external:true},{label:"All GitHub projects",href:"https://github.com/Dleteo",external:true},{label:"Featured work",href:"/portfolio#work"}],
   },
   {
-    id: "assistance", number: "05", rect: { left: "72.1%", top: "26.6%", width: "22%", height: "24.6%" },
-    title: localized("Habla con Nexus AI", "Talk to Nexus AI", "Converse com Nexus AI", "Parlez à Nexus AI"),
-    intro: localized("Usa la burbuja del guía para explorar el portafolio. Para preguntas generales de software, hardware, programación y aprendizaje, inicia sesión y abre el asistente real.", "Use the guide bubble to explore the portfolio. For general software, hardware, coding and learning questions, sign in and open the real assistant.", "Use a bolha para explorar o portfólio. Para perguntas gerais, entre no assistente após iniciar sessão.", "Utilisez la bulle pour le portfolio. Pour des questions générales, connectez-vous à l'assistant."),
-    details: [
-      localized("Guía pública: respuestas documentadas sobre este portafolio, sin llamar al proveedor de IA.", "Public guide: documented answers about this portfolio without provider API calls.", "Guia público: respostas locais verificáveis, sem chamadas à IA.", "Guide public : réponses locales vérifiées, sans API d'IA."),
-      localized("El asistente completo usa una API externa; Nexus Foundation sigue siendo investigación experimental.", "The full assistant uses an external API; Nexus Foundation is still experimental research.", "O assistente usa uma API externa; Foundation segue experimental.", "L'assistant utilise une API externe ; Foundation reste expérimental."),
-    ],
-    links: [{ label: "Open assistant / Sign in", href: "/assistant" }, { label: "Create account", href: "/register" }],
+    id:"assistance",number:"05",rect:{left:"72.1%",top:"26.6%",width:"22%",height:"24.6%"},
+    title:localized("Habla con Nexus AI","Talk to Nexus AI","Converse com Nexus AI","Parler à Nexus AI"),
+    intro:localized("¿Qué quieres hacer? Escribe o utiliza tu micrófono en la guía. Abre el asistente para solucionar problemas de software, hardware y programación sin abandonar el centro de comando.","What would you like to do? Type or use your microphone in the guide. Open the assistant to solve software, hardware and coding problems without leaving the command center.","Pergunte ao Nexus sobre seus problemas técnicos.","Demandez l'aide de Nexus pour vos problèmes techniques."),
+    details:[localized("El chat general necesita iniciar sesión: sus respuestas se procesan en el servidor con cuotas y protección de claves.","General AI chat requires sign-in and uses server-side quotas and protected credentials.","O chat usa autenticação e limites.","Le chat utilise une authentification et des limites.")],
+    links:[{label:"Sign up free",href:"/register"},{label:"Full workspace",href:"/assistant"}],action:"chat",mode:"assistant",
   },
   {
-    id: "future", number: "06", rect: { left: "70.1%", top: "62%", width: "24.1%", height: "21%" },
-    title: localized("Nexus Foundation Lab", "Nexus Foundation Lab", "Nexus Foundation Lab", "Nexus Foundation Lab"),
-    intro: localized("Investigación experimental sobre un modelo Transformer causal original: PyTorch, tokenización BPE, benchmarks y evaluación. No está listo para conversar de forma fiable.", "Experimental research on an original causal Transformer: PyTorch, BPE tokenization, benchmarks and evaluation. It cannot yet converse reliably.", "Pesquisa experimental de um Transformer causal original com PyTorch e BPE; ainda não conversa de forma confiável.", "Recherche expérimentale d'un Transformer causal original avec PyTorch et BPE ; pas encore fiable en conversation."),
-    details: [
-      localized("Los pesos originales y los datos de entrenamiento permanecen privados.", "Original model weights and training data remain private.", "Pesos e dados de treino continuam privados.", "Poids et données d'entraînement restent privés."),
-      localized("Resultados y limitaciones deben documentarse antes de afirmar inteligencia general.", "Results and limits must be documented before claiming general intelligence.", "Os resultados e limites precisam ser documentados.", "Les résultats et limites doivent être documentés."),
-    ],
-    links: [{ label: "Research context", href: "/portfolio#experience" }],
+    id:"future",number:"06",rect:{left:"70.1%",top:"62%",width:"24.1%",height:"21%"},
+    title:localized("Noticias y tecnología","Technology newsroom","Notícias e tecnologia","Actualités tech"),
+    intro:localized("Descubre novedades reales de programación, herramientas y desarrollo. Consulta titulares con enlaces a sus fuentes originales.","Discover real software and developer news with links to the original sources.","Descubra notícias com fontes originais.","Découvrez l'actualité avec ses sources originales."),
+    details:[localized("Los titulares proceden de fuentes externas verificables, no son noticias inventadas. La búsqueda libre en vivo será una herramienta posterior.","Headlines come from verifiable public feeds; unlimited live web searching is not yet connected.","Fontes públicas verificáveis.","Sources publiques vérifiables.")],
+    links:[{label:"Open Nexus AI",href:"/assistant"}],action:"news",
   },
 ];
 
@@ -109,6 +90,7 @@ export default function CommandCenter() {
   const [selected, setSelected] = useState<Zone | null>(null);
   const [speaking, setSpeaking] = useState(false);
   const [showAvatar3D, setShowAvatar3D] = useState(false);
+  const [newsOpen, setNewsOpen] = useState(false);
   const active = zones.find((zone) => zone.id === selected);
   const t = ui[lang];
 
@@ -148,6 +130,10 @@ export default function CommandCenter() {
   function openZone(zone: Hologram) {
     setSelected(zone.id);
     notifyGuide(lang, zone.intro[lang]);
+  }
+  function openChat(mode: NonNullable<Hologram["mode"]>) {
+    setSelected(null);
+    window.dispatchEvent(new CustomEvent("nexus:assistant-open",{detail:{mode}}));
   }
 
   return (
@@ -209,6 +195,8 @@ export default function CommandCenter() {
         <p className="ncc-note">{t.caption}</p>
         <footer className="ncc-footer"><span>© NEXUS AI · ORIGINAL COMMAND CENTER</span><Link href="/portfolio">{t.enter} / PORTFOLIO ↗</Link><Link href="/assistant">AI ASSISTANT ↗</Link></footer>
       </div>
+      <NexusAIChat />
+      {newsOpen && <div className="ncc-news-overlay"><button type="button" className="ncc-backdrop" aria-label={t.close} onClick={()=>setNewsOpen(false)} /><div className="ncc-news-dialog" role="dialog" aria-modal="true" aria-label="Nexus Newsroom"><button type="button" className="ncc-news-close" aria-label={t.close} onClick={()=>setNewsOpen(false)}>✕</button><NexusNewsBoard /></div></div>}
       {active && (
         <>
           <button className="ncc-backdrop" type="button" aria-label={t.close} onClick={() => setSelected(null)} />
@@ -220,6 +208,7 @@ export default function CommandCenter() {
               <h2 id="ncc-drawer-heading">{active.title[lang]}</h2>
               <p className="ncc-summary">{active.intro[lang]}</p>
               <ul>{active.details.map((detail, index) => <li key={index}>{detail[lang]}</li>)}</ul>
+              {active.action && <div className="ncc-feature-actions">{active.action === "chat" ? <button type="button" onClick={() => openChat(active.mode ?? "assistant")}>{lang === "es" ? "Abrir chat con Nexus AI" : "Open Nexus AI chat"} ↗</button> : <button type="button" onClick={() => { setSelected(null); setNewsOpen(true); }}>{lang === "es" ? "Ver noticias con fuentes" : "See verified news"} ↗</button>}</div>}
               <div className="ncc-actions">{active.links.map((link) => link.external
                 ? <a href={link.href} key={link.href} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>
                 : <Link key={link.href} href={link.href}>{link.label} ↗</Link>)}
