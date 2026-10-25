@@ -64,11 +64,18 @@ export default function NexusCompanion() {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = langTags[language];
-    utterance.rate = 0.96;
-    utterance.pitch = 0.88;
+    utterance.rate = 0.91;
+    utterance.pitch = 1;
+    utterance.volume = 1;
     const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find((item) => item.lang.toLowerCase() === langTags[language].toLowerCase())
-      ?? voices.find((item) => item.lang.toLowerCase().startsWith(language)) ?? null;
+    const target = langTags[language].toLowerCase();
+    const matching = voices.filter((item) => item.lang.toLowerCase() === target || item.lang.toLowerCase().startsWith(language + "-"));
+    const score = (item: SpeechSynthesisVoice) =>
+      (item.lang.toLowerCase() === target ? 20 : 0)
+      + (/natural|neural|online|premium|enhanced/i.test(item.name) ? 12 : 0)
+      + (/microsoft|google|samantha/i.test(item.name) ? 4 : 0);
+    matching.sort((a, b) => score(b) - score(a));
+    utterance.voice = matching[0] ?? null;
     utterance.onstart = () => { setSpeaking(true); window.dispatchEvent(new Event("nexus:speech-start")); };
     const ended = () => { setSpeaking(false); window.dispatchEvent(new Event("nexus:speech-end")); };
     utterance.onend = ended;
