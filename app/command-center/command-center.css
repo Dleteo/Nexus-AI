@@ -129,3 +129,33 @@
 @media(min-width:700px) and (max-width:1000px){.ncc-stage .ncc-hotspot{width:45px!important;height:45px!important}.ncc-stage .ncc-hotspot span{max-width:180px}}
 @media(max-width:699px){.ncc-stage .ncc-hotspot{display:none}}
 @media(prefers-reduced-motion:reduce){.ncc-stage .ncc-hotspot{animation:none!important}}
+
+/* V0.4: procedural, resolution-independent scene replaces raster panels. */
+.ncc-stage{min-height:min(88dvh,820px);aspect-ratio:auto;isolation:isolate;background:radial-gradient(ellipse at 50% 53%,#174760 0,#071925 40%,#010712 80%)}
+.ncc-next-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 50% 47%,#25cbec26 0,transparent 42%),radial-gradient(circle at 50% 100%,#1e9bff28,transparent 55%)}
+.ncc-floor-grid{position:absolute;left:-25%;right:-25%;bottom:-40%;height:75%;transform:perspective(510px) rotateX(70deg);transform-origin:top;background:repeating-linear-gradient(0deg,transparent 0 37px,#5ed9fc38 38px,transparent 39px),repeating-linear-gradient(90deg,transparent 0 55px,#5ed9fc38 56px,transparent 57px);mask-image:linear-gradient(to bottom,transparent,#000 32%,transparent)}
+.ncc-orbital-halo{position:absolute;top:7%;left:50%;height:75%;aspect-ratio:1;transform:translateX(-50%);border:1px solid #36c6f25c;border-radius:50%;box-shadow:0 0 90px #00b7ff26,inset 0 0 55px #25d4fa20;animation:ncc-halo 18s linear infinite}
+.ncc-arc{position:absolute;left:50%;top:17%;height:57%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;border:2px dashed #48d9fa59;animation:ncc-halo 22s linear infinite}
+.ncc-arc-b{height:67%;top:12%;border:1px dotted #88eaff55;animation-duration:29s;animation-direction:reverse}
+.ncc-main-avatar{position:absolute;z-index:2;top:10%;bottom:9%;left:31%;width:38%;pointer-events:none}
+.ncc-main-avatar .ncc-avatar3d{height:100%;max-height:none}
+.ncc-main-avatar-caption{position:absolute;bottom:0;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 clamp(10px,1vw,14px) ui-monospace,Consolas,monospace;letter-spacing:.12em;text-shadow:0 0 15px #38cefd;color:#cff9ff}
+.ncc-main-avatar-caption span{margin-left:14px;color:#77f5d8}
+.ncc-stage .ncc-hotspot{width:clamp(128px,15vw,255px)!important;height:clamp(72px,9vh,110px)!important;transform:translate(-50%,-50%);border:1px solid #6edbffaa;border-radius:13px;clip-path:polygon(0 12%,8% 0,92% 0,100% 12%,100% 88%,92% 100%,8% 100%,0 88%);background:linear-gradient(128deg,#164b62c9,#041a2abf);box-shadow:inset 0 0 25px #3cbbf829,0 0 30px #14d1ff24;animation:ncc-panel-hover 5s ease-in-out infinite}
+.ncc-stage .ncc-hotspot b{font-size:clamp(15px,1.3vw,21px)}
+.ncc-stage .ncc-hotspot span{opacity:1;position:static;transform:none;max-width:75%;width:auto;font-size:clamp(10px,.88vw,13px);background:transparent;border:0;white-space:normal;pointer-events:none}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible){animation-play-state:paused;transform:translate(-50%,-50%) scale(1.045);background:linear-gradient(120deg,#217b9c,#0b3952);filter:brightness(1.2)}
+.ncc-stage .ncc-node-cognition{left:15%!important;top:24%!important}
+.ncc-stage .ncc-node-knowledge{left:15%!important;top:48%!important}
+.ncc-stage .ncc-node-experience{left:15%!important;top:72%!important}
+.ncc-stage .ncc-node-creative{left:85%!important;top:24%!important}
+.ncc-stage .ncc-node-assistance{left:85%!important;top:48%!important}
+.ncc-stage .ncc-node-future{left:85%!important;top:72%!important}
+.ncc-avatar-target{left:44%;top:29%;width:12%;height:23%;z-index:4}
+.ncc-portrait-glow,.ncc-voice-ring{display:none}
+.ncc-stage-arrows{display:none}
+@keyframes ncc-halo{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
+@keyframes ncc-panel-hover{0%,100%{filter:brightness(.95)}50%{filter:brightness(1.15)}}
+@media (max-width:1000px){.ncc-stage{min-height:640px}.ncc-main-avatar{left:27%;width:46%}.ncc-stage .ncc-hotspot{width:clamp(110px,18vw,166px)!important;height:85px!important}.ncc-stage .ncc-node-cognition,.ncc-stage .ncc-node-knowledge,.ncc-stage .ncc-node-experience{left:12%!important}.ncc-stage .ncc-node-creative,.ncc-stage .ncc-node-assistance,.ncc-stage .ncc-node-future{left:88%!important}}
+@media (max-width:699px){.ncc-stage{height:75dvh;min-height:470px;max-height:780px;aspect-ratio:auto}.ncc-main-avatar{left:7%;width:86%;top:12%;bottom:13%}.ncc-stage .ncc-hotspot{display:none}.ncc-mobile-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.ncc-mobile-zones button{min-height:85px;border-color:#73cbed;background:linear-gradient(135deg,#134961,#082338);box-shadow:0 0 16px #12b8e82b}.ncc-avatar-target{left:39%;top:29%;width:22%;height:22%}.ncc-main-avatar-caption{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.ncc-orbital-halo,.ncc-arc,.ncc-stage .ncc-hotspot{animation:none!important}}
