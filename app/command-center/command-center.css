@@ -85,3 +85,36 @@
 @media(min-width:700px) and (max-width:1199px){.ncc-stage{min-height:480px;height:min(74dvh,calc(100vw * 941 / 1672))}.ncc-hotspot span{font-size:10px}}
 @media(max-width:699px){.ncc-intro{padding:14px 14px 16px}.ncc-intro h1{font-size:clamp(23px,7vw,32px)}.ncc-stage{min-height:0;height:min(66dvh,490px);aspect-ratio:auto}.ncc-scene-art{background-size:cover;background-position:center}.ncc-mobile-zones{display:grid}.ncc-avatar-target{left:44%;top:13%;width:12%;height:18%}.ncc-news-dialog{top:3dvh;bottom:3dvh;right:3vw;width:94vw;padding:20px}.ncc-ai-head{padding:13px 15px}.ncc-ai-head h2{font-size:19px}.ncc-ai-window{top:5px;bottom:5px;right:5px;width:calc(100vw - 10px)}.ncc-ai-modes{padding:9px}.ncc-ai-modes button{font-size:11px;padding:8px}.ncc-avatar-lab{padding:8px 10px}.ncc-note{margin:8px auto 15px}}
 @media(prefers-reduced-motion:reduce){.ncc-ai-orb{animation:none}}
+
+/* Scene alignment: image and hit zones share exactly the same 1672:941 coordinate system. */
+.ncc-shell{position:relative}
+.ncc-hud-bar{position:absolute;top:12px;left:clamp(8px,2vw,28px);right:clamp(8px,2vw,28px);z-index:9;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+.ncc-hud-bar>*{pointer-events:auto}
+.ncc-hud-brand{font:700 15px ui-monospace,Consolas,monospace;letter-spacing:.18em;color:#c9f4ff;text-shadow:0 0 18px #08b7fa;text-decoration:none}
+.ncc-hud-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ncc-hud-actions button,.ncc-hud-actions a{font:11px ui-monospace,Consolas,monospace;color:#d4f6ff;background:#071c2bdc;border:1px solid #56b4d8b8;border-radius:10px;min-height:39px;padding:10px 12px;text-decoration:none;cursor:pointer;box-shadow:inset 0 0 14px #00aefa1b}
+.ncc-stage-shell{order:0;border:0;background:#02080e;box-shadow:none}
+.ncc-stage{aspect-ratio:1672 / 941;height:auto;min-height:0;width:100%}
+.ncc-scene-art{background-size:100% 100%;background-position:center;animation:ncc-art-breath 12s ease-in-out infinite}
+.ncc-hotspot{animation:ncc-zone-float 4s ease-in-out infinite;transform-origin:center}
+.ncc-hotspot:nth-of-type(even){animation-delay:-2s}
+.ncc-hotspot:hover,.ncc-hotspot:focus-visible{animation-play-state:paused;box-shadow:0 0 38px #65dfffaa,inset 0 0 26px #48bdf733}
+.ncc-holographic-pulse{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 49% 38%,transparent 0 7%,#53ddff10 13%,transparent 19%);animation:ncc-pulse 5s ease-in-out infinite}
+.ncc-portrait-glow{position:absolute;left:46%;top:32%;width:6%;height:12%;border-radius:50%;pointer-events:none;box-shadow:0 0 30px #73dcff70;opacity:.35;animation:ncc-pulse 3.2s ease-in-out infinite}
+.ncc-stage-arrows{position:absolute;inset:0 8px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;color:#84deffad;font-size:clamp(22px,3vw,48px);text-shadow:0 0 20px #00bfff}
+.ncc-language-overlay{position:fixed;z-index:135;inset:0;display:grid;place-items:center;padding:18px;background:#020a13b9;backdrop-filter:blur(9px)}
+.ncc-language-card{width:min(630px,100%);padding:clamp(20px,4vw,35px);border:1px solid #70dcff;border-radius:22px;background:radial-gradient(ellipse at 50% 0,#144c6b,#061825 65%);box-shadow:0 0 85px #139adb63;text-align:center;color:#e8faff}
+.ncc-language-orbit{font-size:56px;color:#9eefff;text-shadow:0 0 35px #17cbff;animation:ncc-pulse 2s infinite}
+.ncc-language-eyebrow{font:11px ui-monospace,monospace;letter-spacing:.15em;color:#a9e5fc}
+.ncc-language-card h2{font-size:clamp(22px,4vw,32px);letter-spacing:.06em;font-weight:650;margin:12px 0}
+.ncc-language-card>p{color:#b0d7e7;line-height:1.5}
+.ncc-language-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0}
+.ncc-language-options button,.ncc-language-microphone{min-height:55px;border:1px solid #64c5e7;color:#e7faff;background:linear-gradient(125deg,#13445c,#08283b);border-radius:12px;cursor:pointer}
+.ncc-language-options button{display:flex;justify-content:space-between;align-items:center;padding:15px;font-size:14px}
+.ncc-language-options button:hover,.ncc-language-microphone:hover{background:#1c7397;box-shadow:0 0 20px #30b8fa60}
+.ncc-language-microphone{width:100%;min-height:44px}
+@keyframes ncc-art-breath{0%,100%{filter:brightness(.94)}50%{filter:brightness(1.12)}}
+@keyframes ncc-zone-float{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22)}}
+@keyframes ncc-pulse{0%,100%{opacity:.20}50%{opacity:.7}}
+@media(max-width:699px){.ncc-stage{aspect-ratio:1672 / 941;height:auto;min-height:0}.ncc-scene-art{background-size:100% 100%}.ncc-hotspot{display:none}.ncc-hud-bar{top:8px}.ncc-hud-actions{gap:4px}.ncc-hud-actions button,.ncc-hud-actions a{font-size:9px;padding:7px;min-height:34px}.ncc-hud-brand{font-size:11px}.ncc-language-options{gap:8px}.ncc-language-options button{padding:12px;min-height:53px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.ncc-scene-art,.ncc-hotspot,.ncc-portrait-glow,.ncc-holographic-pulse,.ncc-language-orbit{animation:none!important}}
