@@ -193,11 +193,11 @@ export default function CommandCenter() {
                 key={zone.id}
                 type="button"
                 className={`ncc-hotspot ${zone.id === selected ? "ncc-active" : ""}`}
-                style={zone.rect}
+                style={{ left: zone.id === "cognition" ? "28%" : zone.id === "knowledge" ? "24.5%" : zone.id === "experience" ? "30%" : zone.id === "creative" ? "70%" : zone.id === "assistance" ? "70%" : "69%", top: zone.id === "cognition" || zone.id === "creative" ? "14%" : zone.id === "knowledge" || zone.id === "assistance" ? "39%" : "73%" }}
                 aria-label={`${zone.number} ${zone.title[lang]}`}
                 aria-pressed={zone.id === selected}
                 onClick={() => openZone(zone)}
-              ><span>{zone.number} · {zone.title[lang]}</span></button>
+              ><b aria-hidden="true">{zone.number}</b><span>{zone.title[lang]}</span></button>
             ))}
             <button className="ncc-avatar-target" type="button" aria-label={t.voice} onClick={() => notifyGuide(lang, localized("Hola. Soy Nexus, el guía del portafolio. Pulsa cualquier holograma y te contaré qué contiene.", "Hello. I'm Nexus, your portfolio guide. Choose any hologram and I will describe it.", "Olá. Sou Nexus. Escolha um holograma para descobrir mais.", "Bonjour. Je suis Nexus. Choisissez un hologramme.")[lang])} />
             <div className="ncc-stage-arrows" aria-hidden="true"><span>❮</span><span>❯</span></div>
