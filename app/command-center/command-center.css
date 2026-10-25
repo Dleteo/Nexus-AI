@@ -13,3 +13,14 @@
 @media(max-width:900px){.ncc-status{display:none}.ncc-topbar{min-height:64px}.ncc-hotspot span{display:none}}
 @media(max-width:600px){.ncc-topbar{gap:8px;padding:10px}.ncc-brand{font-size:13px;letter-spacing:.07em}.ncc-brand span{font-size:21px}.ncc-controls select{padding:7px;min-height:37px;max-width:96px;font-size:10px}.ncc-ghost{font-size:10px;min-height:37px;padding:7px}.ncc-intro{padding:22px 16px}.ncc-intro h1{font-size:32px}.ncc-intro p{font-size:12px}.ncc-stage-shell{width:100%;border-radius:0;border-inline:0}.ncc-stage{aspect-ratio:1.35}.ncc-scene-art{background-size:auto 100%;background-position:center}.ncc-hotspot{display:none}.ncc-avatar-target{left:45%;top:13%;width:11%;height:17%}.ncc-voice-ring{left:49.5%;top:22%}.ncc-bottom{padding:10px;font-size:8px}.ncc-mobile-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}.ncc-mobile-zones button{min-height:64px;text-align:left;border:1px solid #4085a4;border-radius:10px;background:linear-gradient(120deg,#082132,#12394b);color:#d2f4ff;font-size:12px;padding:12px}.ncc-mobile-zones button span{color:#86e5ff}.ncc-note{font-size:10px}.ncc-drawer{top:6px;bottom:6px;right:5px;width:calc(100vw - 10px)}.nexus-companion{right:8px;bottom:8px}.nexus-companion-window{height:min(585px,calc(100dvh - 16px))}.ncc-footer{justify-content:center;text-align:center;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.ncc-scan,.ncc-voice-ring,.nexus-companion-avatar{animation:none!important}.ncc-hotspot,.ncc-drawer,.nexus-companion-window{transition:none!important;animation:none!important}}
+
+/* Optional avatar experiment: preserves the original approved Command Center stage. */
+.ncc-avatar-lab{max-width:1120px;margin:12px auto 0;padding:8px 16px 18px;text-align:center}
+.ncc-avatar-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.ncc-avatar-lab-frame{width:min(100%,580px);margin:16px auto 0;padding:12px;border-radius:18px;border:1px solid #4c9cb8;background:radial-gradient(ellipse at 50% 40%,#11364f,#030b14 75%);box-shadow:0 0 25px #009bde26}
+.ncc-avatar3d{height:330px;max-height:60vh;position:relative;overflow:hidden;isolation:isolate}
+.ncc-avatar3d canvas{display:block;width:100%;height:100%;position:relative;z-index:1}
+.ncc-avatar3d-grid{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 26px,#63e1ff21 27px,transparent 28px)}
+.ncc-avatar-lab-frame p{font-size:11px;line-height:1.7;color:#a6cfdd;max-width:520px;margin:2px auto 6px}
+@media(max-width:600px){.ncc-avatar3d{height:260px}.ncc-avatar-lab-frame{padding:8px}}
+@media(prefers-reduced-motion:reduce){.ncc-avatar3d,.ncc-avatar3d-grid{animation:none!important}}
