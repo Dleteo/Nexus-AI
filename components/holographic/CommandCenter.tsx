@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import NexusAvatar3D from "./NexusAvatar3D";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { setGuideLanguage, useGuideLanguage } from "./guidePreferences";
 
@@ -107,6 +108,7 @@ export default function CommandCenter() {
   const lang = useGuideLanguage();
   const [selected, setSelected] = useState<Zone | null>(null);
   const [speaking, setSpeaking] = useState(false);
+  const [showAvatar3D, setShowAvatar3D] = useState(false);
   const active = zones.find((zone) => zone.id === selected);
   const t = ui[lang];
 
@@ -163,6 +165,16 @@ export default function CommandCenter() {
           </div>
         </header>
 
+        <section className="ncc-avatar-lab" aria-label="Avatar 3D laboratory">
+          <button type="button" className="ncc-ghost ncc-avatar-toggle"
+            aria-pressed={showAvatar3D} onClick={() => setShowAvatar3D((current) => !current)}>
+            {showAvatar3D ? "◈ " + (lang === "es" ? "Ocultar avatar 3D experimental" : "Hide experimental 3D avatar") : "◇ " + (lang === "es" ? "Probar avatar 3D experimental" : "Try experimental 3D avatar")}
+          </button>
+          {showAvatar3D && <div className="ncc-avatar-lab-frame">
+            <NexusAvatar3D speaking={speaking} gesture={selected ?? "idle"} label={lang === "es" ? "Avatar 3D experimental de Nexus" : "Experimental Nexus 3D avatar"} />
+            <p>{lang === "es" ? "Prototipo 3D generado por WebGL: gestos, cabeza y boca reactiva. No es todavía el personaje original con sincronización labial fonética." : "Procedural WebGL 3D study with gestures, head movement and responsive mouth. This is not yet the original character with phonetic lip-sync."}</p>
+          </div>}
+        </section>
         <section className="ncc-intro">
           <div className="ncc-kicker">{t.tag}</div>
           <h1>{t.title}</h1>
