@@ -1,21 +1,11 @@
-import Footer from "../components/layout/Footer";
-import Navbar from "../components/layout/Navbar";
-import Features from "../components/sections/Features";
-import FinalCTA from "../components/sections/FinalCTA";
-import Hero from "../components/sections/Hero";
-import Process from "../components/sections/Process";
+import type { Metadata } from "next";
+import CommandCenter from "../components/holographic/CommandCenter";
+
+export const metadata: Metadata = {
+  title: "Nexus AI | Interactive Intelligence Command Center",
+  description: "Explore Josh's developer portfolio, study programming, solve technical problems, prepare interviews and read verified tech news with Nexus AI.",
+};
 
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main id="top" className="min-h-screen">
-        <Hero />
-        <Features />
-        <Process />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </>
-  );
+  return <CommandCenter />;
 }

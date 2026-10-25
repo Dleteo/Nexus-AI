@@ -1,0 +1,172 @@
+/* Scoped to the command center so the existing Nexus AI pages retain their styling. */
+.ncc-root{--ncc-blue:#8fe1ff;--ncc-muted:#abc7d8;--ncc-border:#37748f;color:#e1f6ff;min-height:100vh;background:radial-gradient(ellipse at 50% 30%,#12344b,#03080c 65%);font-family:Arial,Helvetica,sans-serif;letter-spacing:.01em}
+.ncc-root *{box-sizing:border-box}.ncc-root button,.ncc-root select{font:inherit;cursor:pointer}.ncc-root :focus-visible{outline:2px solid #c5f7ff;outline-offset:4px}.ncc-sr,.nexus-companion-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.ncc-shell{width:100%;margin:auto}.ncc-topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;min-height:76px;gap:16px;padding:10px clamp(15px,3.5vw,65px);border-bottom:1px solid #3d7f9c6a;background:#06121cce;backdrop-filter:blur(14px)}
+.ncc-brand{white-space:nowrap;font-weight:800;font-size:18px;letter-spacing:.15em;color:#eefaff;text-decoration:none}.ncc-brand span{color:#9beeff;font-size:27px;margin-right:7px;text-shadow:0 0 15px #17c5ff}.ncc-brand b{color:#7fdcff}.ncc-status{display:flex;align-items:center;gap:10px;font:10px ui-monospace,Consolas,monospace;letter-spacing:.12em;color:#a9c7d5}.ncc-status i{width:7px;height:7px;background:#57ebcd;border-radius:50%;box-shadow:0 0 13px #36edc5}.ncc-controls{display:flex;align-items:center;gap:10px}.ncc-controls select,.ncc-ghost{min-height:40px;padding:8px 11px;color:#d9f6ff;border:1px solid #34637a;border-radius:8px;background:#0e2635}
+.ncc-intro{text-align:center;padding:36px 16px 27px}.ncc-kicker{font:11px ui-monospace,Consolas,monospace;letter-spacing:.21em;color:#8edbfc;text-transform:uppercase}.ncc-intro h1{font-size:clamp(30px,4.2vw,62px);font-weight:560;letter-spacing:-.06em;line-height:1.07;background:linear-gradient(180deg,#fff 10%,#9ccfeb 100%);background-clip:text;color:transparent;margin:17px auto}.ncc-intro p{max-width:720px;margin:auto;color:#abc7d8;line-height:1.6;font-size:14px}
+.ncc-stage-shell{width:min(97vw,1672px);margin:auto;border:1px solid #356b85;border-radius:15px;overflow:hidden;background:#06121c;box-shadow:0 0 80px #1689b02a,0 25px 65px #000b}.ncc-stage{position:relative;aspect-ratio:1672/941;isolation:isolate;overflow:hidden;background:#04090e}.ncc-scene-art{position:absolute;inset:0;background-image:url('/nexus-command-center.png');background-size:100% 100%;background-position:center;background-repeat:no-repeat;pointer-events:none}.ncc-scan{pointer-events:none;position:absolute;inset:0;mix-blend-mode:screen;background:repeating-linear-gradient(180deg,transparent 0 7px,#b8edff0b 8px,transparent 9px);animation:ncc-scan 10s linear infinite}.ncc-voice-ring{position:absolute;pointer-events:none;left:49.1%;top:37.5%;width:1.1%;aspect-ratio:1;border:1px solid #b0f0ffb5;border-radius:50%;box-shadow:0 0 22px #a0ecff;transform:translate(-50%,-50%);animation:ncc-breathe 4s ease-in-out infinite}.ncc-is-speaking .ncc-voice-ring{animation:ncc-breathe .55s ease-in-out infinite;box-shadow:0 0 40px #c1f5ff}
+.ncc-hotspot{position:absolute;z-index:1;border:1px solid transparent;border-radius:7px;background:transparent;transition:transform .21s,border-color .21s,background .21s,box-shadow .21s;overflow:hidden;color:#e3faff}.ncc-hotspot span{position:absolute;bottom:7px;left:8px;font:600 clamp(8px,.78vw,13px) ui-monospace,Consolas,monospace;letter-spacing:.06em;background:#021c2ddd;border:1px solid #498ba6aa;padding:5px;opacity:0;transition:opacity .15s}.ncc-hotspot:is(:hover,:focus-visible,.ncc-active){background:#15bfff17;border-color:#9de7ffbb;box-shadow:0 0 25px #49c9ff55,inset 0 0 22px #49c9ff17;transform:perspective(800px) translateZ(9px)}.ncc-hotspot:is(:hover,:focus-visible,.ncc-active) span{opacity:1}.ncc-avatar-target{position:absolute;z-index:2;left:47%;top:32%;width:6%;height:10%;border:1px solid transparent;background:transparent;border-radius:50%;cursor:pointer}.ncc-avatar-target:is(:hover,:focus-visible){box-shadow:0 0 25px #46baff, inset 0 0 17px #7ddaff6c;border-color:#adf0ff}.ncc-corner{position:absolute;width:23px;height:23px;pointer-events:none}.ncc-tl{top:8px;left:8px;border-top:2px solid #6ad2ff;border-left:2px solid #6ad2ff}.ncc-tr{top:8px;right:8px;border-top:2px solid #6ad2ff;border-right:2px solid #6ad2ff}.ncc-bl{bottom:8px;left:8px;border-bottom:2px solid #6ad2ff;border-left:2px solid #6ad2ff}.ncc-br{bottom:8px;right:8px;border-bottom:2px solid #6ad2ff;border-right:2px solid #6ad2ff}.ncc-bottom{display:flex;justify-content:space-between;gap:12px;padding:11px 20px;font:10px ui-monospace,Consolas,monospace;letter-spacing:.1em;color:#9bc7db;background:#071a28}.ncc-bottom span:nth-child(2){color:#b3eaff}.ncc-mobile-zones{display:none}.ncc-note{text-align:center;max-width:900px;margin:19px auto 36px;padding:0 14px;font:11px/1.8 ui-monospace,Consolas,monospace;color:#89aabd}.ncc-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:24px clamp(16px,4vw,65px);border-top:1px solid #245269;color:#8dabbd;font:11px ui-monospace,Consolas,monospace}.ncc-footer a{color:#c5edff}
+.ncc-backdrop{position:fixed;z-index:89;inset:0;background:#0008;border:0;backdrop-filter:blur(2px)}.ncc-drawer{position:fixed;z-index:90;right:clamp(9px,3vw,40px);top:clamp(15px,7vh,80px);bottom:clamp(15px,5vh,45px);width:min(475px,calc(100vw - 18px));display:flex;flex-direction:column;color:#e2f6ff;background:linear-gradient(145deg,#102c3cee,#05121bf9);border:1px solid #60b8d993;border-radius:17px;box-shadow:0 20px 95px #000e,0 0 38px #268bc943;backdrop-filter:blur(17px);animation:ncc-enter .22s ease-out}.ncc-drawer-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #4b91a95c;padding:14px 20px;font:11px ui-monospace,Consolas,monospace;letter-spacing:.13em;color:#8fdffc}.ncc-drawer-head button{border:1px solid #457b90;border-radius:8px;background:#0b2434;color:#dff6ff;min-width:37px;min-height:37px}.ncc-drawer-scroll{flex:1;overflow:auto;padding:21px 26px}.ncc-symbol{font-size:42px;color:#8de8ff;text-shadow:0 0 24px #23c6ff}.ncc-drawer h2{font-size:clamp(28px,2.5vw,40px);font-weight:650;line-height:1.12;margin:14px 0}.ncc-summary{font-size:15px;line-height:1.75;color:#c3dce8}.ncc-drawer ul{padding-left:19px;color:#b5d0df;font-size:13px;line-height:1.85}.ncc-drawer li{padding:5px 0}.ncc-actions{display:grid;gap:10px;margin:22px 0}.ncc-actions a{display:flex;align-items:center;min-height:44px;border:1px solid #38748c;padding:11px 14px;color:#b9edff;background:#102b3a;border-radius:10px;transition:background .2s}.ncc-actions a:hover{background:#1a4256}.ncc-drawer-footer{padding:12px;border-top:1px solid #3d7e975c;display:flex;gap:9px;flex-wrap:wrap}.ncc-drawer-footer button{min-height:43px;border:1px solid #7ccdec;background:#175371;color:#e9fbff;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:700}.ncc-drawer-footer button:first-child{background:#b7edff;color:#082435}
+/* Companion is scoped independently because it persists across other Next.js routes. */
+.nexus-companion{--c:#9feaff;position:fixed;z-index:110;right:20px;bottom:16px;font-family:Arial,Helvetica,sans-serif;color:#e8faff}.nexus-companion *{box-sizing:border-box}.nexus-companion button,.nexus-companion select,.nexus-companion input{font:inherit}.nexus-companion button{cursor:pointer}.nexus-companion button:focus-visible,.nexus-companion input:focus-visible,.nexus-companion select:focus-visible,.nexus-companion a:focus-visible{outline:2px solid #bef6ff;outline-offset:3px}.nexus-companion-trigger{display:flex;align-items:center;gap:10px;background:linear-gradient(115deg,#102f43,#071b28);color:#def8ff;border:1px solid #5bbedf;border-radius:100px;padding:8px 17px 8px 8px;box-shadow:0 0 25px #248dc466;font-size:12px;font-weight:700;letter-spacing:.06em}.nexus-companion-trigger span{display:grid;place-items:center;width:39px;height:39px;border-radius:50%;font-size:26px;background:radial-gradient(#8ee9ff,#155d85 67%,#072536);box-shadow:0 0 20px #4de0ff55}.nexus-companion-window{display:flex;flex-direction:column;width:min(400px,calc(100vw - 20px));height:min(585px,calc(100dvh - 40px));border:1px solid #5fbedd;border-radius:17px;background:#081b28f9;box-shadow:0 16px 80px #000d,0 0 36px #3bbef52b;backdrop-filter:blur(20px);overflow:hidden;animation:ncc-enter .24s ease-out}.nexus-companion-head{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid #2e657e}.nexus-companion-avatar{flex-shrink:0;width:48px;height:48px;border:1px solid #87def5;border-radius:50%;background:#041f30 url('/nexus-command-center.png') no-repeat 50% 21% / 480px 270px;box-shadow:0 0 18px #41c6ff77;animation:ncc-idle 5s ease-in-out infinite}.nexus-companion-avatar.talking{animation:ncc-breathe .45s ease-in-out infinite;box-shadow:0 0 30px #9feaff}.nexus-companion-head div:nth-child(2){flex:1;min-width:0}.nexus-companion-head strong{display:block;font-size:12px;letter-spacing:.12em}.nexus-companion-head span{display:block;font-size:10px;color:#8bbcd2;line-height:1.4;margin-top:5px}.nexus-companion-head button{border:1px solid #477d94;border-radius:7px;background:#0b2b3b;color:#def8ff;width:36px;height:36px}.nexus-companion-options{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid #234c60}.nexus-companion-options select,.nexus-companion-options button{background:#0f3246;border:1px solid #42748a;border-radius:7px;color:#d6f6ff;font-size:12px;padding:8px}.nexus-companion-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:11px;padding:14px}.nexus-companion-message{max-width:93%;align-self:flex-start;margin:0;padding:10px 12px;border-radius:13px;background:#173b50;color:#e3f9ff;font-size:12px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}.nexus-companion-message.user{align-self:flex-end;background:#296b8b;color:#fff}.nexus-companion-shortcuts{display:flex;gap:6px;padding:7px 11px}.nexus-companion-shortcuts button{color:#c2ecff;background:#143349;border:1px solid #346a83;padding:7px 9px;border-radius:99px;font-size:10px}.nexus-companion-form{display:flex;gap:8px;padding:10px;border-top:1px solid #2c5c71}.nexus-companion-form input{flex:1;min-width:0;background:#0c2839;border:1px solid #427b93;border-radius:9px;padding:11px;color:#e5faff;font-size:12px}.nexus-companion-form button{width:42px;border:1px solid #9be5ff;border-radius:9px;background:#76c6e4;color:#092332}.nexus-companion-form button:disabled{opacity:.55;cursor:not-allowed}.nexus-companion-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 13px 12px;font-size:10px;color:#93b7c9}.nexus-companion-foot a{color:#adeaff;text-decoration:underline;text-underline-offset:3px;text-align:right}
+@keyframes ncc-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes ncc-scan{0%,100%{opacity:.28}50%{opacity:.52}}@keyframes ncc-breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(2.1);opacity:1}}@keyframes ncc-idle{0%,100%{filter:brightness(.9)}50%{filter:brightness(1.1)}}
+@media(max-width:900px){.ncc-status{display:none}.ncc-topbar{min-height:64px}.ncc-hotspot span{display:none}}
+@media(max-width:600px){.ncc-topbar{gap:8px;padding:10px}.ncc-brand{font-size:13px;letter-spacing:.07em}.ncc-brand span{font-size:21px}.ncc-controls select{padding:7px;min-height:37px;max-width:96px;font-size:10px}.ncc-ghost{font-size:10px;min-height:37px;padding:7px}.ncc-intro{padding:22px 16px}.ncc-intro h1{font-size:32px}.ncc-intro p{font-size:12px}.ncc-stage-shell{width:100%;border-radius:0;border-inline:0}.ncc-stage{aspect-ratio:1.35}.ncc-scene-art{background-size:auto 100%;background-position:center}.ncc-hotspot{display:none}.ncc-avatar-target{left:45%;top:13%;width:11%;height:17%}.ncc-voice-ring{left:49.5%;top:22%}.ncc-bottom{padding:10px;font-size:8px}.ncc-mobile-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}.ncc-mobile-zones button{min-height:64px;text-align:left;border:1px solid #4085a4;border-radius:10px;background:linear-gradient(120deg,#082132,#12394b);color:#d2f4ff;font-size:12px;padding:12px}.ncc-mobile-zones button span{color:#86e5ff}.ncc-note{font-size:10px}.ncc-drawer{top:6px;bottom:6px;right:5px;width:calc(100vw - 10px)}.nexus-companion{right:8px;bottom:8px}.nexus-companion-window{height:min(585px,calc(100dvh - 16px))}.ncc-footer{justify-content:center;text-align:center;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.ncc-scan,.ncc-voice-ring,.nexus-companion-avatar{animation:none!important}.ncc-hotspot,.ncc-drawer,.nexus-companion-window{transition:none!important;animation:none!important}}
+
+/* Optional avatar experiment: preserves the original approved Command Center stage. */
+.ncc-avatar-lab{max-width:1120px;margin:12px auto 0;padding:8px 16px 18px;text-align:center}
+.ncc-avatar-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.ncc-avatar-lab-frame{width:min(100%,580px);margin:16px auto 0;padding:12px;border-radius:18px;border:1px solid #4c9cb8;background:radial-gradient(ellipse at 50% 40%,#11364f,#030b14 75%);box-shadow:0 0 25px #009bde26}
+.ncc-avatar3d{height:330px;max-height:60vh;position:relative;overflow:hidden;isolation:isolate}
+.ncc-avatar3d canvas{display:block;width:100%;height:100%;position:relative;z-index:1}
+.ncc-avatar3d-grid{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 26px,#63e1ff21 27px,transparent 28px)}
+.ncc-avatar-lab-frame p{font-size:11px;line-height:1.7;color:#a6cfdd;max-width:520px;margin:2px auto 6px}
+@media(max-width:600px){.ncc-avatar3d{height:260px}.ncc-avatar-lab-frame{padding:8px}}
+@media(prefers-reduced-motion:reduce){.ncc-avatar3d,.ncc-avatar3d-grid{animation:none!important}}
+
+/* Immersive Command Center: full-screen desktop, iPad/tablet and phone support */
+.ncc-root{min-height:100dvh}
+.ncc-shell{min-height:100dvh;display:flex;flex-direction:column}
+.ncc-topbar{min-height:56px;padding:8px clamp(12px,2vw,36px)}
+.ncc-avatar-lab{order:3;padding:8px 10px 14px}
+.ncc-intro{order:1;padding:12px 12px 10px}
+.ncc-intro h1{font-size:clamp(22px,2.3vw,40px);margin:8px auto}
+.ncc-intro p{font-size:12px}
+.ncc-stage-shell{order:2;width:100%;max-width:none;margin:0 auto;border-radius:0;border-inline:0;border-color:#367e9c}
+.ncc-stage{height:min(75dvh,calc(100vw * 941 / 1672));min-height:clamp(360px,48dvh,700px);aspect-ratio:auto}
+.ncc-scene-art{background-size:contain;background-position:center}
+.ncc-mobile-zones{order:4}
+.ncc-note{order:5;margin:12px auto}
+.ncc-footer{order:6;margin-top:auto}
+.ncc-bottom{padding:8px 18px}
+.ncc-feature-actions{margin:18px 0 8px}
+.ncc-feature-actions button{width:100%;min-height:50px;border:1px solid #8ceaff;border-radius:10px;background:linear-gradient(115deg,#4bbee7,#8ce9ff);color:#062235;font-weight:750;cursor:pointer}
+.ncc-news-overlay,.ncc-ai-layer{position:fixed;z-index:120;inset:0}
+.ncc-news-overlay .ncc-backdrop{z-index:0}
+.ncc-news-dialog{position:absolute;z-index:1;right:min(4vw,60px);top:6dvh;bottom:6dvh;width:min(640px,92vw);overflow:auto;background:linear-gradient(135deg,#0d2c3e,#030b15);border:1px solid #5cc9ec;border-radius:20px;box-shadow:0 30px 95px #000c;padding:25px;color:#effbff}
+.ncc-news-close{position:absolute;right:15px;top:13px;background:#0e3850;border:1px solid #5fadc8;color:#fff;border-radius:10px;min-width:39px;min-height:39px;cursor:pointer}
+.ncc-news{margin-top:26px}
+.ncc-news-title{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #36788b;padding-bottom:16px}
+.ncc-news-title span{font:11px ui-monospace,monospace;letter-spacing:.14em;color:#8adbf5}
+.ncc-news-title button{border:1px solid #468da7;background:#113a50;color:#dff8ff;border-radius:8px;padding:9px;cursor:pointer}
+.ncc-news-list{list-style:none;padding:0;margin:14px 0}
+.ncc-news-list li{padding:16px 0;border-bottom:1px solid #276079}
+.ncc-news-list a{display:block;color:#e9faff;text-decoration:none;line-height:1.5}
+.ncc-news-list small{display:block;margin-top:9px;color:#a1cfdf}
+.ncc-news-disclaimer{font-size:11px;color:#a2b7c4;margin-top:12px}
+.ncc-ai-dismiss{position:absolute;inset:0;width:100%;background:#000a;border:0;cursor:pointer;backdrop-filter:blur(4px)}
+.ncc-ai-window{position:absolute;right:clamp(7px,2vw,25px);top:clamp(7px,4dvh,45px);bottom:clamp(7px,4dvh,45px);width:min(670px,calc(100vw - 14px));display:flex;flex-direction:column;color:#eefbff;border:1px solid #57c6e9;border-radius:20px;background:linear-gradient(140deg,#0c293b,#030e17);box-shadow:0 35px 100px #000e,0 0 45px #009ce52e;overflow:hidden}
+.ncc-ai-head{display:flex;align-items:flex-start;justify-content:space-between;padding:21px 23px;background:#112f41;border-bottom:1px solid #31667c}
+.ncc-ai-head small{color:#82e8f8;letter-spacing:.19em;font:10px ui-monospace,monospace}
+.ncc-ai-head h2{font-size:23px;font-weight:650;margin:6px 0}
+.ncc-ai-head span{font-size:12px;color:#aacdde}
+.ncc-ai-head button{border:1px solid #417f9b;color:#d9f8ff;background:#0e2f41;border-radius:9px;padding:10px;cursor:pointer}
+.ncc-ai-modes{display:flex;gap:6px;overflow-x:auto;padding:12px 13px;border-bottom:1px solid #235970}
+.ncc-ai-modes button{white-space:nowrap;min-height:37px;padding:9px 12px;background:#0b2737;border:1px solid #315f7c;color:#a3d3e7;border-radius:8px;cursor:pointer}
+.ncc-ai-modes button.active{color:#072836;border-color:#b4eaff;background:#99e2ff}
+.ncc-ai-auth{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:13px}
+.ncc-ai-auth h3{font-size:clamp(22px,4vw,28px);font-weight:650}
+.ncc-ai-auth p{max-width:420px;color:#b3d1dc;line-height:1.75;font-size:14px}
+.ncc-ai-orb{display:grid;place-items:center;width:105px;height:105px;border-radius:50%;font-size:60px;color:#dcf8ff;background:radial-gradient(#12698b,#062537 72%);box-shadow:0 0 40px #00c8ff7b;animation:ncc-idle 3s ease-in-out infinite}
+.ncc-ai-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.ncc-ai-links a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 17px;border-radius:9px;border:1px solid #83d9f3;background:#145f81;color:#f0fcff;text-decoration:none}
+.ncc-ai-links a:first-child{background:#a3e7ff;color:#052839}
+.ncc-ai-premium{font-size:11px!important}
+.ncc-ai-messages{flex:1;display:flex;flex-direction:column;gap:13px;overflow:auto;padding:20px}
+.ncc-ai-message{border:1px solid #235875;background:#0f3851;color:#ddf6ff;border-radius:16px;padding:13px 15px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;max-width:93%;font-size:13px}
+.ncc-ai-message.visitor{align-self:flex-end;background:#1a6b86}
+.ncc-ai-error{padding:12px;color:#ffb9b9;background:#5b121d;line-height:1.5}
+.ncc-ai-form{padding:13px;display:flex;gap:9px;border-top:1px solid #24586a}
+.ncc-ai-form textarea{min-width:0;flex:1;border:1px solid #417f96;border-radius:11px;padding:12px;color:#e8faff;background:#0a2433;resize:vertical}
+.ncc-ai-form button{border:1px solid #9ce9ff;border-radius:10px;padding:11px;background:#95dbf5;color:#082431;font-weight:750;cursor:pointer}
+.ncc-ai-form button:disabled{opacity:.5;cursor:not-allowed}
+.ncc-ai-note{padding:0 14px 12px;color:#83afc2;font-size:10px}
+@media(min-width:700px) and (max-width:1199px){.ncc-stage{min-height:480px;height:min(74dvh,calc(100vw * 941 / 1672))}.ncc-hotspot span{font-size:10px}}
+@media(max-width:699px){.ncc-intro{padding:14px 14px 16px}.ncc-intro h1{font-size:clamp(23px,7vw,32px)}.ncc-stage{min-height:0;height:min(66dvh,490px);aspect-ratio:auto}.ncc-scene-art{background-size:cover;background-position:center}.ncc-mobile-zones{display:grid}.ncc-avatar-target{left:44%;top:13%;width:12%;height:18%}.ncc-news-dialog{top:3dvh;bottom:3dvh;right:3vw;width:94vw;padding:20px}.ncc-ai-head{padding:13px 15px}.ncc-ai-head h2{font-size:19px}.ncc-ai-window{top:5px;bottom:5px;right:5px;width:calc(100vw - 10px)}.ncc-ai-modes{padding:9px}.ncc-ai-modes button{font-size:11px;padding:8px}.ncc-avatar-lab{padding:8px 10px}.ncc-note{margin:8px auto 15px}}
+@media(prefers-reduced-motion:reduce){.ncc-ai-orb{animation:none}}
+
+/* Scene alignment: image and hit zones share exactly the same 1672:941 coordinate system. */
+.ncc-shell{position:relative}
+.ncc-hud-bar{position:absolute;top:12px;left:clamp(8px,2vw,28px);right:clamp(8px,2vw,28px);z-index:9;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+.ncc-hud-bar>*{pointer-events:auto}
+.ncc-hud-brand{font:700 15px ui-monospace,Consolas,monospace;letter-spacing:.18em;color:#c9f4ff;text-shadow:0 0 18px #08b7fa;text-decoration:none}
+.ncc-hud-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ncc-hud-actions button,.ncc-hud-actions a{font:11px ui-monospace,Consolas,monospace;color:#d4f6ff;background:#071c2bdc;border:1px solid #56b4d8b8;border-radius:10px;min-height:39px;padding:10px 12px;text-decoration:none;cursor:pointer;box-shadow:inset 0 0 14px #00aefa1b}
+.ncc-stage-shell{order:0;border:0;background:#02080e;box-shadow:none}
+.ncc-stage{aspect-ratio:1672 / 941;height:auto;min-height:0;width:100%}
+.ncc-scene-art{background-size:100% 100%;background-position:center;animation:ncc-art-breath 12s ease-in-out infinite}
+.ncc-hotspot{animation:ncc-zone-float 4s ease-in-out infinite;transform-origin:center}
+.ncc-hotspot:nth-of-type(even){animation-delay:-2s}
+.ncc-hotspot:hover,.ncc-hotspot:focus-visible{animation-play-state:paused;box-shadow:0 0 38px #65dfffaa,inset 0 0 26px #48bdf733}
+.ncc-holographic-pulse{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 49% 38%,transparent 0 7%,#53ddff10 13%,transparent 19%);animation:ncc-pulse 5s ease-in-out infinite}
+.ncc-portrait-glow{position:absolute;left:46%;top:32%;width:6%;height:12%;border-radius:50%;pointer-events:none;box-shadow:0 0 30px #73dcff70;opacity:.35;animation:ncc-pulse 3.2s ease-in-out infinite}
+.ncc-stage-arrows{position:absolute;inset:0 8px;display:flex;align-items:center;justify-content:space-between;pointer-events:none;color:#84deffad;font-size:clamp(22px,3vw,48px);text-shadow:0 0 20px #00bfff}
+.ncc-language-overlay{position:fixed;z-index:135;inset:0;display:grid;place-items:center;padding:18px;background:#020a13b9;backdrop-filter:blur(9px)}
+.ncc-language-card{width:min(630px,100%);padding:clamp(20px,4vw,35px);border:1px solid #70dcff;border-radius:22px;background:radial-gradient(ellipse at 50% 0,#144c6b,#061825 65%);box-shadow:0 0 85px #139adb63;text-align:center;color:#e8faff}
+.ncc-language-orbit{font-size:56px;color:#9eefff;text-shadow:0 0 35px #17cbff;animation:ncc-pulse 2s infinite}
+.ncc-language-eyebrow{font:11px ui-monospace,monospace;letter-spacing:.15em;color:#a9e5fc}
+.ncc-language-card h2{font-size:clamp(22px,4vw,32px);letter-spacing:.06em;font-weight:650;margin:12px 0}
+.ncc-language-card>p{color:#b0d7e7;line-height:1.5}
+.ncc-language-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0}
+.ncc-language-options button,.ncc-language-microphone{min-height:55px;border:1px solid #64c5e7;color:#e7faff;background:linear-gradient(125deg,#13445c,#08283b);border-radius:12px;cursor:pointer}
+.ncc-language-options button{display:flex;justify-content:space-between;align-items:center;padding:15px;font-size:14px}
+.ncc-language-options button:hover,.ncc-language-microphone:hover{background:#1c7397;box-shadow:0 0 20px #30b8fa60}
+.ncc-language-microphone{width:100%;min-height:44px}
+@keyframes ncc-art-breath{0%,100%{filter:brightness(.94)}50%{filter:brightness(1.12)}}
+@keyframes ncc-zone-float{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22)}}
+@keyframes ncc-pulse{0%,100%{opacity:.20}50%{opacity:.7}}
+@media(max-width:699px){.ncc-stage{aspect-ratio:1672 / 941;height:auto;min-height:0}.ncc-scene-art{background-size:100% 100%}.ncc-hotspot{display:none}.ncc-hud-bar{top:8px}.ncc-hud-actions{gap:4px}.ncc-hud-actions button,.ncc-hud-actions a{font-size:9px;padding:7px;min-height:34px}.ncc-hud-brand{font-size:11px}.ncc-language-options{gap:8px}.ncc-language-options button{padding:12px;min-height:53px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.ncc-scene-art,.ncc-hotspot,.ncc-portrait-glow,.ncc-holographic-pulse,.ncc-language-orbit{animation:none!important}}
+
+/* Small self-contained holographic nodes, aligned by center rather than the painting's perspective. */
+.ncc-stage .ncc-hotspot{z-index:4;width:clamp(45px,5vw,76px)!important;height:clamp(45px,5vw,76px)!important;padding:0;border:1px solid #7bdcf3aa;border-radius:50%;background:radial-gradient(circle at center,#10425cdb,#031827dd 75%);box-shadow:0 0 18px #37d3ff88,inset 0 0 12px #6ae7ff33;display:flex;align-items:center;justify-content:center;overflow:visible;transform:translate(-50%,-50%);animation:ncc-node-pulse 3.4s ease-in-out infinite}
+.ncc-stage .ncc-hotspot b{font:700 clamp(12px,1.3vw,18px) ui-monospace,monospace;color:#e6faff;text-shadow:0 0 12px #82eaff}
+.ncc-stage .ncc-hotspot span{position:absolute;display:block;bottom:auto;top:105%;left:50%;transform:translateX(-50%);width:max-content;max-width:min(220px,24vw);white-space:normal;text-align:center;font:600 11px/1.3 ui-monospace,monospace;background:#031d30e8;border:1px solid #5dbdda;border-radius:8px;padding:6px 9px;opacity:0;pointer-events:none}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible) {animation-play-state:paused;border-color:#c7f8ff;background:#145779;box-shadow:0 0 30px #38dfffaa,inset 0 0 19px #9feeff50;transform:translate(-50%,-50%) scale(1.1)}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible) span{opacity:1}
+@keyframes ncc-node-pulse{0%,100%{box-shadow:0 0 13px #32caff64,inset 0 0 8px #72dafa30}50%{box-shadow:0 0 27px #49daffaa,inset 0 0 16px #7fe7ff50}}
+@media(min-width:700px) and (max-width:1000px){.ncc-stage .ncc-hotspot{width:45px!important;height:45px!important}.ncc-stage .ncc-hotspot span{max-width:180px}}
+@media(max-width:699px){.ncc-stage .ncc-hotspot{display:none}}
+@media(prefers-reduced-motion:reduce){.ncc-stage .ncc-hotspot{animation:none!important}}
+
+/* V0.4: procedural, resolution-independent scene replaces raster panels. */
+.ncc-stage{min-height:min(88dvh,820px);aspect-ratio:auto;isolation:isolate;background:radial-gradient(ellipse at 50% 53%,#174760 0,#071925 40%,#010712 80%)}
+.ncc-next-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 50% 47%,#25cbec26 0,transparent 42%),radial-gradient(circle at 50% 100%,#1e9bff28,transparent 55%)}
+.ncc-floor-grid{position:absolute;left:-25%;right:-25%;bottom:-40%;height:75%;transform:perspective(510px) rotateX(70deg);transform-origin:top;background:repeating-linear-gradient(0deg,transparent 0 37px,#5ed9fc38 38px,transparent 39px),repeating-linear-gradient(90deg,transparent 0 55px,#5ed9fc38 56px,transparent 57px);mask-image:linear-gradient(to bottom,transparent,#000 32%,transparent)}
+.ncc-orbital-halo{position:absolute;top:7%;left:50%;height:75%;aspect-ratio:1;transform:translateX(-50%);border:1px solid #36c6f25c;border-radius:50%;box-shadow:0 0 90px #00b7ff26,inset 0 0 55px #25d4fa20;animation:ncc-halo 18s linear infinite}
+.ncc-arc{position:absolute;left:50%;top:17%;height:57%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;border:2px dashed #48d9fa59;animation:ncc-halo 22s linear infinite}
+.ncc-arc-b{height:67%;top:12%;border:1px dotted #88eaff55;animation-duration:29s;animation-direction:reverse}
+.ncc-main-avatar{position:absolute;z-index:2;top:10%;bottom:9%;left:31%;width:38%;pointer-events:none}
+.ncc-main-avatar .ncc-avatar3d{height:100%;max-height:none}
+.ncc-main-avatar-caption{position:absolute;bottom:0;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 clamp(10px,1vw,14px) ui-monospace,Consolas,monospace;letter-spacing:.12em;text-shadow:0 0 15px #38cefd;color:#cff9ff}
+.ncc-main-avatar-caption span{margin-left:14px;color:#77f5d8}
+.ncc-stage .ncc-hotspot{width:clamp(128px,15vw,255px)!important;height:clamp(72px,9vh,110px)!important;transform:translate(-50%,-50%);border:1px solid #6edbffaa;border-radius:13px;clip-path:polygon(0 12%,8% 0,92% 0,100% 12%,100% 88%,92% 100%,8% 100%,0 88%);background:linear-gradient(128deg,#164b62c9,#041a2abf);box-shadow:inset 0 0 25px #3cbbf829,0 0 30px #14d1ff24;animation:ncc-panel-hover 5s ease-in-out infinite}
+.ncc-stage .ncc-hotspot b{font-size:clamp(15px,1.3vw,21px)}
+.ncc-stage .ncc-hotspot span{opacity:1;position:static;transform:none;max-width:75%;width:auto;font-size:clamp(10px,.88vw,13px);background:transparent;border:0;white-space:normal;pointer-events:none}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible){animation-play-state:paused;transform:translate(-50%,-50%) scale(1.045);background:linear-gradient(120deg,#217b9c,#0b3952);filter:brightness(1.2)}
+.ncc-stage .ncc-node-cognition{left:15%!important;top:24%!important}
+.ncc-stage .ncc-node-knowledge{left:15%!important;top:48%!important}
+.ncc-stage .ncc-node-experience{left:15%!important;top:72%!important}
+.ncc-stage .ncc-node-creative{left:85%!important;top:24%!important}
+.ncc-stage .ncc-node-assistance{left:85%!important;top:48%!important}
+.ncc-stage .ncc-node-future{left:85%!important;top:72%!important}
+.ncc-avatar-target{left:44%;top:29%;width:12%;height:23%;z-index:4}
+.ncc-portrait-glow,.ncc-voice-ring{display:none}
+.ncc-stage-arrows{display:none}
+@keyframes ncc-halo{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
+@keyframes ncc-panel-hover{0%,100%{filter:brightness(.95)}50%{filter:brightness(1.15)}}
+@media (max-width:1000px){.ncc-stage{min-height:640px}.ncc-main-avatar{left:27%;width:46%}.ncc-stage .ncc-hotspot{width:clamp(110px,18vw,166px)!important;height:85px!important}.ncc-stage .ncc-node-cognition,.ncc-stage .ncc-node-knowledge,.ncc-stage .ncc-node-experience{left:12%!important}.ncc-stage .ncc-node-creative,.ncc-stage .ncc-node-assistance,.ncc-stage .ncc-node-future{left:88%!important}}
+@media (max-width:699px){.ncc-stage{height:75dvh;min-height:470px;max-height:780px;aspect-ratio:auto}.ncc-main-avatar{left:7%;width:86%;top:12%;bottom:13%}.ncc-stage .ncc-hotspot{display:none}.ncc-mobile-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.ncc-mobile-zones button{min-height:85px;border-color:#73cbed;background:linear-gradient(135deg,#134961,#082338);box-shadow:0 0 16px #12b8e82b}.ncc-avatar-target{left:39%;top:29%;width:22%;height:22%}.ncc-main-avatar-caption{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.ncc-orbital-halo,.ncc-arc,.ncc-stage .ncc-hotspot{animation:none!important}}
+
+/* Game-inspired Nexus skill selection, rendered at browser resolution */
+.ncc-magic-particles{position:absolute;inset:0;pointer-events:none;opacity:.6;background-image:radial-gradient(circle,#66eaffad 1px,transparent 2px),radial-gradient(circle,#d58aff88 1px,transparent 2px);background-size:117px 113px,173px 139px;background-position:0 0,43px 21px;animation:ncc-particle-drift 20s linear infinite}
+.ncc-stage .ncc-hotspot{display:flex;flex-direction:column;gap:5px;padding:12px 10px;border-radius:18px;clip-path:polygon(0 16%,11% 0,89% 0,100% 16%,100% 84%,89% 100%,11% 100%,0 84%);transition:background .25s,box-shadow .25s}
+.ncc-stage .ncc-hotspot .ncc-skill-glyph{font-size:clamp(23px,3vw,42px);line-height:1;color:#85eaff;text-shadow:0 0 23px #54dfff;opacity:1;background:none;border:0;padding:0;max-width:none;position:static;transform:none}
+.ncc-stage .ncc-hotspot:nth-of-type(2n) .ncc-skill-glyph{color:#e1b4ff;text-shadow:0 0 23px #a76eff}
+.ncc-stage .ncc-hotspot .ncc-skill-label{display:block;position:static;transform:none;opacity:1;background:none;border:0;width:auto;max-width:100%;padding:0;font:600 clamp(11px,1.05vw,15px)/1.25 Arial,sans-serif}
+.ncc-stage .ncc-hotspot small{position:absolute;left:10px;top:7px;font:10px ui-monospace,monospace;letter-spacing:.1em;color:#75bdd3}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible) .ncc-skill-glyph{filter:brightness(1.4)}
+@keyframes ncc-particle-drift{to{background-position:117px -113px,-130px 160px}}
+@media(prefers-reduced-motion:reduce){.ncc-magic-particles{animation:none}}

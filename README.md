@@ -11,7 +11,7 @@ Nexus AI is a portfolio project built with Next.js, React, TypeScript, Tailwind 
 - User-owned project creation, editing, archiving, restoration, and deletion, backed by Supabase Postgres and row-level security.
 - AI Assistant with modes for Copilot, planning, debugging, learning, and interview practice.
 - Persistent assistant conversations, message history, and a per-user daily request limit.
-- Gemini provider support, with optional OpenAI provider configuration; provider API keys remain server-side.
+- Gemini and OpenAI provider support, plus an opt-in, localhost-only Nexus Core adapter for Ollama models. Provider keys remain server-side.
 - GitHub Actions CI for ESLint, TypeScript, and production builds.
 
 ## Tech stack
@@ -46,6 +46,7 @@ Requirements: Node.js 22 or later and npm.
    - `SUPABASE_SECRET_KEY`: a Supabase secret key used only by server-side assistant endpoints. Never prefix it with `NEXT_PUBLIC_`.
    - `AI_PROVIDER=gemini` and `GEMINI_API_KEY` for Gemini. `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`.
    - To use OpenAI instead, set `AI_PROVIDER=openai` and provide `OPENAI_API_KEY`; choose `OPENAI_MODEL` as appropriate.
+   - To try locally controlled inference with Ollama, follow [docs/nexus-core.md](docs/nexus-core.md). This is a local-development feature, not a hosted model service.
 
 4. Configure Supabase Auth Site URL and allowed redirect URLs, email confirmation, and password recovery as described in [docs/supabase-setup.md](docs/supabase-setup.md).
 
@@ -58,6 +59,10 @@ Requirements: Node.js 22 or later and npm.
 6. Open `http://localhost:3000`.
 
 The current Supabase project used during development has its schema and RLS policies configured. If you connect a different Supabase project, apply the tracked SQL migrations in timestamp order and update the environment variables.
+
+## Nexus Core
+
+Read [Nexus Core local setup, scope, model licensing and evaluation plan](docs/nexus-core.md). Local inference removes the paid provider’s per-message quota, but still requires your computer to run the model and Supabase to persist conversations. It is **not** unlimited compute, independent model ownership, or a validated 2027 knowledge source.
 
 ## Deployment
 

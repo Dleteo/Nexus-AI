@@ -57,9 +57,15 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkPublicPage("/", [
-  "Build with",
-  "Your AI workspace for bigger possibilities.",
+  "NEXUS AI",
+  "ncc-stage",
 ]);
+await checkPublicPage("/command-center", ["NEXUS AI", "ncc-stage"]);
+const newsResponse = await request("/api/news");
+assert.equal(newsResponse.status, 200, "Public news API must return HTTP 200");
+const newsData = await newsResponse.json();
+assert.ok(Array.isArray(newsData.headlines), "News response requires an array of headlines");
+console.log("PASS news feed endpoint with source URLs");
 await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Professional summary", "Featured project: Nexus AI"]);
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
