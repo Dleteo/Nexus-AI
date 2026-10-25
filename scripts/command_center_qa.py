@@ -8,6 +8,7 @@ Uses Playwright (Python) and a running local Next.js server.
 This checks navigation and public chat UI; the live backend and TTS require separate verification.
 """
 import os
+import shutil
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -18,7 +19,9 @@ SCREENSHOTS.mkdir(exist_ok=True)
 
 def run():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        binary = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
+        assert binary, "Chrome/Chromium is unavailable"
+        browser = p.chromium.launch(headless=True, executable_path=binary, args=["--no-sandbox"])
         for kind, dimensions in [("desktop", {"width": 1440, "height": 950}), ("mobile", {"width": 390, "height": 844})]:
             page = browser.new_page(viewport=dimensions, reduced_motion="reduce")
             errors = []
@@ -27,6 +30,7 @@ def run():
             assert response is not None and response.status == 200, f"Route unavailable: {response}"
             assert page.locator(".ncc-stage").count() == 1
             assert page.locator(".ncc-hotspot").count() == 6
+            assert page.locator(".ncc-stage").bounding_box()["width"] >= dimensions["width"] * 0.9
             art = page.locator(".ncc-scene-art")
             assert "/nexus-command-center.png" in art.evaluate("element => getComputedStyle(element).backgroundImage")
             image_resp = page.request.get(BASE + "/nexus-command-center.png")
@@ -37,7 +41,7 @@ def run():
             else:
                 assert page.locator(".ncc-mobile-zones").is_visible()
                 page.locator(".ncc-mobile-zones button").nth(3).click()
-            assert page.locator("#ncc-drawer-heading").inner_text() == "Mis proyectos"
+            assert page.locator("#ncc-drawer-heading").inner_text() == "Proyectos y redes"
             assert page.locator('.ncc-actions a[href="https://github.com/Dleteo/Nexus-AI"]').count() == 1
             page.keyboard.press("Escape")
             assert page.locator("#ncc-drawer").count() == 0
@@ -46,7 +50,7 @@ def run():
                 page.locator('.ncc-hotspot').nth(0).click()
             else:
                 page.locator('.ncc-mobile-zones button').nth(0).click()
-            assert page.locator("#ncc-drawer-heading").inner_text() == "About the developer"
+            assert page.locator("#ncc-drawer-heading").inner_text() == "My creator Josh"
             page.keyboard.press("Escape")
             page.get_by_role("button", name="Ask Nexus").click()
             assert page.locator(".nexus-companion-window").is_visible()
@@ -55,6 +59,14 @@ def run():
             assert "experimental" in page.locator(".nexus-companion-messages").inner_text().lower()
             assert page.locator('.nexus-companion-foot a[href="/assistant"]').count() == 1
             page.screenshot(path=str(SCREENSHOTS / f"command-center-{kind}.png"), full_page=True)
+            page.goto(BASE + "/", wait_until="domcontentloaded")
+            assert page.locator(".ncc-hotspot").count() == 6
+            assert page.locator(".ncc-ai-window").count() == 0
+            page.locator(".ncc-hotspot").nth(4).evaluate("el => el.click()") if kind == "mobile" else page.locator(".ncc-hotspot").nth(4).click()
+            page.locator(".ncc-feature-actions button").click()
+            assert page.locator(".ncc-ai-window").is_visible()
+            assert page.locator(".ncc-ai-auth").count() == 1
+            page.screenshot(path=str(SCREENSHOTS / f"nexus-home-{kind}.png"), full_page=True)
             assert not errors, f"Browser errors: {errors}"
             page.close()
         browser.close()
