@@ -4,7 +4,7 @@ import Link from "next/link";
 import NexusAvatar3D from "./NexusAvatar3D";
 import NexusAIChat from "./NexusAIChat";
 import NexusNewsBoard from "./NexusNewsBoard";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import { setGuideLanguage, useGuideLanguage } from "./guidePreferences";
 
 type Language = "es" | "en" | "pt" | "fr";
@@ -91,8 +91,18 @@ export default function CommandCenter() {
   const [speaking, setSpeaking] = useState(false);
   const [showAvatar3D, setShowAvatar3D] = useState(false);
   const [newsOpen, setNewsOpen] = useState(false);
+  const [languageGate, setLanguageGate] = useState(false);
+  const [listeningLanguage, setListeningLanguage] = useState(false);
+  const [languageMessage, setLanguageMessage] = useState("");
   const active = zones.find((zone) => zone.id === selected);
   const t = ui[lang];
+
+  useEffect(() => {
+    if (!window.localStorage.getItem("nexus-language-welcome-seen")) {
+      const id = window.requestAnimationFrame(() => setLanguageGate(true));
+      return () => window.cancelAnimationFrame(id);
+    }
+  }, []);
 
   useEffect(() => {
     const started = () => setSpeaking(true);
@@ -125,6 +135,30 @@ export default function CommandCenter() {
 
   function chooseLanguage(next: Language) {
     setGuideLanguage(next);
+    window.localStorage.setItem("nexus-language-welcome-seen", "yes");
+    setLanguageGate(false);
+    setLanguageMessage("");
+    notifyGuide(next, localized("Bienvenido a Nexus AI, el centro creado por Josh. ¿En qué puedo ayudarte?", "Welcome to Nexus AI, built by my creator Josh. How can I help?", "Bem-vindo ao Nexus AI, criado por Josh. Como posso ajudar?", "Bienvenue sur Nexus AI, créé par Josh. Comment vous aider ?")[next]);
+  }
+  function hearLanguage() {
+    type RecognitionEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
+    type Recognition = { lang: string; start(): void; onresult: ((e: RecognitionEvent) => void) | null; onerror: (() => void) | null; onend: (() => void) | null };
+    const browser = window as Window & { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
+    const Speech = browser.SpeechRecognition ?? browser.webkitSpeechRecognition;
+    if (!Speech) { setLanguageMessage("Microphone unavailable. Select a language."); return; }
+    const rec = new Speech();
+    rec.lang = "en-US";
+    rec.onresult = (event) => {
+      const heard = event.results[0]?.[0]?.transcript?.toLowerCase() ?? "";
+      if (/espa[nñ]ol|spanish/.test(heard)) chooseLanguage("es");
+      else if (/english|ingl[eé]s/.test(heard)) chooseLanguage("en");
+      else if (/portugu[eê]s|portuguese/.test(heard)) chooseLanguage("pt");
+      else if (/fran[cç]ais|french/.test(heard)) chooseLanguage("fr");
+      else setLanguageMessage("Say Spanish, English, Portuguese or French.");
+    };
+    rec.onerror = () => { setListeningLanguage(false); setLanguageMessage("Microphone unavailable. Select a language."); };
+    rec.onend = () => setListeningLanguage(false);
+    try { rec.start(); setListeningLanguage(true); } catch { setListeningLanguage(false); }
   }
 
   function openZone(zone: Hologram) {
@@ -139,38 +173,20 @@ export default function CommandCenter() {
   return (
     <main className="ncc-root" lang={lang}>
       <div className="ncc-shell">
-        <header className="ncc-topbar">
-          <Link href="/" className="ncc-brand" aria-label="Nexus AI homepage"><span aria-hidden="true">◈</span> NEXUS <b>AI</b></Link>
-          <div className="ncc-status"><i aria-hidden="true" />{t.status}</div>
-          <div className="ncc-controls">
-            <label htmlFor="ncc-language" className="ncc-sr">Language</label>
-            <select id="ncc-language" aria-label="Language" value={lang} onChange={(event: ChangeEvent<HTMLSelectElement>) => chooseLanguage(event.target.value as Language)}>
-              {(Object.keys(languages) as Language[]).map((code) => <option value={code} key={code}>{languages[code]}</option>)}
-            </select>
-            <button type="button" className="ncc-ghost" onClick={() => notifyGuide(lang, localized("Bienvenido al centro de comando. Selecciona uno de los hologramas para descubrir los proyectos, la experiencia y los conocimientos de Joshua.", "Welcome to the command center. Choose a hologram to explore Joshua's projects and experience.", "Bem-vindo ao centro de comando. Selecione um holograma para explorar os projetos.", "Bienvenue au centre de commande. Choisissez un hologramme pour explorer les projets.")[lang])}>{t.voice}</button>
+        <nav className="ncc-hud-bar" aria-label="Nexus command controls">
+          <Link href="/" className="ncc-hud-brand" aria-label="Nexus AI homepage">◈ NEXUS AI</Link>
+          <div className="ncc-hud-actions">
+            <button type="button" onClick={() => setLanguageGate(true)}>◎ {lang.toUpperCase()}</button>
+            <button type="button" onClick={() => notifyGuide(lang, localized("Hola, soy Nexus. ¿Qué te gustaría explorar?","Hello, I'm Nexus. What would you like to explore?","Olá, sou Nexus.","Bonjour, je suis Nexus.")[lang], true)}>◉ {t.guide}</button>
+            <Link href="/register">✧ {lang === "es" ? "Cuenta gratis" : "Free account"}</Link>
           </div>
-        </header>
-
-        <section className="ncc-avatar-lab" aria-label="Avatar 3D laboratory">
-          <button type="button" className="ncc-ghost ncc-avatar-toggle"
-            aria-pressed={showAvatar3D} onClick={() => setShowAvatar3D((current) => !current)}>
-            {showAvatar3D ? "◈ " + (lang === "es" ? "Ocultar avatar 3D experimental" : "Hide experimental 3D avatar") : "◇ " + (lang === "es" ? "Probar avatar 3D experimental" : "Try experimental 3D avatar")}
-          </button>
-          {showAvatar3D && <div className="ncc-avatar-lab-frame">
-            <NexusAvatar3D speaking={speaking} gesture={selected ?? "idle"} label={lang === "es" ? "Avatar 3D experimental de Nexus" : "Experimental Nexus 3D avatar"} />
-            <p>{lang === "es" ? "Prototipo 3D generado por WebGL: gestos, cabeza y boca reactiva. No es todavía el personaje original con sincronización labial fonética." : "Procedural WebGL 3D study with gestures, head movement and responsive mouth. This is not yet the original character with phonetic lip-sync."}</p>
-          </div>}
-        </section>
-        <section className="ncc-intro">
-          <div className="ncc-kicker">{t.tag}</div>
-          <h1>{t.title}</h1>
-          <p>{t.description}</p>
-        </section>
-
+        </nav>
         <div className="ncc-stage-shell">
           <section className={`ncc-stage ${speaking ? "ncc-is-speaking" : ""} ncc-motion`} aria-label={t.nav}>
             <div className="ncc-scene-art" aria-hidden="true" />
             <div className="ncc-scan" aria-hidden="true" />
+            <div className="ncc-holographic-pulse" aria-hidden="true" />
+            <div className="ncc-portrait-glow" aria-hidden="true" />
             <div className="ncc-voice-ring" aria-hidden="true" />
             {zones.map((zone) => (
               <button
@@ -184,6 +200,7 @@ export default function CommandCenter() {
               ><span>{zone.number} · {zone.title[lang]}</span></button>
             ))}
             <button className="ncc-avatar-target" type="button" aria-label={t.voice} onClick={() => notifyGuide(lang, localized("Hola. Soy Nexus, el guía del portafolio. Pulsa cualquier holograma y te contaré qué contiene.", "Hello. I'm Nexus, your portfolio guide. Choose any hologram and I will describe it.", "Olá. Sou Nexus. Escolha um holograma para descobrir mais.", "Bonjour. Je suis Nexus. Choisissez un hologramme.")[lang])} />
+            <div className="ncc-stage-arrows" aria-hidden="true"><span>❮</span><span>❯</span></div>
             <div className="ncc-corner ncc-tl" aria-hidden="true" /><div className="ncc-corner ncc-tr" aria-hidden="true" /><div className="ncc-corner ncc-bl" aria-hidden="true" /><div className="ncc-corner ncc-br" aria-hidden="true" />
           </section>
           <div className="ncc-bottom"><span>{t.nav}</span><span aria-live="polite">◉ {speaking ? t.speak : t.idle}</span></div>
@@ -195,6 +212,19 @@ export default function CommandCenter() {
         <p className="ncc-note">{t.caption}</p>
         <footer className="ncc-footer"><span>© NEXUS AI · ORIGINAL COMMAND CENTER</span><Link href="/portfolio">{t.enter} / PORTFOLIO ↗</Link><Link href="/assistant">AI ASSISTANT ↗</Link></footer>
       </div>
+      {languageGate && <div className="ncc-language-overlay">
+        <div className="ncc-language-card" role="dialog" aria-modal="true" aria-labelledby="ncc-language-title">
+          <div className="ncc-language-orbit" aria-hidden="true">◉</div>
+          <p className="ncc-language-eyebrow">NEXUS AI / INITIALIZING CONNECTION</p>
+          <h2 id="ncc-language-title">CHOOSE YOUR LANGUAGE</h2>
+          <p>Selecciona tu idioma / Choose your language</p>
+          <div className="ncc-language-options">
+            {(Object.keys(languages) as Language[]).map(code => <button type="button" key={code} onClick={() => chooseLanguage(code)}>{languages[code]} <span aria-hidden="true">↗</span></button>)}
+          </div>
+          <button type="button" className="ncc-language-microphone" onClick={hearLanguage}>🎙 {listeningLanguage ? "Listening..." : "Say your language / Di tu idioma"}</button>
+          {languageMessage && <p role="status">{languageMessage}</p>}
+        </div>
+      </div>}
       <NexusAIChat />
       {newsOpen && <div className="ncc-news-overlay"><button type="button" className="ncc-backdrop" aria-label={t.close} onClick={()=>setNewsOpen(false)} /><div className="ncc-news-dialog" role="dialog" aria-modal="true" aria-label="Nexus Newsroom"><button type="button" className="ncc-news-close" aria-label={t.close} onClick={()=>setNewsOpen(false)}>✕</button><NexusNewsBoard /></div></div>}
       {active && (
