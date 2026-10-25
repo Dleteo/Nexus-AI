@@ -183,7 +183,7 @@ export default function CommandCenter() {
         </nav>
         <div className="ncc-stage-shell">
           <section className={`ncc-stage ${speaking ? "ncc-is-speaking" : ""} ncc-motion`} aria-label={t.nav}>
-                        <div className="ncc-next-scene" aria-hidden="true"><div className="ncc-orbital-halo" /><div className="ncc-floor-grid" /><div className="ncc-arc ncc-arc-a" /><div className="ncc-arc ncc-arc-b" /></div>
+                        <div className="ncc-next-scene" aria-hidden="true"><div className="ncc-magic-particles" /><div className="ncc-orbital-halo" /><div className="ncc-floor-grid" /><div className="ncc-arc ncc-arc-a" /><div className="ncc-arc ncc-arc-b" /></div>
             <div className="ncc-main-avatar"><NexusAvatar3D speaking={speaking} gesture={selected ?? "idle"} label={lang === "es" ? "Avatar tridimensional de Nexus" : "Nexus three dimensional avatar"} /><div className="ncc-main-avatar-caption">NEXUS // AI CORE <span aria-live="polite">{speaking ? "● ONLINE VOICE" : "● STANDBY"}</span></div></div>
             <div className="ncc-scan" aria-hidden="true" />
             <div className="ncc-holographic-pulse" aria-hidden="true" />
@@ -198,7 +198,7 @@ export default function CommandCenter() {
                 aria-label={`${zone.number} ${zone.title[lang]}`}
                 aria-pressed={zone.id === selected}
                 onClick={() => openZone(zone)}
-              ><b aria-hidden="true">{zone.number}</b><span>{zone.title[lang]}</span></button>
+              ><span className="ncc-skill-glyph" aria-hidden="true">{zone.id === "cognition" ? "✦" : zone.id === "knowledge" ? "⌘" : zone.id === "experience" ? "⚔" : zone.id === "creative" ? "◇" : zone.id === "assistance" ? "◉" : "✧"}</span><span className="ncc-skill-label">{zone.title[lang]}</span><small>0{Number(zone.number)}</small></button>
             ))}
             <button className="ncc-avatar-target" type="button" aria-label={t.voice} onClick={() => notifyGuide(lang, localized("Hola. Soy Nexus, el guía del portafolio. Pulsa cualquier holograma y te contaré qué contiene.", "Hello. I'm Nexus, your portfolio guide. Choose any hologram and I will describe it.", "Olá. Sou Nexus. Escolha um holograma para descobrir mais.", "Bonjour. Je suis Nexus. Choisissez un hologramme.")[lang])} />
             <div className="ncc-stage-arrows" aria-hidden="true"><span>❮</span><span>❯</span></div>
