@@ -159,3 +159,14 @@
 @media (max-width:1000px){.ncc-stage{min-height:640px}.ncc-main-avatar{left:27%;width:46%}.ncc-stage .ncc-hotspot{width:clamp(110px,18vw,166px)!important;height:85px!important}.ncc-stage .ncc-node-cognition,.ncc-stage .ncc-node-knowledge,.ncc-stage .ncc-node-experience{left:12%!important}.ncc-stage .ncc-node-creative,.ncc-stage .ncc-node-assistance,.ncc-stage .ncc-node-future{left:88%!important}}
 @media (max-width:699px){.ncc-stage{height:75dvh;min-height:470px;max-height:780px;aspect-ratio:auto}.ncc-main-avatar{left:7%;width:86%;top:12%;bottom:13%}.ncc-stage .ncc-hotspot{display:none}.ncc-mobile-zones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.ncc-mobile-zones button{min-height:85px;border-color:#73cbed;background:linear-gradient(135deg,#134961,#082338);box-shadow:0 0 16px #12b8e82b}.ncc-avatar-target{left:39%;top:29%;width:22%;height:22%}.ncc-main-avatar-caption{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.ncc-orbital-halo,.ncc-arc,.ncc-stage .ncc-hotspot{animation:none!important}}
+
+/* Game-inspired Nexus skill selection, rendered at browser resolution */
+.ncc-magic-particles{position:absolute;inset:0;pointer-events:none;opacity:.6;background-image:radial-gradient(circle,#66eaffad 1px,transparent 2px),radial-gradient(circle,#d58aff88 1px,transparent 2px);background-size:117px 113px,173px 139px;background-position:0 0,43px 21px;animation:ncc-particle-drift 20s linear infinite}
+.ncc-stage .ncc-hotspot{display:flex;flex-direction:column;gap:5px;padding:12px 10px;border-radius:18px;clip-path:polygon(0 16%,11% 0,89% 0,100% 16%,100% 84%,89% 100%,11% 100%,0 84%);transition:background .25s,box-shadow .25s}
+.ncc-stage .ncc-hotspot .ncc-skill-glyph{font-size:clamp(23px,3vw,42px);line-height:1;color:#85eaff;text-shadow:0 0 23px #54dfff;opacity:1;background:none;border:0;padding:0;max-width:none;position:static;transform:none}
+.ncc-stage .ncc-hotspot:nth-of-type(2n) .ncc-skill-glyph{color:#e1b4ff;text-shadow:0 0 23px #a76eff}
+.ncc-stage .ncc-hotspot .ncc-skill-label{display:block;position:static;transform:none;opacity:1;background:none;border:0;width:auto;max-width:100%;padding:0;font:600 clamp(11px,1.05vw,15px)/1.25 Arial,sans-serif}
+.ncc-stage .ncc-hotspot small{position:absolute;left:10px;top:7px;font:10px ui-monospace,monospace;letter-spacing:.1em;color:#75bdd3}
+.ncc-stage .ncc-hotspot:is(:hover,:focus-visible) .ncc-skill-glyph{filter:brightness(1.4)}
+@keyframes ncc-particle-drift{to{background-position:117px -113px,-130px 160px}}
+@media(prefers-reduced-motion:reduce){.ncc-magic-particles{animation:none}}
