@@ -58,9 +58,9 @@ async function checkSignedOutApi(path, options = {}) {
 await waitUntilReady();
 await checkPublicPage("/", [
   "NEXUS AI",
-  "nexus-command-center.png",
+  "ncc-stage",
 ]);
-await checkPublicPage("/command-center", ["NEXUS AI", "nexus-command-center.png"]);
+await checkPublicPage("/command-center", ["NEXUS AI", "ncc-stage"]);
 const newsResponse = await request("/api/news");
 assert.equal(newsResponse.status, 200, "Public news API must return HTTP 200");
 const newsData = await newsResponse.json();
