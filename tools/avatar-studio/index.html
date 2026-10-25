@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Nexus — Anime Avatar Studio</title></head>
+<body>
+<main>
+<header><div><small>NEXUS // AVATAR LAB</small><h1>Anime Character Studio</h1><p>Prueba un avatar VRM real antes de incorporarlo a Nexus AI.</p></div><span class="chip">ENTORNO LOCAL · SIN IA DE PAGO</span></header>
+<section class="stage">
+  <canvas id="world" aria-label="Vista previa 3D del avatar anime"></canvas>
+  <div class="left"><p id="state" role="status">Selecciona un modelo VRM autorizado.</p><p id="notice">Sin un modelo VRM riggeado, este laboratorio no simula tener un avatar de alta calidad.</p></div>
+  <div class="hud">◈ NEXUS / CHARACTER PREVIEW</div>
+</section>
+<section class="controls" aria-label="Controles del avatar">
+  <label class="upload">Cargar VRM local <input id="model" type="file" accept=".vrm,.glb,model/gltf-binary" /></label>
+  <label><input type="checkbox" id="rights"/> Confirmo que puedo usar comercialmente este modelo y sus texturas.</label>
+  <button id="greet" disabled>Probar voz + boca</button>
+  <button id="wave" disabled>Saludar</button>
+  <button id="blink" disabled>Parpadear</button>
+  <label>Idioma <select id="language"><option value="es-ES">Español</option><option value="en-US">English</option></select></label>
+  <button id="voice" disabled>Escuchar voz</button>
+</section>
+<footer><p>Todo se procesa en tu navegador. El modelo cargado desde un archivo local no se envía a un servidor. No utilices modelos ni texturas sin derechos comerciales.</p></footer>
+</main><script type="module" src="/main.js"></script></body></html>
