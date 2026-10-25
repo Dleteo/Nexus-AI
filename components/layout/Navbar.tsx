@@ -6,6 +6,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
+  { href: "/command-center", label: "Command Center" },
   { href: "/", label: "Home" },
   { href: "/#features", label: "Features" },
   { href: "/#how-it-works", label: "How it works" },
