@@ -183,7 +183,8 @@ export default function CommandCenter() {
         </nav>
         <div className="ncc-stage-shell">
           <section className={`ncc-stage ${speaking ? "ncc-is-speaking" : ""} ncc-motion`} aria-label={t.nav}>
-            <div className="ncc-scene-art" aria-hidden="true" />
+                        <div className="ncc-next-scene" aria-hidden="true"><div className="ncc-orbital-halo" /><div className="ncc-floor-grid" /><div className="ncc-arc ncc-arc-a" /><div className="ncc-arc ncc-arc-b" /></div>
+            <div className="ncc-main-avatar"><NexusAvatar3D speaking={speaking} gesture={selected ?? "idle"} label={lang === "es" ? "Avatar tridimensional de Nexus" : "Nexus three dimensional avatar"} /><div className="ncc-main-avatar-caption">NEXUS // AI CORE <span aria-live="polite">{speaking ? "● ONLINE VOICE" : "● STANDBY"}</span></div></div>
             <div className="ncc-scan" aria-hidden="true" />
             <div className="ncc-holographic-pulse" aria-hidden="true" />
             <div className="ncc-portrait-glow" aria-hidden="true" />
@@ -192,7 +193,7 @@ export default function CommandCenter() {
               <button
                 key={zone.id}
                 type="button"
-                className={`ncc-hotspot ${zone.id === selected ? "ncc-active" : ""}`}
+                className={`ncc-hotspot ncc-node-${zone.id} ${zone.id === selected ? "ncc-active" : ""}`}
                 style={{ left: zone.id === "cognition" ? "28%" : zone.id === "knowledge" ? "24.5%" : zone.id === "experience" ? "30%" : zone.id === "creative" ? "70%" : zone.id === "assistance" ? "70%" : "69%", top: zone.id === "cognition" || zone.id === "creative" ? "14%" : zone.id === "knowledge" || zone.id === "assistance" ? "39%" : "73%" }}
                 aria-label={`${zone.number} ${zone.title[lang]}`}
                 aria-pressed={zone.id === selected}
