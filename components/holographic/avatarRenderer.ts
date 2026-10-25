@@ -4,7 +4,7 @@
  * NOT the final sculpted, rigged, lip-synchronized character.
  */
 export type AvatarGesture = "idle" | "cognition" | "knowledge" | "experience" | "creative" | "assistance" | "future";
-export type AvatarState = { speaking: boolean; gesture: AvatarGesture };
+export type AvatarState = { speaking: boolean; gesture: AvatarGesture; pointerX?: number; pointerY?: number };
 
 export function mountAvatar(canvas: HTMLCanvasElement, state: () => AvatarState): (() => void) | null {
   const context = canvas.getContext("webgl", { alpha: true, antialias: true, powerPreference: "low-power" });
@@ -82,6 +82,9 @@ export function mountAvatar(canvas: HTMLCanvasElement, state: () => AvatarState)
   const FACE:[number,number,number]=[0.59,0.49,0.37];
   const BLACK:[number,number,number]=[0.02,0.08,0.11];
   const CYAN:[number,number,number]=[0.58,0.96,1.00];
+  const VIOLET:[number,number,number]=[0.48,0.20,0.76];
+  const PLASMA:[number,number,number]=[0.86,0.44,1.00];
+  const SILVER:[number,number,number]=[0.33,0.34,0.48];
   let raf=0, disposed=false;
   const motion=window.matchMedia("(prefers-reduced-motion: reduce)");
   function ellipsoid(x:number,y:number,z:number,sx:number,sy:number,sz:number,col:number[],angle=0) {
@@ -107,32 +110,36 @@ export function mountAvatar(canvas: HTMLCanvasElement, state: () => AvatarState)
       f/(w/h),0,0,0,0,f,0,0,0,0,(far+near)/(near-far),-1,0,0,2*far*near/(near-far),0
     ]));
     gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-    const t=time/1000, { speaking,gesture }=state();
+    const t=time/1000, { speaking,gesture,pointerX=0,pointerY=0 }=state();
+    const gazeX=Math.max(-1,Math.min(1,pointerX));
+    const gazeY=Math.max(-1,Math.min(1,pointerY));
     const breath=Math.sin(t*1.6)*.025;
     const mouth=speaking ? .065+.085*Math.abs(Math.sin(t*12)) : .012;
-    ellipsoid(0,-1.12+breath,-7.4,1.05,1.17,.52,ARMOR);
+    ellipsoid(-.55,-1.12+breath,-7.4,.55,1.17,.52,ARMOR);
+    ellipsoid(.55,-1.12+breath,-7.4,.55,1.17,.52,VIOLET);
     ellipsoid(0,-.53+breath,-6.91,.53,.16,.08,EDGE);
     ellipsoid(0,-.18+breath,-7.4,.25,.38,.25,FACE);
-    ellipsoid(0,.73+breath,-7.4,.54,.69,.47,FACE,Math.sin(t*.6)*.025);
-    ellipsoid(0,1.18+breath,-7.4,.45,.31,.42,FACE);
-    ellipsoid(0,.49+breath,-6.95,.13,.19,.14,FACE);
-    ellipsoid(0,.32+breath,-6.929,.20,mouth,.060,BLACK);
+    ellipsoid(gazeX*.075,.73+breath+gazeY*.035,-7.4,.54,.69,.47,SILVER,Math.sin(t*.6)*.025+gazeX*.10);
+    ellipsoid(gazeX*.06,1.18+breath+gazeY*.03,-7.4,.45,.31,.42,SILVER);
+    ellipsoid(gazeX*.07,.49+breath+gazeY*.03,-6.95,.13,.19,.14,SILVER);
+    ellipsoid(gazeX*.07,.32+breath+gazeY*.03,-6.929,.20,mouth,.060,BLACK);
     for(const s of [-1,1]){
-      ellipsoid(s*.22,.80+breath,-6.951,.13,.07,.06,BLACK);
-      ellipsoid(s*.22,.8+breath,-6.904,.05,.04,.032,CYAN);
-      ellipsoid(s*.20,.96+breath,-6.96,.20,.028,.06,FACE,s*.13);
-      ellipsoid(s*.68,-.60+breath,-7.4,.40,.41,.42,ARMOR);
-      ellipsoid(s*.65,-.56+breath,-7.04,.29,.075,.11,EDGE);
+      ellipsoid(s*.22+gazeX*.065,.80+breath+gazeY*.03,-6.951,.13,.07,.06,BLACK);
+      ellipsoid(s*.22+gazeX*.095,.8+breath+gazeY*.055,-6.904,.05,.04,.032,s<0?CYAN:PLASMA);
+      ellipsoid(s*.20+gazeX*.06,.96+breath,-6.96,.20,.028,.06,SILVER,s*.13);
+      ellipsoid(s*.68,-.60+breath,-7.4,.40,.41,.42,s<0?ARMOR:VIOLET);
+      ellipsoid(s*.65,-.56+breath,-7.04,.29,.075,.11,s<0?EDGE:PLASMA);
       const point=(s<0?["cognition","knowledge","experience"]:["creative","assistance","future"]).includes(gesture);
+      const activated=s<0?gazeX<-.45:gazeX>.45;
       const wave=speaking ? Math.sin(t*4+s)*.17 : 0;
       const a:[number,number]=[s*.94,-.64+breath];
-      const b:[number,number]=point?[s*1.40,-.30+wave]:[s*1.34,-1.25+wave];
-      const c:[number,number]=point?[s*1.93,.22+wave]:[s*1.2,speaking?-1.52+wave:-2.07+wave];
-      limb(a,b,-7.44,.265,ARMOR);
-      ellipsoid(b[0],b[1],-7.42,.27,.27,.27,EDGE);
-      limb(b,c,-7.20,.22,ARMOR);
-      ellipsoid(c[0],c[1],-7.13,.16,.22,.15,FACE);
-      for(let finger=-1;finger<=1;finger++) ellipsoid(c[0]+finger*.09,c[1]+(point?.16:-.19),-7.07,.046,.11,.05,FACE);
+      const b:[number,number]=(point||activated)?[s*1.40,-.30+wave]:[s*1.34,-1.25+wave];
+      const c:[number,number]=(point||activated)?[s*1.93,.22+wave]:[s*1.2,speaking?-1.52+wave:-2.07+wave];
+      limb(a,b,-7.44,.265,s<0?ARMOR:VIOLET);
+      ellipsoid(b[0],b[1],-7.42,.27,.27,.27,s<0?EDGE:PLASMA);
+      limb(b,c,-7.20,.22,s<0?ARMOR:VIOLET);
+      ellipsoid(c[0],c[1],-7.13,.16,.22,.15,SILVER);
+      for(let finger=-1;finger<=1;finger++) ellipsoid(c[0]+finger*.09,c[1]+((point||activated)?.16:-.19),-7.07,.046,.11,.05,SILVER);
     }
     ellipsoid(0,-1.12+breath,-6.84,.25,.24,.09,BLACK);
     ellipsoid(0,-1.12+breath,-6.744,.16,.16,.075,CYAN);
