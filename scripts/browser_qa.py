@@ -19,6 +19,7 @@ def expect(condition, reason):
 def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
+    page.add_init_script("localStorage.setItem(\'nexus-language-welcome-seen\', \'yes\')")
     page.goto(BASE, wait_until="networkidle")
     expect(page.locator(".ncc-stage").count() == 1, "The full-screen Command Center must be the home page")
     expect(page.locator(".ncc-hotspot").count() == 6, "Six accessible holograms required")
