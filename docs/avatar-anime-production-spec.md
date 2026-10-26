@@ -60,3 +60,13 @@ The user selected **the last of the eight original generated illustrations** as 
 
 ### Acceptance test before swapping homepage
 A licensed/custom-created VRM/GLB must visually match this art direction and demonstrate on video or in browser: 3/4 body, face close-up, natural blink, look-at, conversational gesture, voice-synchronized mouth movement and touchscreen-compatible controls. Keep a visual approval gate before activating publicly.
+
+## Current character direction — silver-haired professor (26 October 2026)
+
+The user has now provided an original, distinct **male** professor-like futuristic anime illustration and approved a 3D-styled render. For the silver-professor avatar experiment, this replaces the older female heroine concept as the active reference; preserve older art notes above as project history rather than silently altering them.
+
+**Reference features:** slim adult male proportions, layered silver-white hair, rectangular glasses and light-blue eyes; composed, knowledgeable expression; black three-piece formal outfit with blue geometric tie, long white flowing coat with navy panels and intricate gold trim; blue jewel insignias and polished black shoes; default standing position, both hands in trousers pockets.
+
+**Interaction:** gaze follows desktop pointer through subtle eyes-first, head-second motion; natural blink/breath; listening/thinking/explaining states; controlled speaking facial rig, contextual gestures, and reduced-motion alternative. Hand-out-of-pocket animation must be authored with coat and arm collision in mind.
+
+**Visual quality gate:** the experiment `tools/avatar-studio/silver-professor.js` is a crude procedural mesh used only for debugging camera and animation logic. It is **not** visually approved, cannot replace the requested model, and should never be described as a faithful reconstruction. Real deliverable requires an artist-reviewed, textured humanoid VRM (or GLB plus equivalent rig and facial controls) derived from the approved reference. Use front / back / side turnaround plus rig validation before deployment; do not claim such an asset exists until the file is created and manually inspected. Do not deploy this procedural figure to the live page.
