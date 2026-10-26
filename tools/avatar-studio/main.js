@@ -71,8 +71,7 @@ prototypeButton.addEventListener("click", () => {
  resetState();
  prototype=createSilverProfessor(THREE);
  scene.add(prototype.root);
- camera.position.set(0,1.28,4.45);
- camera.lookAt(0,1.07,0);
+ fitCameraToObject(prototype.root);
  for(const button of [greet,wave,blink,voice])button.disabled=false;
  status("Prototipo geométrico interactivo: profesor plateado (NO es el VRM final).");
  notice.textContent="Modelo 3D procedural original y simplificado: puedes girarlo visualmente con el mouse, probar estados, parpadeo y voz. No es una réplica del render.";
@@ -93,9 +92,7 @@ modelInput.addEventListener("change", async () => {
    const box=new THREE.Box3().setFromObject(modelRoot), size=new THREE.Vector3(),center=new THREE.Vector3();
    box.getSize(size);box.getCenter(center);
    modelRoot.position.sub(new THREE.Vector3(center.x, box.min.y, center.z));
-   const targetHeight=Math.max(1.45,Math.min(2.3,size.y));
-   camera.position.set(0,Math.max(.9,targetHeight*.70),Math.max(3.0,size.y*2.0));
-   camera.lookAt(0,targetHeight*.62,0);
+     fitCameraToObject(modelRoot);
    for(const button of [greet,wave,blink,voice])button.disabled=false;
    status("VRM cargado: " + file.name + " · prueba mirada, expresiones y voz.");
    notice.textContent="Las expresiones disponibles y la calidad visual dependen del VRM cargado. La sincronización de labios es aproximada.";
@@ -121,7 +118,29 @@ greet.addEventListener("click",()=>{
  speech.onend=speech.onerror=()=>{talk=false;setMode("idle");};
  speechSynthesis.speak(speech);
 });
-function size(){const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+function fitCameraToObject(object) {
+ if (!object) return;
+ const bounds = new THREE.Box3().setFromObject(object);
+ if (bounds.isEmpty()) return;
+ const dimensions = bounds.getSize(new THREE.Vector3());
+ const center = bounds.getCenter(new THREE.Vector3());
+ const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+ const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+ const fitHeight = dimensions.y / (2 * Math.tan(verticalFov / 2));
+ const fitWidth = dimensions.x / (2 * Math.tan(horizontalFov / 2));
+ // Padding leaves breathing room above the hair and below the shoes.
+ const distance = Math.max(2.5, Math.max(fitHeight, fitWidth) * 1.25 + dimensions.z / 2);
+ camera.position.set(center.x, center.y, center.z + distance);
+ camera.lookAt(center);
+ camera.updateProjectionMatrix();
+}
+function size(){
+ const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);
+ renderer.setSize(width,height,false);
+ camera.aspect=width/height;
+ if (prototype || modelRoot) fitCameraToObject(prototype?.root || modelRoot);
+ else camera.updateProjectionMatrix();
+}
 const observer=new ResizeObserver(size);observer.observe(canvas);size();
 let animationFrame;
 function render(){
