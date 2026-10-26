@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import "./style.css";
+import { avatarPose, pointerToGaze, smooth, AVATAR_STATES } from "./behavior.mjs";
 
 const canvas = document.querySelector("#world");
 const modelInput = document.querySelector("#model");
@@ -13,6 +14,8 @@ const wave = document.querySelector("#wave");
 const blink = document.querySelector("#blink");
 const voice = document.querySelector("#voice");
 const language = document.querySelector("#language");
+const behaviorSelect = document.querySelector("#behavior");
+const behaviorStatus = document.querySelector("#behavior-status");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x071522);
 const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 100);
@@ -34,7 +37,15 @@ for (const radius of [1.04,1.18]) {
   ring.position.set(0, 1.1, -.85); rings.add(ring);
 }
 scene.add(rings);
-let vrm = null, modelRoot = null, talk = false, waveUntil = 0, blinkUntil = 0, look = {x:0,y:0}, nextBlink=0, currentUrl=null;
+let vrm = null, modelRoot = null, talk = false, waveUntil = 0, blinkUntil = 0, look = {x:0,y:0}, nextBlink=0;
+let mode = "idle", gaze = {x:0,y:0};
+function setMode(value) {
+  mode = AVATAR_STATES.includes(value) ? value : "idle";
+  behaviorSelect.value = mode;
+  behaviorStatus.textContent = "Estado: " + mode;
+}
+behaviorSelect.addEventListener("change", () => setMode(behaviorSelect.value));
+window.addEventListener("nexus:avatar-state", event => setMode(event.detail?.state));
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const loader = new GLTFLoader();
 loader.register(parser => new VRMLoaderPlugin(parser));
@@ -77,11 +88,11 @@ modelInput.addEventListener("change", async () => {
    notice.textContent="Las expresiones disponibles y la calidad visual dependen del VRM cargado. La sincronización de labios es aproximada.";
  } catch(error){resetState();status("No se pudo cargar: "+(error?.message||String(error))); }
 });
-canvas.addEventListener("pointermove",event=>{
- const rect=canvas.getBoundingClientRect();
- look={x:THREE.MathUtils.clamp(((event.clientX-rect.left)/rect.width-.5)*2,-1,1),y:THREE.MathUtils.clamp((.5-(event.clientY-rect.top)/rect.height)*2,-1,1)};
-});
-canvas.addEventListener("pointerleave",()=>{look={x:0,y:0};});
+window.addEventListener("pointermove", event => {
+ if (event.pointerType === "touch") return;
+ look = pointerToGaze(event.clientX, event.clientY, innerWidth, innerHeight);
+}, { passive: true });
+window.addEventListener("blur",()=>{look={x:0,y:0};});
 blink.addEventListener("click",()=>{blinkUntil=performance.now()+150;});
 wave.addEventListener("click",()=>{waveUntil=performance.now()+1800;});
 voice.addEventListener("click",()=>{const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith(language.value.slice(0,2)));status(voices.length?"Voces disponibles: "+voices.map(v=>v.name).slice(0,3).join(", "):"Sin voces locales: usaremos voz predeterminada.");});
@@ -93,8 +104,8 @@ greet.addEventListener("click",()=>{
  const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase()===language.value.toLowerCase());
  voices.sort((a,b)=>Number(/natural|neural|enhanced/i.test(b.name))-Number(/natural|neural|enhanced/i.test(a.name)));
  if(voices[0]) speech.voice=voices[0];
- speech.onstart=()=>{talk=true;waveUntil=performance.now()+1500;};
- speech.onend=speech.onerror=()=>{talk=false;};
+ speech.onstart=()=>{talk=true;setMode("explaining");waveUntil=performance.now()+1500;};
+ speech.onend=speech.onerror=()=>{talk=false;setMode("idle");};
  speechSynthesis.speak(speech);
 });
 function size(){const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
@@ -106,17 +117,25 @@ function render(){
  const animate=!reducedMotion.matches;
  rings.rotation.y+=dt*.08;floor.material.opacity=.7;
  if(vrm){
+   const pose=avatarPose(mode,{speaking:talk,reducedMotion:!animate});
+   gaze.x=smooth(gaze.x,animate?look.x:0,dt,4);
+   gaze.y=smooth(gaze.y,animate?look.y:0,dt,4);
    const head=bone("head");
-   if(head){head.rotation.y=THREE.MathUtils.damp(head.rotation.y,animate?look.x*.22:0,4,dt);head.rotation.x=THREE.MathUtils.damp(head.rotation.x,animate?-look.y*.12:0,4,dt);}
+   if(head){
+     head.rotation.y=THREE.MathUtils.damp(head.rotation.y,gaze.x*.20,4,dt);
+     head.rotation.x=THREE.MathUtils.damp(head.rotation.x,-gaze.y*.11+pose.headX,4,dt);
+     head.rotation.z=THREE.MathUtils.damp(head.rotation.z,pose.headZ,4,dt);
+   }
    const chest=bone("chest");
    if(chest&&animate)chest.rotation.x=Math.sin(t*1.6)*.012;
    const right=bone("rightUpperArm");
-   if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,now<waveUntil?-1.0:0,5,dt);
+   if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,animate&&now<waveUntil?-1.0:pose.armRight,5,dt);
    const left=bone("leftUpperArm");
-   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,now<waveUntil ? .26 : 0,5,dt);
-   if(now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
-   animateExpression("blink",now<blinkUntil?1:0);
-   animateExpression("aa",talk ? .32+.24*Math.abs(Math.sin(t*8)) : 0);
+   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,animate&&now<waveUntil ? .26 : pose.armLeft,5,dt);
+   if(animate && now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
+   animateExpression("blink",animate&&now<blinkUntil?1:0);
+   animateExpression("happy",pose.happy);
+   animateExpression("aa",talk ? pose.mouth*(.72+.28*Math.abs(Math.sin(t*8))) : 0);
    vrm.update(dt);
  }
  renderer.render(scene,camera);
