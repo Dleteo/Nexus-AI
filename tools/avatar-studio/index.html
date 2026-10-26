@@ -9,11 +9,15 @@
   <div class="hud">◈ NEXUS / CHARACTER PREVIEW</div>
 </section>
 <section class="controls" aria-label="Controles del avatar">
+  <a class="sample-link" href="https://booth.pm/ja/items/3709502" target="_blank" rel="noopener noreferrer">Descargar avatar anime gratuito (Dubhgal 1.1) ↗</a>
+  <button type="button" id="prototype">Abrir prototipo 3D plateado</button>
   <label class="upload">Cargar VRM local <input id="model" type="file" accept=".vrm,.glb,model/gltf-binary" /></label>
   <label><input type="checkbox" id="rights"/> Confirmo que puedo usar comercialmente este modelo y sus texturas.</label>
   <button id="greet" disabled>Probar voz + boca</button>
   <button id="wave" disabled>Saludar</button>
   <button id="blink" disabled>Parpadear</button>
+  <label>Comportamiento <select id="behavior"><option value="idle">Reposo</option><option value="listening">Escuchando</option><option value="thinking">Pensando</option><option value="explaining">Explicando</option></select></label>
+  <span id="behavior-status" role="status">Estado: idle</span>
   <label>Idioma <select id="language"><option value="es-ES">Español</option><option value="en-US">English</option></select></label>
   <button id="voice" disabled>Escuchar voz</button>
 </section>

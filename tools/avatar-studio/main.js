@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import "./style.css";
+import { avatarPose, pointerToGaze, smooth, AVATAR_STATES } from "./behavior.mjs";
+import { createSilverProfessor } from "./silver-professor.js";
 
 const canvas = document.querySelector("#world");
 const modelInput = document.querySelector("#model");
@@ -13,6 +15,9 @@ const wave = document.querySelector("#wave");
 const blink = document.querySelector("#blink");
 const voice = document.querySelector("#voice");
 const language = document.querySelector("#language");
+const behaviorSelect = document.querySelector("#behavior");
+const behaviorStatus = document.querySelector("#behavior-status");
+const prototypeButton = document.querySelector("#prototype");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x071522);
 const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 100);
@@ -34,7 +39,15 @@ for (const radius of [1.04,1.18]) {
   ring.position.set(0, 1.1, -.85); rings.add(ring);
 }
 scene.add(rings);
-let vrm = null, modelRoot = null, talk = false, waveUntil = 0, blinkUntil = 0, look = {x:0,y:0}, nextBlink=0, currentUrl=null;
+let vrm = null, modelRoot = null, talk = false, waveUntil = 0, blinkUntil = 0, look = {x:0,y:0}, nextBlink=0;
+let mode = "idle", gaze = {x:0,y:0}, prototype = null;
+function setMode(value) {
+  mode = AVATAR_STATES.includes(value) ? value : "idle";
+  behaviorSelect.value = mode;
+  behaviorStatus.textContent = "Estado: " + mode;
+}
+behaviorSelect.addEventListener("change", () => setMode(behaviorSelect.value));
+window.addEventListener("nexus:avatar-state", event => setMode(event.detail?.state));
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const loader = new GLTFLoader();
 loader.register(parser => new VRMLoaderPlugin(parser));
@@ -45,6 +58,7 @@ function bone(name) { return vrm?.humanoid?.getNormalizedBoneNode(name) ?? null;
 function resetState(){
   if ("speechSynthesis" in window) window.speechSynthesis.cancel(); talk=false;
   if(modelRoot){scene.remove(modelRoot); VRMUtils.deepDispose(modelRoot);modelRoot=null;}
+  if(prototype){scene.remove(prototype.root);prototype.dispose();prototype=null;}
   vrm=null;for(const button of [greet,wave,blink,voice])button.disabled=true;
 }
 function normalizeVrm(gltf) {
@@ -53,6 +67,15 @@ function normalizeVrm(gltf) {
   if (!avatar.humanoid || !avatar.expressionManager) throw new Error("El VRM necesita un esqueleto humanoide y expresiones.");
   return avatar;
 }
+prototypeButton.addEventListener("click", () => {
+ resetState();
+ prototype=createSilverProfessor(THREE);
+ scene.add(prototype.root);
+ fitCameraToObject(prototype.root);
+ for(const button of [greet,wave,blink,voice])button.disabled=false;
+ status("Prototipo geométrico interactivo: profesor plateado (NO es el VRM final).");
+ notice.textContent="Modelo 3D procedural original y simplificado: puedes girarlo visualmente con el mouse, probar estados, parpadeo y voz. No es una réplica del render.";
+});
 modelInput.addEventListener("change", async () => {
  const file = modelInput.files?.[0];
  if(!file)return;
@@ -69,35 +92,55 @@ modelInput.addEventListener("change", async () => {
    const box=new THREE.Box3().setFromObject(modelRoot), size=new THREE.Vector3(),center=new THREE.Vector3();
    box.getSize(size);box.getCenter(center);
    modelRoot.position.sub(new THREE.Vector3(center.x, box.min.y, center.z));
-   const targetHeight=Math.max(1.45,Math.min(2.3,size.y));
-   camera.position.set(0,Math.max(.9,targetHeight*.70),Math.max(3.0,size.y*2.0));
-   camera.lookAt(0,targetHeight*.62,0);
+     fitCameraToObject(modelRoot);
    for(const button of [greet,wave,blink,voice])button.disabled=false;
    status("VRM cargado: " + file.name + " · prueba mirada, expresiones y voz.");
    notice.textContent="Las expresiones disponibles y la calidad visual dependen del VRM cargado. La sincronización de labios es aproximada.";
  } catch(error){resetState();status("No se pudo cargar: "+(error?.message||String(error))); }
 });
-canvas.addEventListener("pointermove",event=>{
- const rect=canvas.getBoundingClientRect();
- look={x:THREE.MathUtils.clamp(((event.clientX-rect.left)/rect.width-.5)*2,-1,1),y:THREE.MathUtils.clamp((.5-(event.clientY-rect.top)/rect.height)*2,-1,1)};
-});
-canvas.addEventListener("pointerleave",()=>{look={x:0,y:0};});
+window.addEventListener("pointermove", event => {
+ if (event.pointerType === "touch") return;
+ look = pointerToGaze(event.clientX, event.clientY, innerWidth, innerHeight);
+}, { passive: true });
+window.addEventListener("blur",()=>{look={x:0,y:0};});
 blink.addEventListener("click",()=>{blinkUntil=performance.now()+150;});
 wave.addEventListener("click",()=>{waveUntil=performance.now()+1800;});
 voice.addEventListener("click",()=>{const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith(language.value.slice(0,2)));status(voices.length?"Voces disponibles: "+voices.map(v=>v.name).slice(0,3).join(", "):"Sin voces locales: usaremos voz predeterminada.");});
 greet.addEventListener("click",()=>{
- if(!vrm||!("speechSynthesis" in window))return;
+ if((!vrm&&!prototype)||!("speechSynthesis" in window))return;
  speechSynthesis.cancel();
  const speech = new SpeechSynthesisUtterance(language.value==="es-ES"?"Hola. Soy Nexus. ¿Qué te gustaría aprender hoy?":"Hello. I'm Nexus. What would you like to learn today?");
  speech.lang=language.value;speech.rate=.93;speech.pitch=1;
  const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase()===language.value.toLowerCase());
  voices.sort((a,b)=>Number(/natural|neural|enhanced/i.test(b.name))-Number(/natural|neural|enhanced/i.test(a.name)));
  if(voices[0]) speech.voice=voices[0];
- speech.onstart=()=>{talk=true;waveUntil=performance.now()+1500;};
- speech.onend=speech.onerror=()=>{talk=false;};
+ speech.onstart=()=>{talk=true;setMode("explaining");waveUntil=performance.now()+1500;};
+ speech.onend=speech.onerror=()=>{talk=false;setMode("idle");};
  speechSynthesis.speak(speech);
 });
-function size(){const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+function fitCameraToObject(object) {
+ if (!object) return;
+ const bounds = new THREE.Box3().setFromObject(object);
+ if (bounds.isEmpty()) return;
+ const dimensions = bounds.getSize(new THREE.Vector3());
+ const center = bounds.getCenter(new THREE.Vector3());
+ const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+ const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+ const fitHeight = dimensions.y / (2 * Math.tan(verticalFov / 2));
+ const fitWidth = dimensions.x / (2 * Math.tan(horizontalFov / 2));
+ // Padding leaves breathing room above the hair and below the shoes.
+ const distance = Math.max(2.5, Math.max(fitHeight, fitWidth) * 1.25 + dimensions.z / 2);
+ camera.position.set(center.x, center.y, center.z + distance);
+ camera.lookAt(center);
+ camera.updateProjectionMatrix();
+}
+function size(){
+ const width=Math.max(1,canvas.clientWidth),height=Math.max(1,canvas.clientHeight);
+ renderer.setSize(width,height,false);
+ camera.aspect=width/height;
+ if (prototype || modelRoot) fitCameraToObject(prototype?.root || modelRoot);
+ else camera.updateProjectionMatrix();
+}
 const observer=new ResizeObserver(size);observer.observe(canvas);size();
 let animationFrame;
 function render(){
@@ -105,20 +148,29 @@ function render(){
  const dt=Math.min(.04,clock.getDelta()),t=clock.elapsedTime,now=performance.now();
  const animate=!reducedMotion.matches;
  rings.rotation.y+=dt*.08;floor.material.opacity=.7;
+ const pose=avatarPose(mode,{speaking:talk,reducedMotion:!animate});
+ gaze.x=smooth(gaze.x,animate?look.x:0,dt,4);
+ gaze.y=smooth(gaze.y,animate?look.y:0,dt,4);
+ if(prototype) prototype.update({pose,gaze,dt,t,now,talk,blink:animate&&now<blinkUntil,wave:animate&&now<waveUntil,reduced:!animate});
  if(vrm){
    const head=bone("head");
-   if(head){head.rotation.y=THREE.MathUtils.damp(head.rotation.y,animate?look.x*.22:0,4,dt);head.rotation.x=THREE.MathUtils.damp(head.rotation.x,animate?-look.y*.12:0,4,dt);}
+   if(head){
+     head.rotation.y=THREE.MathUtils.damp(head.rotation.y,gaze.x*.20,4,dt);
+     head.rotation.x=THREE.MathUtils.damp(head.rotation.x,-gaze.y*.11+pose.headX,4,dt);
+     head.rotation.z=THREE.MathUtils.damp(head.rotation.z,pose.headZ,4,dt);
+   }
    const chest=bone("chest");
    if(chest&&animate)chest.rotation.x=Math.sin(t*1.6)*.012;
    const right=bone("rightUpperArm");
-   if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,now<waveUntil?-1.0:0,5,dt);
+   if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,animate&&now<waveUntil?-1.0:pose.armRight,5,dt);
    const left=bone("leftUpperArm");
-   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,now<waveUntil ? .26 : 0,5,dt);
-   if(now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
-   animateExpression("blink",now<blinkUntil?1:0);
-   animateExpression("aa",talk ? .32+.24*Math.abs(Math.sin(t*8)) : 0);
+   if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,animate&&now<waveUntil ? .26 : pose.armLeft,5,dt);
+   animateExpression("blink",animate&&now<blinkUntil?1:0);
+   animateExpression("happy",pose.happy);
+   animateExpression("aa",talk ? pose.mouth*(.72+.28*Math.abs(Math.sin(t*8))) : 0);
    vrm.update(dt);
  }
+ if(animate && now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
  renderer.render(scene,camera);
 }
 render();
