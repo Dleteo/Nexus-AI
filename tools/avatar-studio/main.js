@@ -3,6 +3,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import "./style.css";
 import { avatarPose, pointerToGaze, smooth, AVATAR_STATES } from "./behavior.mjs";
+import { createSilverProfessor } from "./silver-professor.js";
 
 const canvas = document.querySelector("#world");
 const modelInput = document.querySelector("#model");
@@ -16,6 +17,7 @@ const voice = document.querySelector("#voice");
 const language = document.querySelector("#language");
 const behaviorSelect = document.querySelector("#behavior");
 const behaviorStatus = document.querySelector("#behavior-status");
+const prototypeButton = document.querySelector("#prototype");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x071522);
 const camera = new THREE.PerspectiveCamera(33, 1, 0.1, 100);
@@ -38,7 +40,7 @@ for (const radius of [1.04,1.18]) {
 }
 scene.add(rings);
 let vrm = null, modelRoot = null, talk = false, waveUntil = 0, blinkUntil = 0, look = {x:0,y:0}, nextBlink=0;
-let mode = "idle", gaze = {x:0,y:0};
+let mode = "idle", gaze = {x:0,y:0}, prototype = null;
 function setMode(value) {
   mode = AVATAR_STATES.includes(value) ? value : "idle";
   behaviorSelect.value = mode;
@@ -56,6 +58,7 @@ function bone(name) { return vrm?.humanoid?.getNormalizedBoneNode(name) ?? null;
 function resetState(){
   if ("speechSynthesis" in window) window.speechSynthesis.cancel(); talk=false;
   if(modelRoot){scene.remove(modelRoot); VRMUtils.deepDispose(modelRoot);modelRoot=null;}
+  if(prototype){scene.remove(prototype.root);prototype.dispose();prototype=null;}
   vrm=null;for(const button of [greet,wave,blink,voice])button.disabled=true;
 }
 function normalizeVrm(gltf) {
@@ -64,6 +67,16 @@ function normalizeVrm(gltf) {
   if (!avatar.humanoid || !avatar.expressionManager) throw new Error("El VRM necesita un esqueleto humanoide y expresiones.");
   return avatar;
 }
+prototypeButton.addEventListener("click", () => {
+ resetState();
+ prototype=createSilverProfessor(THREE);
+ scene.add(prototype.root);
+ camera.position.set(0,1.28,4.45);
+ camera.lookAt(0,1.07,0);
+ for(const button of [greet,wave,blink,voice])button.disabled=false;
+ status("Prototipo geométrico interactivo: profesor plateado (NO es el VRM final).");
+ notice.textContent="Modelo 3D procedural original y simplificado: puedes girarlo visualmente con el mouse, probar estados, parpadeo y voz. No es una réplica del render.";
+});
 modelInput.addEventListener("change", async () => {
  const file = modelInput.files?.[0];
  if(!file)return;
@@ -97,7 +110,7 @@ blink.addEventListener("click",()=>{blinkUntil=performance.now()+150;});
 wave.addEventListener("click",()=>{waveUntil=performance.now()+1800;});
 voice.addEventListener("click",()=>{const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith(language.value.slice(0,2)));status(voices.length?"Voces disponibles: "+voices.map(v=>v.name).slice(0,3).join(", "):"Sin voces locales: usaremos voz predeterminada.");});
 greet.addEventListener("click",()=>{
- if(!vrm||!("speechSynthesis" in window))return;
+ if((!vrm&&!prototype)||!("speechSynthesis" in window))return;
  speechSynthesis.cancel();
  const speech = new SpeechSynthesisUtterance(language.value==="es-ES"?"Hola. Soy Nexus. ¿Qué te gustaría aprender hoy?":"Hello. I'm Nexus. What would you like to learn today?");
  speech.lang=language.value;speech.rate=.93;speech.pitch=1;
@@ -116,10 +129,11 @@ function render(){
  const dt=Math.min(.04,clock.getDelta()),t=clock.elapsedTime,now=performance.now();
  const animate=!reducedMotion.matches;
  rings.rotation.y+=dt*.08;floor.material.opacity=.7;
+ const pose=avatarPose(mode,{speaking:talk,reducedMotion:!animate});
+ gaze.x=smooth(gaze.x,animate?look.x:0,dt,4);
+ gaze.y=smooth(gaze.y,animate?look.y:0,dt,4);
+ if(prototype) prototype.update({pose,gaze,dt,t,now,talk,blink:animate&&now<blinkUntil,wave:animate&&now<waveUntil,reduced:!animate});
  if(vrm){
-   const pose=avatarPose(mode,{speaking:talk,reducedMotion:!animate});
-   gaze.x=smooth(gaze.x,animate?look.x:0,dt,4);
-   gaze.y=smooth(gaze.y,animate?look.y:0,dt,4);
    const head=bone("head");
    if(head){
      head.rotation.y=THREE.MathUtils.damp(head.rotation.y,gaze.x*.20,4,dt);
@@ -132,12 +146,12 @@ function render(){
    if(right)right.rotation.z=THREE.MathUtils.damp(right.rotation.z,animate&&now<waveUntil?-1.0:pose.armRight,5,dt);
    const left=bone("leftUpperArm");
    if(left)left.rotation.z=THREE.MathUtils.damp(left.rotation.z,animate&&now<waveUntil ? .26 : pose.armLeft,5,dt);
-   if(animate && now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
    animateExpression("blink",animate&&now<blinkUntil?1:0);
    animateExpression("happy",pose.happy);
    animateExpression("aa",talk ? pose.mouth*(.72+.28*Math.abs(Math.sin(t*8))) : 0);
    vrm.update(dt);
  }
+ if(animate && now>nextBlink){blinkUntil=now+115;nextBlink=now+2600+Math.random()*2800;}
  renderer.render(scene,camera);
 }
 render();
