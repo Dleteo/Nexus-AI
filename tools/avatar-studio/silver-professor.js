@@ -87,7 +87,12 @@ export function createSilverProfessor(T) {
     head.rotation.x=damp(head.rotation.x,reduced?0:-gaze.y*.10+pose.headX);
     head.rotation.z=damp(head.rotation.z,reduced?0:pose.headZ);
     for(const e of eyesPivot){e.position.x += (Math.sign(e.position.x)*.125 + (reduced?0:gaze.x*.013)-e.position.x)*Math.min(1,dt*6);}
-    for(const lid of lids)lid.scale.y=damp(lid.scale.y,blink?55:1);
+    // These eyelids are tiny spheres. Scale in scene units, never to 1 or 55:
+    // those values stretched them into giant vertical columns over the face.
+    for (const lid of lids) {
+      lid.scale.y=T.MathUtils.damp(lid.scale.y,blink?.071:.008,20,dt);
+      lid.position.y=T.MathUtils.damp(lid.position.y,blink?.114:.168,20,dt);
+    }
     arms[-1].rotation.z=damp(arms[-1].rotation.z,wave?.65:-pose.armLeft);
     arms[1].rotation.z=damp(arms[1].rotation.z,wave?-1:pose.armRight);
     mouth.scale.y=damp(mouth.scale.y,talk?Math.max(2,9*Math.abs(Math.sin(t*10))):1);
