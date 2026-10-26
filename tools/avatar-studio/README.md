@@ -30,3 +30,9 @@ Open the **local URL printed by Vite** (normally http://127.0.0.1:5173).
 - VRM loader, Three.js renderer, lighting, avatar rig state and gesture controls are ready for asset evaluation. A verified licensed **actual avatar file has not been added**.
 - The current existing Nexus AI application, Supabase/Gemini endpoints, quotas and user flows remain untouched.
 - For production integration, optimize material/texture quality and GPU usage, add a no-WebGL fallback, ensure keyboard/touch controls, and separately verify all CI and browser QA before replacing the homepage avatar.
+
+## Prototipo geométrico del profesor plateado
+
+Usa el botón **Abrir prototipo 3D plateado** para visualizar una figura 3D original y simplificada sin cargar archivo. Permite probar seguimiento del mouse, movimientos de cabeza, parpadeo, gestos, estados y voz (aproximación). No es una reconstrucción fiel ni un avatar VRM descargable. Para el diseño definitivo siguen pendientes escultura/modelado, topología, rig y expresiones faciales.
+
+Este laboratorio es una vista previa local; los cambios de la rama no deben fusionarse sin verificar `npm test`, `npm run build` y funcionamiento real en navegador.
