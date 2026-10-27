@@ -183,9 +183,12 @@ def assistant_test(browser, width, label):
     playwright_expect(
         page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar")
     ).to_have_attribute("aria-pressed", "true")
+    page.get_by_label("Especialidad").select_option("hardware")
+    page.get_by_label("Consultar fuentes recientes").check()
     page.locator("#assistant-message").fill("Plan a small portfolio feature")
     page.get_by_role("button", name="Send message").click()
     page.get_by_text("QA simulated assistant answer.").wait_for()
+    ensure(fake.last_sent is not None and fake.last_sent["expertise"] == "hardware" and fake.last_sent["currentResearch"] is True, "Specialty and research toggle missing from request")
     ensure(fake.last_sent is not None and fake.last_sent["mode"] == "plan",
            "Assistant did not submit the selected mode")
     ensure(page.get_by_text("9 AI requests remaining today.", exact=False).is_visible(),
