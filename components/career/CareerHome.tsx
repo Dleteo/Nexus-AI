@@ -8,7 +8,8 @@ import { selectedGithubProjects } from "../../data/github-projects";
 import { professionalProfile } from "../../data/profile";
 import styles from "./CareerHome.module.css";
 import LanguageSwitcher from "./LanguageSwitcher";
-import {cvDownloadPath,cvFileName,cvDownloadLabels} from "../../data/site-languages";
+import {cvDownloadPath,cvFileName,cvDownloadLabels,cvPath,type SiteLanguage} from "../../data/site-languages";
+import {careerTranslate} from "../../data/career-translation";
 
 type Category = "all" | "product" | "frontend" | "research";
 type CredentialFilter = "all" | "Course completion" | "Attendance certificate";
@@ -93,7 +94,8 @@ function Arrow({ external = false }: { external?: boolean }) {
   return <span aria-hidden="true">{external ? "↗" : "→"}</span>;
 }
 
-function ProjectVisual({ project }: { project: Project }) {
+function ProjectVisual({ project, language }: { project: Project; language: SiteLanguage }) {
+  const t=(value:string)=>careerTranslate(language,value);
   if (project.id === "nexus") {
     return (
       <div className={styles.nexusPreview} aria-label="Representación de los módulos de Nexus AI">
@@ -102,9 +104,9 @@ function ProjectVisual({ project }: { project: Project }) {
           <div className={styles.previewNav}><strong>N</strong><i/><i/><i/></div>
           <div className={styles.previewMain}>
             <span className={styles.previewEyebrow}>NEXUS / AI WORKSPACE</span>
-            <strong>Tu espacio para crear.</strong>
-            <div className={styles.previewMessage}>¿En qué proyecto trabajamos hoy?</div>
-            <div className={styles.previewPrompt}><span>Planificar · Depurar · Aprender</span><b>↗</b></div>
+            <strong>{t("Tu espacio para crear.")}</strong>
+            <div className={styles.previewMessage}>{t("¿En qué proyecto trabajamos hoy?")}</div>
+            <div className={styles.previewPrompt}><span>{t("Planificar · Depurar · Aprender")}</span><b>↗</b></div>
           </div>
         </div>
       </div>
@@ -119,131 +121,132 @@ function ProjectVisual({ project }: { project: Project }) {
   }
   return (
     <div className={styles.researchVisual} aria-label="Diagrama conceptual de un modelo Transformer">
-      <span className={styles.researchLabel}>LABORATORIO / EXPERIMENTAL</span>
-      <div className={styles.researchNodes}><span>Corpus</span><b>→</b><span>BPE</span><b>→</b><span>Transformer</span><b>→</b><span>Evaluación</span></div>
-      <small>Arquitectura propia · Resultados en evaluación</small>
+      <span className={styles.researchLabel}>{t("LABORATORIO / EXPERIMENTAL")}</span>
+      <div className={styles.researchNodes}><span>Corpus</span><b>→</b><span>BPE</span><b>→</b><span>Transformer</span><b>→</b><span>{t("Evaluación")}</span></div>
+      <small>{t("Arquitectura propia · Resultados en evaluación")}</small>
     </div>
   );
 }
 
-export default function CareerHome() {
+export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
+  const t=(value:string)=>careerTranslate(language,value);
   const [category, setCategory] = useState<Category>("all");
   const [credentialFilter, setCredentialFilter] = useState<CredentialFilter>("all");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const visibleProjects = projects.filter((project) => category === "all" || project.category === category);
+  const visibleProjects = projects.filter((project) => category === "all" || project.category === category).map(project=>({...project,kind:t(project.kind),summary:t(project.summary),evidence:t(project.evidence)}));
   const visibleCertificates = certifications.filter((certificate) => credentialFilter === "all" || certificate.credentialType === credentialFilter);
 
   const navigation = [
-    { href: "#inicio", label: "Inicio" },
-    { href: "#proyectos", label: "Proyectos" },
-    { href: "#habilidades", label: "Habilidades" },
-    { href: "#certificados", label: "Certificados" },
-    { href: "#trayectoria", label: "Trayectoria" },
-    { href: "#nexus-ai", label: "Asistente IA" },
-    { href: "#contacto", label: "Contacto" },
+    { href: "#inicio", label: t("Inicio") },
+    { href: "#proyectos", label: t("Proyectos") },
+    { href: "#habilidades", label: t("Habilidades") },
+    { href: "#certificados", label: t("Certificados") },
+    { href: "#trayectoria", label: t("Trayectoria") },
+    { href: "#nexus-ai", label: t("Asistente IA") },
+    { href: "#contacto", label: t("Contacto") },
   ];
 
   return (
-    <div className={styles.site} id="inicio">
-      <a className={styles.skipLink} href="#principal">Ir al contenido</a>
-      <aside className={styles.sidebar} aria-label="Navegación del portafolio">
+    <div className={styles.site} id="inicio" lang={language}>
+      <a className={styles.skipLink} href="#principal">{t(t("Ir al contenido"))}</a>
+      <aside className={styles.sidebar} aria-label=t("Navegación del portafolio")>
         <Link href="/" className={styles.logo}><span className={styles.logoMark}>N</span><span>NEXUS<small>DEVELOPER PORTFOLIO</small></span></Link>
         <div className={styles.sidebarDivider}/>
-        <p className={styles.sideLabel}>EXPLORAR</p>
-        <nav className={styles.desktopNavigation} aria-label="Secciones del portafolio">
+        <p className={styles.sideLabel}>{t(t("EXPLORAR"))}</p>
+        <nav className={styles.desktopNavigation} aria-label=t("Secciones del portafolio")>
           {navigation.map((item, index) => <a key={item.href} href={item.href} className={index === 0 ? styles.selectedNav : ""}><span className={styles.navNumber}>{String(index + 1).padStart(2, "0")}</span>{item.label}</a>)}
         </nav>
         <div className={styles.sidebarBottom}>
-          <span className={styles.sidebarStatus}><span/>Portafolio en desarrollo</span>
+          <span className={styles.sidebarStatus}><span/>{t(t("Portafolio en desarrollo"))}</span>
           <a href={professionalProfile.github} target="_blank" rel="noopener noreferrer">GitHub / Dleteo <Arrow external/></a>
-          <Link href="/resume">Ver curriculum <Arrow/></Link>
+          <Link href={cvPath(language)}>{t(t("Ver curriculum"))} <Arrow/></Link>
           <small>© {new Date().getFullYear()} · Desarrollo con evidencia</small>
         </div>
       </aside>
 
       <div className={styles.content}>
         <header className={styles.topbar}>
-          <div className={styles.topbarLeft}><span className={styles.liveDot}/><span>PORTAFOLIO DE DESARROLLADOR</span></div>
-          <nav className={styles.topbarActions} aria-label="Accesos rápidos">
+          <div className={styles.topbarLeft}><span className={styles.liveDot}/><span>{t(t("PORTAFOLIO DE DESARROLLADOR"))}</span></div>
+          <nav className={styles.topbarActions} aria-label=t("Accesos rápidos")>
             <a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.topLink}>GitHub <Arrow external/></a>
-            <Link href="/resume" className={styles.topButton}>Ver CV <Arrow/></Link>
-            <button type="button" aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={mobileMenuOpen} aria-controls="career-mobile-nav" className={styles.menuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? "Cerrar" : "Menú"} <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button>
+            <Link href={cvPath(language)} className={styles.topButton}>{t(t("Ver CV"))} <Arrow/></Link>
+            <button type="button" aria-label={mobileMenuOpen ? t("Cerrar menú") : t("Abrir menú")} aria-expanded={mobileMenuOpen} aria-controls="career-mobile-nav" className={styles.menuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? t("Cerrar") : t("Menú")} <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button>
           </nav>
         </header>
-        <div className="border-b border-[#273a50] px-5 py-3 sm:px-9"><LanguageSwitcher language="es"/></div>
-        {mobileMenuOpen && <nav id="career-mobile-nav" className={styles.mobileNavigation} aria-label="Menú del portafolio">{navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>{item.label}</a>)}</nav>}
+        <div className="border-b border-[#273a50] px-5 py-3 sm:px-9"><LanguageSwitcher language={language}/></div>
+        {mobileMenuOpen && <nav id="career-mobile-nav" className={styles.mobileNavigation} aria-label=t("Menú del portafolio")>{navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>{item.label}</a>)}</nav>}
 
         <main id="principal" className={styles.main}>
           <section className={styles.hero} aria-labelledby="hero-title">
             <div className={styles.heroContent}>
-              <span className={styles.sectionKicker}><span className={styles.kickerLine}/> BIENVENIDO A MI ESPACIO</span>
+              <span className={styles.sectionKicker}><span className={styles.kickerLine}/>{t(t("BIENVENIDO A MI ESPACIO"))}</span>
               <p className={styles.introName}>Hola, soy {professionalProfile.name}.</p>
-              <h1 id="hero-title">Construyo experiencias digitales <em>con propósito.</em></h1>
-              <p className={styles.heroDescription}>Desarrollador web junior enfocado en interfaces, aplicaciones con datos e inteligencia artificial. Me gusta transformar problemas reales en software claro, funcional y comprobable.</p>
+              <h1 id="hero-title">{t(t("Construyo experiencias digitales"))} <em>{t(t("con propósito."))}</em></h1>
+              <p className={styles.heroDescription}>{t(t("Desarrollador web junior enfocado en interfaces, aplicaciones con datos e inteligencia artificial. Me gusta transformar problemas reales en software claro, funcional y comprobable."))}</p>
               <div className={styles.heroActions}>
-                <a className={styles.primaryButton} href="#proyectos">Explorar mis proyectos <Arrow/></a>
-                <Link href="/resume" className={styles.secondaryButton}>Currículum y experiencia <Arrow/></Link>
+                <a className={styles.primaryButton} href="#proyectos">{t(t("Explorar mis proyectos"))} <Arrow/></a>
+                <Link href={cvPath(language)} className={styles.secondaryButton}>{t(t("Currículum y experiencia"))} <Arrow/></Link>
               </div>
-              <p className={styles.heroNote}>Pensilvania, EE. UU. <span>·</span> Abierto a oportunidades junior</p>
+              <p className={styles.heroNote}>{t(t("Pensilvania, EE. UU."))} <span>·</span>{t(t("Abierto a oportunidades junior"))}</p>
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.orbGlow} aria-hidden="true" />
               <div className={styles.heroPreviewCard}>
-                <div className={styles.heroPreviewTop}><span>FEATURED WORK / 001</span><span className={styles.blueIndicator}/></div>
-                <ProjectVisual project={projects[0]}/>
-                <div className={styles.heroPreviewCaption}><div><span>PROYECTO DESTACADO</span><strong>Nexus AI Workspace</strong></div><Link href="#proyectos" aria-label="Ir al proyecto Nexus AI"><Arrow/></Link></div>
+                <div className={styles.heroPreviewTop}><span>{t(t("FEATURED WORK / 001"))}</span><span className={styles.blueIndicator}/></div>
+                <ProjectVisual project={projects[0]} language={language}/>
+                <div className={styles.heroPreviewCaption}><div><span>{t(t("PROYECTO DESTACADO"))}</span><strong>Nexus AI Workspace</strong></div><Link href="#proyectos" aria-label=t("Ir al proyecto Nexus AI")><Arrow/></Link></div>
               </div>
-              <span className={styles.visualFootnote}>Código real. Progreso demostrable.</span>
+              <span className={styles.visualFootnote}>{t(t("Código real. Progreso demostrable."))}</span>
             </div>
           </section>
 
-          <section className={styles.metrics} aria-label="Indicadores documentados">
-            <div><strong>{totalTrainingHours.toLocaleString("es-ES", { maximumFractionDigits: 1 })} <span>h</span></strong><small>Formación documentada</small></div>
-            <div><strong>{certifications.length.toString().padStart(2, "0")}</strong><small>Certificados y constancias</small></div>
-            <div><strong>11</strong><small>Repositorios revisados en GitHub*</small></div>
-            <div><strong>01</strong><small>Producto principal con IA</small></div>
+          <section className={styles.metrics} aria-label=t("Indicadores documentados")>
+            <div><strong>{totalTrainingHours.toLocaleString(language==="es"?"es-ES":language, { maximumFractionDigits: 1 })} <span>h</span></strong><small>{t(t("Formación documentada"))}</small></div>
+            <div><strong>{certifications.length.toString().padStart(2, "0")}</strong><small>{t(t("Certificados y constancias"))}</small></div>
+            <div><strong>11</strong><small>{t(t("Repositorios revisados en GitHub*"))}</small></div>
+            <div><strong>01</strong><small>{t(t("Producto principal con IA"))}</small></div>
           </section>
-          <p className={styles.metricsNote}>* Conteo revisado el 26/10/2026. Las horas de cursos no se presentan como horas de programación; el registro de práctica se añadirá cuando haya datos medibles.</p>
+          <p className={styles.metricsNote}>{t(t("* Conteo revisado el 26/10/2026. Las horas de cursos no se presentan como horas de programación; el registro de práctica se añadirá cuando haya datos medibles."))}</p>
 
           <section className={styles.section} id="proyectos" aria-labelledby="projects-title">
-            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>01 / TRABAJO SELECCIONADO</p><h2 id="projects-title">Proyectos que demuestran <em>cómo trabajo.</em></h2><p>Una selección breve con objetivos, decisiones técnicas y acceso a código real.</p></div><a className={styles.textLink} href={professionalProfile.github} target="_blank" rel="noopener noreferrer">Ver repositorios <Arrow external/></a></div>
-            <div className={styles.filters} role="group" aria-label="Filtrar proyectos">
+            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t(t("01 / TRABAJO SELECCIONADO"))}</p><h2 id="projects-title">{t(t("Proyectos que demuestran"))} <em>{t(t("cómo trabajo."))}</em></h2><p>{t(t("Una selección breve con objetivos, decisiones técnicas y acceso a código real."))}</p></div><a className={styles.textLink} href={professionalProfile.github} target="_blank" rel="noopener noreferrer">{t(t("Ver repositorios"))} <Arrow external/></a></div>
+            <div className={styles.filters} role="group" aria-label=t("Filtrar proyectos")>
               {projectFilters.map((filter) => <button key={filter.value} type="button" aria-pressed={category === filter.value} className={category === filter.value ? styles.activeFilter : styles.filter} onClick={() => setCategory(filter.value)}>{filter.label}</button>)}
             </div>
             <div className={styles.projectGrid} aria-live="polite">
               {visibleProjects.map((project) => <article key={project.id} className={styles.projectCard}>
-                <ProjectVisual project={project}/>
-                <div className={styles.projectCardBody}><span className={styles.projectKind}>{project.kind}</span><h3>{project.title}</h3><p>{project.summary}</p><div className={styles.techList}>{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><p className={styles.evidence}>{project.evidence}</p><div className={styles.projectLinks}><Link href={"/projects/" + ({"nexus":"nexus-ai","todo":"task-tracker","hangman":"hangman","foundation":"nexus-foundation"} as Record<string,string>)[project.id]}>Caso de estudio <Arrow/></Link>{project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">Código <Arrow external/></a>}{project.demo && (project.demo.startsWith("/") ? <Link href={project.demo}>Explorar <Arrow/></Link> : <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo <Arrow external/></a>)}{!project.repo && <span>Investigación privada · sin demo pública</span>}</div></div>
+                <ProjectVisual project={project} language={language}/>
+                <div className={styles.projectCardBody}><span className={styles.projectKind}>{project.kind}</span><h3>{project.title}</h3><p>{project.summary}</p><div className={styles.techList}>{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><p className={styles.evidence}>{project.evidence}</p><div className={styles.projectLinks}><Link href={"/projects/" + ({"nexus":"nexus-ai","todo":"task-tracker","hangman":"hangman","foundation":"nexus-foundation"} as Record<string,string>)[project.id]+"?lang="+language}>{t(t("Caso de estudio"))} <Arrow/></Link>{project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">{t(t("Código"))} <Arrow external/></a>}{project.demo && (project.demo.startsWith("/") ? <Link href={project.demo}>{t(t("Explorar"))} <Arrow/></Link> : <a href={project.demo} target="_blank" rel="noopener noreferrer">{t(t("Demo"))} <Arrow external/></a>)}{!project.repo && <span>{t(t("Investigación privada · sin demo pública"))}</span>}</div></div>
               </article>)}
             </div>
           </section>
 
           <section id="habilidades" className={styles.section} aria-labelledby="skills-title">
-            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>02 / TECNOLOGÍAS</p><h2 id="skills-title">Habilidades con <em>contexto real.</em></h2><p>Diferencio la práctica directa de las tecnologías integradas mediante herramientas de IA.</p></div></div>
+            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t(t("02 / TECNOLOGÍAS"))}</p><h2 id="skills-title">{t(t("Habilidades con"))} <em>{t(t("contexto real."))}</em></h2><p>{t(t("Diferencio la práctica directa de las tecnologías integradas mediante herramientas de IA."))}</p></div></div>
             <div className={styles.skillGrid}>{technicalSkills.map((group, index) => <article className={styles.skillCard} key={group.title}><span className={styles.skillNumber}>0{index+1} / ÁREA</span><h3>{group.title}</h3><p>{group.detail}</p><div className={styles.techList}>{group.items.map((item) => <span key={item}>{item}</span>)}</div></article>)}</div>
           </section>
 
           <section id="certificados" className={styles.section} aria-labelledby="certs-title">
-            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>03 / APRENDIZAJE CONTINUO</p><h2 id="certs-title">Formación y <em>certificaciones.</em></h2><p>Registros documentados por curso, entidad emisora, fecha y horas indicadas.</p></div><strong className={styles.trainingCount}>{totalTrainingHours.toLocaleString("es-ES")} h <small>de formación</small></strong></div>
-            <div className={styles.filters} role="group" aria-label="Filtrar certificados">
-              {([{ value: "all", label: "Todos" }, { value: "Course completion", label: "Cursos completados" }, { value: "Attendance certificate", label: "Constancias de asistencia" }] as const).map((item) => <button type="button" key={item.value} aria-pressed={credentialFilter === item.value} className={credentialFilter === item.value ? styles.activeFilter : styles.filter} onClick={() => setCredentialFilter(item.value)}>{item.label}</button>)}
+            <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t(t("03 / APRENDIZAJE CONTINUO"))}</p><h2 id="certs-title">{t(t("Formación y"))} <em>{t(t("certificaciones."))}</em></h2><p>{t(t("Registros documentados por curso, entidad emisora, fecha y horas indicadas."))}</p></div><strong className={styles.trainingCount}>{totalTrainingHours.toLocaleString(language==="es"?"es-ES":language)} h <small>{t(t("de formación"))}</small></strong></div>
+            <div className={styles.filters} role="group" aria-label=t("Filtrar certificados")>
+              {([{ value: "all", label: t("Todos") }, { value: "Course completion", label: t("Cursos completados") }, { value: "Attendance certificate", label: t("Constancias de asistencia") }] as const).map((item) => <button type="button" key={item.value} aria-pressed={credentialFilter === item.value} className={credentialFilter === item.value ? styles.activeFilter : styles.filter} onClick={() => setCredentialFilter(item.value)}>{item.label}</button>)}
             </div>
             <div className={styles.certificateGrid} aria-live="polite">{visibleCertificates.map((certificate) => <article className={styles.certificateCard} key={certificate.id}>
-              <a className={styles.certificateImage} href={certificate.credentialUrl || certificate.image} target="_blank" rel="noopener noreferrer" aria-label={"Abrir certificado: " + certificate.title}><Image src={certificate.image} alt={"Certificado de " + certificate.title} fill sizes="(max-width: 760px) 90vw, 28vw" className={styles.certificateImageAsset}/></a>
-              <div className={styles.certificateDetails}><div className={styles.certTop}><span>{certificate.issuer}</span><strong>{certificate.hours} h</strong></div><h3>{certificate.title}</h3><p>{certificate.credentialType === "Course completion" ? "Curso completado" : "Constancia de asistencia"} · {certificate.date}</p><a href={certificate.credentialUrl || certificate.image} target="_blank" rel="noopener noreferrer">{certificate.credentialUrl ? "Verificar credencial" : "Ver certificado"} <Arrow external/></a></div>
+              <a className={styles.certificateImage} href={certificate.credentialUrl || certificate.image} target="_blank" rel="noopener noreferrer" aria-label={t("Abrir certificado: ") + certificate.title}><Image src={certificate.image} alt={t("Certificado de ") + certificate.title} fill sizes="(max-width: 760px) 90vw, 28vw" className={styles.certificateImageAsset}/></a>
+              <div className={styles.certificateDetails}><div className={styles.certTop}><span>{certificate.issuer}</span><strong>{certificate.hours} h</strong></div><h3>{certificate.title}</h3><p>{certificate.credentialType === "Course completion" ? t("Curso completado") : t("Constancia de asistencia")} · {certificate.date}</p><a href={certificate.credentialUrl || certificate.image} target="_blank" rel="noopener noreferrer">{certificate.credentialUrl ? t("Verificar credencial") : t("Ver certificado")} <Arrow external/></a></div>
             </article>)}</div>
-            <p className={styles.certFinePrint}>Horas de formación, no experiencia laboral ni horas de código. Los enlaces de verificación se muestran cuando están disponibles.</p>
+            <p className={styles.certFinePrint}>{t(t("Horas de formación, no experiencia laboral ni horas de código. Los enlaces de verificación se muestran cuando están disponibles."))}</p>
           </section>
 
-          <section id="trayectoria" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>04 / MI TRAYECTORIA</p><h2 id="journey-title">Preparándome para <em>el siguiente paso.</em></h2></div></div>
-            <div className={styles.journeyGrid}><div className={styles.journeyPanel}><div className={styles.journeyRow}><span>ACTUALIDAD</span><div><h3>Desarrollo de proyectos personales</h3><p>Construcción y mejora de Nexus AI, documentación de decisiones, pruebas y colaboración con herramientas de IA.</p></div></div><div className={styles.journeyRow}><span>2024—2026</span><div><h3>Formación técnica continua</h3><p>Desarrollo web, fundamentos de ingeniería de software, IA aplicada y formación introductoria en ciberseguridad.</p></div></div><div className={styles.journeyRow}><span>EXPERIENCIA</span><div><h3>Operaciones y trabajo en equipo</h3><p>Experiencia laboral fuera del desarrollo de software, con disciplina operativa, coordinación y ejecución de procedimientos.</p></div></div></div><div className={styles.resumePanel}><span className={styles.sectionKicker}>PERFIL PROFESIONAL</span><h3>Todo lo esencial, en un solo CV.</h3><p>Resumen profesional, experiencia transferible, habilidades técnicas y formación documentada, listo para una conversación con reclutadores.</p><Link href="/resume" className={styles.primaryButton}>Abrir currículum <Arrow/></Link><Link href="/interview" className={styles.secondaryButton}>Preparar entrevista <Arrow/></Link><a href={cvDownloadPath("es")} download={cvFileName("es")}>{cvDownloadLabels.es} ↓</a></div></div>
+          <section id="trayectoria" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t(t("04 / MI TRAYECTORIA"))}</p><h2 id="journey-title">{t(t("Preparándome para"))} <em>{t(t("el siguiente paso."))}</em></h2></div></div>
+            <div className={styles.journeyGrid}><div className={styles.journeyPanel}><div className={styles.journeyRow}><span>{t(t("ACTUALIDAD"))}</span><div><h3>{t(t("Desarrollo de proyectos personales"))}</h3><p>{t(t("Construcción y mejora de Nexus AI, documentación de decisiones, pruebas y colaboración con herramientas de IA."))}</p></div></div><div className={styles.journeyRow}><span>2024—2026</span><div><h3>{t(t("Formación técnica continua"))}</h3><p>{t(t("Desarrollo web, fundamentos de ingeniería de software, IA aplicada y formación introductoria en ciberseguridad."))}</p></div></div><div className={styles.journeyRow}><span>{t(t("EXPERIENCIA"))}</span><div><h3>{t(t("Operaciones y trabajo en equipo"))}</h3><p>{t(t("Experiencia laboral fuera del desarrollo de software, con disciplina operativa, coordinación y ejecución de procedimientos."))}</p></div></div></div><div className={styles.resumePanel}><span className={styles.sectionKicker}>{t(t("PERFIL PROFESIONAL"))}</span><h3>{t(t("Todo lo esencial, en un solo CV."))}</h3><p>{t(t("Resumen profesional, experiencia transferible, habilidades técnicas y formación documentada, listo para una conversación con reclutadores."))}</p><Link href={cvPath(language)} className={styles.primaryButton}>{t(t("Abrir currículum"))} <Arrow/></Link><Link href="/interview" className={styles.secondaryButton}>{t(t("Preparar entrevista"))} <Arrow/></Link><a href={cvDownloadPath(language)} download={cvFileName(language)}>{cvDownloadLabels[language]} ↓</a></div></div>
           </section>
 
-          <section id="nexus-ai" className={styles.aiPanel} aria-labelledby="ai-title"><div><p className={styles.sectionKicker}>05 / PRODUCTO EN DESARROLLO</p><h2 id="ai-title">Una IA que acompaña <em>el proceso.</em></h2><p>Nexus AI ya incorpora un asistente con modos de planificación, depuración, aprendizaje y simulación de entrevistas. Las guías técnicas y el laboratorio de modelos propios se desarrollan por separado y no se presentan como diagnósticos automáticos fiables.</p><div className={styles.aiModes}><span>Planificar</span><span>Depurar</span><span>Aprender</span><span>Entrevistas</span></div><Link href="/assistant" className={styles.primaryButton}>Explorar el asistente <Arrow/></Link><small>El acceso al asistente requiere iniciar sesión. La disponibilidad del proveedor depende de su configuración.</small></div><div className={styles.aiTerminal} aria-hidden="true"><div><span/><span/><span/><small>nexus / assistant</small></div><p><b>01</b> ¿Qué quieres construir hoy?</p><p><b>02</b> Divide el objetivo en tareas.</p><p><b>03</b> Comprueba el resultado.</p><p><b>04</b> Documenta lo aprendido.</p><span>El proceso también forma parte del proyecto.</span></div></section>
+          <section id="nexus-ai" className={styles.aiPanel} aria-labelledby="ai-title"><div><p className={styles.sectionKicker}>{t(t("05 / PRODUCTO EN DESARROLLO"))}</p><h2 id="ai-title">{t(t("Una IA que acompaña"))} <em>{t(t("el proceso."))}</em></h2><p>{t(t("Nexus AI ya incorpora un asistente con modos de planificación, depuración, aprendizaje y simulación de entrevistas. Las guías técnicas y el laboratorio de modelos propios se desarrollan por separado y no se presentan como diagnósticos automáticos fiables."))}</p><div className={styles.aiModes}><span>{t(t("Planificar"))}</span><span>{t(t("Depurar"))}</span><span>{t(t("Aprender"))}</span><span>{t(t("Entrevistas"))}</span></div><Link href="/assistant" className={styles.primaryButton}>{t(t("Explorar el asistente"))} <Arrow/></Link><small>{t(t("El acceso al asistente requiere iniciar sesión. La disponibilidad del proveedor depende de su configuración."))}</small></div><div className={styles.aiTerminal} aria-hidden="true"><div><span/><span/><span/><small>nexus / assistant</small></div><p><b>01</b>{t(t("¿Qué quieres construir hoy?"))}</p><p><b>02</b>{t(t("Divide el objetivo en tareas."))}</p><p><b>03</b>{t(t("Comprueba el resultado."))}</p><p><b>04</b>{t(t("Documenta lo aprendido."))}</p><span>{t(t("El proceso también forma parte del proyecto."))}</span></div></section>
 
-          <section id="contacto" className={styles.contact} aria-labelledby="contact-title"><p className={styles.sectionKicker}>06 / SIGUIENTE CAPÍTULO</p><h2 id="contact-title">Hablemos de <em>lo que podemos construir.</em></h2><p>Busco mi primera oportunidad profesional en desarrollo web. Aquí puedes consultar mi código, explorar mis proyectos y revisar mi currículum.</p><div className={styles.contactActions}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>Ver mi GitHub <Arrow external/></a><Link href="/resume" className={styles.secondaryButton}>Consultar CV <Arrow/></Link></div><small>Las redes y vías de contacto adicionales aparecerán cuando sus enlaces estén verificados.</small></section>
-          <footer className={styles.footer}><span>NEXUS / DEVELOPER PORTFOLIO</span><span>Diseñado para mostrar trabajo real · {new Date().getFullYear()}</span><a href="#inicio">Volver arriba ↑</a></footer>
+          <section id="contacto" className={styles.contact} aria-labelledby="contact-title"><p className={styles.sectionKicker}>{t(t("06 / SIGUIENTE CAPÍTULO"))}</p><h2 id="contact-title">{t(t("Hablemos de"))} <em>{t(t("lo que podemos construir."))}</em></h2><p>{t(t("Busco mi primera oportunidad profesional en desarrollo web. Aquí puedes consultar mi código, explorar mis proyectos y revisar mi currículum."))}</p><div className={styles.contactActions}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>{t(t("Ver mi GitHub"))} <Arrow external/></a><Link href={cvPath(language)} className={styles.secondaryButton}>{t(t("Consultar CV"))} <Arrow/></Link></div><small>{t(t("Las redes y vías de contacto adicionales aparecerán cuando sus enlaces estén verificados."))}</small></section>
+          <footer className={styles.footer}><span>NEXUS / DEVELOPER PORTFOLIO</span><span>Diseñado para mostrar trabajo real · {new Date().getFullYear()}</span><a href="#inicio">{t(t("Volver arriba ↑"))}</a></footer>
         </main>
       </div>
     </div>
