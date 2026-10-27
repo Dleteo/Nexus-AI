@@ -36,7 +36,7 @@
   background-color:#d50f2c;
   background-blend-mode:multiply;
   mix-blend-mode:normal;
-  filter:grayscale(1) contrast(1.15);
+  filter:contrast(1.05);
   -webkit-mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
   mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
 }
