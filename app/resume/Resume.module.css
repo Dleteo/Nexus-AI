@@ -88,3 +88,16 @@
   .foot{margin-top:6px;padding-top:6px}
   .resumePage *, .resumePage *::before,.resumePage *::after{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+
+/* Minimal resume controls: no site navigation, only language + return. */
+.minimalControls{display:flex;justify-content:flex-end;align-items:center;gap:10px;min-height:48px;margin:0 0 10px}
+.minimalControls .langPicker{position:relative;align-self:auto;padding:0;border:0;background:transparent}
+.minimalControls .langPicker summary,.backButton{display:inline-flex;align-items:center;gap:9px;min-height:37px;padding:8px 13px;border:1px solid #74404b;background:#100b0e;color:#f5e7eb;text-decoration:none;font-size:12px;font-weight:700;cursor:pointer;list-style:none;border-radius:2px}
+.minimalControls .langPicker summary::-webkit-details-marker{display:none}
+.backButton{border-color:#f22643;color:#ff8d9c}
+.langMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:145px;padding:5px;background:#1a0e13;border:1px solid #8c3647;box-shadow:0 15px 35px #000a}
+.langMenu a{display:block;padding:9px 10px;text-decoration:none;color:#eee;font-size:12px}
+.langMenu a:hover,.langMenu a[aria-current="page"]{background:#712033;color:#fff}
+@media(max-width:650px){.minimalControls{justify-content:space-between;gap:6px;margin-bottom:8px}.minimalControls .langPicker summary,.backButton{font-size:11px;padding:8px 10px}}
+@media print{.minimalControls{display:none!important}}
