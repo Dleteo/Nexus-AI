@@ -6,8 +6,8 @@ export const professionalProfile = {
   role: "Aspiring Junior Web Developer",
   github: "https://github.com/Dleteo",
   repository: "https://github.com/Dleteo/Nexus-AI",
-  linkedin: null as string | null,
-  instagram: null as string | null,
-  email: null as string | null,
+  linkedin: "https://www.linkedin.com/in/joshua-sanchez-8038a2336/",
+  instagram: "https://www.instagram.com/joshvalls22/",
+  email: "srjoshua08@gmail.com",
   location: "Pennsylvania, USA",
 } as const;
