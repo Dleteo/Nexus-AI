@@ -44,7 +44,8 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
   const nav=[
     {label:t("INICIO","HOME","START","ACCUEIL","INÍCIO"),href:"#inicio"},
     {label:t("PROYECTOS","PROJECTS","PROJEKTE","PROJETS","PROJETOS"),href:"#proyectos"},
-    {label:t("HABILIDADES","SKILLS","SKILLS","COMPÉTENCES","HABILIDADES"),href:"#habilidades"},
+    {label:t("HABILIDADES","SKILLS","KENNTNISSE","COMPÉTENCES","HABILIDADES"),href:"#habilidades"},
+    {label:t("CERTIFICADOS","CERTIFICATES","ZERTIFIKATE","CERTIFICATS","CERTIFICADOS"),href:"#certificados"},
     {label:t("TRAYECTORIA","EXPERIENCE","WEG","PARCOURS","TRAJETÓRIA"),href:"#trayectoria"},
     {label:t("CONTACTO","CONTACT","KONTAKT","CONTACT","CONTATO"),href:"#contacto"},
   ];
@@ -96,16 +97,25 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
           <div className={s.cardTop}><b>{card.number} /</b><span>{card.type}</span></div>
           <Link className={s.projectPicture} href={card.href+"?lang="+language} aria-label={card.name}>
             {"image" in card && card.image ? <Image src={card.image} alt={card.name} fill unoptimized sizes="(max-width:700px) 100vw, 33vw" className={s.projectImg}/>:
-              <div className={s.nexusMock}><span className={s.mockLogo}>N</span><div><small>NEXUS / AI WORKSPACE</small><strong>{t("Tu espacio para crear.","Your space to create.","Dein Raum zum Entwickeln.","Votre espace pour créer.","Seu espaço para criar.")}</strong><p>Planificar · Depurar · Aprender</p></div></div>}
+              <div className={s.nexusMock} aria-hidden="true">
+                <div className={s.mockSidebar}><b>N</b><span>⌂</span><span>▣</span><span>☰</span><span>⚙</span></div>
+                <div className={s.mockWorkspace}>
+                  <div className={s.mockTop}><b>NEXUS AI</b><span>●</span></div>
+                  <small>{t("ESPACIO DE TRABAJO","WORKSPACE","ARBEITSBEREICH","ESPACE DE TRAVAIL","ÁREA DE TRABALHO")}</small>
+                  <strong>{t("Tu espacio para crear.","Your space to create.","Dein Raum zum Entwickeln.","Votre espace pour créer.","Seu espaço para criar.")}</strong>
+                  <p>{t("Proyectos · Tareas · Asistencia","Projects · Tasks · Assistance","Projekte · Aufgaben · Hilfe","Projets · Tâches · Assistance","Projetos · Tarefas · Assistência")}</p>
+                  <div className={s.mockPanels}><span>↗ <i>01</i></span><span>✓ <i>02</i></span><span>⌘ <i>03</i></span></div>
+                </div>
+              </div>}
           </Link>
           <div className={s.projectCopy}><div className={s.projectTitle}><h3>{card.name}</h3><Link href={card.href+"?lang="+language} aria-label={t("Ver proyecto","View project","Projekt ansehen","Voir le projet","Ver projeto")+" "+card.name}>↗</Link></div><p>{card.description[({es:0,en:1,de:2,fr:3,pt:4} as const)[language]]}</p><div className={s.tags}>{card.technologies.map(v=><span key={v}>{v}</span>)}</div></div>
         </article>)}</div>
         <p className={s.evidence}><span>●</span> {t("Proyectos demostrables; sin clientes ni resultados comerciales inventados.","Verifiable projects; no invented clients or commercial results.","Nachweisbare Projekte; keine erfundenen Kunden oder Erfolge.","Projets vérifiables ; aucun client ou résultat inventé.","Projetos verificáveis; sem clientes ou resultados inventados.")}</p>
       </section>
 
-      <section className={s.proof} id="habilidades">
-        <article className={s.proofColumn} id="trayectoria"><h2>{t("EDUCACIÓN Y FORMACIÓN","EDUCATION & TRAINING","AUSBILDUNG & KURSE","FORMATION","EDUCAÇÃO E FORMAÇÃO")} <span className={s.spark}>✦</span></h2><ul className={s.education}>{certifications.slice(0,4).map(c=><li key={c.id}><span>{c.hours}h</span><div><strong>{c.title}</strong><small>{c.issuer}</small></div></li>)}</ul><Link className={s.sectionLink} href={cvPath(language)}>{t("Ver formación y CV","View training and CV","Kurse und Lebenslauf","Voir formation et CV","Ver formação e CV")} ↗</Link></article>
-        <article className={s.proofColumn}><h2>{t("HABILIDADES","SKILLS","KENNTNISSE","COMPÉTENCES","HABILIDADES")} <span className={s.spark}>✦</span></h2><div className={s.skillTags}>{skills.map(skill=><span key={skill}>{skill}</span>)}</div><p className={s.smallNote}>{t("Diferencio práctica propia de integraciones realizadas con asistencia de IA.","Hands-on work is distinguished from AI-assisted integrations.","Eigene Praxis und KI-gestützte Integration werden unterschieden.","Je distingue la pratique directe des intégrations assistées par IA.","Distingo a prática própria das integrações assistidas por IA.")}</p></article>
+      <section className={s.proof} id="trayectoria">
+        <article className={s.proofColumn} id="certificados"><h2>{t("EDUCACIÓN Y FORMACIÓN","EDUCATION & TRAINING","AUSBILDUNG & KURSE","FORMATION","EDUCAÇÃO E FORMAÇÃO")} <span className={s.spark}>✦</span></h2><ul className={s.education}>{certifications.slice(0,4).map(c=><li key={c.id}><span>{c.hours}h</span><div><strong>{c.title}</strong><small>{c.issuer}</small></div></li>)}</ul><Link className={s.sectionLink} href={cvPath(language)}>{t("Ver formación y CV","View training and CV","Kurse und Lebenslauf","Voir formation et CV","Ver formação e CV")} ↗</Link></article>
+        <article className={s.proofColumn} id="habilidades"><h2>{t("HABILIDADES","SKILLS","KENNTNISSE","COMPÉTENCES","HABILIDADES")} <span className={s.spark}>✦</span></h2><div className={s.skillTags}>{skills.map(skill=><span key={skill}>{skill}</span>)}</div><p className={s.smallNote}>{t("Diferencio práctica propia de integraciones realizadas con asistencia de IA.","Hands-on work is distinguished from AI-assisted integrations.","Eigene Praxis und KI-gestützte Integration werden unterschieden.","Je distingue la pratique directe des intégrations assistées par IA.","Distingo a prática própria das integrações assistidas por IA.")}</p></article>
         <article className={s.proofColumn}><h2>{t("MI PROCESO","MY PROCESS","MEIN PROZESS","MON PROCESSUS","MEU PROCESSO")} <span className={s.spark}>✦</span></h2><ol className={s.steps}>{steps.map((step,i)=><li key={i}><b>{String(i+1).padStart(2,"0")}</b><span aria-hidden="true" className={s.stepIcon}>{["⌕","◇","✎","✓"][i]}</span><div><strong>{step.a}</strong><p>{step.b}</p></div></li>)}</ol></article>
       </section>
 
