@@ -10,7 +10,7 @@ export async function GET() {
   if (!session) return NextResponse.json({ error: "Sign in to view conversations." }, { status: 401 });
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
-  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?select=id,title,mode,project_id,created_at,updated_at&order=updated_at.desc&limit=50`, {
+  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?select=id,title,scope,mode,project_id,created_at,updated_at&order=updated_at.desc&limit=50`, {
     headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
     cache: "no-store",
   });
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   const response = await fetch(`${config.url}/rest/v1/assistant_conversations?select=id,title,mode,project_id,created_at,updated_at`, {
     method: "POST",
     headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
-    body: JSON.stringify({ user_id: session.user.id, title, mode, project_id: projectId }),
+    body: JSON.stringify({ user_id: session.user.id, title, scope, mode, project_id: projectId }),
     cache: "no-store",
   });
   const data = await response.json().catch(() => null);
