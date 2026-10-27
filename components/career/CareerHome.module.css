@@ -111,3 +111,70 @@
 .portfolioContactNote{padding:0 20px 17px;font-size:10px!important;color:#ab9399!important;line-height:1.6!important;max-width:none!important}
 @media(max-width:850px){.heroPortrait{min-height:450px}.contact{margin-top:75px}}
 @media(max-width:600px){.heroPortrait{min-height:360px}.portraitBackdrop{font-size:110px}.contact{padding:65px 0 30px}.portfolioContactHead,.portfolioContactBody,.portfolioContactAsk{padding:14px}.portfolioContactChoices,.portfolioContactLinks{padding-inline:14px}.portfolioContactFlag{display:none}.portfolioContactMail,.portfolioContactMailTrigger{padding-inline:14px}}
+
+
+/* Editorial portfolio layout: equal hierarchy across all five locales. */
+.site{display:block;background:#080708;color:#f8f4f3}
+.sidebar{display:none}
+.content{width:100%}
+.topbar{position:relative;z-index:5;min-height:76px;padding:10px max(34px,calc((100vw - 1460px)/2));border-bottom:1px solid #72202d;background:#080708;display:flex;align-items:center;gap:25px}
+.headerBrand{display:flex;gap:13px;align-items:center;min-width:220px;color:#fff;font-weight:900;font-size:22px;letter-spacing:.05em}
+.headerBrandMark{width:42px;height:42px;border:2px solid #f04455;color:#f04455;display:grid;place-items:center;border-radius:4px;font-size:27px}
+.headerBrand small{display:block;color:#b9a7ac;font:9px monospace;letter-spacing:.12em;margin-top:2px}
+.headerNav{flex:1;display:flex;justify-content:center;gap:clamp(10px,1.6vw,26px);align-items:center}
+.headerNav a{font-size:11px;text-transform:uppercase;font-weight:700;white-space:nowrap;color:#d2c5c9;padding:13px 0}
+.headerNav a:hover,.headerNav a:focus-visible{color:#ff5365}
+.languageRow{border-bottom:1px solid #351a21;padding:8px max(34px,calc((100vw - 1460px)/2));background:#100a0d}
+.topButton{color:#fff;border:1px solid #a63040}
+.main{max-width:1460px;margin:auto;padding:0 34px}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);min-height:700px;gap:3%;align-items:center;padding:50px 0 42px;border-bottom:1px solid #712431}
+.heroContent{position:relative;z-index:2}
+.heroContent .sectionKicker{letter-spacing:.22em}
+.introName{font-style:italic;font-family:Georgia,serif;font-size:31px;color:#f6f0f0;margin:45px 0 8px}
+.hero h1{font-size:clamp(62px,7.4vw,122px);font-weight:950;line-height:.84;letter-spacing:-.08em;text-transform:uppercase;max-width:760px;overflow-wrap:normal}
+.heroStatement{font-size:clamp(19px,2.2vw,29px);font-weight:800;max-width:520px;text-transform:uppercase;line-height:1.15;margin:24px 0 0}
+.heroStatement em{color:#ff4356;font-style:normal}
+.heroDescription{font-size:15px;line-height:1.7;max-width:515px;margin:18px 0 26px}
+.heroNote{display:flex;align-items:center;gap:10px;font-size:11px}
+.heroNote span{margin:0}
+.heroVisual{display:flex;align-items:stretch;min-width:0;padding:0;gap:17px;height:560px}
+.heroPortrait{flex:1;min-height:0;height:100%;border:0;background:linear-gradient(120deg,#210a0d,#0a0708);overflow:hidden}
+.portraitBackdrop{font-size:clamp(130px,18vw,270px);z-index:-1;color:#b71629}
+.portraitPhoto{background-position:center bottom;background-size:contain}
+.portraitCaption{background:linear-gradient(transparent,#070507ef)}
+.heroSideStats{flex:0 0 122px;display:flex;flex-direction:column;justify-content:center;gap:0}
+.heroSideStats div{padding:18px 0;border-bottom:1px solid #48232b;display:flex;gap:9px;align-items:center}
+.heroSideStats strong{font-size:35px;line-height:1;font-weight:900;color:#ff354a}
+.heroSideStats span{font-size:9px;line-height:1.45;letter-spacing:.04em;color:#d1bec2}
+.metrics{margin-top:0}
+.section{padding-top:85px}
+.sectionHeading{padding-bottom:18px;border-bottom:1px solid #63313b;margin-bottom:23px}
+.sectionHeading h2{font-size:clamp(29px,3.3vw,50px);font-weight:850}
+.projectGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.projectCard{background:#0c090b;border-radius:0;border:1px solid #51303a}
+.projectCard:hover{border-color:#f04455}
+.projectCard .nexusPreview,.projectImage,.researchVisual{height:205px;background:#1a1016}
+.projectCardBody{padding:19px}
+.projectCard h3{font-size:20px}
+.projectCard p{font-size:12px}
+.projectKind,.skillNumber{color:#ff6473}
+.projectLinks a{color:#ff8794}
+.technicalSkills{min-width:0}
+.skillCard{min-height:200px}
+.skillCard h3{margin-top:18px}
+.skillCard .techList{margin-top:19px}
+.filter,.activeFilter{border-radius:3px;background:#150e11;border-color:#66323b;color:#e2c9ce}
+.activeFilter{background:#72212f;color:#fff;border-color:#ff4b5f}
+.aiPanel{margin-top:80px}
+.contact{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:35px;text-align:left;align-items:center;margin-top:100px;padding:75px 0 55px}
+.contactIntro{min-width:0}
+.contactIntro h2{margin:18px 0;max-width:none;font-size:clamp(39px,4vw,69px);text-transform:uppercase;font-weight:950;line-height:.97;letter-spacing:-.06em}
+.contactIntro p:not(.sectionKicker){max-width:410px;margin:23px 0;font-size:13px;color:#cbb7bb}
+.contactActions{justify-content:flex-start}
+.contactVerified{display:flex;flex-wrap:wrap;gap:18px;margin-top:30px}
+.contactVerified a{color:#f78b99;font-size:12px}
+.portfolioContactChat{max-width:none;width:100%;margin:0}
+.portfolioContactBody{min-height:162px}
+@media(max-width:1180px){.headerNav{gap:10px}.headerNav a{font-size:10px}.headerBrand{min-width:165px}.heroSideStats{flex-basis:95px}.heroSideStats strong{font-size:28px}.hero{min-height:610px}.hero h1{font-size:clamp(57px,7vw,90px)}}
+@media(max-width:900px){.headerNav{display:none}.topbar{padding:12px 24px;justify-content:space-between}.languageRow{padding:8px 24px}.menuButton{display:inline-flex}.mobileNavigation{display:grid;padding:10px 24px;background:#140b0f;border-color:#4a202b}.mobileNavigation a{color:#eedce0}.main{padding:0 24px}.hero{grid-template-columns:1fr;gap:25px}.heroVisual{height:470px;max-width:100%;margin:0}.hero h1{max-width:650px}.projectGrid{grid-template-columns:repeat(2,1fr)}.contact{grid-template-columns:1fr;gap:30px}.contactIntro h2{max-width:650px}}
+@media(max-width:600px){.main{padding:0 17px}.topbar{min-height:64px;padding:9px 17px}.headerBrand{font-size:18px}.headerBrandMark{width:35px;height:35px;font-size:23px}.languageRow{padding:8px 17px}.hero{padding-top:45px;min-height:0}.hero h1{font-size:clamp(51px,11vw,72px)}.introName{font-size:24px;margin-top:20px}.heroVisual{height:355px;gap:8px}.heroSideStats{flex-basis:77px}.heroSideStats div{display:block;padding:12px 0}.heroSideStats strong{display:block;font-size:24px}.heroSideStats span{font-size:8px}.portraitCaption{padding:20px 12px}.portraitCaption strong{font-size:13px}.projectGrid{grid-template-columns:1fr}.contact{margin-top:70px;padding-top:55px}}
