@@ -3,7 +3,13 @@
  * prompts, accounts and user-owned records independently of the model vendor.
  */
 import type {AssistantScope} from "./assistant-scopes";
-import {configuredFoundation} from "./foundation-runtime";
+import {isAbsolute, win32} from "node:path";
+function configuredFoundation(): boolean {
+  const python=process.env.NEXUS_FOUNDATION_PYTHON;
+  const root=process.env.NEXUS_FOUNDATION_ROOT;
+  const valid=(value:string|undefined):value is string=>typeof value==="string" && value.length>3 && value.length<=1024 && !value.includes("\0") && !value.startsWith("\\\\") && !value.startsWith("//") && (isAbsolute(value) || win32.isAbsolute(value));
+  return process.env.NODE_ENV==="development" && valid(python) && valid(root);
+}
 export type AiProvider = "gemini" | "openai" | "ollama" | "foundation";
 
 export function readAiProvider(scope:AssistantScope): { provider: AiProvider; model: string; key: string; endpoint?: string } | null {
