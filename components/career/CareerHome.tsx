@@ -257,10 +257,10 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
               <h2 id="contact-title">{t("Hablemos de")} <em>{t("lo que podemos construir.")}</em></h2>
               <p>{t("Busco mi primera oportunidad profesional en desarrollo web. Aquí puedes consultar mi código, explorar mis proyectos y revisar mi currículum.")}</p>
               <div className={styles.contactActions}>
-                <a href="mailto:srjoshua08@gmail.com" className={styles.primaryButton}>✉ {t("Contacto")} <Arrow external/></a>
+                <a href={"mailto:"+professionalProfile.email} className={styles.primaryButton}>✉ {t("Contacto")} <Arrow external/></a>
                 <Link href={cvPath(language)} className={styles.secondaryButton}>{t("Consultar CV")} <Arrow/></Link>
               </div>
-              <div className={styles.contactVerified}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/joshua-sanchez-8038a2336/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://www.instagram.com/joshvalls22/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
+              <div className={styles.contactVerified}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={professionalProfile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href={professionalProfile.instagram} target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
             </div>
             <PortfolioContactChat language={language}/>
           </section>
