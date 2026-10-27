@@ -194,9 +194,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             <div className={styles.heroVisual}>
               <div className={styles.orbGlow} aria-hidden="true" />
               <div className={styles.heroPreviewCard}>
-                <div className={styles.heroPreviewTop}><span>{t("FEATURED WORK / 001")}</span><span className={styles.blueIndicator}/></div>
                 <FeaturedTechnicalChat language={language}/>
-                <div className={styles.heroPreviewCaption}><div><span>{t("PROYECTO DESTACADO")}</span><strong>Nexus AI Workspace</strong></div><Link href="#proyectos" aria-label={t("Ir al proyecto Nexus AI")}><Arrow/></Link></div>
               </div>
               <span className={styles.visualFootnote}>{t("Código real. Progreso demostrable.")}</span>
             </div>
