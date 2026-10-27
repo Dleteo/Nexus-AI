@@ -3,7 +3,7 @@ import Link from "next/link";
 import { certifications,totalTrainingHours } from "../../data/certifications";
 import { professionalProfile as profile } from "../../data/profile";
 import { resumeCopy, type ResumeLang } from "../../data/resume-copy";
-import { siteLanguages, isSiteLanguage } from "../../data/site-languages";
+import { siteLanguages, isSiteLanguage,cvDownloadPath,cvFileName,cvDownloadLabels,portfolioPath } from "../../data/site-languages";
 
 export const metadata: Metadata={title:"Joshua Vallejo Sanchez | CV Junior Web Developer",description:"CV bilingüe con proyectos verificables y formación documentada."};
 
@@ -12,10 +12,10 @@ export default async function ResumePage({searchParams}:{searchParams:Promise<{l
  return <main className="min-h-screen bg-[#0a111b] px-4 py-8 text-slate-100 print:min-h-0 print:bg-white print:p-0">
  <div className="mx-auto max-w-4xl">
  <nav aria-label="Acciones del currículum" className="mb-6 flex flex-wrap gap-3 print:hidden">
- <Link href="/" className="rounded-lg border border-slate-600 px-4 py-3 text-sm">← Portafolio</Link>
+ <Link href={portfolioPath(language)} className="rounded-lg border border-slate-600 px-4 py-3 text-sm">← Portfolio</Link>
  <Link href="/interview" className="rounded-lg border border-slate-600 px-4 py-3 text-sm">Preparar entrevista</Link>
  <div role="group" aria-label="Resume language" className="flex flex-wrap gap-2">{siteLanguages.map(x=><Link key={x.code} href={"/resume?lang="+x.code} lang={x.code} aria-current={x.code===language?"page":undefined} className={x.code===language?"rounded-lg border border-sky-300 bg-sky-900 px-3 py-3 text-sm":"rounded-lg border border-slate-600 px-3 py-3 text-sm"}>{x.nativeName}</Link>)}</div>
- <a className="rounded-lg bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-950" href={"/api/resume/pdf?lang="+language} download={"Joshua-Vallejo-Sanchez-CV-"+language+".pdf"}>Descargar CV (PDF) ↓</a>
+ <a className="rounded-lg bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-950" href={cvDownloadPath(language)} download={cvFileName(language)}>{cvDownloadLabels[language]} ↓</a>
  </nav>
  <article id="resume-print-sheet" lang={language} className="rounded-2xl bg-white px-6 py-9 text-slate-900 shadow-xl sm:px-12 sm:py-12 print:rounded-none print:px-0 print:py-0 print:shadow-none">
  <header className="border-b-2 border-slate-900 pb-5">
