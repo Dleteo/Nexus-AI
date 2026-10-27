@@ -72,7 +72,10 @@ function makePdf(lang:ResumeLang):Uint8Array {
 export async function GET(request:Request){
  const url=new URL(request.url);
  const lang:ResumeLang=url.searchParams.get("lang")==="en"?"en":"es";
- return new Response(makePdf(lang),{headers:{
+ const bytes=makePdf(lang);
+ const buffer=new ArrayBuffer(bytes.byteLength);
+ new Uint8Array(buffer).set(bytes);
+ return new Response(buffer,{headers:{
  "Content-Type":"application/pdf",
  "Content-Disposition":'attachment; filename="Joshua-Vallejo-Sanchez-CV-'+lang+'.pdf"',
  "Cache-Control":"public, max-age=3600",
