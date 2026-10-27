@@ -1,10 +1,7 @@
 """Browser QA against a locally built Next.js server, without credentials."""
 from pathlib import Path
-from urllib.parse import urlparse
 import os
 import shutil
-import subprocess
-import time
 
 from playwright.sync_api import sync_playwright
 
@@ -20,63 +17,47 @@ def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Build with confidence.").count() == 1, "Missing main heading")
-    page.evaluate("document.fonts.ready")
-    expect(page.evaluate("getComputedStyle(document.documentElement).colorScheme") == "dark",
-           "Royal Black should enable dark-native browser controls")
-    expect(page.evaluate("getComputedStyle(document.documentElement).backgroundColor") == "rgb(9, 9, 9)",
-           "Wrong base background for Royal Black")
-    expect("linear-gradient" in page.locator(".nexus-primary-button").first.evaluate("(el) => getComputedStyle(el).backgroundImage"),
-           "Primary call-to-action must use the Royal Black golden gradient")
-    expect(page.locator('nav[aria-label="Main navigation"] svg').count() >= 1,
-           "Crown logo missing from navigation")
-    hero = page.locator("#top .royal-art-stage")
-    expect(hero.count() == 1, "Dimensional crowned hero artwork is missing")
-    expect(page.locator("#top .royal-showcase-landscape").count() == 1, "Lower landscape showcase is missing")
-    expect(page.locator("#top .royal-art-light").count() == 1, "Animated golden trail is missing")
-    expect(page.locator("#top h1").count() == 1,
-           "Premium editorial hero heading missing")
-    hero_class = page.locator("#top h1").get_attribute("class") or ""
-    expect("nexus-royal-title" in hero_class,
-           f"Premium editorial hero typography missing: {hero_class}")
-
-    button = page.locator(".nexus-primary-button").first
-    button.hover()
-    expect(button.evaluate("(el) => getComputedStyle(el).boxShadow") != "none",
-           "Golden CTA hover glow is missing")
+    expect(page.get_by_role("heading", name="Construyo experiencias digitales con propósito.").count() == 1,
+           "Missing professional portfolio heading")
+    expect(page.get_by_role("heading", name="Proyectos que demuestran cómo trabajo.").count() == 1,
+           "Missing project case study heading")
+    expect(page.get_by_role("heading", name="Formación y certificaciones.").count() == 1,
+           "Missing training heading")
+    expect(page.get_by_role("link", name="Currículum y experiencia").count() == 1,
+           "Missing resume action")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
-           f"Horizontal overflow at {width}px: {dimensions}")
-    # Navigate within the current page: Home and the logo must always scroll up.
-    page.evaluate("window.scrollTo({top: 800, behavior: 'instant'})")
-    page.wait_for_function("window.scrollY > 300")
-    if width >= 768:
-        page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="Home", exact=True).click()
+           f"Homepage horizontal overflow at {width}px: {dimensions}")
+    filter_group = page.get_by_role("group", name="Filtrar proyectos")
+    filter_group.get_by_role("button", name="Frontend").click()
+    expect(filter_group.get_by_role("button", name="Frontend").get_attribute("aria-pressed") == "true",
+           "Project filter did not activate")
+    expect(page.get_by_role("heading", name="Task Tracker").count() == 1,
+           "Task Tracker missing after filtering")
+    expect(page.get_by_role("heading", name="Nexus Foundation").count() == 0,
+           "Research project not filtered out")
+    filter_group.get_by_role("button", name="Todos").click()
+    expect(page.get_by_role("heading", name="Nexus Foundation").count() == 1,
+           "Project filter did not restore all")
+    certificates = page.get_by_role("group", name="Filtrar certificados")
+    certificates.get_by_role("button", name="Constancias de asistencia").click()
+    expect(page.get_by_role("heading", name="Hacking Ético — Certificado de Asistencia").count() == 1,
+           "Attendance certificate missing")
+    certificates.get_by_role("button", name="Todos").click()
+    if width <= 850:
+        menu = page.get_by_role("button", name="Abrir menú")
+        expect(menu.is_visible(), "Mobile menu toggle missing")
+        menu.click()
+        expect(page.get_by_role("button", name="Cerrar menú").get_attribute("aria-expanded") == "true",
+               "Mobile menu not expanded")
+        page.get_by_role("navigation", name="Menú del portafolio").get_by_role("link", name="Proyectos").click()
+        expect(page.get_by_role("button", name="Abrir menú").get_attribute("aria-expanded") == "false",
+               "Mobile menu did not close")
     else:
-        page.get_by_role("button", name="Open navigation menu").click()
-        page.get_by_role("navigation", name="Mobile navigation").get_by_role("link", name="Home", exact=True).click()
-    page.wait_for_function("window.scrollY <= 2")
-    expect(not page.url.endswith("#features"), "Home must clear old anchor")
-    page.evaluate("window.scrollTo({top: 800, behavior: 'instant'})")
-    page.wait_for_function("window.scrollY > 300")
-    page.get_by_role("link", name="Nexus AI home").click()
-    page.wait_for_function("window.scrollY <= 2")
-    print(f"PASS Home and logo always return to top at {width}px", flush=True)
-
-    if width < 768:
-        button = page.get_by_role("button", name="Open navigation menu")
-        expect(button.is_visible(), "Mobile menu toggle is missing")
-        button.click()
-        expect(page.get_by_role("button", name="Close navigation menu").get_attribute("aria-expanded") == "true",
-               "Mobile navigation not expanded")
-        menu = page.get_by_role("navigation", name="Mobile navigation")
-        expect(menu.is_visible(), "Mobile navigation not visible")
-        menu.get_by_role("link", name="My portfolio").click()
-        expect(page.get_by_role("button", name="Open navigation menu").get_attribute("aria-expanded") == "false",
-               "Mobile menu did not close after navigation")
-    else:
-        expect(page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="My portfolio").is_visible(),
-               "Desktop navigation missing certificates")
+        expect(page.get_by_role("navigation", name="Secciones del portafolio").is_visible(),
+               "Desktop navigation missing")
+    page.screenshot(path=str(ARTIFACTS / f"career-home-{label}.png"), full_page=True)
+    print(f"PASS career homepage, responsive filters and navigation at {width}px", flush=True)
     page.goto(BASE + "/portfolio", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing portfolio certificates heading")
     expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).count() == 1, "Missing cybersecurity training")
