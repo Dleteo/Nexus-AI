@@ -95,3 +95,32 @@
 .proofColumn{padding-top:22px;padding-bottom:22px}
 @media(max-width:760px){.header{height:58px}.hero{min-height:760px}.heroLeft{width:65%;padding:245px 0 65px 22px}.heroPortrait{left:18%;right:5%;height:72%}.heroRight{right:13px;top:34%;width:23%}}
 @media(max-width:430px){.hero{min-height:720px}.heroLeft{width:80%;padding:220px 0 60px 18px}.heroPortrait{left:8%;right:-4%;height:68%}.heroRight{width:19%}}
+
+
+/* Reference-driven editorial geometry: visible full-height title, portrait inset,
+   no washed-out rectangular panel or overlap with right-column metrics. */
+.hero{min-height:575px}
+.heroBackdrop{z-index:0;top:5px;left:0;right:0;font-size:clamp(112px,17.2vw,270px);line-height:.86;color:#db102b;opacity:1}
+.heroLeft{z-index:3;width:36%;padding-top:clamp(155px,15vw,195px);padding-bottom:28px}
+.heroPortrait{
+ left:36%;right:17%;height:75%;bottom:0;z-index:2;
+ background-color:transparent;
+ background-image:url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");
+ background-size:cover;
+ background-position:center 37%;
+ background-repeat:no-repeat;
+ background-blend-mode:normal;
+ filter:sepia(.65) saturate(1.6) hue-rotate(307deg) contrast(1.08);
+ opacity:.86;
+ -webkit-mask-image:radial-gradient(ellipse 75% 86% at 50% 48%,#000 48%,transparent 100%);
+ mask-image:radial-gradient(ellipse 75% 86% at 50% 48%,#000 48%,transparent 100%);
+}
+.heroPortrait::after{background:linear-gradient(0deg,#080608 0%,transparent 20%)}
+.heroRight{right:3.5%;width:15.5%;top:35%}
+.heroManifesto{font-size:11px}
+.numbers strong{font-size:32px}
+.numbers span{font-size:9px}
+.projects{padding-top:21px}
+.projectGrid{gap:12px}
+@media(max-width:760px){.hero{min-height:725px}.heroBackdrop{font-size:clamp(81px,19vw,155px)}.heroLeft{width:63%;padding:225px 0 45px 20px}.heroPortrait{left:23%;right:3%;height:70%}.heroRight{width:21%;right:12px}}
+@media(max-width:430px){.hero{min-height:690px}.heroLeft{width:75%;padding-top:215px}.heroPortrait{left:17%;right:-3%;height:65%;opacity:.65}.heroRight{width:18%;right:6px}}
