@@ -10,6 +10,20 @@ jobs:
   validate:
     name: Lint, type-check, and build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nexus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -31,6 +45,26 @@ jobs:
 
       - name: Check TypeScript
         run: npx tsc --noEmit
+
+      - name: Verify workspace migration in disposable PostgreSQL
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: nexus_test
+        run: |
+          set -e
+          for file in tests/db/bootstrap.sql \
+            supabase/migrations/20261023000000_create_projects.sql \
+            supabase/migrations/20261023130000_assistant_copilot_foundation.sql \
+            supabase/migrations/20261023130001_index_assistant_foreign_keys.sql \
+            supabase/migrations/20261023130002_lock_down_assistant_privileged_rpcs.sql \
+            tests/db/seed.sql \
+            supabase/migrations/20261027040000_assistant_workspace_scope.sql \
+            tests/db/workspace_assertions.sql; do
+            psql -v ON_ERROR_STOP=1 -f "$file"
+          done
 
       - name: Test assistant providers and safety gates
         run: node scripts/assistant_unit_qa.mjs
