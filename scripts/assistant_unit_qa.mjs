@@ -185,6 +185,17 @@ try {
   controller.abort();
   assert.equal((await cancelledRequest).status,504);
 
+  // Reject unbounded streamed JSON before decoding it into a giant string.
+  let overSizeCancelled=false;
+  globalThis.fetch=async()=>new Response(new ReadableStream({
+    start(controller){controller.enqueue(new Uint8Array(4*1024*1024+1));},
+    cancel(){overSizeCancelled=true;},
+  }));
+  const oversized=await assistantApi.fetchAssistantJson("http://local.test",{},200);
+  assert.equal(oversized.status,502);
+  assert.equal(oversized.ok,false);
+  assert.equal(overSizeCancelled,true,"Oversized response body reader must be cancelled");
+
   const auth=await importTs("lib/supabase.ts",{
     "server-only":{},
     "./assistant-api":{fetchAssistantJson:async()=>({ok:false,status:504,data:null})},
