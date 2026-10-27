@@ -32,13 +32,13 @@ function makePdf(lang:ResumeLang):Uint8Array {
   pages[pages.length-1].push("BT /"+(bold?"F2":"F1")+" "+size+" Tf 1 0 0 1 "+(42+indent)+" "+y+" Tm "+pdfLiteral(value)+" Tj ET");
   y-=step;
  }
- const body=(s:string,limit=101)=>{for(const l of wrap(s,limit))line(l);};
- const section=(heading:string)=>{y-=9;line(heading.toUpperCase(),10,true,0,19);};
+ const body=(s:string,limit=92)=>{for(const l of wrap(s,limit))line(l);};
+ const section=(heading:string)=>{if(y<100)newPage();y-=9;line(heading.toUpperCase(),10,true,0,19);};
  line(p.name,21,true,0,30);line(d.role+" | "+d.headline,9,false,0,15);
  line(p.location+" | github.com/Dleteo"+(p.linkedin?" | LinkedIn: "+p.linkedin:""),8,false,0,18);
  section(d.headings.profile);body(d.summary);
  section(d.headings.projects);
- for(const item of d.projects){line(item.name+" | "+item.stack,9,true,0,15);body(item.summary);line(item.url,8,false,0,17);}
+ for(const item of d.projects){body(item.name+" | "+item.stack,88);body(item.summary);body(item.url.replace("https://github.com/","github.com/"),92);}
  section(d.headings.skills);
  for(const item of d.skillGroups)body(item.title+": "+item.items);
  section(d.headings.experience);body(d.experience);
