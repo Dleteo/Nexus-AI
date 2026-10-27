@@ -3,13 +3,17 @@
  * prompts, accounts and user-owned records independently of the model vendor.
  */
 import type {AssistantScope} from "./assistant-scopes";
-export type AiProvider = "gemini" | "openai" | "ollama";
+import {configuredFoundation} from "./foundation-runtime";
+export type AiProvider = "gemini" | "openai" | "ollama" | "foundation";
 
 export function readAiProvider(scope:AssistantScope): { provider: AiProvider; model: string; key: string; endpoint?: string } | null {
   const preferred = scope === "portfolio" ? process.env.AI_PORTFOLIO_PROVIDER : process.env.AI_TECHNICAL_PROVIDER;
   const provider = (preferred?.trim() || process.env.AI_PROVIDER?.trim())?.toLowerCase();
   const geminiKey = process.env.GEMINI_API_KEY?.trim();
   const openaiKey = process.env.OPENAI_API_KEY?.trim();
+  if (provider === "foundation" && scope === "technical") {
+    return configuredFoundation() ? {provider,model:"Nexus Foundation Technical (offline)",key:""} : null;
+  }
   if (provider === "gemini" && geminiKey) {
     return {provider, model:process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash", key:geminiKey};
   }
