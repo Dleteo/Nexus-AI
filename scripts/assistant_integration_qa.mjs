@@ -97,7 +97,12 @@ const env={
   OLLAMA_MODEL:"synthetic-test-model",
   NEXT_TELEMETRY_DISABLED:"1",
 };
-// Public build-time variables must be absent (not empty) so server-only\n// synthetic values take precedence in the production process.\ndelete env.NEXT_PUBLIC_SUPABASE_URL;\ndelete env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;\ndelete env.NEXT_PUBLIC_SUPABASE_ANON_KEY;\nconst base="http://127.0.0.1:3113";
+// Public build-time variables must be absent (not empty) so server-only
+// synthetic values take precedence in the production process.
+delete env.NEXT_PUBLIC_SUPABASE_URL;
+delete env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+delete env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const base="http://127.0.0.1:3113";
 const cookie="nexus_session="+encodeURIComponent(JSON.stringify({
   access_token:"synthetic-access-token",
   refresh_token:"synthetic-refresh-token",
