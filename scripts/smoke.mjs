@@ -78,7 +78,7 @@ for (const [lang, sample] of [["en","The problem"],["de","Die Herausforderung"],
   await checkPublicPage("/resume?lang="+lang,[lang==="en"?"PROFESSIONAL PROFILE":lang==="de"?"TECHNISCHE KENNTNISSE":lang==="fr"?"COMPÉTENCES TECHNIQUES":"COMPETÊNCIAS TÉCNICAS"]);
   const response = await request("/api/resume/pdf?lang="+lang);
   assert.equal(response.status,200);
-  assert.match(response.headers.get("content-type") ?? "",/application\\/pdf/i);
+  assert.ok((response.headers.get("content-type") ?? "").includes("application/pdf"));
   assert.ok((await response.arrayBuffer()).byteLength > 1000);
 }
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
