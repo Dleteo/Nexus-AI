@@ -119,3 +119,17 @@ Read provider terms and verify model license, free-tier restrictions and quotas 
 ### Required database migration before using the updated assistants
 
 The portfolio/technical split now uses a dedicated, immutable `scope` column, rather than inferring the workspace from the conversation title. Apply `supabase/migrations/20261027040000_assistant_workspace_scope.sql` to the correct Supabase project **before** deploying this code. The migration preserves existing records, classifying older unprefixed chats as technical and prefixed Nexus Portfolio chats as portfolio. Review the database backup and check RLS, indexes and the restricted RPC privileges in a staging database first. The code will not operate against a database missing the scope field. This change has been committed to GitHub; it has **not** been applied to your live Supabase project.
+
+
+### Safe AI provider readiness checks
+
+Authenticated users can request `GET /api/assistant/status` to see whether the two assistants have an explicit provider configured and whether the conversation table exposes the `scope` column. This endpoint **does not** make model calls, consume a paid API quota, reveal keys or assert that a model is reachable. The `inferenceVerified: false` field is deliberate.
+
+For a live model check, configure the engine on **your own test environment** and use a separate test account, then:
+1. Apply and verify the reviewed scope migration on a staging database first, never an unreviewed production migration.
+2. Configure `AI_PORTFOLIO_PROVIDER` and `AI_TECHNICAL_PROVIDER`; for Ollama, run the server and model on the same host as Next.js.
+3. Check the authenticated status endpoint and separately send a short prompt to each assistant. Confirm the response, timeout, storage and daily limits.
+4. Check one current technical question with trusted sources; the local Ollama engine has no native web search, while Gemini/OpenAI web search requires provider support and may incur quota or charges.
+5. Do not claim a passing automated/mock test proves third-party inference or factual accuracy.
+
+The `scope` database migration is not applied by reading this repository or calling the status endpoint. Production remains unchanged until an authorized deployment.
