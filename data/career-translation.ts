@@ -1011,7 +1011,7 @@ const entries = [
   "Diagrama conceitual de um modelo Transformer"
  ]
 ] as const;
-const dictionary = new Map<string,readonly [string,string,string,string]>(entries.map(row=>[row[0],[row[1],row[2],row[3],row[4]]]));
+const dictionary = new Map<string,readonly [string,string,string,string]>(entries.map(row=>[row[0],[row[1],row[2],row[3],row[4]] as [string,string,string,string]]));
 const offset:Record<Exclude<SiteLanguage,"es">,number>={en:0,de:1,fr:2,pt:3};
 export function careerTranslate(language:SiteLanguage,spanish:string):string {
  if(language==="es")return spanish;
