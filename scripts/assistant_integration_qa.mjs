@@ -119,15 +119,17 @@ async function request(path,{method="GET",payload,auth=true}={}){
   return {status:response.status,data:await response.json()};
 }
 async function ready(){
+  let lastIssue="unknown";
   for(let attempt=0;attempt<100;attempt++){
     if(child.exitCode!==null)throw Error("Next.js production server exited: "+logs.slice(-3000));
     try{
-      const res=await fetch(base+"/api/assistant/status",{signal:AbortSignal.timeout(1000),redirect:"manual"});
+      const res=await fetch(base+"/",{signal:AbortSignal.timeout(1200),redirect:"manual"});
+      lastIssue="HTTP "+res.status;
       if(res.status>=200 && res.status<500)return;
-    }catch{}
+    }catch(error){lastIssue=String(error?.cause?.code||error?.message||error);}
     await new Promise(r=>setTimeout(r,150));
   }
-  throw Error("Next.js production server not ready: "+logs.slice(-3000));
+  throw Error("Next.js production server not ready ("+lastIssue+"): "+logs.slice(-3000));
 }
 
 try{
