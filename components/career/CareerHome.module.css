@@ -308,3 +308,32 @@
 @media(max-width:1180px){.heroVisual,.heroPortrait{min-height:550px!important}.heroSideStats{flex-basis:100px}.heroSideStats strong{font-size:33px}}
 @media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr);min-height:0}.heroContent{padding-top:115px}.heroVisual{height:510px!important;min-height:0}.heroPortrait{min-height:510px!important}.heroMasthead{font-size:clamp(76px,16vw,135px)}}
 @media(max-width:600px){.heroContent{padding-top:94px}.heroVisual{height:350px!important;min-height:0}.heroPortrait{min-height:350px!important}.heroSideStats{flex-basis:77px}.heroSideStats strong{font-size:25px}.heroSideStats div{padding:14px 0}.heroSideStats span{font-size:8px}.portraitPhoto{background-position:53% 30%}.heroMasthead{font-size:clamp(69px,18vw,100px)}}
+
+
+/* Editorial rhythm: curated projects first, supporting proof dense and restrained. */
+.section{padding-top:65px}
+.sectionHeading{margin-bottom:20px;padding-bottom:13px}
+.sectionHeading h2{font-size:clamp(26px,3.1vw,44px);line-height:1.03}
+.sectionHeading p:not(.sectionKicker){font-size:12px;margin-top:9px}
+.projectGrid{gap:11px}
+.projectCard .nexusPreview,.projectImage,.researchVisual{height:190px}
+.projectCardBody{padding:16px}
+.projectCard h3{font-size:18px;margin:9px 0}
+.projectCard p{font-size:11px;line-height:1.55}
+.projectCard .evidence{font-size:10px}
+.techList{gap:5px;margin-top:12px}
+.techList span,.aiModes span{font-size:9px;padding:5px 7px}
+.projectLinks{gap:15px;flex-wrap:wrap;margin-top:14px}
+.skillCard{padding:19px;min-height:180px}
+.skillCard h3{font-size:17px;margin:11px 0}
+.skillCard .techList{margin-top:12px}
+.certificateGrid{gap:10px}
+.certificateImage{height:140px}
+.certificateDetails{padding:14px}
+.certificateDetails h3{font-size:14px}
+.processStrip{margin-top:65px}
+.processColumn{padding-top:23px;padding-bottom:24px}
+.aiPanel{margin-top:60px}
+.contact{margin-top:70px}
+@media(max-width:900px){.projectGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.section{padding-top:55px}.processColumn{padding-block:22px}}
+@media(max-width:600px){.projectGrid{grid-template-columns:minmax(0,1fr)}.certificateImage{height:170px}.section{padding-top:42px}.contact{margin-top:55px}}
