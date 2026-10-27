@@ -168,37 +168,44 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
 
       <div className={styles.content}>
         <header className={styles.topbar}>
-          <div className={styles.topbarLeft}><span className={styles.liveDot}/><span>{t("PORTAFOLIO DE DESARROLLADOR")}</span></div>
+          <Link href={language==="es"?"/":"/"+language} className={styles.headerBrand}><span className={styles.headerBrandMark}>N</span><span>NEXUS <small>DEVELOPER PORTFOLIO</small></span></Link>
+          <nav className={styles.headerNav} aria-label={t("Secciones del portafolio")}>
+            {navigation.map(item=><a href={item.href} key={item.href}>{item.label}</a>)}
+          </nav>
           <nav className={styles.topbarActions} aria-label={t("Accesos rápidos")}>
             <a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.topLink}>GitHub <Arrow external/></a>
             <Link href={cvPath(language)} className={styles.topButton}>{t("Ver CV")} <Arrow/></Link>
             <button type="button" aria-label={mobileMenuOpen ? t("Cerrar menú") : t("Abrir menú")} aria-expanded={mobileMenuOpen} aria-controls="career-mobile-nav" className={styles.menuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? t("Cerrar") : t("Menú")} <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button>
           </nav>
         </header>
-        <div className="border-b border-[#273a50] px-5 py-3 sm:px-9"><LanguageSwitcher language={language}/></div>
+        <div className={styles.languageRow}><LanguageSwitcher language={language}/></div>
         {mobileMenuOpen && <nav id="career-mobile-nav" className={styles.mobileNavigation} aria-label={t("Menú del portafolio")}>{navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>{item.label}</a>)}</nav>}
 
         <main id="principal" className={styles.main}>
           <section className={styles.hero} aria-labelledby="hero-title">
             <div className={styles.heroContent}>
               <span className={styles.sectionKicker}><span className={styles.kickerLine}/>{t("BIENVENIDO A MI ESPACIO")}</span>
-              <p className={styles.introName}>{t("Hola, soy")} {professionalProfile.name}.</p>
-              <h1 id="hero-title">{t("Construyo experiencias digitales")} <em>{t("con propósito.")}</em></h1>
+              <p className={styles.introName}>{t("Hola, soy")}</p>
+              <h1 id="hero-title">{professionalProfile.name}</h1>
+              <h2 className={styles.heroStatement}>{t("Construyo experiencias digitales")} <em>{t("con propósito.")}</em></h2>
               <p className={styles.heroDescription}>{t("Desarrollador web junior enfocado en interfaces, aplicaciones con datos e inteligencia artificial. Me gusta transformar problemas reales en software claro, funcional y comprobable.")}</p>
               <div className={styles.heroActions}>
                 <a className={styles.primaryButton} href="#proyectos">{t("Explorar mis proyectos")} <Arrow/></a>
-                <Link href={cvPath(language)} className={styles.secondaryButton}>{t("Currículum y experiencia")} <Arrow/></Link>
+                <a href="#contacto" className={styles.secondaryButton}>{t("Contacto")} <Arrow/></a>
               </div>
-              <p className={styles.heroNote}>{t("Pensilvania, EE. UU.")} <span>·</span>{t("Abierto a oportunidades junior")}</p>
+              <p className={styles.heroNote}><span className={styles.liveDot}/> {t("Pensilvania, EE. UU.")} · {t("Abierto a oportunidades junior")}</p>
             </div>
             <div className={styles.heroVisual}>
-              <div className={styles.orbGlow} aria-hidden="true" />
               <div className={styles.heroPortrait} role="img" aria-label={t("Retrato del desarrollador de su portafolio anterior")}>
-                <div className={styles.portraitBackdrop} aria-hidden="true">NEXUS</div>
+                <div className={styles.portraitBackdrop} aria-hidden="true">N</div>
                 <div className={styles.portraitPhoto} aria-hidden="true"/>
                 <div className={styles.portraitCaption}><span>DEVELOPER / 2026</span><strong>{professionalProfile.name}</strong></div>
               </div>
-              <span className={styles.visualFootnote}>{t("Código real. Progreso demostrable.")}</span>
+              <div className={styles.heroSideStats} aria-label={t("Indicadores documentados")}>
+                <div><strong>{totalTrainingHours.toLocaleString(language)}</strong><span>H / {t("Formación documentada")}</span></div>
+                <div><strong>11</strong><span>{t("Repositorios revisados en GitHub*")}</span></div>
+                <div><strong>{certifications.length.toString().padStart(2,"0")}</strong><span>{t("Certificados y constancias")}</span></div>
+              </div>
             </div>
           </section>
 
@@ -246,7 +253,19 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
 
           <section id="nexus-ai" className={styles.aiPanel} aria-labelledby="ai-title"><div><p className={styles.sectionKicker}>{t("05 / PRODUCTO EN DESARROLLO")}</p><h2 id="ai-title">{t("Una IA que acompaña")} <em>{t("el proceso.")}</em></h2><p>{t("Nexus AI ya incorpora un asistente con modos de planificación, depuración, aprendizaje y simulación de entrevistas. Las guías técnicas y el laboratorio de modelos propios se desarrollan por separado y no se presentan como diagnósticos automáticos fiables.")}</p><div className={styles.aiModes}><span>{t("Planificar")}</span><span>{t("Depurar")}</span><span>{t("Aprender")}</span><span>{t("Entrevistas")}</span></div><Link href="/assistant" className={styles.primaryButton}>{t("Explorar el asistente")} <Arrow/></Link><small>{t("El acceso al asistente requiere iniciar sesión. La disponibilidad del proveedor depende de su configuración.")}</small></div><div className={styles.aiTerminal} aria-hidden="true"><div><span/><span/><span/><small>nexus / assistant</small></div><p><b>01</b> {t("¿Qué quieres construir hoy?")}</p><p><b>02</b> {t("Divide el objetivo en tareas.")}</p><p><b>03</b> {t("Comprueba el resultado.")}</p><p><b>04</b> {t("Documenta lo aprendido.")}</p><span>{t("El proceso también forma parte del proyecto.")}</span></div></section>
 
-          <section id="contacto" className={styles.contact} aria-labelledby="contact-title"><p className={styles.sectionKicker}>{t("06 / SIGUIENTE CAPÍTULO")}</p><h2 id="contact-title">{t("Hablemos de")} <em>{t("lo que podemos construir.")}</em></h2><p>{t("Busco mi primera oportunidad profesional en desarrollo web. Aquí puedes consultar mi código, explorar mis proyectos y revisar mi currículum.")}</p><div className={styles.contactActions}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>{t("Ver mi GitHub")} <Arrow external/></a><Link href={cvPath(language)} className={styles.secondaryButton}>{t("Consultar CV")} <Arrow/></Link></div><PortfolioContactChat language={language}/></section>
+          <section id="contacto" className={styles.contact} aria-labelledby="contact-title">
+            <div className={styles.contactIntro}>
+              <p className={styles.sectionKicker}>06 / {t("Contacto")}</p>
+              <h2 id="contact-title">{t("Hablemos de")} <em>{t("lo que podemos construir.")}</em></h2>
+              <p>{t("Busco mi primera oportunidad profesional en desarrollo web. Aquí puedes consultar mi código, explorar mis proyectos y revisar mi currículum.")}</p>
+              <div className={styles.contactActions}>
+                <a href="mailto:srjoshua08@gmail.com" className={styles.primaryButton}>✉ {t("Contacto")} <Arrow external/></a>
+                <Link href={cvPath(language)} className={styles.secondaryButton}>{t("Consultar CV")} <Arrow/></Link>
+              </div>
+              <div className={styles.contactVerified}><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/joshua-sanchez-8038a2336/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://www.instagram.com/joshvalls22/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div>
+            </div>
+            <PortfolioContactChat language={language}/>
+          </section>
           <footer className={styles.footer}><span>NEXUS / DEVELOPER PORTFOLIO</span><span>{t("Diseñado para mostrar trabajo real")} · {new Date().getFullYear()}</span><a href="#inicio">{t("Volver arriba ↑")}</a></footer>
         </main>
       </div>
