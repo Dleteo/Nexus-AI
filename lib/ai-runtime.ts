@@ -2,6 +2,7 @@
  * Infrastructure provider configuration. Nexus retains its product identity,
  * prompts, accounts and user-owned records independently of the model vendor.
  */
+import type {AssistantScope} from "./assistant-scopes";
 export type AiProvider = "gemini" | "openai" | "ollama";
 
 export function readAiProvider(): { provider: AiProvider; model: string; key: string; endpoint?: string } | null {
