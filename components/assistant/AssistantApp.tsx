@@ -10,6 +10,14 @@ import {conversationTitle,scopeFromTitle,type AssistantScope} from "../../lib/as
 type Mode = "assistant" | "plan" | "debug" | "explain" | "interview";
 type Conversation = { id: string; scope: AssistantScope; title: string; mode: Mode; project_id: string | null; updated_at: string };
 type Message = { sources?: Array<{uri:string;title?:string}>; id?: string; role: "user" | "assistant"; content: string; created_at?: string };
+type ReadinessStatus = "ready" | "not_configured" | "database_migration_required" | "database_unavailable";
+type Readiness = { scope: AssistantScope; status: ReadinessStatus; provider: string | null; inferenceVerified: boolean };
+const readinessLabels: Record<ReadinessStatus, string> = {
+  ready: "CONFIGURADO · SIN PRUEBA REAL",
+  not_configured: "MODELO NO CONFIGURADO",
+  database_migration_required: "MIGRACIÓN PENDIENTE",
+  database_unavailable: "BASE DE DATOS NO DISPONIBLE",
+};
 async function readConversation(id: string, signal?: AbortSignal) {
   const response = await fetch(`/api/assistant/conversations/${id}`, { cache: "no-store", signal });
   const data = await response.json() as { conversation?: Conversation; messages?: Message[]; error?: string };
@@ -41,6 +49,8 @@ export default function AssistantApp() {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
   const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
+  const [readiness, setReadiness] = useState<Partial<Record<AssistantScope, Readiness>>>({});
+  const [readinessChecked, setReadinessChecked] = useState(false);
   const endOfMessages = useRef<HTMLDivElement>(null);
 
   // A ref closes the gap before React renders disabled controls after a click.
@@ -76,6 +86,36 @@ export default function AssistantApp() {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : "No se pudo cargar el asistente.");
       } finally {
         if (!controller.signal.aborted) setLoading(false);
+      }
+    })();
+    return () => controller.abort();
+  }, []);
+
+  // Configuration readiness is not a model inference or availability test.
+  // Fetch it once on mount and show the selected assistant's actual status.
+  useEffect(() => {
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const response = await fetch("/api/assistant/status", {cache: "no-store", signal: controller.signal});
+        const payload: unknown = await response.json();
+        if (!response.ok || !payload || typeof payload !== "object" || !("assistants" in payload)) return;
+        const records = (payload as {assistants?: unknown}).assistants;
+        if (!Array.isArray(records)) return;
+        const parsed: Partial<Record<AssistantScope, Readiness>> = {};
+        for (const item of records) {
+          if (!item || typeof item !== "object") continue;
+          const value = item as Partial<Readiness>;
+          if ((value.scope === "portfolio" || value.scope === "technical")
+            && typeof value.status === "string" && value.status in readinessLabels
+            && (value.provider === null || typeof value.provider === "string")
+            && value.inferenceVerified === false) parsed[value.scope] = value as Readiness;
+        }
+        if (!controller.signal.aborted) setReadiness(parsed);
+      } catch {
+        // Keep this optional diagnostic from blocking the conversation UI.
+      } finally {
+        if (!controller.signal.aborted) setReadinessChecked(true);
       }
     })();
     return () => controller.abort();
@@ -190,6 +230,11 @@ export default function AssistantApp() {
     }
   }
 
+  const activeReadiness = readiness[scope];
+  const readinessLabel = activeReadiness
+    ? readinessLabels[activeReadiness.status]
+    : readinessChecked ? "ESTADO NO DISPONIBLE" : "COMPROBANDO CONFIGURACIÓN";
+  const readinessProvider = activeReadiness?.provider ? ` · ${activeReadiness.provider.toUpperCase()}` : "";
   const scopedConversations = conversations.filter(item => (item.scope ?? scopeFromTitle(item.title)) === scope);
   function switchWorkspace(next: AssistantScope) {
     if (sendPending.current || operationPending.current || next === scope) return;
@@ -251,7 +296,7 @@ export default function AssistantApp() {
           <header className="border-b border-[#4D3A23] bg-[#0F0E0C] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div><p className="nexus-kicker mb-2">{scope==="portfolio"?"NEXUS PORTFOLIO":"NEXUS TECHNICAL"}</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{scope==="portfolio"?"Asistente de portafolio":activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{scope==="portfolio"?"Revisa proyectos, redacta mejoras y prepara tu CV. No publica ni modifica código automáticamente.":activeMode.description}</p></div>
-              <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> LISTO PARA AYUDAR</div>
+              <div role="status" aria-label="Estado de configuración del asistente" title="Esto solo comprueba configuración y base de datos. No verifica que el modelo pueda generar respuestas." className="flex items-center gap-2 rounded-full border border-sky-800/70 bg-sky-950/50 px-3 py-1.5 text-[10px] text-sky-200"><span className="size-1.5 shrink-0 rounded-full bg-sky-400" aria-hidden="true" />{readinessLabel}{readinessProvider}</div>
             </div>
             {scope==="technical" && <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
               {modes.map((item) => <button disabled={busy} key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#4B463D] bg-[#34322F] text-[#D9B77B] shadow-none" : "border-[#34322F] bg-[#34322F] text-[#BDB6AB] hover:border-[#34322F] hover:text-[#E6E1D8]"}`}>{item.label}</button>)}
