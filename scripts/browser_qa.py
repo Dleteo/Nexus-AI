@@ -94,8 +94,24 @@ def audit(browser, width, label):
     page.screenshot(path=str(ARTIFACTS / f"portfolio-{label}.png"), full_page=True)
     print(f"PASS home and separate portfolio navigation, filters, image and overflow at {width}px", flush=True)
     page.goto(BASE + "/resume", wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Joshua Vallejo Sanchez").is_visible(), "Missing resume heading")
+    expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").is_visible(), "Missing resume heading")
     expect(page.get_by_role("link", name="Descargar CV en español (PDF)").is_visible(), "Missing resume PDF download")
+    expect(page.get_by_role("link", name="srjoshua08@gmail.com").count() >= 1,
+           "The verified email must be visible and clickable")
+    expect(page.locator('[class*="topCards"]').count() == 1,
+           "Editorial resume must use the same card layout")
+    for lang, heading in [("en", "CAREER GOAL"), ("de", "BERUFSZIEL"), ("fr", "OBJECTIF PROFESSIONNEL"), ("pt", "OBJETIVO PROFISSIONAL")]:
+        page.goto(BASE + "/resume?lang=" + lang, wait_until="networkidle")
+        expect(page.get_by_role("heading", name=heading).count() == 1,
+               f"Editorial resume heading missing in {lang}")
+        expect(page.locator('[class*="topCards"]').count() == 1,
+               f"Editorial resume layout missing in {lang}")
+        expect(page.locator('[class*="heroPhoto"]').count() == 1,
+               f"Editorial resume portrait missing in {lang}")
+        dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
+        expect(dimensions["page"] <= dimensions["viewport"] + 2,
+               f"Resume horizontal overflow at {width}px in {lang}: {dimensions}")
+    page.goto(BASE + "/resume", wait_until="networkidle")
     page.screenshot(path=str(ARTIFACTS / f"resume-{label}.png"), full_page=True)
     page.goto(BASE + "/interview", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Presentación profesional para entrevistas").is_visible(), "Missing interview guide")
