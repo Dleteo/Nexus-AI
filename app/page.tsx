@@ -1,21 +1,11 @@
-import Footer from "../components/layout/Footer";
-import Navbar from "../components/layout/Navbar";
-import Features from "../components/sections/Features";
-import FinalCTA from "../components/sections/FinalCTA";
-import Hero from "../components/sections/Hero";
-import Process from "../components/sections/Process";
+import type { Metadata } from "next";
+import CareerHome from "../components/career/CareerHome";
+
+export const metadata: Metadata = {
+  title: "Joshua Vallejo Sanchez | Junior Web Developer & AI Projects",
+  description: "Portafolio profesional con proyectos verificables, 94 horas de formación documentada, certificados, currículum y Nexus AI.",
+};
 
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main id="top" className="min-h-screen">
-        <Hero />
-        <Features />
-        <Process />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </>
-  );
+  return <CareerHome />;
 }
