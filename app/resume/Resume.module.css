@@ -101,3 +101,7 @@
 .langMenu a:hover,.langMenu a[aria-current="page"]{background:#712033;color:#fff}
 @media(max-width:650px){.minimalControls{justify-content:space-between;gap:6px;margin-bottom:8px}.minimalControls .langPicker summary,.backButton{font-size:11px;padding:8px 10px}}
 @media print{.minimalControls{display:none!important}}
+
+
+/* Use the same installed portrait asset for the CV, across all locales. */
+.heroPhoto::before{background-image:url("/portfolio/portrait-color-reconstruction.webp");filter:none;background-size:cover;background-position:50% 32%}
