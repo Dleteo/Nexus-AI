@@ -24,11 +24,40 @@ export function isUuid(value: unknown): value is string {
   return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 }
 
+// Covers a 4,000-character message even when every character is JSON escaped.
+// Reject oversized uploads before buffering or parsing JSON.
+const MAX_ASSISTANT_REQUEST_BYTES = 64 * 1024;
+
 export async function readAssistantBody(request: Request): Promise<Record<string, unknown> | null> {
-  const body: unknown = await request.json().catch(() => null);
-  return body !== null && typeof body === "object" && !Array.isArray(body)
-    ? body as Record<string, unknown>
-    : null;
+  const declaredSize = request.headers.get("content-length");
+  if (declaredSize !== null && Number(declaredSize) > MAX_ASSISTANT_REQUEST_BYTES) return null;
+  if (!request.body) return null;
+
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let receivedBytes = 0;
+  let json = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      receivedBytes += value.byteLength;
+      if (receivedBytes > MAX_ASSISTANT_REQUEST_BYTES) {
+        void reader.cancel().catch(() => {});
+        return null;
+      }
+      json += decoder.decode(value, { stream: true });
+    }
+    json += decoder.decode();
+    const parsed: unknown = JSON.parse(json);
+    return parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown>
+      : null;
+  } catch {
+    return null;
+  } finally {
+    reader.releaseLock();
+  }
 }
 
 // Bound both response headers and body reads. Never return upstream exception text,
