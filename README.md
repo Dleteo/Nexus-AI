@@ -137,3 +137,12 @@ The `scope` database migration is not applied by reading this repository or call
 ### Optional read-only model connectivity check
 
 After installing the selected local Ollama model, run `node scripts/check-provider.mjs` with your local environment variables exported. It checks only the local Ollama model list. For external Gemini/OpenAI providers it verifies the presence of configuration without contacting the cloud; set `NEXUS_CHECK_CLOUD=1` to explicitly enable read-only cloud model-list checks. No prompts or conversations are sent by this script and it does **not** establish that generation will succeed. No keys belong in Git or CI logs.
+
+
+### Optional real-model smoke test (explicit opt-in, synthetic prompts only)
+
+Use `node scripts/live_model_probe.mjs --dry-run` after setting `AI_PROVIDER` or the assistant-specific providers and model names in your local shell. This plans two synthetic prompts (one for Nexus Portfolio and one programming prompt for Nexus Technical) and sends **zero requests**. To generate real replies with locally installed Ollama, use `NEXUS_LIVE_PROBE=1 node scripts/live_model_probe.mjs`. Run an extended six-question portfolio/programming/hardware/software/defensive-security/freshness suite with `NEXUS_LIVE_PROBE_SUITE=extended`.
+
+For Gemini or OpenAI, the script additionally requires `NEXUS_ALLOW_CLOUD_LIVE_PROBE=1`. Provider calls may incur charges. The script neither starts nor installs a model, never reads Supabase or user chats, does not print keys, and hides answer text unless `NEXUS_LIVE_PROBE_SHOW_ANSWERS=1` is set intentionally. Set all provider credentials **only in your own environment**; do not commit them or run real-model probing automatically in CI. CI runs `scripts/live_model_probe_qa.mjs` with a synthetic loopback provider only.
+
+A successful live probe confirms transport and response parsing, **not factual accuracy, current-event verification, privacy guarantees of an external provider, or a working deployed application**. Review the answers manually against official documentation before considering either assistant production-ready.
