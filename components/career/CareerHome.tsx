@@ -9,6 +9,7 @@ import { professionalProfile } from "../../data/profile";
 import styles from "./CareerHome.module.css";
 import LanguageSwitcher from "./LanguageSwitcher";
 import PortfolioContactChat from "./PortfolioContactChat";
+import CareerProcessStrip from "./CareerProcessStrip";
 import {cvDownloadPath,cvFileName,cvDownloadLabels,cvPath,type SiteLanguage} from "../../data/site-languages";
 import {careerTranslate} from "../../data/career-translation";
 
@@ -241,6 +242,8 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             </article>)}</div>
             <p className={styles.certFinePrint}>{t("Horas de formación, no experiencia laboral ni horas de código. Los enlaces de verificación se muestran cuando están disponibles.")}</p>
           </section>
+
+          <CareerProcessStrip language={language}/>
 
           <section id="trayectoria" className={styles.section} aria-labelledby="journey-title"><div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t("04 / MI TRAYECTORIA")}</p><h2 id="journey-title">{t("Preparándome para")} <em>{t("el siguiente paso.")}</em></h2></div></div>
             <div className={styles.journeyGrid}><div className={styles.journeyPanel}><div className={styles.journeyRow}><span>{t("ACTUALIDAD")}</span><div><h3>{t("Desarrollo de proyectos personales")}</h3><p>{t("Construcción y mejora de Nexus AI, documentación de decisiones, pruebas y colaboración con herramientas de IA.")}</p></div></div><div className={styles.journeyRow}><span>2024—2026</span><div><h3>{t("Formación técnica continua")}</h3><p>{t("Desarrollo web, fundamentos de ingeniería de software, IA aplicada y formación introductoria en ciberseguridad.")}</p></div></div><div className={styles.journeyRow}><span>{t("EXPERIENCIA")}</span><div><h3>{t("Operaciones y trabajo en equipo")}</h3><p>{t("Experiencia laboral fuera del desarrollo de software, con disciplina operativa, coordinación y ejecución de procedimientos.")}</p></div></div></div><div className={styles.resumePanel}><span className={styles.sectionKicker}>{t("PERFIL PROFESIONAL")}</span><h3>{t("Todo lo esencial, en un solo CV.")}</h3><p>{t("Resumen profesional, experiencia transferible, habilidades técnicas y formación documentada, listo para una conversación con reclutadores.")}</p><Link href={cvPath(language)} className={styles.primaryButton}>{t("Abrir currículum")} <Arrow/></Link><Link href="/interview" className={styles.secondaryButton}>{t("Preparar entrevista")} <Arrow/></Link><a href={cvDownloadPath(language)} download={cvFileName(language)}>{cvDownloadLabels[language]} ↓</a></div></div>
