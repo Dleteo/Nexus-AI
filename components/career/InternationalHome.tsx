@@ -2,7 +2,7 @@ import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 import {certifications,totalTrainingHours} from "../../data/certifications";
 import {internationalCopy} from "../../data/international-copy";
-import {type SiteLanguage} from "../../data/site-languages";
+import {type SiteLanguage,cvDownloadPath,cvFileName,cvDownloadLabels} from "../../data/site-languages";
 import {professionalProfile} from "../../data/profile";
 
 const work=[
@@ -29,7 +29,7 @@ export default function InternationalHome({language}:{language:Exclude<SiteLangu
     <p className="mt-8 text-lg text-slate-300">{c.nameIntro} {professionalProfile.name}.</p>
     <h1 className="mt-5 text-5xl font-semibold leading-tight tracking-tight sm:text-7xl">{c.title} <span className="text-sky-300">{c.highlight}</span></h1>
     <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300">{c.intro}</p>
-    <div className="mt-8 flex flex-wrap gap-3"><a href="#projects" className="rounded-lg bg-sky-300 px-5 py-3 font-semibold text-slate-950">{c.viewProjects} →</a><Link href={"/resume?lang="+language} className="rounded-lg border border-slate-500 px-5 py-3 text-sky-100">{c.viewResume} →</Link></div></div>
+    <div className="mt-8 flex flex-wrap gap-3"><a href="#projects" className="rounded-lg bg-sky-300 px-5 py-3 font-semibold text-slate-950">{c.viewProjects} →</a><Link href={"/resume?lang="+language} className="rounded-lg border border-slate-500 px-5 py-3 text-sky-100">{c.viewResume} →</Link><a href={cvDownloadPath(language)} download={cvFileName(language)} className="rounded-lg border border-sky-500 px-5 py-3 font-semibold text-sky-200">{cvDownloadLabels[language]} ↓</a></div></div>
     <div className="rounded-2xl border border-[#345270] bg-gradient-to-br from-[#152c4a] to-[#0a121e] p-7 shadow-2xl">
      <p className="font-mono text-xs text-sky-300">NEXUS / AI WORKSPACE</p><div className="my-10 rounded-xl border border-slate-600/60 bg-[#0a192a] p-7"><p className="text-lg font-semibold">Nexus AI</p><div className="mt-6 h-2 w-4/5 rounded bg-[#294362]"/><div className="mt-3 h-2 w-3/5 rounded bg-[#294362]"/><div className="mt-8 flex flex-wrap gap-2 text-xs text-sky-200"><span className="rounded bg-[#203b5b] px-3 py-2">React</span><span className="rounded bg-[#203b5b] px-3 py-2">Supabase</span><span className="rounded bg-[#203b5b] px-3 py-2">AI</span></div></div><p className="text-xs text-slate-400">Verified source code · Public repository</p></div>
    </section>
