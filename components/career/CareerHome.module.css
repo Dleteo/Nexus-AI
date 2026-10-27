@@ -178,3 +178,43 @@
 @media(max-width:1180px){.headerNav{gap:10px}.headerNav a{font-size:10px}.headerBrand{min-width:165px}.heroSideStats{flex-basis:95px}.heroSideStats strong{font-size:28px}.hero{min-height:610px}.hero h1{font-size:clamp(57px,7vw,90px)}}
 @media(max-width:900px){.headerNav{display:none}.topbar{padding:12px 24px;justify-content:space-between}.languageRow{padding:8px 24px}.menuButton{display:inline-flex}.mobileNavigation{display:grid;padding:10px 24px;background:#140b0f;border-color:#4a202b}.mobileNavigation a{color:#eedce0}.main{padding:0 24px}.hero{grid-template-columns:1fr;gap:25px}.heroVisual{height:470px;max-width:100%;margin:0}.hero h1{max-width:650px}.projectGrid{grid-template-columns:repeat(2,1fr)}.contact{grid-template-columns:1fr;gap:30px}.contactIntro h2{max-width:650px}}
 @media(max-width:600px){.main{padding:0 17px}.topbar{min-height:64px;padding:9px 17px}.headerBrand{font-size:18px}.headerBrandMark{width:35px;height:35px;font-size:23px}.languageRow{padding:8px 17px}.hero{padding-top:45px;min-height:0}.hero h1{font-size:clamp(51px,11vw,72px)}.introName{font-size:24px;margin-top:20px}.heroVisual{height:355px;gap:8px}.heroSideStats{flex-basis:77px}.heroSideStats div{display:block;padding:12px 0}.heroSideStats strong{display:block;font-size:24px}.heroSideStats span{font-size:8px}.portraitCaption{padding:20px 12px}.portraitCaption strong{font-size:13px}.projectGrid{grid-template-columns:1fr}.contact{margin-top:70px;padding-top:55px}}
+
+
+/* Responsive editorial refinements: no offscreen names, controls or CTA rows. */
+.heroContent,.heroVisual,.contactIntro,.portfolioContactChat{min-width:0}
+.hero h1{overflow-wrap:anywhere;word-break:normal;text-wrap:balance}
+.portraitBackdrop{z-index:0;pointer-events:none;opacity:.48}
+.portraitPhoto{z-index:1}
+.portraitCaption{z-index:2}
+.heroNote{flex-wrap:wrap}
+.headerNav a{flex-shrink:0}
+@media(max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .heroVisual{width:100%}
+  .headerBrand{min-width:0}
+  .topbarActions{min-width:0;gap:10px}
+}
+@media(max-width:600px){
+  .site,.content,.main,.hero,.heroContent,.heroVisual,.contact{max-width:100%;min-width:0}
+  .topbar{gap:8px}
+  .headerBrand{flex:0 1 auto;min-width:0;font-size:17px}
+  .headerBrand small{font-size:7px}
+  .topbarActions{flex:0 0 auto;gap:7px}
+  .topButton{font-size:11px;padding:8px 10px;white-space:nowrap}
+  .menuButton{gap:5px;padding:8px 9px;font-size:11px}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .hero h1{font-size:clamp(43px,11vw,72px);letter-spacing:-.07em}
+  .heroVisual{height:340px}
+  .portraitBackdrop{font-size:clamp(75px,23vw,120px)}
+  .metrics>div{min-width:0}
+  .contactIntro h2{font-size:clamp(35px,10vw,56px);overflow-wrap:anywhere}
+  .contactActions{gap:9px}
+  .contactActions a{width:auto;min-width:0;padding:12px 13px}
+  .portfolioContactHead{min-width:0}
+  .portfolioContactHead>div{min-width:0}
+  .portfolioContactHead strong{overflow-wrap:anywhere}
+  .portfolioContactChoices{gap:6px}
+  .portfolioContactChoices button{padding:8px 10px}
+  .portfolioContactMail{min-width:0}
+  .portfolioContactMail input,.portfolioContactMail textarea{width:100%}
+}
