@@ -133,3 +133,7 @@ For a live model check, configure the engine on **your own test environment** an
 5. Do not claim a passing automated/mock test proves third-party inference or factual accuracy.
 
 The `scope` database migration is not applied by reading this repository or calling the status endpoint. Production remains unchanged until an authorized deployment.
+
+### Optional read-only model connectivity check
+
+After installing the selected local Ollama model, run `node scripts/check-provider.mjs` with your local environment variables exported. It checks only the local Ollama model list. For external Gemini/OpenAI providers it verifies the presence of configuration without contacting the cloud; set `NEXUS_CHECK_CLOUD=1` to explicitly enable read-only cloud model-list checks. No prompts or conversations are sent by this script and it does **not** establish that generation will succeed. No keys belong in Git or CI logs.
