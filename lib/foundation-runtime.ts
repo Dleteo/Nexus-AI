@@ -2,6 +2,19 @@ import { spawn } from "node:child_process";
 import { isAbsolute, win32 } from "node:path";
 
 type TechnicalMode = "guide" | "sources";
+
+/** Minimum inherited runtime variables; never pass Supabase keys or tokens to Python. */
+function pythonEnvironment(): NodeJS.ProcessEnv {
+  const allowed = ["PATH", "Path", "SYSTEMROOT", "SystemRoot", "WINDIR", "windir",
+    "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA",
+    "TMP", "TEMP", "TMPDIR", "LANG", "LC_ALL"] as const;
+  const result: NodeJS.ProcessEnv = {};
+  for (const key of allowed) if (process.env[key] !== undefined) result[key] = process.env[key];
+  result.PYTHONDONTWRITEBYTECODE = "1";
+  result.PYTHONNOUSERSITE = "1";
+  result.PYTHONUTF8 = "1";
+  return result;
+}
 export type FoundationResponse = {
   answer: string;
   sources: Array<{ name: string; url: string }>;
@@ -37,7 +50,7 @@ export async function runFoundationTechnical(
         cwd: process.env.NEXUS_FOUNDATION_ROOT!,
         shell: false, windowsHide: true,
         stdio: ["pipe", "pipe", "ignore"],
-        env: {...process.env, PYTHONDONTWRITEBYTECODE: "1"},
+        env: pythonEnvironment(),
       });
     } catch { resolve(null); return; }
     const chunks: Buffer[] = [];
