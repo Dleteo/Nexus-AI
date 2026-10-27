@@ -61,6 +61,28 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="Hacking Ético — Certificado de Asistencia").count() == 1,
            "Attendance certificate missing")
     certificates.get_by_role("button", name="Todos").click()
+    # Real browser interaction: footer answers public portfolio questions without
+    # calling an external model and prepares (never automatically sends) email.
+    contact = page.get_by_role("region", name="Asistente de contacto")
+    contact.get_by_role("button", name="Proyectos").click()
+    expect(contact.get_by_text("Nexus Foundation es un laboratorio experimental", exact=False).count() == 1,
+           "Portfolio FAQ must give a real documented answer")
+    contact.get_by_role("button", name="Redes").click()
+    expect(contact.get_by_text("GitHub, LinkedIn e Instagram", exact=False).count() == 1,
+           "Social FAQ must identify published profiles")
+    contact.get_by_role("button", name="Correo", exact=True).click()
+    expect(contact.get_by_role("textbox", name="Nombre").is_visible(),
+           "Contact FAQ must reveal a mail composer")
+    contact.get_by_role("textbox", name="Nombre").fill("Reclutamiento QA")
+    contact.get_by_role("textbox", name="Tu correo").fill("qa@example.org")
+    contact.get_by_role("textbox", name="Mensaje").fill("Quiero conversar sobre Nexus AI.")
+    prepared = contact.get_by_role("link", name="Abrir mi aplicación de correo")
+    href = prepared.get_attribute("href") or ""
+    expect(href.startswith("mailto:") and "qa%40example.org" in href and "Nexus%20AI" in href,
+           "Contact form should prepare a mailto with visitor data, not send data to a server")
+    expect(contact.get_by_text("no generación neuronal", exact=False).count() == 1,
+           "Contact FAQ must disclose its scripted nature")
+    print(f"PASS contact assistant FAQ, verified links and mail composer at {width}px", flush=True)
     if width <= 850:
         menu = page.get_by_role("button", name="Abrir menú")
         expect(menu.is_visible(), "Mobile menu toggle missing")
