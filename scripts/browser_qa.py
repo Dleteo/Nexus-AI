@@ -19,6 +19,12 @@ def audit(browser, width, label):
     page.goto(BASE, wait_until="networkidle")
     expect(page.get_by_role("heading", name="Construyo experiencias digitales con propósito.").count() == 1,
            "Missing professional portfolio heading")
+    expect(page.get_by_role("region", name="Vista previa interactiva de Nexus Technical").count() == 1,
+           "Featured Nexus Technical mini chat missing")
+    expect(page.get_by_role("textbox", name="Tu pregunta técnica").count() == 1,
+           "Featured mini chat input missing")
+    expect(page.get_by_text("Las respuestas reales requieren sesión y un motor configurado.").count() == 1,
+           "Featured chat must disclose real backend requirement")
     expect(page.get_by_role("heading", name="Proyectos que demuestran cómo trabajo.").count() == 1,
            "Missing project case study heading")
     expect(page.get_by_role("heading", name="Formación y certificaciones.").count() == 1,
