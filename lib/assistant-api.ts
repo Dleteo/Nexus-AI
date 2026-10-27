@@ -33,6 +33,10 @@ export async function readAssistantBody(request: Request): Promise<Record<string
 
 // Bound both response headers and body reads. Never return upstream exception text,
 // which can contain server URLs or credentials, to the browser.
+// A hostile or misconfigured upstream must not stream unbounded JSON into memory.
+// Ordinary assistant messages, history and provider metadata fit well within 4 MiB.
+const MAX_UPSTREAM_JSON_BYTES = 4 * 1024 * 1024;
+
 export async function fetchAssistantJson(url: string, init: RequestInit = {}, timeoutMs = 5000) {
   type Result = {ok: boolean; status: number; data: unknown};
   const controller = new AbortController();
@@ -58,9 +62,16 @@ export async function fetchAssistantJson(url: string, init: RequestInit = {}, ti
         reader = response.body?.getReader();
         const decoder = new TextDecoder();
         let text = "";
+        let receivedBytes = 0;
         while (reader) {
           const {done, value} = await reader.read();
           if (done) break;
+          receivedBytes += value.byteLength;
+          if (receivedBytes > MAX_UPSTREAM_JSON_BYTES) {
+            controller.abort();
+            void reader.cancel().catch(() => {});
+            return {ok: false, status: 502, data: null};
+          }
           text += decoder.decode(value, {stream: true});
         }
         text += decoder.decode();
