@@ -31,6 +31,17 @@ def audit(browser, width, label):
            "Missing training heading")
     expect(page.get_by_role("link", name="Ver CV").count() == 1,
            "Missing resume action")
+    expect(page.locator('[class*="heroMasthead"]').count() == 1, "Editorial PORTFOLIO wordmark missing")
+    expect(page.locator('[class*="heroPortrait"]').count() == 1, "Portfolio hero portrait missing")
+    expect(page.locator('[class*="processStrip"]').count() == 1, "Editorial education/skills/process strip missing")
+    expect(page.locator('[class*="portfolioContactChat"]').count() == 1, "Footer contact assistant missing")
+    order = page.evaluate("""() => {
+      const project = document.querySelector('#proyectos');
+      const strip = document.querySelector('[class*="processStrip"]');
+      const skills = document.querySelector('#habilidades');
+      return Boolean(project && strip && skills && project.compareDocumentPosition(strip) & Node.DOCUMENT_POSITION_FOLLOWING && strip.compareDocumentPosition(skills) & Node.DOCUMENT_POSITION_FOLLOWING);
+    }""")
+    expect(order, "Editorial process strip must follow selected projects before expanded skills")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
            f"Homepage horizontal overflow at {width}px: {dimensions}")
