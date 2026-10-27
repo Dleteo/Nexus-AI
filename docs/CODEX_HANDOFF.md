@@ -1,0 +1,69 @@
+# Traspaso para Codex — Nexus AI
+
+**Fecha de referencia:** 27 de octubre de 2026.
+**Repositorio:** `Dleteo/Nexus-AI`
+**Rama de trabajo:** `feat/career-portfolio-20261026`
+**Pull request:** [#46](https://github.com/Dleteo/Nexus-AI/pull/46) hacia `main`.
+**Último CI verificado al redactar esta nota:** [ejecución 40501411120](https://github.com/Dleteo/Nexus-AI/actions/runs/40501411120), completada correctamente en el commit `3d6695fb7b66be086ecd141034d1fbe569594331`. **Vuelve a comprobar CI**, pues esta información puede quedar desactualizada.
+
+## Encargo
+
+Continúa el desarrollo de **Nexus AI** como producto profesional y portafolio para puestos de desarrollador junior. Da prioridad a **seguridad, funcionamiento real, rendimiento, accesibilidad y mantenimiento**. El usuario eligió un aspecto **oscuro, sobrio y tecnológico, con azul como acento**, evitando diseños recargados o de videojuegos.
+
+**Trabaja sobre la rama y PR anteriores. No hagas merge, despliegue, compras, cambios de privacidad de los repositorios, conexiones con servicios externos ni migraciones a producción sin autorización explícita.** Haz commits pequeños y comprensibles, describe qué comprobaste y deja el PR disponible para revisión humana. No afirmes que algo pasó las pruebas hasta consultar sus resultados.
+
+## Arquitectura que hay que conservar
+
+- **Un solo producto e identidad visual**, **dos asistentes diferenciados**:
+  - **Nexus Portfolio:** ayuda con CV, casos de estudio, proyectos, entrevistas y mejoras al portafolio. Por ahora **solo asesora**: no tiene permiso para escribir en GitHub, ejecutar código, fusionar PR ni publicar.
+  - **Nexus Technical:** consultas de hardware, software, programación y ciberseguridad **defensiva**; puede solicitar fuentes recientes de 2026 cuando el proveedor las admita. No debe fingir navegación, ejecución de programas o confirmación de vulnerabilidades.
+- Proveedores intercambiables mediante `AI_PROVIDER`, `AI_PORTFOLIO_PROVIDER` y `AI_TECHNICAL_PROVIDER`: Ollama **local** (sin coste por petición al proveedor, pero requiere equipo/energía y no ofrece búsqueda web incorporada), Gemini u OpenAI (costes, cuotas y términos propios). Nunca exponer API keys al cliente, logs o repositorio.
+- Next.js 16, React 19, TypeScript, Tailwind 4, Supabase Auth/Postgres/RLS. **Lee primero las instrucciones originales de Next.js incluidas en `AGENTS.md`.**
+- Las conversaciones se separan mediante `assistant_conversations.scope` (`portfolio` o `technical`), que la migración vuelve inmutable. Las conversaciones antiguas deben conservarse.
+- El portafolio incluye español, inglés, alemán, francés y portugués, con **CV PDF acorde con el idioma**; preservar esos enlaces y los datos profesionales reales.
+
+## Estado verificado y límites
+
+**Verificado en CI de la rama:** lint, tipos, build de producción, migraciones SQL sobre PostgreSQL desechable, pruebas HTTP, cinco CV, responsive/browser QA y prueba de integración de las rutas reales de Next.js contra **Supabase/Ollama simulados**.
+
+**NO está verificado ni hecho:** generación real con Ollama/Gemini/OpenAI, pertinencia de respuestas sobre incidentes actuales de 2026, despliegue público, aplicación de la nueva migración a Supabase de producción. En una revisión anterior se observó desactivada la protección de contraseñas filtradas en Supabase Auth; vuelve a comprobarlo antes de lanzar.
+
+**Privacidad y propiedad:** el código del repositorio es del titular, no el modelo externo. `Dleteo/Nexus-Foundation` es un repositorio privado de investigación, **no** la implementación actual del motor conversacional. No leer ni publicar código privado, ni usar conversaciones/respuestas de terceros para entrenar modelos sin consentimiento y una revisión de licencias/condiciones.
+
+## Siguiente orden de trabajo (por prioridad)
+
+1. **Auditoría funcional/seguridad del chat.** Revisar `app/api/assistant/chat/route.ts`, `lib/ai-runtime.ts`, `lib/assistant-expertise.ts`, `lib/assistant-sources.ts`, las rutas de conversaciones y `components/assistant/AssistantApp.tsx`. Comprobar separación de ámbito/usuario, manejo de errores y timeouts, mensajes duplicados o perdidos, persistencia, límites de uso, respuestas largas, accesibilidad y estados de carga. Corregir con código claro y pruebas.
+2. **Pruebas de inferencia real, solo con autorización/configuración de ensayo.** El script `scripts/check-provider.mjs` solo verifica conectividad/configuración; `scripts/assistant_integration_qa.mjs` utiliza modelos simulados. No declarar `inferenceVerified=true` sin una petición y respuesta auténticas. Preparar un conjunto pequeño de consultas de hardware, software, ciberseguridad defensiva y programación, con criterios de exactitud y fuentes oficiales para asuntos recientes; etiquetar lo no verificable.
+3. **Migración de base de datos de forma segura.** `supabase/migrations/20261027040000_assistant_workspace_scope.sql` está versionada y probada con `tests/db/*`, pero **no aplicada a producción**. Evaluar en un entorno de ensayo independiente, respaldar/inspeccionar datos, verificar RLS, grants, RPC y rollback antes de solicitar autorización para ejecutar fuera de CI.
+4. **Experiencia de usuario.** Mantener separados y fáciles de reconocer ambos asistentes en móvil/desktop, navegación con teclado y lector de pantalla, selección de idioma y descarga correcta del CV. No inventar correo, redes sociales, experiencia o estadísticas; hay **94 horas de formación documentadas**, NO 94 horas de programación.
+5. **Solo después de lo anterior:** plantear una integración GitHub con mínimo privilegio para que Nexus Portfolio pueda **leer** archivos seleccionados; cualquier escritura requeriría propuesta en rama, vista previa, confirmación explícita, pruebas y revisión. Nada de despliegues automáticos ni ejecución de código del repositorio sin aislamiento.
+
+## Mapa del código
+
+- `app/api/assistant/chat/route.ts` — API de chat y proveedores.
+- `app/api/assistant/status/route.ts` — solo estado de configuración; **no verifica inferencia real**.
+- `app/api/assistant/conversations/**` — historial persistente y ámbito.
+- `components/assistant/AssistantApp.tsx` y `AssistantWorkspacePicker.tsx` — interfaz.
+- `lib/ai-runtime.ts`, `lib/assistant-scopes.ts`, `lib/assistant-expertise.ts`, `lib/assistant-sources.ts` — selección/seguridad de IA.
+- `data/profile.ts`, `data/certifications.ts`, `data/site-languages.ts`, `data/case-studies.ts` — datos y enlaces públicos, traducciones y proyectos.
+- `supabase/migrations/` — migraciones; `tests/db/` — pruebas de aislamiento/RLS.
+- `scripts/assistant_unit_qa.mjs`, `scripts/assistant_integration_qa.mjs`, `scripts/browser_qa.py`, `scripts/workspace_qa.py`, `scripts/pdf_qa.py` — pruebas existentes.
+- `.github/workflows/ci.yml` y `docs/deployment.md` — CI y despliegue.
+
+## Comprobaciones mínimas y criterio de entrega
+
+```bash
+npm ci
+npm run lint
+npx tsc --noEmit
+npm run build
+node scripts/assistant_unit_qa.mjs
+```
+
+Las pruebas con Supabase/PostgreSQL simulado, CV y navegador se ejecutan en GitHub Actions según `.github/workflows/ci.yml`. Para cambios relevantes, añadir tests de regresión, esperar CI **del último commit**, y reportar fallos no resueltos sin ocultarlos.
+
+**Definición de terminado para cada cambio:** código simple y tipado, tests pertinentes, sin secretos, sin fuga de datos entre ámbitos, aspecto profesional, compatibilidad móvil y con los cinco idiomas cuando aplique, resultado de CI revisado, y PR abierto para que el dueño decida.
+
+---
+
+**Nota al usuario:** este archivo es el contexto de continuidad para Codex; **no inicia automáticamente un agente ni autoriza despliegues**. Abre Codex sobre `Dleteo/Nexus-AI`, selecciona la rama indicada y pídele que lea `AGENTS.md` y este documento antes de proponer o aplicar cambios.
