@@ -21,6 +21,15 @@ export default async function ResumePage({searchParams}:{searchParams:Promise<{l
   const sortedTraining=[...certifications].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
   return <main className={styles.resumePage} lang={language}>
     <article className={styles.sheet} id="resume-print-sheet">
+      <nav className={styles.minimalControls} aria-label={t("Opciones del CV","Resume controls","Lebenslauf-Optionen","Options du CV","Opções do currículo")}>
+        <details className={styles.langPicker}>
+          <summary aria-label={t("Cambiar idioma","Change language","Sprache ändern","Changer de langue","Alterar idioma")}>{language.toUpperCase()} <span aria-hidden="true">⌄</span></summary>
+          <div className={styles.langMenu}>
+            {siteLanguages.map(x=><Link key={x.code} href={"/resume?lang="+x.code} lang={x.code} hrefLang={x.code} aria-current={x.code===language?"page":undefined}>{x.nativeName}</Link>)}
+          </div>
+        </details>
+        <Link className={styles.backButton} href={portfolioPath(language)}>← {t("Volver al portafolio","Back to portfolio","Zum Portfolio zurück","Retour au portfolio","Voltar ao portfólio")}</Link>
+      </nav>
       <header className={styles.hero}>
         <div className={styles.heroText}>
           <p className={styles.kicker}>{t("CURRÍCULUM VITAE","CURRICULUM VITAE","LEBENSLAUF","CURRICULUM VITAE","CURRÍCULO")}</p>
@@ -43,19 +52,12 @@ export default async function ResumePage({searchParams}:{searchParams:Promise<{l
         </div>
 
         <aside className={styles.heroAside} aria-label={t("Información del CV","Resume details","Lebenslaufdetails","Détails du CV","Detalhes do currículo")}>
-          <details className={styles.langPicker}>
-            <summary>{t("Idioma: Español","Language: English","Sprache: Deutsch","Langue : Français","Idioma: Português")} ▾</summary>
-            <div className="flex flex-wrap gap-2 pt-3">
-              {siteLanguages.map(x=><Link key={x.code} href={"/resume?lang="+x.code} lang={x.code} aria-current={x.code===language?"page":undefined} className="rounded border border-[#65333f] px-2 py-1 text-xs text-white">{x.nativeName}</Link>)}
-            </div>
-          </details>
           <div className={styles.stats}>
             <div className={styles.stat}><strong>{totalTrainingHours}<small>h</small></strong><span>{t("Formación documentada","Documented training","Dokumentierte Weiterbildung","Formation documentée","Formação documentada")}</span></div>
             <div className={styles.stat}><strong>11</strong><span>{t("Repositorios revisados","Repositories reviewed","Geprüfte Repositories","Dépôts examinés","Repositórios revisados")}</span></div>
             <div className={styles.stat}><strong>{String(certifications.length).padStart(2,"0")}</strong><span>{t("Certificados y constancias","Training records","Zertifikate und Nachweise","Certificats et attestations","Certificados e comprovantes")}</span></div>
           </div>
           <a className={styles.cta} href={cvDownloadPath(language)} download>{cvDownloadLabels[language]} <span>↗</span></a>
-          <Link className={styles.pill} href={portfolioPath(language)}>← {t("Volver al portafolio","Back to portfolio","Zurück zum Portfolio","Retour au portfolio","Voltar ao portfólio")}</Link>
         </aside>
       </header>
 
