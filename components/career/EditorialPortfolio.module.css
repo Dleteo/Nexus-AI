@@ -28,3 +28,17 @@
 @media(max-width:1000px){.desktopNav{gap:12px}.desktopNav a{font-size:10px}.heroLeft{width:44%}.heroRight{width:19%}.heroPortrait{left:34%;right:15%}.proofColumn{padding:26px 20px}}
 @media(max-width:760px){.header{height:64px;padding:0 16px}.desktopNav{display:none}.menuToggle{display:block}.headerRight{gap:8px}.cv{padding:10px}.brand{font-size:17px}.logo{height:34px;width:34px;font-size:22px}.mobileNav{display:flex;flex-direction:column;padding:10px 20px;background:#160a0e}.mobileNav a{padding:12px;color:#fff}.hero{min-height:800px}.heroBackdrop{font-size:clamp(85px,20vw,155px)}.heroPortrait{height:75%;left:18%;right:5%;bottom:5%;opacity:.85}.heroLeft{width:65%;padding:260px 0 85px 22px}.heroLeft h1{font-size:clamp(53px,8vw,76px)}.heroRight{right:15px;top:32%;width:25%}.heroManifesto{font-size:11px}.numbers{padding-left:9px;margin-top:16px}.numbers strong{font-size:27px}.numbers span{font-size:8px}.heroDescription{max-width:300px}.heroAvailability{right:20px}.projectGrid{grid-template-columns:1fr}.projectPicture{height:240px}.proof{grid-template-columns:1fr}.proofColumn{border-right:0;border-bottom:1px solid #52212a;padding:25px 20px}.contact{grid-template-columns:1fr}.contactLeft{min-height:380px}.contactRight{padding:20px}}
 @media(max-width:430px){.brand small{font-size:6px}.languages summary{padding:8px}.cv{font-size:10px}.hero{min-height:735px}.heroBackdrop{top:15px}.heroPortrait{left:12%;right:-4%;height:69%;bottom:4%}.heroLeft{width:80%;padding:220px 0 65px 18px}.heroLeft h1{font-size:clamp(49px,13vw,65px)}.heroDescription{font-size:11px;max-width:240px}.role{font-size:10px}.heroRight{right:8px;top:38%;width:19%}.heroManifesto{font-size:9px}.numbers strong{font-size:21px}.numbers span{font-size:7px}.numbers{border-left-width:1px;padding-left:5px}.numbers>div{gap:3px;display:block}.heroAvailability{font-size:8px}.primary,.secondary{padding:10px;font-size:10px}.contactLeft h2{font-size:46px}.sectionHeader a{font-size:9px}}
+
+
+/* Final photo integration: no paper-white rectangle around the existing portrait.
+   Multiply the original sketch into red rather than blending its white areas with black. */
+.heroPortrait{
+  background-color:#d50f2c;
+  background-blend-mode:multiply;
+  mix-blend-mode:normal;
+  filter:grayscale(1) contrast(1.15);
+  -webkit-mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
+  mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
+}
+.heroRight{z-index:4}
+@media(max-width:430px){.heroPortrait{left:5%;right:-8%;opacity:.65}}
