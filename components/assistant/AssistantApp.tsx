@@ -8,7 +8,7 @@ import {expertises, type Expertise} from "../../lib/assistant-expertise";
 import {conversationTitle,scopeFromTitle,type AssistantScope} from "../../lib/assistant-scopes";
 
 type Mode = "assistant" | "plan" | "debug" | "explain" | "interview";
-type Conversation = { id: string; title: string; mode: Mode; project_id: string | null; updated_at: string };
+type Conversation = { id: string; scope: AssistantScope; title: string; mode: Mode; project_id: string | null; updated_at: string };
 type Message = { sources?: Array<{uri:string;title?:string}>; id?: string; role: "user" | "assistant"; content: string; created_at?: string };
 const modes: { id: Mode; label: string; description: string }[] = [
   { id: "assistant", label: "Copilot", description: "Resuelve problemas y avanza con tu idea." },
@@ -42,7 +42,7 @@ export default function AssistantApp() {
     const data = await response.json() as { conversation?: Conversation; messages?: Message[]; error?: string };
     if (!response.ok || !data.conversation) throw new Error(data.error ?? "No se pudo abrir la conversación.");
     setCurrent(data.conversation);
-    setScope(scopeFromTitle(data.conversation.title));
+    setScope(data.conversation.scope ?? scopeFromTitle(data.conversation.title));
     setMode(data.conversation.mode);
     setMessages(data.messages ?? []);
     setMobileHistoryOpen(false);
@@ -143,7 +143,7 @@ export default function AssistantApp() {
     if (current?.id === id) { setCurrent(null); setMessages([]); }
   }
 
-  const scopedConversations = conversations.filter(item=>scopeFromTitle(item.title)===scope);
+  const scopedConversations = conversations.filter(item=>(item.scope ?? scopeFromTitle(item.title))===scope);
   function switchWorkspace(next:AssistantScope){
     if(sending||next===scope)return;
     setSwitching(true);
