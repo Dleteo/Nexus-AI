@@ -20,6 +20,7 @@ export default function FeaturedTechnicalChat({language}:{language:SiteLanguage}
   const [showInfo,setShowInfo]=useState(false);
   const [messages,setMessages]=useState<Array<{role:"user"|"assistant";content:string}>>([]);
   const [sending,setSending]=useState(false);
+  const [threadId,setThreadId]=useState<string|null>(null);
   const [error,setError]=useState("");
   async function goToChat(e:FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,20 +31,23 @@ export default function FeaturedTechnicalChat({language}:{language:SiteLanguage}
     try{
       // Never create a fake reply. The regular application API validates user,
       // workspace ownership, usage limits and provider configuration.
-      const created=await fetch("/api/assistant/conversations",{
+      const created=threadId ? null : await fetch("/api/assistant/conversations",{
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({scope:"technical",mode:"assistant"}),
       });
-      if(created.status===401){setError(t("Inicia sesión para usar Nexus Technical.","Sign in to use Nexus Technical.","Für Nexus Technical anmelden.","Connectez-vous pour utiliser Nexus Technical.","Entre para usar o Nexus Technical."));return;}
-      const thread=await created.json() as {conversation?:{id:string};error?:string};
-      if(!created.ok || !thread.conversation?.id)throw Error(t("No se pudo crear la conversación.","Could not start conversation.","Unterhaltung konnte nicht gestartet werden.","Impossible de créer la conversation.","Não foi possível iniciar a conversa."));
+      if(created?.status===401){setError(t("Inicia sesión para usar Nexus Technical.","Sign in to use Nexus Technical.","Für Nexus Technical anmelden.","Connectez-vous pour utiliser Nexus Technical.","Entre para usar o Nexus Technical."));return;}
+      const thread=created ? await created.json() as {conversation?:{id:string};error?:string} : null;
+      if(created && (!created.ok || !thread?.conversation?.id))throw Error(t("No se pudo crear la conversación.","Could not start conversation.","Unterhaltung konnte nicht gestartet werden.","Impossible de créer la conversation.","Não foi possível iniciar a conversa."));
+      const id=threadId ?? thread?.conversation?.id;
+      if(!id)throw Error("Conversation unavailable");
+      setThreadId(id);
       const reply=await fetch("/api/assistant/chat",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({scope:"technical",conversationId:thread.conversation.id,message:query,mode:"assistant",expertise:"general",currentResearch:false}),
+        body:JSON.stringify({scope:"technical",conversationId:id,message:query,mode:"assistant",expertise:"general",currentResearch:false}),
       });
       const data=await reply.json() as {answer?:string;error?:string};
       if(!reply.ok || !data.answer)throw Error(data.error||t("El motor técnico no está disponible todavía.","Technical engine is not available yet.","Technisches System derzeit nicht verfügbar.","Le moteur technique n’est pas encore disponible.","O mecanismo técnico ainda não está disponível."));
-      setMessages([{role:"user",content:query},{role:"assistant",content:data.answer}]);
+      setMessages(previous=>[...previous,{role:"user",content:query},{role:"assistant",content:data.answer!}]);
       setDraft("");
       setShowInfo(false);
     }catch(cause){setError(cause instanceof Error?cause.message:t("No se pudo responder.","Could not respond.","Antwort fehlgeschlagen.","Réponse indisponible.","Não foi possível responder."));}
