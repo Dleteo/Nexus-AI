@@ -71,6 +71,9 @@ jobs:
       - name: Test assistant providers and safety gates
         run: node scripts/assistant_unit_qa.mjs
 
+      - name: Verify optional live-model probe without real providers
+        run: node scripts/live_model_probe_qa.mjs
+
       - name: Build production app
         run: npm run build
 
