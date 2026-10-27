@@ -7,8 +7,8 @@
 .headerRight{display:flex;align-items:center;gap:20px}.languages{position:relative}.languages summary{cursor:pointer;list-style:none;border:1px solid #38232b;padding:9px 13px;font-size:11px}.languageOptions{position:absolute;top:100%;right:0;width:135px;background:#170d12;border:1px solid #7e2835;display:flex;flex-direction:column;padding:5px;z-index:18}.languageOptions a{padding:9px;color:#fff;font-size:12px}.languageOptions a:hover{background:#5b1927}.cv{border:1px solid var(--red);padding:12px 23px;font-size:12px;font-weight:700;color:var(--red)}.menuToggle{display:none;color:#fff;background:none;border:1px solid #7a313e;padding:9px}.mobileNav{display:none}
 .hero{position:relative;min-height:720px;border-bottom:1px solid #9d1829;isolation:isolate;overflow:hidden;background:#080708}
 .heroBackdrop{position:absolute;top:2px;left:2%;right:2%;font-family:Impact,"Arial Narrow",Arial,sans-serif;text-align:center;font-size:clamp(110px,17.5vw,315px);line-height:.9;font-weight:950;letter-spacing:-.065em;white-space:nowrap;color:#cf0c23;z-index:0;pointer-events:none}
-.heroPortrait{position:absolute;bottom:0;left:36%;right:16%;height:89%;z-index:1;background-image:url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");background-size:contain;background-position:center bottom;background-repeat:no-repeat;filter:grayscale(1) contrast(1.2);mix-blend-mode:screen}
-.heroPortrait:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#080608 0%,transparent 25%)}
+
+
 .heroLeft{position:relative;z-index:3;width:38%;padding:clamp(170px,18vw,245px) 0 65px clamp(30px,5.3vw,85px)}
 .handwritten{font:italic clamp(27px,3vw,46px) Georgia,serif;transform:rotate(-7deg);margin:0 0 14px;color:#fff}
 .heroLeft h1{font-size:clamp(54px,6.1vw,94px);font-weight:950;letter-spacing:-.075em;line-height:.84;margin:0 0 20px}.heroLeft h1 span{display:block}.red{color:var(--red)}
@@ -25,23 +25,16 @@
 .contactRight section{margin:0!important;max-width:100%!important;width:100%!important;border:0!important;background:#0e0c0e!important}
 .contactRight nav{gap:8px!important}.contactRight nav a{font-size:11px!important}
 .footer{padding:25px clamp(20px,4vw,65px);display:flex;justify-content:space-between;gap:20px;color:#b1a2a7;font-size:11px}.footer a{color:#ff7785}
-@media(max-width:1000px){.desktopNav{gap:12px}.desktopNav a{font-size:10px}.heroLeft{width:44%}.heroRight{width:19%}.heroPortrait{left:34%;right:15%}.proofColumn{padding:26px 20px}}
-@media(max-width:760px){.header{height:64px;padding:0 16px}.desktopNav{display:none}.menuToggle{display:block}.headerRight{gap:8px}.cv{padding:10px}.brand{font-size:17px}.logo{height:34px;width:34px;font-size:22px}.mobileNav{display:flex;flex-direction:column;padding:10px 20px;background:#160a0e}.mobileNav a{padding:12px;color:#fff}.hero{min-height:800px}.heroBackdrop{font-size:clamp(85px,20vw,155px)}.heroPortrait{height:75%;left:18%;right:5%;bottom:5%;opacity:.85}.heroLeft{width:65%;padding:260px 0 85px 22px}.heroLeft h1{font-size:clamp(53px,8vw,76px)}.heroRight{right:15px;top:32%;width:25%}.heroManifesto{font-size:11px}.numbers{padding-left:9px;margin-top:16px}.numbers strong{font-size:27px}.numbers span{font-size:8px}.heroDescription{max-width:300px}.heroAvailability{right:20px}.projectGrid{grid-template-columns:1fr}.projectPicture{height:240px}.proof{grid-template-columns:1fr}.proofColumn{border-right:0;border-bottom:1px solid #52212a;padding:25px 20px}.contact{grid-template-columns:1fr}.contactLeft{min-height:380px}.contactRight{padding:20px}}
-@media(max-width:430px){.brand small{font-size:6px}.languages summary{padding:8px}.cv{font-size:10px}.hero{min-height:735px}.heroBackdrop{top:15px}.heroPortrait{left:12%;right:-4%;height:69%;bottom:4%}.heroLeft{width:80%;padding:220px 0 65px 18px}.heroLeft h1{font-size:clamp(49px,13vw,65px)}.heroDescription{font-size:11px;max-width:240px}.role{font-size:10px}.heroRight{right:8px;top:38%;width:19%}.heroManifesto{font-size:9px}.numbers strong{font-size:21px}.numbers span{font-size:7px}.numbers{border-left-width:1px;padding-left:5px}.numbers>div{gap:3px;display:block}.heroAvailability{font-size:8px}.primary,.secondary{padding:10px;font-size:10px}.contactLeft h2{font-size:46px}.sectionHeader a{font-size:9px}}
+@media(max-width:1000px){.desktopNav{gap:12px}.desktopNav a{font-size:10px}.heroLeft{width:44%}.heroRight{width:19%}.proofColumn{padding:26px 20px}}
+@media(max-width:760px){.header{height:64px;padding:0 16px}.desktopNav{display:none}.menuToggle{display:block}.headerRight{gap:8px}.cv{padding:10px}.brand{font-size:17px}.logo{height:34px;width:34px;font-size:22px}.mobileNav{display:flex;flex-direction:column;padding:10px 20px;background:#160a0e}.mobileNav a{padding:12px;color:#fff}.hero{min-height:800px}.heroBackdrop{font-size:clamp(85px,20vw,155px)}.heroLeft{width:65%;padding:260px 0 85px 22px}.heroLeft h1{font-size:clamp(53px,8vw,76px)}.heroRight{right:15px;top:32%;width:25%}.heroManifesto{font-size:11px}.numbers{padding-left:9px;margin-top:16px}.numbers strong{font-size:27px}.numbers span{font-size:8px}.heroDescription{max-width:300px}.heroAvailability{right:20px}.projectGrid{grid-template-columns:1fr}.projectPicture{height:240px}.proof{grid-template-columns:1fr}.proofColumn{border-right:0;border-bottom:1px solid #52212a;padding:25px 20px}.contact{grid-template-columns:1fr}.contactLeft{min-height:380px}.contactRight{padding:20px}}
+@media(max-width:430px){.brand small{font-size:6px}.languages summary{padding:8px}.cv{font-size:10px}.hero{min-height:735px}.heroBackdrop{top:15px}.heroLeft{width:80%;padding:220px 0 65px 18px}.heroLeft h1{font-size:clamp(49px,13vw,65px)}.heroDescription{font-size:11px;max-width:240px}.role{font-size:10px}.heroRight{right:8px;top:38%;width:19%}.heroManifesto{font-size:9px}.numbers strong{font-size:21px}.numbers span{font-size:7px}.numbers{border-left-width:1px;padding-left:5px}.numbers>div{gap:3px;display:block}.heroAvailability{font-size:8px}.primary,.secondary{padding:10px;font-size:10px}.contactLeft h2{font-size:46px}.sectionHeader a{font-size:9px}}
 
 
 /* Final photo integration: no paper-white rectangle around the existing portrait.
    Multiply the original sketch into red rather than blending its white areas with black. */
-.heroPortrait{
-  background-color:#d50f2c;
-  background-blend-mode:multiply;
-  mix-blend-mode:normal;
-  filter:contrast(1.05);
-  -webkit-mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
-  mask-image:radial-gradient(ellipse 76% 80% at 50% 54%,#000 46%,transparent 100%);
-}
+
 .heroRight{z-index:4}
-@media(max-width:430px){.heroPortrait{left:5%;right:-8%;opacity:.65}}
+@media(max-width:430px){}
 
 
 /* Editorial type matched to the supplied showcase: condensed display and script greeting. */
@@ -51,33 +44,14 @@
 .role,.heroManifesto,.sectionHeader h2,.proofColumn h2,.contactLeft h2,.cardTop,.projectTitle h3{font-family:var(--font-editorial-condensed),"Arial Narrow",Arial,sans-serif}
 .sectionHeader h2,.proofColumn h2{font-weight:800;letter-spacing:.015em}
 .contactLeft h2{font-weight:800;letter-spacing:-.025em}
-.heroPortrait{
-  /* Show the source photo in its authentic hues. No red wash, grayscale or blend tint. */
-  background-color:transparent;
-  background-blend-mode:normal;
-  mix-blend-mode:normal;
-  filter:none;
-}
-@media(max-width:430px){.heroPortrait{opacity:1}}
+
+@media(max-width:430px){}
 
 
 /* Natural-color portrait handoff. Optional project asset has priority; until it is
    installed, the original sketch remains visible with restrained color glazing.
    This is an artistic reconstruction, not recovered original camera colors. */
-.heroPortrait{
-  background-image:
-    url("/portfolio/portrait-color-reconstruction.webp"),
-    radial-gradient(ellipse 33% 38% at 52% 41%, rgba(208,154,119,.80) 0%,rgba(203,150,115,.42) 63%,transparent 100%),
-    linear-gradient(180deg,rgba(102,152,189,.48) 0%,rgba(167,166,146,.26) 51%,rgba(33,42,50,.65) 100%),
-    url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");
-  background-size:cover,100% 100%,100% 100%,contain;
-  background-position:center bottom,center,center,center bottom;
-  background-repeat:no-repeat;
-  background-blend-mode:normal,color,color,normal;
-  background-color:#141013;
-  filter:none;
-  mix-blend-mode:normal;
-}
+
 
 
 /* Match the approved left-side portfolio reference: compact masthead and
@@ -87,14 +61,14 @@
 .heroBackdrop{top:2px;font-size:clamp(108px,16.3vw,265px);line-height:.9}
 .heroLeft{width:37%;padding:clamp(175px,18vw,225px) 0 48px clamp(25px,4.5vw,68px)}
 .heroLeft h1{font-size:clamp(53px,5.5vw,86px)}
-.heroPortrait{left:35%;right:17%;height:80%;bottom:0;background-size:cover,100% 100%,100% 100%,cover;background-position:center center}
+
 .heroRight{width:16%;right:3%;top:37%}
 .heroAvailability{bottom:14px}
 .projects{padding-top:24px;padding-bottom:24px}
 .projectPicture{height:clamp(140px,13vw,210px)}
 .proofColumn{padding-top:22px;padding-bottom:22px}
-@media(max-width:760px){.header{height:58px}.hero{min-height:760px}.heroLeft{width:65%;padding:245px 0 65px 22px}.heroPortrait{left:18%;right:5%;height:72%}.heroRight{right:13px;top:34%;width:23%}}
-@media(max-width:430px){.hero{min-height:720px}.heroLeft{width:80%;padding:220px 0 60px 18px}.heroPortrait{left:8%;right:-4%;height:68%}.heroRight{width:19%}}
+@media(max-width:760px){.header{height:58px}.hero{min-height:760px}.heroLeft{width:65%;padding:245px 0 65px 22px}.heroRight{right:13px;top:34%;width:23%}}
+@media(max-width:430px){.hero{min-height:720px}.heroLeft{width:80%;padding:220px 0 60px 18px}.heroRight{width:19%}}
 
 
 /* Reference-driven editorial geometry: visible full-height title, portrait inset,
@@ -102,34 +76,50 @@
 .hero{min-height:575px}
 .heroBackdrop{z-index:0;top:5px;left:0;right:0;font-size:clamp(112px,17.2vw,270px);line-height:.86;color:#db102b;opacity:1}
 .heroLeft{z-index:3;width:36%;padding-top:clamp(155px,15vw,195px);padding-bottom:28px}
-.heroPortrait{
- left:36%;right:17%;height:75%;bottom:0;z-index:2;
- background-color:transparent;
- background-image:url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");
- background-size:cover;
- background-position:center 37%;
- background-repeat:no-repeat;
- background-blend-mode:normal;
- filter:sepia(.65) saturate(1.6) hue-rotate(307deg) contrast(1.08);
- opacity:.86;
- -webkit-mask-image:radial-gradient(ellipse 75% 86% at 50% 48%,#000 48%,transparent 100%);
- mask-image:radial-gradient(ellipse 75% 86% at 50% 48%,#000 48%,transparent 100%);
-}
-.heroPortrait::after{background:linear-gradient(0deg,#080608 0%,transparent 20%)}
+
+
 .heroRight{right:3.5%;width:15.5%;top:35%}
 .heroManifesto{font-size:11px}
 .numbers strong{font-size:32px}
 .numbers span{font-size:9px}
 .projects{padding-top:21px}
 .projectGrid{gap:12px}
-@media(max-width:760px){.hero{min-height:725px}.heroBackdrop{font-size:clamp(81px,19vw,155px)}.heroLeft{width:63%;padding:225px 0 45px 20px}.heroPortrait{left:23%;right:3%;height:70%}.heroRight{width:21%;right:12px}}
-@media(max-width:430px){.hero{min-height:690px}.heroLeft{width:75%;padding-top:215px}.heroPortrait{left:17%;right:-3%;height:65%;opacity:.65}.heroRight{width:18%;right:6px}}
+@media(max-width:760px){.hero{min-height:725px}.heroBackdrop{font-size:clamp(81px,19vw,155px)}.heroLeft{width:63%;padding:225px 0 45px 20px}.heroRight{width:21%;right:12px}}
+@media(max-width:430px){.hero{min-height:690px}.heroLeft{width:75%;padding-top:215px}.heroRight{width:18%;right:6px}}
 
 
 /* Actual local color portrait: no tinted sketch, white frame or ghost title. */
 .heroBackdrop{z-index:0;top:5px;opacity:1}
-.heroPortrait{left:36%;right:17%;height:76%;bottom:0;z-index:1;background-image:url("/portfolio/portrait-color-reconstruction.webp");background-color:#080608;background-size:cover;background-position:50% 30%;background-repeat:no-repeat;background-blend-mode:normal;filter:none;opacity:1;mix-blend-mode:normal;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 75%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 75%,transparent 100%)}
-.heroPortrait::after{background:linear-gradient(to top,#080608 0%,transparent 23%)}
+
+
 .heroLeft,.heroRight{z-index:3}
-@media(max-width:760px){.heroPortrait{left:23%;right:3%;height:70%}}
-@media(max-width:430px){.heroPortrait{left:17%;right:-3%;height:65%;opacity:1}}
+@media(max-width:760px){}
+@media(max-width:430px){}
+
+
+/* Portrait is a plain photo: no color grading, masking, fades or overlays. */
+.heroPortrait{
+  position:absolute;
+  z-index:2;
+  left:35%;
+  bottom:0;
+  width:44%;
+  height:76%;
+  background:url("/portfolio/portrait-color-reconstruction.webp") center center / cover no-repeat;
+  opacity:1;
+  filter:none;
+  mix-blend-mode:normal;
+  background-blend-mode:normal;
+  -webkit-mask-image:none;
+  mask-image:none;
+  border:0;
+  box-shadow:none;
+}
+.heroBackdrop{z-index:0}
+.heroLeft,.heroRight,.heroAvailability{z-index:3}
+@media(max-width:760px){
+  .heroPortrait{left:23%;width:66%;height:65%;bottom:0}
+}
+@media(max-width:430px){
+  .heroPortrait{left:20%;width:76%;height:60%;bottom:0}
+}
