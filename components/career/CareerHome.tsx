@@ -183,6 +183,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
 
         <main id="principal" className={styles.main}>
           <section className={styles.hero} aria-labelledby="hero-title">
+            <div className={styles.heroMasthead} aria-hidden="true">PORTFOLIO</div>
             <div className={styles.heroContent}>
               <span className={styles.sectionKicker}><span className={styles.kickerLine}/>{t("BIENVENIDO A MI ESPACIO")}</span>
               <p className={styles.introName}>{t("Hola, soy")}</p>
@@ -197,7 +198,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.heroPortrait} role="img" aria-label={t("Retrato del desarrollador de su portafolio anterior")}>
-                <div className={styles.portraitBackdrop} aria-hidden="true">NEXUS</div>
+                <div className={styles.portraitBackdrop} aria-hidden="true">PORTFOLIO</div>
                 <div className={styles.portraitPhoto} aria-hidden="true"/>
                 <div className={styles.portraitCaption}><span>DEVELOPER / 2026</span><strong>{professionalProfile.name}</strong></div>
               </div>
