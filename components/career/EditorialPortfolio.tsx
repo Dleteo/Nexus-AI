@@ -87,7 +87,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
             <div><strong>{String(certifications.length).padStart(2,"0")}</strong><span>{t("CERTIFICADOS Y CONSTANCIAS","TRAINING RECORDS","ZERTIFIKATE","ATTESTATIONS","CERTIFICADOS")}</span></div>
           </div>
         </div>
-        <div className={s.heroAvailability}><span className={s.live}/> {t("DISPONIBLE PARA OPORTUNIDADES JUNIOR","OPEN TO JUNIOR OPPORTUNITIES","OFFEN FÜR JUNIOR-STELLEN","OUVERT AUX OPPORTUNITÉS JUNIOR","ABERTO A OPORTUNIDADES JÚNIOR")}</div>
+        <div className={s.heroAvailability}>{t("DISPONIBLE PARA OPORTUNIDADES JUNIOR","OPEN TO JUNIOR OPPORTUNITIES","OFFEN FÜR JUNIOR-STELLEN","OUVERT AUX OPPORTUNITÉS JUNIOR","ABERTO A OPORTUNIDADES JÚNIOR")}</div>
       </section>
 
       <section className={s.projects} id="proyectos" aria-labelledby="projects-title">
