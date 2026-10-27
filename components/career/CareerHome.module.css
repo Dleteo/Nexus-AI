@@ -272,3 +272,16 @@
 .processSteps strong{display:block;color:#ff6070;font-size:11px;letter-spacing:.08em}
 .processSteps p{font-size:11px;color:#c6b0b6;line-height:1.55;margin:4px 0 0}
 @media(max-width:900px){.processStrip{grid-template-columns:1fr;gap:0}.processColumn{border-right:0;border-bottom:1px solid #5a2630;padding:25px 0}.processColumn:last-child{border:0}.processIntro{min-height:0}}
+
+
+/* Mobile containment: long translated headlines and credential titles must wrap. */
+.site{overflow-x:clip}
+.heroMasthead{max-width:100%;overflow:hidden}
+.processStrip,.processColumn,.processEducation,.processEducation>div,.processEducation>div>div{min-width:0;max-width:100%}
+.processEducation strong,.processSteps p,.processColumn h3{overflow-wrap:anywhere}
+.processSkillTags span{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:600px){
+  .processColumn{min-width:0;padding:22px 0}
+  .processEducation>div{grid-template-columns:45px minmax(0,1fr)}
+  .processColumn h3{font-size:20px}
+}
