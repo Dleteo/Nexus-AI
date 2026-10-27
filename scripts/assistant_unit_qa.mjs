@@ -43,6 +43,22 @@ try {
     else process.env[name]=value;
   }
 }
+// Incoming assistant JSON must be bounded even when sent as a stream
+// without Content-Length, and Unicode JSON must still decode correctly.
+const requestPayload = JSON.stringify({message:"ñ 😀",scope:"technical"});
+assert.deepEqual(await assistantApi.readAssistantBody(new Request("http://local.test",{
+  method:"POST",headers:{"Content-Type":"application/json"},body:requestPayload,
+})),{message:"ñ 😀",scope:"technical"});
+assert.equal(await assistantApi.readAssistantBody(new Request("http://local.test",{
+  method:"POST",headers:{"Content-Length":"999999"},body:"{}",
+})),null);
+assert.equal(await assistantApi.readAssistantBody(new Request("http://local.test",{
+  method:"POST",body:JSON.stringify({message:"x".repeat(65536)}),
+})),null);
+assert.equal(await assistantApi.readAssistantBody(new Request("http://local.test",{
+  method:"POST",body:"[]",
+})),null);
+
 const {readAssistantAnswer}=await importTs("lib/assistant-response.ts");
 const providerAnswers={
   ollama:text=>({message:{content:text}}),
