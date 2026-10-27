@@ -123,3 +123,29 @@
 @media(max-width:430px){
   .heroPortrait{left:20%;width:76%;height:60%;bottom:0}
 }
+
+
+/* Compact reference-matched presentation. Preserve actual real-world projects. */
+.hero{min-height:530px}
+.heroBackdrop{top:3px;font-size:clamp(112px,16.2vw,250px)}
+.heroLeft{padding-top:145px;padding-bottom:26px;width:34%}
+.heroLeft h1{font-size:clamp(53px,5.25vw,78px)}
+.heroPortrait{left:35%;width:43%;height:74%;bottom:0;background-position:center 42%}
+.heroRight{right:3%;width:15.5%;top:32%}
+.projectPicture{height:clamp(155px,12vw,195px)}
+.projectGrid{gap:11px}
+.projects{padding:17px clamp(20px,3vw,45px) 20px}
+.sectionHeader{margin-bottom:12px;padding-bottom:9px}
+.projectCopy{padding:11px}
+@media(max-width:760px){
+  .hero{min-height:740px}
+  .heroLeft{padding-top:220px;width:64%}
+  .heroPortrait{left:24%;width:68%;height:65%}
+  .heroRight{top:36%;width:21%}
+}
+@media(max-width:430px){
+  .hero{min-height:690px}
+  .heroLeft{width:76%;padding-top:205px}
+  .heroPortrait{left:19%;width:80%;height:60%}
+  .heroRight{width:18%}
+}
