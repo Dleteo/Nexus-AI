@@ -4,13 +4,13 @@ import {useState, type FormEvent} from "react";
 import Link from "next/link";
 import type {SiteLanguage} from "../../data/site-languages";
 import styles from "./CareerHome.module.css";
+import {professionalProfile} from "../../data/profile";
 
-// Published in the owner's prior public portfolio; review before public launch.
-const email="srjoshua08@gmail.com";
+const email=professionalProfile.email;
 const socials=[
-  {name:"GitHub",url:"https://github.com/Dleteo"},
-  {name:"LinkedIn",url:"https://www.linkedin.com/in/joshua-sanchez-8038a2336/"},
-  {name:"Instagram",url:"https://www.instagram.com/joshvalls22/"},
+  {name:"GitHub",url:professionalProfile.github},
+  {name:"LinkedIn",url:professionalProfile.linkedin},
+  {name:"Instagram",url:professionalProfile.instagram},
 ] as const;
 
 type Topic="projects"|"skills"|"social"|"email"|"technical"|"unknown";
