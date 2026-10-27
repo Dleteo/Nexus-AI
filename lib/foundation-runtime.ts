@@ -54,7 +54,7 @@ export async function runFoundationTechnical(
     const timer = setTimeout(abort, 6000);
     signal?.addEventListener("abort", abort, {once:true});
     child.on("error", abort);
-    child.stdout.on("data", (chunk: Buffer) => {
+    child.stdout!.on("data", (chunk: Buffer) => {
       bytes += chunk.byteLength;
       if (bytes > 128 * 1024) { complete(null); return; }
       chunks.push(chunk);
@@ -80,10 +80,10 @@ export async function runFoundationTechnical(
             sources.push({name:item.name,url:item.url});
           }
         }
-        complete({answer:row.answer, sources, backend:row.backend});
+        complete({answer:row.answer, sources, backend:row.backend as FoundationResponse["backend"]});
       } catch { complete(null); }
     });
-    child.stdin.on("error", abort);
-    child.stdin.end(payload);
+    child.stdin!.on("error", abort);
+    child.stdin!.end(payload);
   });
 }
