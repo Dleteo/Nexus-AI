@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { readSession } from "../../../../lib/session";
 import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabase";
 import { buildExpertiseInstructions, isExpertise } from "../../../../lib/assistant-expertise";
-import {isAssistantScope,scopeFromTitle} from "../../../../lib/assistant-scopes";
+import {isAssistantScope} from "../../../../lib/assistant-scopes";
 import {readAiProvider} from "../../../../lib/ai-runtime";
 
 export const runtime = "nodejs";
@@ -43,13 +43,13 @@ export async function POST(request: Request) {
   if (message.length < 1 || message.length > 4000) return NextResponse.json({ error: "Message must be between 1 and 4,000 characters." }, { status: 400 });
 
   const authHeaders = { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` };
-  const conversationResponse = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(conversationId)}&select=id,title,mode,project_id`, { headers: authHeaders, cache: "no-store" });
+  const conversationResponse = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(conversationId)}&select=id,title,scope,mode,project_id`, { headers: authHeaders, cache: "no-store" });
   const conversations = await conversationResponse.json().catch(() => null);
   if (!conversationResponse.ok) return NextResponse.json({ error: "Could not validate conversation." }, { status: 502 });
   if (!Array.isArray(conversations) || !conversations[0]) return NextResponse.json({ error: "Conversation not found." }, { status: 404 });
-  const conversation = conversations[0] as { id: string; title: string; mode: Mode; project_id: string | null };
+  const conversation = conversations[0] as { id: string; title: string; scope: string; mode: Mode; project_id: string | null };
 
-  if (scopeFromTitle(conversation.title) !== scope) return NextResponse.json({error:"This conversation belongs to a different assistant workspace."},{status:403});
+  if (conversation.scope !== scope) return NextResponse.json({error:"This conversation belongs to a different assistant workspace."},{status:403});
   const supabaseSecretKey = getSupabaseSecretKey();
   if (!supabaseSecretKey) {
     return NextResponse.json({
