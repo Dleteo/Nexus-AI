@@ -63,7 +63,7 @@ await checkPublicPage("/", [
   "Nexus AI",
 ]);
 await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
-await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Proyectos seleccionados", "Nexus AI", "Competencias técnicas"]);
+await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "PROYECTOS SELECCIONADOS", "Nexus AI", "COMPETENCIAS TÉCNICAS"]);
 await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
 await checkPublicPage("/projects/nexus-ai", ["Nexus AI", "El problema", "Decisiones e implementación", "Evidencia en el código"]);
 await checkPublicPage("/projects/task-tracker", ["Task Tracker", "Lo que aprendí", "innerHTML"]);
