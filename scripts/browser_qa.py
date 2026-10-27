@@ -100,7 +100,7 @@ def audit(browser, width, label):
     expect(controls.count() == 1, "Resume must have a compact controls-only navigation")
     expect(controls.get_by_role("link", name="Volver al portafolio").count() == 1,
            "Resume back button missing")
-    expect(controls.get_by_text("ES", exact=True).count() == 1,
+    expect(controls.get_by_label("Cambiar idioma").is_visible(),
            "Resume language selector missing")
     expect(page.locator('[class*="desktopNav"]').count() == 0,
            "The full portfolio navbar must not appear in the CV")
