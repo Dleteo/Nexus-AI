@@ -22,19 +22,18 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: "Sign in to use Nexus AI." }, { status: 401 });
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
-  const runtimeProvider = readAiProvider();
-  if (!runtimeProvider) return NextResponse.json({
-    error: "Configure AI_PROVIDER explicitly (gemini, openai or ollama) and its server-side credentials or local model.",
-    code: "AI_PROVIDER_NOT_CONFIGURED",
-  }, {status:503});
-  const {provider:aiProvider, model, key:providerKey, endpoint:localEndpoint} = runtimeProvider;
-
   const body = await request.json().catch(() => null) as { conversationId?: string; message?: string; mode?: Mode; expertise?: string; currentResearch?: boolean; scope?: string } | null;
   const conversationId = body?.conversationId ?? "";
   const message = body?.message?.trim() ?? "";
   const mode = body?.mode ?? "assistant";
   const scope = body?.scope ?? "technical";
   if (!isAssistantScope(scope)) return NextResponse.json({error:"Invalid assistant workspace."},{status:400});
+  const runtimeProvider = readAiProvider(scope);
+  if (!runtimeProvider) return NextResponse.json({
+    error: "Configure this assistant's model provider (ollama, gemini or openai) and its corresponding credentials.",
+    code: "AI_PROVIDER_NOT_CONFIGURED",
+  }, {status:503});
+  const {provider:aiProvider, model, key:providerKey, endpoint:localEndpoint} = runtimeProvider;
   const expertise = body?.expertise ?? "general";
   const currentResearch = body?.currentResearch ?? false;
   if (!isExpertise(expertise)) return NextResponse.json({error:"Invalid technical specialty."},{status:400});
