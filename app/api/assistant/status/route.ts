@@ -1,0 +1,57 @@
+import { NextResponse } from "next/server";
+import { readSession } from "../../../../lib/session";
+import { getSupabaseConfig } from "../../../../lib/supabase";
+import { readAiProvider } from "../../../../lib/ai-runtime";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+type Status = "ready" | "not_configured" | "database_migration_required";
+
+/**
+ * Readiness is configuration-only. This endpoint NEVER calls paid model APIs,
+ * downloads weights, discloses credentials, or reads user conversations.
+ */
+export async function GET() {
+  const session = await readSession();
+  if (!session) return NextResponse.json({ error: "Sign in to check AI readiness." }, { status: 401 });
+
+  const config = getSupabaseConfig();
+  let databaseReady = false;
+  if (config) {
+    const response = await fetch(
+      `${config.url}/rest/v1/assistant_conversations?select=scope&limit=0`,
+      {
+        headers: {
+          apikey: config.apiKey,
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        cache: "no-store",
+        signal: AbortSignal.timeout(5000),
+      },
+    ).catch(() => null);
+    databaseReady = response?.ok === true;
+  }
+
+  const statuses = (["portfolio", "technical"] as const).map((scope) => {
+    const provider = readAiProvider(scope);
+    const status: Status = !provider
+      ? "not_configured"
+      : !databaseReady
+        ? "database_migration_required"
+        : "ready";
+    return {
+      scope,
+      status,
+      provider: provider?.provider ?? null,
+      // A configured provider is not a verified or connected model.
+      configured: Boolean(provider),
+      inferenceVerified: false,
+    };
+  });
+
+  return NextResponse.json(
+    { assistants: statuses, databaseReady, note: "Readiness is a configuration check, not a live inference test." },
+    { headers: { "Cache-Control": "no-store" } },
+  );
+}
