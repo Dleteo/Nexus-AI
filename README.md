@@ -114,3 +114,8 @@ Conversations are stored in Supabase and sent to the selected model provider for
 **Important:** the technical and portfolio workspaces are separated by labeled conversation records, not by independent database partitions or encryption keys. This is organizational separation with request validation, **not** a claim of cryptographic isolation. Protect account credentials, Supabase RLS and deployment secrets.
 
 Read provider terms and verify model license, free-tier restrictions and quotas before deploying. No live, paid provider account is provisioned by this repository.
+
+
+### Required database migration before using the updated assistants
+
+The portfolio/technical split now uses a dedicated, immutable `scope` column, rather than inferring the workspace from the conversation title. Apply `supabase/migrations/20261027040000_assistant_workspace_scope.sql` to the correct Supabase project **before** deploying this code. The migration preserves existing records, classifying older unprefixed chats as technical and prefixed Nexus Portfolio chats as portfolio. Review the database backup and check RLS, indexes and the restricted RPC privileges in a staging database first. The code will not operate against a database missing the scope field. This change has been committed to GitHub; it has **not** been applied to your live Supabase project.
