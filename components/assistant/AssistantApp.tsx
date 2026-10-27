@@ -5,6 +5,7 @@ import CrownMark from "../ui/CrownMark";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import MessageContent from "./MessageContent";
 import {expertises, type Expertise} from "../../lib/assistant-expertise";
+import {conversationTitle,scopeFromTitle,type AssistantScope} from "../../lib/assistant-scopes";
 
 type Mode = "assistant" | "plan" | "debug" | "explain" | "interview";
 type Conversation = { id: string; title: string; mode: Mode; project_id: string | null; updated_at: string };
@@ -22,6 +23,7 @@ export default function AssistantApp() {
   const [current, setCurrent] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
+  const [scope,setScope]=useState<AssistantScope>("technical");
   const [expertise, setExpertise] = useState<Expertise>("general");
   const [currentResearch, setCurrentResearch] = useState(false);
   const [mode, setMode] = useState<Mode>("assistant");
@@ -39,6 +41,7 @@ export default function AssistantApp() {
     const data = await response.json() as { conversation?: Conversation; messages?: Message[]; error?: string };
     if (!response.ok || !data.conversation) throw new Error(data.error ?? "No se pudo abrir la conversación.");
     setCurrent(data.conversation);
+    setScope(scopeFromTitle(data.conversation.title));
     setMode(data.conversation.mode);
     setMessages(data.messages ?? []);
     setMobileHistoryOpen(false);
@@ -65,11 +68,11 @@ export default function AssistantApp() {
     return () => { active = false; };
   }, [loadConversations]);
 
-  async function newConversation(nextMode: Mode = mode) {
+  async function newConversation(nextMode: Mode = mode, nextScope:AssistantScope = scope) {
     setError("");
     const response = await fetch("/api/assistant/conversations", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "New conversation", mode: nextMode }),
+      body: JSON.stringify({ mode: nextMode, scope: nextScope }),
     });
     const data = await response.json() as { conversation?: Conversation; error?: string };
     if (!response.ok || !data.conversation) throw new Error(data.error ?? "No se pudo crear la conversación.");
@@ -77,6 +80,7 @@ export default function AssistantApp() {
     setCurrent(data.conversation);
     setMessages([]);
     setMode(nextMode);
+    setScope(nextScope);
     setMobileHistoryOpen(false);
   }
 
@@ -92,13 +96,13 @@ export default function AssistantApp() {
     try {
       const response = await fetch("/api/assistant/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: current.id, message: content, mode, expertise, currentResearch }),
+        body: JSON.stringify({ conversationId: current.id, message: content, mode, expertise, currentResearch:scope==="technical"&&currentResearch, scope }),
       });
       const data = await response.json() as { answer?: string; error?: string; requestsRemaining?: number; sources?: Array<{uri:string;title?:string}>; researchRequested?:boolean };
       if (!response.ok || !data.answer) throw new Error(data.error ?? "No se pudo obtener una respuesta.");
       setMessages((list) => [...list, { role: "assistant", content: data.answer!, sources: data.sources ?? [] }]);
       setRemaining(data.requestsRemaining ?? null);
-      setConversations((list) => list.map((item) => item.id === current.id ? { ...item, mode, title: item.title === "New conversation" ? content.slice(0, 80) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
+      setConversations((list) => list.map((item) => item.id === current.id ? { ...item, mode, title: item.title === conversationTitle(scope) ? conversationTitle(scope) + content.slice(0, 55) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
     } catch (cause) {
       setMessages((list) => list.filter((item) => item !== optimistic));
       setDraft(content);
@@ -138,6 +142,7 @@ export default function AssistantApp() {
     if (current?.id === id) { setCurrent(null); setMessages([]); }
   }
 
+  const scopedConversations = conversations.filter(item=>scopeFromTitle(item.title)===scope);
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
   useEffect(() => {
     if (sending || messages.length > 0) endOfMessages.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -161,13 +166,14 @@ export default function AssistantApp() {
             <Link href="/dashboard" aria-label="Open projects dashboard" title="Projects dashboard" className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#34322F] text-[#BDB6AB] transition hover:border-[#4B463D] hover:text-[#D9B77B]">▦</Link>
           </div>
 
+          <div role="group" aria-label="Choose AI workspace" className="mt-5 grid grid-cols-2 gap-2">{(["portfolio","technical"] as const).map(item=><button type="button" key={item} aria-pressed={scope===item} onClick={()=>{setScope(item);setCurrent(null);setMessages([]);setError("");}} className={scope===item?"rounded-lg border border-[#D9B77B] bg-[#34322F] p-2 text-xs text-[#D9B77B]":"rounded-lg border border-[#34322F] p-2 text-xs text-[#BDB6AB]"}>{item==="portfolio"?"Mi portafolio":"Asistente técnico"}</button>)}</div>
           <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ New conversation</button>
 
-          <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#34322F] bg-[#111214] px-3 py-2 text-left text-xs font-semibold text-[#D9B77B] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Recent chats ({conversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
-          <div className="mt-7 hidden items-center justify-between px-1 lg:flex"><p className="text-[10px] font-bold tracking-[0.17em] text-[#BDB6AB]">RECENT HISTORY</p><span className="text-[10px] text-[#AFA89E]">{conversations.length}</span></div>
+          <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#34322F] bg-[#111214] px-3 py-2 text-left text-xs font-semibold text-[#D9B77B] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Recent chats ({scopedConversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
+          <div className="mt-7 hidden items-center justify-between px-1 lg:flex"><p className="text-[10px] font-bold tracking-[0.17em] text-[#BDB6AB]">RECENT HISTORY</p><span className="text-[10px] text-[#AFA89E]">{scopedConversations.length}</span></div>
           <div id="assistant-history" className={`mt-3 min-h-0 flex-1 overflow-y-auto ${mobileHistoryOpen ? "block max-h-56" : "hidden lg:block"}`}>
-            {conversations.length === 0 ? <div className="rounded-xl border border-dashed border-[#34322F] px-3 py-6 text-center text-xs leading-5 text-[#BDB6AB]">Your saved conversations will appear here.</div> : <ul className="space-y-1.5">
-              {conversations.map((item) => <li key={item.id} className="group flex min-w-0 items-center gap-1">
+            {scopedConversations.length === 0 ? <div className="rounded-xl border border-dashed border-[#34322F] px-3 py-6 text-center text-xs leading-5 text-[#BDB6AB]">Your saved conversations will appear here.</div> : <ul className="space-y-1.5">
+              {scopedConversations.map((item) => <li key={item.id} className="group flex min-w-0 items-center gap-1">
                 <button onClick={() => void openConversation(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo abrir la conversación."))} aria-current={current?.id === item.id ? "page" : undefined} className={`min-w-0 flex-1 rounded-xl border px-3 py-3 text-left transition ${current?.id === item.id ? "border-[#4B463D] bg-[#34322F] text-[#E6E1D8]" : "border-transparent text-[#BDB6AB] hover:border-[#34322F] hover:bg-[#34322F] hover:text-[#E6E1D8]"}`}>
                   <span className="block truncate text-xs font-medium">{item.title}</span><span className="mt-1.5 block text-[10px] text-[#AFA89E]">{modes.find((modeItem) => modeItem.id === item.mode)?.label ?? "Copilot"}</span>
                 </button>
@@ -184,12 +190,12 @@ export default function AssistantApp() {
         <section className="royal-workspace-surface flex min-h-[calc(100vh-7rem)] min-w-0 flex-col overflow-hidden lg:min-h-[calc(100vh-7.5rem)]">
           <header className="border-b border-[#4D3A23] bg-[#0F0E0C] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div><p className="nexus-kicker mb-2">Your AI workspace</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{activeMode.description}</p></div>
+              <div><p className="nexus-kicker mb-2">{scope==="portfolio"?"NEXUS PORTFOLIO":"NEXUS TECHNICAL"}</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{scope==="portfolio"?"Asistente de portafolio":activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{scope==="portfolio"?"Revisa proyectos, redacta mejoras y prepara tu CV. No publica ni modifica código automáticamente.":activeMode.description}</p></div>
               <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> READY TO HELP</div>
             </div>
-            <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
+            {scope==="technical" && <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
               {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#4B463D] bg-[#34322F] text-[#D9B77B] shadow-none" : "border-[#34322F] bg-[#34322F] text-[#BDB6AB] hover:border-[#34322F] hover:text-[#E6E1D8]"}`}>{item.label}</button>)}
-            </div>
+            </div>}
           </header>
 
           <div className="royal-workspace-surface min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
@@ -224,14 +230,14 @@ export default function AssistantApp() {
             {error && <p role="alert" className="rounded-xl border border-[#8D5456] bg-[#3C2628] px-4 py-3 text-sm text-[#FFB0A9]">{error}</p>}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 border-t border-[#34322F] bg-[#111214] px-4 py-3 text-xs sm:px-5">
+          {scope==="technical" && <div className="flex flex-wrap items-center gap-3 border-t border-[#34322F] bg-[#111214] px-4 py-3 text-xs sm:px-5">
             <label htmlFor="assistant-specialty" className="font-semibold text-[#D9B77B]">Especialidad</label>
             <select id="assistant-specialty" value={expertise} onChange={event=>setExpertise(event.target.value as Expertise)} className="rounded-lg border border-[#73552B] bg-[#1D1E20] px-3 py-2 text-[#F4F1EB]">
               {expertises.map(item=><option key={item} value={item}>{({general:"General",hardware:"Hardware",software:"Software",cybersecurity:"Ciberseguridad"})[item]}</option>)}
             </select>
             <label className="flex cursor-pointer items-center gap-2 text-[#D9B77B]"><input type="checkbox" checked={currentResearch} onChange={event=>setCurrentResearch(event.target.checked)} disabled={sending} className="size-4 accent-[#D9B77B]"/>Consultar fuentes recientes</label>
             <span className="text-[#BDB6AB]">La búsqueda depende del proveedor. No compartas datos sensibles.</span>
-          </div>
+          </div>}
           <form onSubmit={sendMessage} className="border-t border-[#493A25] bg-[#0B0A09] p-3 sm:p-5">
             <label htmlFor="assistant-message" className="sr-only">Your message</label>
             <div className="rounded-2xl border border-[#B58749]/80 bg-[#121110] p-3 shadow-[0_0_22px_-15px_rgba(242,185,92,.7)] transition focus-within:border-[#F1C77E] focus-within:shadow-[0_0_18px_-10px_rgba(240,183,83,.8)] sm:p-4">
