@@ -21,3 +21,28 @@
 .featuredChatError{font-size:10px!important;color:#ffd1c2!important;margin:6px 0 0!important}.featuredChatError a{color:#b9d8ff;text-decoration:underline}
 .featuredChatFull{display:block;align-self:flex-end;padding:4px 12px 7px;font-size:10px;color:#a4d0ff!important}
 @media(max-width:600px){.featuredChat{height:300px;min-height:300px}}
+
+
+/* Align the hero demo with the page grid: flat frame, clear content hierarchy. */
+.heroPreviewCard{transform:none;box-shadow:0 18px 45px #0005;padding:14px;border-radius:16px}
+.heroVisual{min-width:0}
+.heroPreviewTop{padding:5px 8px 13px}
+.heroPreviewCaption{padding:12px 5px 1px}
+.featuredChat{height:310px;min-height:310px;border-radius:10px;background:#0d1b2a;box-shadow:none}
+.featuredChatBar{min-height:55px;padding:10px 14px;gap:10px}
+.featuredChatBar strong{font-size:13px}
+.featuredChatBar small{font-size:10px}
+.featuredChatMessages{padding:14px;gap:10px}
+.featuredChatBubble{padding:11px 13px;background:#142c47;border-color:#2e4a67}
+.featuredChatBubble b{font-size:11px}
+.featuredChatBubble p{font-size:12px;line-height:1.6}
+.featuredChatSuggestions button{font-size:11px;padding:6px 10px}
+.featuredChatForm{padding:10px 14px 8px}
+.featuredChatLabel{font-size:10px;margin-bottom:6px}
+.featuredChatInputRow{min-height:42px}
+.featuredChatInputRow input{font-size:12px;padding:10px 12px}
+.featuredChatInputRow button{min-width:42px}
+.featuredChatDisclaimer{font-size:10px!important;line-height:1.45!important;margin:7px 0 0!important}
+.featuredChatFull{padding:6px 14px 10px;font-size:11px}
+@media(max-width:850px){.heroPreviewCard{max-width:610px;margin-inline:auto}}
+@media(max-width:600px){.heroPreviewCard{padding:10px}.featuredChat{height:330px;min-height:330px}.featuredChatBar{padding:9px 11px}.featuredChatMessages{padding:10px}.featuredChatForm{padding:10px}.featuredChatFull{padding:7px 10px}}
