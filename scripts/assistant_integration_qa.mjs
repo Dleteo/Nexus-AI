@@ -144,10 +144,13 @@ try{
   child.stdout.on("data",chunk=>{logs+=chunk.toString();});
   child.stderr.on("data",chunk=>{logs+=chunk.toString();});
   await ready();
+  console.log("Integration server ready");
 
+  console.log("Checking unauthenticated status");
   const unauthenticated=await request("/api/assistant/status",{auth:false});
   assert.equal(unauthenticated.status,401);
 
+  console.log("Checking authenticated readiness");
   const status=await request("/api/assistant/status");
   assert.equal(status.status,200,JSON.stringify(status));
   assert.equal(status.data.databaseReady,true);
@@ -155,6 +158,7 @@ try{
   assert.ok(status.data.assistants.every(x=>x.inferenceVerified===false));
   assert.ok(!JSON.stringify(status.data).includes(mockSecret));
 
+  console.log("Checking quota-free validation");
   const before=claims;
   const blockedSearch=await request("/api/assistant/chat",{method:"POST",payload:{
     scope:"technical",conversationId:technicalId,message:"Latest security advisories?",currentResearch:true,
@@ -168,6 +172,7 @@ try{
   assert.equal(wrongSpace.status,403);
   assert.equal(claims,before,"Cross-workspace request used quota");
 
+  console.log("Checking portfolio provider and persistence");
   const portfolio=await request("/api/assistant/chat",{method:"POST",payload:{
     scope:"portfolio",conversationId:portfolioId,message:"Give me one evidence-based CV improvement.",
   }});
@@ -178,6 +183,7 @@ try{
   assert.match(generations[0].messages[0].content,/never claim you changed/i);
   assert.equal(generations[0].model,"synthetic-test-model");
 
+  console.log("Checking technical provider and persistence");
   const technical=await request("/api/assistant/chat",{method:"POST",payload:{
     scope:"technical",conversationId:technicalId,expertise:"cybersecurity",
     message:"How do I defend against phishing?",
@@ -188,6 +194,7 @@ try{
   assert.equal(generations[1].messages.at(-1).content,"How do I defend against phishing?");
   assert.equal(saves,2,"Successful calls were not persisted");
 
+  console.log("Checking model error handling");
   const failure=await request("/api/assistant/chat",{method:"POST",payload:{
     scope:"technical",conversationId:technicalId,message:"simulate upstream error",
   }});
@@ -198,5 +205,7 @@ try{
   console.log("NOTE this verifies the real Next.js API path against a local synthetic provider, not live model inference.");
 }finally{
   if(child&&!child.killed)child.kill("SIGTERM");
+  supabase.closeAllConnections();
+  ollama.closeAllConnections();
   await Promise.all([new Promise(resolve=>supabase.close(resolve)),new Promise(resolve=>ollama.close(resolve))]);
 }
