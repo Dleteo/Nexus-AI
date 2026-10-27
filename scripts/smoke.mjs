@@ -74,11 +74,17 @@ await checkPublicPage("/register", ["Create your account.", "At least 10 charact
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
 await checkPublicPage("/reset-password", ["Choose a new password.", "Confirm new password"]);
 
-const pdf = await request("/Joshua-Vallejo-Sanchez-Resume.pdf");
+const pdf = await request("/api/resume/pdf?lang=es");
 assert.equal(pdf.status, 200, "CV PDF must be downloadable");
 assert.match(pdf.headers.get("content-type") ?? "", /application\/pdf/i);
 assert.ok((await pdf.arrayBuffer()).byteLength > 1000, "CV PDF should not be empty");
 console.log("PASS downloadable CV PDF");
+const englishPdf = await request("/api/resume/pdf?lang=en");
+assert.equal(englishPdf.status, 200);
+assert.match(englishPdf.headers.get("content-type") ?? "", /application\/pdf/i);
+assert.ok((await englishPdf.arrayBuffer()).byteLength > 1000);
+console.log("PASS English CV PDF");
+await checkPublicPage("/resume?lang=en", ["PROFESSIONAL PROFILE", "SELECTED PROJECTS", "DOCUMENTED TRAINING"]);
 
 const image = await request("/certificates/ethical-hacking.webp", { method: "HEAD" });
 assert.equal(image.status, 200, "Ethical hacking certificate image must exist");
