@@ -1,5 +1,7 @@
 /** Single source of truth for the web resume and both downloadable PDFs. */
-export type ResumeLang = "es" | "en";
+import { extraResumeCopy } from "./resume-additional-copy";
+import type { SiteLanguage } from "./site-languages";
+export type ResumeLang = SiteLanguage;
 export type ResumeProject = { name: string; stack: string; url: string; summary: string };
 export type ResumeCopy = {
   locale: string;
@@ -66,4 +68,5 @@ export const resumeCopy: Record<ResumeLang, ResumeCopy> = {
     attendanceLabel: "attendance certificate",
     footnote: "No unverified degree, paid developer employment, clients or results claimed. Additional contact details pending confirmation.",
   },
+  ...extraResumeCopy,
 };
