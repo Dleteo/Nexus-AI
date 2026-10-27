@@ -1,67 +1,46 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Navbar from "../../components/layout/Navbar";
-import Footer from "../../components/layout/Footer";
 import { professionalProfile as profile } from "../../data/profile";
-import { certifications } from "../../data/certifications";
-import { professionalExperience, foundationResearch } from "../../data/portfolio-evidence";
+import { certifications, totalTrainingHours } from "../../data/certifications";
 
 export const metadata: Metadata = {
-  title: "Joshua Vallejo Sanchez | CV",
-  description: "Professional résumé for Joshua Vallejo Sanchez, aspiring Junior Web Developer and creator of Nexus AI.",
+ title: "Joshua Vallejo Sanchez | Junior Web Developer CV",
+ description: "Professional junior web developer résumé with real projects, skills, transferable experience and documented training.",
 };
-
+const heading="mt-6 text-sm font-bold uppercase tracking-[0.12em] text-sky-800 print:text-black";
 export default function ResumePage() {
-  return (
-    <>
-      <div className="print:hidden"><Navbar /></div>
-      <main className="flex-1 px-5 py-12 text-[#F4F1EB] sm:px-8 sm:py-16 print:p-0 print:text-black">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-7 flex flex-wrap items-center justify-between gap-4 print:hidden">
-            <Link href="/portfolio" className="text-sm font-semibold text-[#D9B77B] hover:underline">← Back to portfolio</Link>
-            <a href="/Joshua-Vallejo-Sanchez-Resume.pdf" download="Joshua-Vallejo-Sanchez-Resume.pdf" className="nexus-primary-button">Download CV (PDF) ↓</a>
-          </div>
-          <article id="resume-print-sheet" className="rounded-2xl border border-[#34322F] bg-[#1D1E20] p-7 shadow-[0_15px_50px_-38px_rgba(95,52,31,.25)] sm:p-12 print:rounded-none print:border-0 print:bg-white print:p-0 print:shadow-none">
-            <header className="border-b-2 border-[#D9B77B] pb-7">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B77B]">Developer résumé</p>
-              <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
-              <p className="mt-2 text-lg font-medium">{profile.role}</p>
-              <p className="mt-3 text-sm text-[#CBC3B7]">{profile.location} · <a className="underline" href={profile.github}>github.com/Dleteo</a></p>
-            </header>
-            <section className="mt-7"><h2 className="text-lg font-bold">Professional summary</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]">Aspiring Junior Web Developer building practical experience with React, Next.js, TypeScript, responsive UI, authentication and database-backed features. Creator of Nexus AI, an evolving application that brings project management and an AI copilot together. Comfortable using AI-assisted development tools while reviewing code and verifying user flows.</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Featured project: Nexus AI</h2>
-              <p className="mt-1 text-sm text-[#D9B77B]"><a href={profile.repository} className="underline">github.com/Dleteo/Nexus-AI</a> · Portfolio project</p>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-[#D9B77B]">
-                <li>Built a responsive Next.js and TypeScript interface with separate product, portfolio and account pages.</li>
-                <li>Implemented account and project-management workflows backed by Supabase and Next.js API routes.</li>
-                <li>Integrated a multi-mode AI assistant with saved conversations for planning, debugging, learning and interview preparation.</li>
-                <li>Added automated ESLint, TypeScript, production-build, HTTP and browser tests through GitHub Actions.</li>
-              </ul>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Technical toolkit</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Frontend practiced:</strong> HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript ES6, DOM. <strong>Project-integrated with AI assistance:</strong> React, Next.js, TypeScript, Tailwind CSS</p>
-              <p className="text-sm leading-7 text-[#D9B77B]"><strong>Application and workflow:</strong> Supabase authentication, PostgreSQL/RLS, Next.js API routes, Gemini integration, Git/GitHub, CI, linting, type checking and browser QA. <strong>PC background:</strong> Windows setup, drivers and basic troubleshooting.</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Work experience and research</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{professionalExperience.title}:</strong> {professionalExperience.summary} {professionalExperience.note}</p>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{foundationResearch.title}:</strong> {foundationResearch.summary} {foundationResearch.limitation}</p>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Languages:</strong> Spanish (native), English (intermediate).</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Education and professional learning</h2>
-              <p className="mt-2 text-sm text-[#CBC3B7]">Selected certificates and training records, not professional employment experience:</p>
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-[#D9B77B]">
-                {certifications.map((item) => <li key={item.id}><strong>{item.title}</strong> — {item.issuer}, {item.hours} training hours ({item.credentialType.toLowerCase()})</li>)}
-              </ul>
-            </section>
-            <div className="mt-8 border-t border-[#34322F] pt-5 text-xs text-[#D9B77B]">
-              Contact email and additional social profiles can be added once verified. No unverified employment or academic degree is listed.
-            </div>
-          </article>
-        </div>
-      </main>
-      <div className="print:hidden"><Footer /></div>
-    </>
-  );
+ return <main className="min-h-screen bg-[#0a111b] px-4 py-8 text-slate-100 print:min-h-0 print:bg-white print:p-0 print:text-black">
+  <div className="mx-auto max-w-4xl">
+   <nav aria-label="Acciones del currículum" className="mb-6 flex flex-wrap items-center gap-3 print:hidden">
+    <Link className="rounded-lg border border-slate-600 px-4 py-3 text-sm hover:border-sky-400" href="/">← Portafolio</Link>
+    <Link className="rounded-lg border border-slate-600 px-4 py-3 text-sm hover:border-sky-400" href="/interview">Preparar entrevista</Link>
+    <button className="rounded-lg bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-950" type="button" onClick={undefined} hidden aria-hidden="true">Imprimir</button>
+    <a className="rounded-lg bg-sky-300 px-4 py-3 text-sm font-semibold text-slate-950" href="/Joshua-Vallejo-Sanchez-Resume.pdf" download>Descargar CV (PDF) ↓</a>
+   </nav>
+   <article id="resume-print-sheet" className="rounded-2xl bg-white px-6 py-9 text-slate-900 shadow-xl sm:px-12 sm:py-12 print:rounded-none print:px-0 print:py-0 print:shadow-none">
+    <header className="border-b-2 border-slate-900 pb-5">
+     <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-800">Junior Web Developer · CV profesional</p>
+     <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
+     <p className="mt-2 text-base font-medium">Desarrollo web · JavaScript · React/Next.js · Proyectos asistidos por IA</p>
+     <p className="mt-2 text-sm text-slate-700">{profile.location} · <a className="underline" href={profile.github}>github.com/Dleteo</a></p>
+    </header>
+    <section><h2 className={heading}>Perfil</h2><p className="mt-2 text-sm leading-6">Desarrollador web junior en formación práctica, con proyectos de JavaScript y una aplicación Next.js que integra cuentas de usuario, gestión de proyectos y asistencia con IA. He trabajado en interfaces responsive, persistencia de datos y comprobaciones automáticas. Busco mi primera oportunidad profesional como Junior Web Developer o Junior Frontend Developer, dispuesto a aprender en equipo y documentar mis decisiones técnicas.</p></section>
+    <section><h2 className={heading}>Proyectos seleccionados</h2>
+     <div className="mt-2 space-y-3 text-sm leading-6">
+      <div><p><strong>Nexus AI</strong> · <a href="https://github.com/Dleteo/Nexus-AI" className="underline">Código en GitHub</a> · Next.js, React, TypeScript, Supabase</p><p>Aplicación personal de gestión de proyectos y asistencia de IA, con autenticación, acceso a datos por usuario, conversaciones persistentes, claves del proveedor en servidor y CI. Desarrollo asistido por IA con revisión y verificaciones.</p></div>
+      <div><p><strong>Task Tracker</strong> · <a href="https://github.com/Dleteo/-To-Do-App-whit-JavaScript" className="underline">Código en GitHub</a> · JavaScript, DOM, localStorage</p><p>Interfaz para crear, marcar y eliminar tareas, con persistencia en el navegador. Proyecto educativo; su renderizado original requiere refactor de seguridad antes de usos productivos.</p></div>
+      <div><p><strong>Hangman Game</strong> · <a href="https://github.com/Dleteo/hangman-game" className="underline">Código en GitHub</a> · JavaScript, HTML, CSS</p><p>Juego interactivo con estados de victoria/derrota, control de letras repetidas y validación de palabras personalizadas.</p></div>
+     </div>
+    </section>
+    <section><h2 className={heading}>Competencias técnicas</h2><p className="mt-2 text-sm leading-6"><strong>Práctica directa:</strong> HTML5, CSS3, diseño responsive, JavaScript ES6, DOM, localStorage, Git y GitHub.<br/><strong>Implementadas con asistencia de IA:</strong> React, Next.js, TypeScript, Tailwind CSS, Supabase Auth, PostgreSQL/RLS, API routes.<br/><strong>Comprobaciones y flujo:</strong> ESLint, revisión de tipos, build de producción, pruebas HTTP y navegador, GitHub Actions.</p></section>
+    <section><h2 className={heading}>Experiencia laboral transferible</h2><p className="mt-2 text-sm leading-6"><strong>Operaciones de cocina y hostelería (fuera del sector tecnológico):</strong> trabajo con procedimientos, coordinación, resolución de incidencias operativas y cumplimiento de tareas en entornos con tiempos exigentes. Busco mi primer puesto remunerado en desarrollo de software.</p></section>
+    <section><h2 className={heading}>Formación y certificados · {totalTrainingHours} horas registradas</h2><p className="mt-1 text-xs text-slate-600">Horas de cursos y asistencias; no equivalen a horas programando ni experiencia laboral.</p>
+     <ul className="mt-2 space-y-1 text-xs leading-5">{certifications.map(x=><li key={x.id}><strong>{x.title}</strong> — {x.issuer}, {x.hours} h ({x.credentialType==="Course completion"?"curso completado":"constancia de asistencia"})</li>)}</ul>
+    </section>
+    <section><h2 className={heading}>Investigación adicional</h2><p className="mt-2 text-sm leading-6"><strong>Nexus Foundation:</strong> laboratorio privado y experimental en Python/PyTorch para explorar tokenización BPE y Transformers pequeños; sin afirmar capacidad conversacional fiable ni experiencia comercial de ML.</p></section>
+    <section><h2 className={heading}>Idiomas</h2><p className="mt-2 text-sm">Español nativo · Inglés intermedio (autodescripción pendiente de evaluación formal).</p></section>
+    <footer className="mt-6 border-t border-slate-300 pt-3 text-xs text-slate-600">El contacto por email y LinkedIn se añadirá al verificar sus enlaces. Información respaldada por proyectos y certificados documentados.</footer>
+   </article>
+  </div>
+ </main>;
 }
