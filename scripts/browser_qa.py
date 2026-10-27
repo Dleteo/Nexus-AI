@@ -29,7 +29,7 @@ def audit(browser, width, label):
            "Missing project case study heading")
     expect(page.get_by_role("heading", name="Formación y certificaciones.").count() == 1,
            "Missing training heading")
-    expect(page.get_by_role("link", name="Currículum y experiencia").count() == 1,
+    expect(page.get_by_role("link", name="Ver CV").count() == 1,
            "Missing resume action")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2,
