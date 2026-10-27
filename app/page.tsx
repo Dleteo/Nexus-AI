@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CareerHome from "../components/career/CareerHome";
+import EditorialPortfolio from "../components/career/EditorialPortfolio";
 
 export const metadata: Metadata = {
   title: "Joshua Vallejo Sanchez | Junior Web Developer & AI Projects",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <CareerHome />;
+  return <EditorialPortfolio />;
 }
