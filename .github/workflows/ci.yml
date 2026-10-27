@@ -62,7 +62,9 @@ jobs:
             supabase/migrations/20261023130002_lock_down_assistant_privileged_rpcs.sql \
             tests/db/seed.sql \
             supabase/migrations/20261027040000_assistant_workspace_scope.sql \
-            tests/db/workspace_assertions.sql; do
+            supabase/migrations/20261027122157_enforce_assistant_project_ownership.sql \
+            tests/db/workspace_assertions.sql \
+            tests/db/project_ownership_assertions.sql; do
             psql -v ON_ERROR_STOP=1 -f "$file"
           done
 
