@@ -1,5 +1,6 @@
 """Integration test for CV PDF structure, Unicode text and source evidence."""
 from io import BytesIO
+from pathlib import Path
 from urllib.request import urlopen
 import os
 from pypdf import PdfReader
@@ -13,11 +14,15 @@ headings = {
     "pt": "COMPETÊNCIAS TÉCNICAS",
 }
 
+artifacts = Path("qa-pdfs")
+artifacts.mkdir(exist_ok=True)
+
 for lang, expected in headings.items():
     with urlopen(f"{base}/api/resume/pdf?lang={lang}", timeout=15) as resp:
         assert resp.status == 200
         assert resp.headers["Content-Type"].startswith("application/pdf")
         payload = resp.read()
+    (artifacts / f"Joshua-Vallejo-Sanchez-CV-{lang}.pdf").write_bytes(payload)
     reader = PdfReader(BytesIO(payload), strict=True)
     assert 1 <= len(reader.pages) <= 4, f"{lang}: unexpected PDF page count {len(reader.pages)}"
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
