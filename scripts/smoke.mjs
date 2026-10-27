@@ -56,6 +56,7 @@ async function checkSignedOutApi(path, options = {}) {
 }
 
 await waitUntilReady();
+await checkSignedOutApi("/api/assistant/status");
 await checkPublicPage("/", [
   "Construyo experiencias digitales",
   "Proyectos que demuestran",
