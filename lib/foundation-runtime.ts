@@ -8,7 +8,7 @@ function pythonEnvironment(): NodeJS.ProcessEnv {
   const allowed = ["PATH", "Path", "SYSTEMROOT", "SystemRoot", "WINDIR", "windir",
     "USERPROFILE", "HOME", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA",
     "TMP", "TEMP", "TMPDIR", "LANG", "LC_ALL"] as const;
-  const result: NodeJS.ProcessEnv = {};
+  const result: NodeJS.ProcessEnv = {NODE_ENV: "development"};
   for (const key of allowed) if (process.env[key] !== undefined) result[key] = process.env[key];
   result.PYTHONDONTWRITEBYTECODE = "1";
   result.PYTHONNOUSERSITE = "1";
