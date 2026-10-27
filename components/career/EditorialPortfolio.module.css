@@ -42,3 +42,20 @@
 }
 .heroRight{z-index:4}
 @media(max-width:430px){.heroPortrait{left:5%;right:-8%;opacity:.65}}
+
+
+/* Editorial type matched to the supplied showcase: condensed display and script greeting. */
+.heroBackdrop{font-family:var(--font-editorial-poster),Impact,"Arial Narrow",sans-serif;letter-spacing:-.045em;font-weight:400}
+.heroLeft h1{font-family:var(--font-editorial-poster),Impact,"Arial Narrow",sans-serif;letter-spacing:-.025em;font-weight:400;line-height:.96}
+.handwritten{font-family:var(--font-editorial-script),Georgia,cursive;font-size:clamp(38px,4vw,62px);font-style:normal;transform:rotate(-6deg)}
+.role,.heroManifesto,.sectionHeader h2,.proofColumn h2,.contactLeft h2,.cardTop,.projectTitle h3{font-family:var(--font-editorial-condensed),"Arial Narrow",Arial,sans-serif}
+.sectionHeader h2,.proofColumn h2{font-weight:800;letter-spacing:.015em}
+.contactLeft h2{font-weight:800;letter-spacing:-.025em}
+.heroPortrait{
+  /* Show the source photo in its authentic hues. No red wash, grayscale or blend tint. */
+  background-color:transparent;
+  background-blend-mode:normal;
+  mix-blend-mode:normal;
+  filter:none;
+}
+@media(max-width:430px){.heroPortrait{opacity:1}}
