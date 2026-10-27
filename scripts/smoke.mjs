@@ -57,8 +57,10 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkPublicPage("/", [
-  "Build with",
-  "Your AI workspace for bigger possibilities.",
+  "Construyo experiencias digitales",
+  "Proyectos que demuestran",
+  "Formación y",
+  "Nexus AI",
 ]);
 await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Professional summary", "Featured project: Nexus AI"]);
