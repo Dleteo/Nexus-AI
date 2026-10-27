@@ -164,12 +164,13 @@ export default function CareerHome() {
       <div className={styles.content}>
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}><span className={styles.liveDot}/><span>PORTAFOLIO DE DESARROLLADOR</span></div>
-          <nav className={styles.topbarActions} aria-label="Accesos rápidos"><LanguageSwitcher language="es"/>
+          <nav className={styles.topbarActions} aria-label="Accesos rápidos">
             <a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.topLink}>GitHub <Arrow external/></a>
             <Link href="/resume" className={styles.topButton}>Ver CV <Arrow/></Link>
             <button type="button" aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={mobileMenuOpen} aria-controls="career-mobile-nav" className={styles.menuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? "Cerrar" : "Menú"} <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button>
           </nav>
         </header>
+        <div className="border-b border-[#273a50] px-5 py-3 sm:px-9"><LanguageSwitcher language="es"/></div>
         {mobileMenuOpen && <nav id="career-mobile-nav" className={styles.mobileNavigation} aria-label="Menú del portafolio">{navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>{item.label}</a>)}</nav>}
 
         <main id="principal" className={styles.main}>
