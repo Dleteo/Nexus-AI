@@ -177,6 +177,8 @@ def assistant_test(browser, width, label):
     page.get_by_role("heading", name="What are we working on?").wait_for()
     no_overflow(page, "assistant-" + label)
     page.screenshot(path=str(SHOTS / f"assistant-empty-{label}.png"), full_page=True)
+    ensure(page.get_by_role("button", name="Mi portafolio").is_visible(), "Portfolio assistant workspace missing")
+    ensure(page.get_by_role("button", name="Asistente técnico").is_visible(), "Technical assistant workspace missing")
     page.get_by_role("button", name=re.compile("New conversation", re.I)).first.click()
     page.get_by_role("heading", name="Let’s make the next step clear.").wait_for()
     page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar").click()
