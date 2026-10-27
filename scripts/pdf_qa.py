@@ -37,7 +37,7 @@ for lang, expected in headings.items():
         payload = resp.read()
     (artifacts / f"Joshua-Vallejo-Sanchez-CV-{lang}.pdf").write_bytes(payload)
     reader = PdfReader(BytesIO(payload), strict=True)
-    assert 1 <= len(reader.pages) <= 4, f"{lang}: unexpected PDF page count {len(reader.pages)}"
+    assert len(reader.pages) == 1, f"{lang}: resume should fit one polished page; got {len(reader.pages)}"
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert expected in text, f"{lang}: missing localized heading"
     assert "github.com/Dleteo" in text, f"{lang}: missing contact reference"
