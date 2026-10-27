@@ -122,8 +122,8 @@ async function ready(){
   for(let attempt=0;attempt<100;attempt++){
     if(child.exitCode!==null)throw Error("Next.js production server exited: "+logs.slice(-3000));
     try{
-      const res=await fetch(base+"/api/assistant/status",{signal:AbortSignal.timeout(1000)});
-      if(res.status===401)return;
+      const res=await fetch(base+"/api/assistant/status",{signal:AbortSignal.timeout(1000),redirect:"manual"});
+      if(res.status>=200 && res.status<500)return;
     }catch{}
     await new Promise(r=>setTimeout(r,150));
   }
