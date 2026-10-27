@@ -3,6 +3,8 @@ from io import BytesIO
 from pathlib import Path
 from urllib.request import urlopen
 import os
+import time
+from urllib.error import URLError
 from pypdf import PdfReader
 
 base = os.environ.get("NEXUS_QA_BASE", "http://127.0.0.1:3102")
@@ -16,6 +18,17 @@ headings = {
 
 artifacts = Path("qa-pdfs")
 artifacts.mkdir(exist_ok=True)
+
+for attempt in range(60):
+    try:
+        with urlopen(base + '/api/resume/pdf?lang=es', timeout=3) as response:
+            if response.status == 200:
+                break
+    except (URLError, TimeoutError):
+        pass
+    time.sleep(0.25)
+else:
+    raise RuntimeError('Production server did not become ready for PDF QA')
 
 for lang, expected in headings.items():
     with urlopen(f"{base}/api/resume/pdf?lang={lang}", timeout=15) as resp:
