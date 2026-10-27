@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import {notFound} from "next/navigation";
-import InternationalHome from "../../components/career/InternationalHome";
+import CareerHome from "../../components/career/CareerHome";
 import {siteLanguages,type SiteLanguage,isSiteLanguage} from "../../data/site-languages";
 export const dynamicParams=false;
 export function generateStaticParams(){return siteLanguages.filter(x=>x.code!=="es").map(x=>({lang:x.code}));}
@@ -13,5 +13,5 @@ export async function generateMetadata({params}:{params:Promise<{lang:string}>})
 export default async function LanguagePage({params}:{params:Promise<{lang:string}>}){
  const {lang}=await params;
  if(!isSiteLanguage(lang)||lang==="es")notFound();
- return <InternationalHome language={lang}/>;
+ return <CareerHome language={lang}/>;
 }
