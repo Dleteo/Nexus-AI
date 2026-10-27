@@ -96,6 +96,15 @@ def audit(browser, width, label):
     page.goto(BASE + "/resume", wait_until="networkidle")
     expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").is_visible(), "Missing resume heading")
     expect(page.get_by_role("link", name="Descargar CV en español (PDF)").is_visible(), "Missing resume PDF download")
+    controls = page.get_by_role("navigation", name="Opciones del CV")
+    expect(controls.count() == 1, "Resume must have a compact controls-only navigation")
+    expect(controls.get_by_role("link", name="Volver al portafolio").count() == 1,
+           "Resume back button missing")
+    expect(controls.get_by_text("ES", exact=True).count() == 1,
+           "Resume language selector missing")
+    expect(page.locator('[class*="desktopNav"]').count() == 0,
+           "The full portfolio navbar must not appear in the CV")
+
     expect(page.get_by_role("link", name="srjoshua08@gmail.com").count() >= 1,
            "The verified email must be visible and clickable")
     expect(page.locator('[class*="topCards"]').count() == 1,
