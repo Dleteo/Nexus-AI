@@ -229,7 +229,7 @@ export async function POST(request: Request) {
   if (!answer) return NextResponse.json({ error: "The AI returned an invalid, empty or excessively long response. Please try a shorter question.", code: "AI_INVALID_RESPONSE" }, { status: 502 });
   const sources = localTechnical
     ? localTechnical.sources.filter(source => {try {const u=new URL(source.url);return u.protocol==="https:" && !u.username && !u.password;}catch{return false;}}).slice(0,5).map(source=>({uri:source.url,title:source.name}))
-    : extractGroundingSources(aiProvider, providerData ?? {});
+    : aiProvider === "foundation" ? [] : extractGroundingSources(aiProvider, providerData ?? {});
 
   const saveResponse = await fetchAssistantJson(`${config.url}/rest/v1/rpc/save_assistant_exchange_for_user`, {
     method: "POST",
