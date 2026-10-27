@@ -14,7 +14,10 @@ async function importTs(path, dependencies = {}) {
   return mod.exports;
 }
 const {extractGroundingSources}=await importTs("lib/assistant-sources.ts");
-const {getSupabaseConfig}=await importTs("lib/supabase.ts",{"server-only":{}});
+const assistantScopes=await importTs("lib/assistant-scopes.ts");
+const assistantApi=await importTs("lib/assistant-api.ts",{"server-only":{},"./assistant-scopes":assistantScopes});
+const supabaseModule=await importTs("lib/supabase.ts",{"server-only":{},"./assistant-api":assistantApi});
+const {getSupabaseConfig,getValidSession}=supabaseModule;
 const supabaseVariables=["SUPABASE_URL","SUPABASE_PUBLISHABLE_KEY","SUPABASE_ANON_KEY","NEXT_PUBLIC_SUPABASE_URL","NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY","NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 const previousSupabaseVariables=new Map(supabaseVariables.map(name=>[name,process.env[name]]));
 try {
@@ -127,6 +130,7 @@ try {
     "../../../../lib/session":{readSession:async()=>({access_token:"test-session"})},
     "../../../../lib/supabase":{getSupabaseConfig:()=>({url:"http://database.test",apiKey:"test-publishable"})},
     "../../../../lib/ai-runtime":{readAiProvider:()=>({provider:"ollama",model:"local-model",key:"",endpoint:"http://127.0.0.1:11434"})},
+    "../../../../lib/assistant-api":assistantApi,
   };
   const {GET}=await importTs("app/api/assistant/status/route.ts",dependencies);
   for (const [response,expected] of [
@@ -159,6 +163,52 @@ try {
   });
   globalThis.fetch=async()=>{assert.fail("Signed-out readiness must not query the database");};
   assert.equal((await signedOutStatus()).status,401);
+
+  // These fetch mocks deliberately ignore AbortSignal, as a stalled upstream
+  // body must still be bounded independently of fetch cancellation behavior.
+  globalThis.fetch=async()=>new Promise(()=>{});
+  const neverResponded=await assistantApi.fetchAssistantJson("http://local.test",{},25);
+  assert.equal(neverResponded.status,504);
+  assert.equal(neverResponded.ok,false);
+  let cancelled=false;
+  globalThis.fetch=async()=>new Response(new ReadableStream({
+    start(controller){controller.enqueue(new TextEncoder().encode("["));},
+    cancel(){cancelled=true;},
+  }));
+  const incompleteBody=await assistantApi.fetchAssistantJson("http://local.test",{},25);
+  assert.equal(incompleteBody.status,504);
+  assert.equal(incompleteBody.ok,false);
+  assert.equal(cancelled,true,"Timed-out body reader was not cancelled");
+  const controller=new AbortController();
+  globalThis.fetch=async()=>new Promise(()=>{});
+  const cancelledRequest=assistantApi.fetchAssistantJson("http://local.test",{signal:controller.signal},1000);
+  controller.abort();
+  assert.equal((await cancelledRequest).status,504);
+
+  const auth=await importTs("lib/supabase.ts",{
+    "server-only":{},
+    "./assistant-api":{fetchAssistantJson:async()=>({ok:false,status:504,data:null})},
+  });
+  const authEnv=new Map(supabaseVariables.map(name=>[name,process.env[name]]));
+  try {
+    process.env.SUPABASE_URL="http://database.test";
+    process.env.SUPABASE_PUBLISHABLE_KEY="test-publishable";
+    const session={access_token:"test-session",refresh_token:"test-refresh",expires_at:Math.floor(Date.now()/1000)+3600,user:{id:"untrusted-cookie-id"}};
+    assert.equal(await auth.getValidSession(session),null,"Auth timeout accepted an unverified session");
+    globalThis.fetch=async()=>Response.json({id:"verified-user"});
+    assert.equal((await getValidSession(session)).user.id,"verified-user");
+    globalThis.fetch=async()=>Response.json({unexpected:"no user ID"});
+    assert.equal(await getValidSession(session),null);
+    globalThis.fetch=async()=>Response.json({access_token:"new-session",refresh_token:"new-refresh",expires_in:3600,user:{id:"verified-user"}});
+    assert.equal((await getValidSession({...session,expires_at:0})).access_token,"new-session");
+    globalThis.fetch=async()=>Response.json({access_token:{},refresh_token:"new-refresh",user:{id:"verified-user"}});
+    assert.equal(await getValidSession({...session,expires_at:0}),null);
+  } finally {
+    for (const [name,value] of authEnv) {
+      if (value===undefined) delete process.env[name];
+      else process.env[name]=value;
+    }
+  }
 } finally {
   globalThis.fetch=originalFetch;
   for (const [name,value] of previousVariables) {
@@ -169,4 +219,4 @@ try {
 const route=readFileSync("app/api/assistant/chat/route.ts","utf8");
 assert.ok(route.indexOf('currentResearch && aiProvider === "ollama"') < route.indexOf('claim_assistant_request_for_user'));
 assert.match(route,/conversation\.scope !== scope/);
-console.log("PASS defensive citations, provider isolation, readiness diagnostics and early safety gates (simulated responses only)");
+console.log("PASS defensive citations, provider isolation, bounded headers/body reads, auth, readiness diagnostics and early safety gates (simulated responses only)");

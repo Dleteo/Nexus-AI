@@ -1,4 +1,5 @@
 import "server-only";
+import { fetchAssistantJson } from "./assistant-api";
 
 export type SupabaseUser = {
   id: string;
@@ -55,35 +56,34 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
   if (!config) return null;
 
   if (session.expires_at && session.expires_at > Math.floor(Date.now() / 1000) + 30) {
-    const response = await fetch(`${config.url}/auth/v1/user`, {
+    const response = await fetchAssistantJson(`${config.url}/auth/v1/user`, {
       headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
-      cache: "no-store",
-      signal: AbortSignal.timeout(5000),
-      redirect: "error",
     });
     if (response.ok) {
-      const verifiedUser = await response.json() as SupabaseUser;
+      const verifiedUser = response.data as SupabaseUser | null;
+      if (!verifiedUser || typeof verifiedUser.id !== "string" || !verifiedUser.id) return null;
       return { ...session, user: verifiedUser };
     }
+    // An upstream outage cannot be repaired by rotating the refresh token.
+    if (response.status >= 500) return null;
   }
 
   if (!session.refresh_token) return null;
-  const response = await fetch(`${config.url}/auth/v1/token?grant_type=refresh_token`, {
+  const response = await fetchAssistantJson(`${config.url}/auth/v1/token?grant_type=refresh_token`, {
     method: "POST",
     headers: { apikey: config.apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token: session.refresh_token }),
-    cache: "no-store",
-    signal: AbortSignal.timeout(5000),
-    redirect: "error",
   });
   if (!response.ok) return null;
-  const data = (await response.json()) as {
+  const data = response.data as {
     access_token: string;
     refresh_token: string;
     expires_in?: number;
     user: SupabaseUser;
-  };
-  if (!data.access_token || !data.refresh_token || !data.user?.id) return null;
+  } | null;
+  if (!data || typeof data.access_token !== "string" || !data.access_token
+    || typeof data.refresh_token !== "string" || !data.refresh_token
+    || typeof data.user?.id !== "string" || !data.user.id) return null;
   return {
     access_token: data.access_token,
     refresh_token: data.refresh_token,

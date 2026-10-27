@@ -150,6 +150,9 @@ const ollama=http.createServer(async(req,res)=>{
   if(payload.messages?.at(-1)?.content==="simulate redirect"){
     res.writeHead(307,{Location:"http://127.0.0.1:4311/should-not-follow"});return res.end();
   }
+  if(payload.messages?.at(-1)?.content==="simulate stalled provider"){
+    res.writeHead(200,{"Content-Type":"application/json"});return res.write('{"message":');
+  }
   return json(res,200,{message:{role:"assistant",content:"Synthetic local Ollama answer; not a real model response."}});
 });
 
@@ -189,7 +192,7 @@ function sessionCookie({claimedUser=userId,token="synthetic-access-token"}={}){
 }
 let child;
 let logs="";
-async function request(path,{method="GET",payload,raw,auth=true,claimedUser,token}={}){
+async function request(path,{method="GET",payload,raw,auth=true,claimedUser,token,timeout=12000}={}){
   const response=await fetch(base+path,{
     method,
     headers:{
@@ -197,7 +200,7 @@ async function request(path,{method="GET",payload,raw,auth=true,claimedUser,toke
       ...(payload!==undefined||raw!==undefined?{"Content-Type":"application/json"}:{}),
     },
     ...(raw!==undefined?{body:raw}:payload!==undefined?{body:JSON.stringify(payload)}:{}),
-    signal:AbortSignal.timeout(12000),
+    signal:AbortSignal.timeout(timeout),
   });
   return {status:response.status,data:await response.json().catch(()=>({error:"Non-JSON response"}))};
 }
@@ -373,6 +376,11 @@ try{
     assert.equal(saves,3,"Failed persistence was reported as a saved exchange");
   }
   saveResult="ok";
+  console.log("Checking the provider deadline after partial response headers");
+  const beforeTimeout=saves;
+  const timedOut=await request("/api/assistant/chat",{method:"POST",payload:{...baseline,message:"simulate stalled provider"},timeout:30000});
+  assert.equal(timedOut.status,504,JSON.stringify(timedOut));
+  assert.equal(saves,beforeTimeout,"A timed-out provider response was persisted");
   const created=await request("/api/assistant/conversations",{method:"POST",payload:{scope:"portfolio"}});
   assert.equal(created.status,201,JSON.stringify(created));
   const patched=await request(`/api/assistant/conversations/${created.data.conversation.id}`,{method:"PATCH",payload:{mode:"interview"}});

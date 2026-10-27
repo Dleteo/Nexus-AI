@@ -106,11 +106,10 @@ export async function POST(request: Request) {
     groundingMetadata?: { groundingChunks?: Array<{web?: {uri?:string; title?:string}}> };
     web_search_call?: unknown;
   };
-  let providerResponse: Response | null = null;
-  let providerData: ProviderData | null = null;
+  let providerResponse: Awaited<ReturnType<typeof fetchAssistantJson>> | null = null;
 
   if (aiProvider === "gemini") {
-    providerResponse = await fetch(
+    providerResponse = await fetchAssistantJson(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
         method: "POST",
@@ -124,13 +123,12 @@ export async function POST(request: Request) {
           ...(currentResearch ? {tools:[{google_search:{}}]} : {}),
           generationConfig: { maxOutputTokens: 1200 },
         }),
-        signal: AbortSignal.any([deadline, AbortSignal.timeout(25000)]),
-        redirect: "error",
-        cache: "no-store",
+        signal: deadline,
       },
-    ).catch(() => null);
+      25000,
+    );
   } else if (aiProvider === "openai") {
-    providerResponse = await fetch("https://api.openai.com/v1/responses", {
+    providerResponse = await fetchAssistantJson("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${providerKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -141,14 +139,12 @@ export async function POST(request: Request) {
         max_output_tokens: 1800,
         store: false,
       }),
-      signal: AbortSignal.any([deadline, AbortSignal.timeout(25000)]),
-      redirect: "error",
-      cache: "no-store",
-    }).catch(() => null);
+      signal: deadline,
+    }, 25000);
   }
 
   if (aiProvider === "ollama" && localEndpoint) {
-    providerResponse = await fetch(localEndpoint + "/api/chat",{
+    providerResponse = await fetchAssistantJson(localEndpoint + "/api/chat",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
@@ -161,18 +157,16 @@ export async function POST(request: Request) {
         ],
         options:{num_predict:1200},
       }),
-      signal:AbortSignal.any([deadline, AbortSignal.timeout(25000)]),
-      redirect:"error",
-      cache:"no-store",
-    }).catch(()=>null);
+      signal:deadline,
+    }, 25000);
   }
 
-  if (!providerResponse) {
+  if (!providerResponse || providerResponse.status === 504) {
     return NextResponse.json({ error: "The AI provider did not respond in time. Please try again." }, { status: 504 });
   }
 
-  providerData = await providerResponse.json().catch(() => null) as ProviderData | null;
-  if (!providerResponse.ok) {
+  const providerData = providerResponse.data as ProviderData | null;
+  if (!providerResponse.ok && providerResponse.status >= 400) {
     if (aiProvider === "gemini" && providerResponse.status === 429) {
       return NextResponse.json({
         error: "Gemini reached a request or free-tier quota limit. Wait a little and check your current limits in Google AI Studio.",

@@ -35,6 +35,8 @@ Las respuestas disponen de una región accesible `role="log"` con anuncios `poli
 
 El build local normal encontró un bloqueo de red hacia Google Fonts. Para las pruebas locales se compiló con webpack y la opción de pruebas de Next.js `NEXT_FONT_GOOGLE_MOCKED_RESPONSES`, usando fuentes ya almacenadas. Esa configuración temporal queda fuera del repositorio. El workflow mantiene el build normal y todas las comprobaciones; consultar el resultado correspondiente al **último commit** en el PR antes de aprobar.
 
+La primera ejecución de CI pasó el build normal, SQL y unitarias, pero detectó que Node 22 no cancelaba el cuerpo incompleto del chat. Se reprodujo localmente con Node 22, también usando solo un controlador explícito. Las lecturas ahora usan un deadline que compite con la operación completa, cancelación explícita del lector y propagación del deadline del chat, con limpieza al terminar. La misma protección se usa en Auth, estado y proveedores. La integración conserva los cuerpos incompletos de base de datos y modelo como regresiones.
+
 ## Límites y siguiente trabajo
 
 - La auditoría comprueba código y entornos desechables. No certifica configuración, datos ni protección de contraseñas filtradas en producción.

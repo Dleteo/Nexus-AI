@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { readSession } from "../../../../lib/session";
 import { getSupabaseConfig } from "../../../../lib/supabase";
 import { readAiProvider } from "../../../../lib/ai-runtime";
+import { fetchAssistantJson } from "../../../../lib/assistant-api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,20 +21,18 @@ export async function GET() {
   let databaseReady = false;
   let migrationRequired = false;
   if (config) {
-    const response = await fetch(
+    const response = await fetchAssistantJson(
       `${config.url}/rest/v1/assistant_conversations?select=scope&limit=0`,
       {
         headers: {
           apikey: config.apiKey,
           Authorization: `Bearer ${session.access_token}`,
         },
-        cache: "no-store",
-        signal: AbortSignal.timeout(5000),
       },
-    ).catch(() => null);
-    const payload: unknown = await response?.json().catch(() => null);
-    databaseReady = response?.ok === true && Array.isArray(payload);
-    if (response && !response.ok) {
+    );
+    const payload = response.data;
+    databaseReady = response.ok && Array.isArray(payload);
+    if (!response.ok) {
       const code = payload !== null && typeof payload === "object" && "code" in payload ? payload.code : null;
       // An outage or expired session is not evidence that a migration is missing.
       migrationRequired = typeof code === "string" && ["42703", "42P01", "PGRST204", "PGRST205"].includes(code);

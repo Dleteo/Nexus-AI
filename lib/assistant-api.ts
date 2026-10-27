@@ -33,18 +33,51 @@ export async function readAssistantBody(request: Request): Promise<Record<string
 
 // Bound both response headers and body reads. Never return upstream exception text,
 // which can contain server URLs or credentials, to the browser.
-export async function fetchAssistantJson(url: string, init: RequestInit = {}) {
-  const timeout = AbortSignal.timeout(5000);
+export async function fetchAssistantJson(url: string, init: RequestInit = {}, timeoutMs = 5000) {
+  type Result = {ok: boolean; status: number; data: unknown};
+  const controller = new AbortController();
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+  let expire!: (result: Result) => void;
+  const timeout = new Promise<Result>(resolve => { expire = resolve; });
+  const abort = () => {
+    controller.abort(init.signal?.reason);
+    // Cancel our own reader as well: aborting fetch alone does not reliably
+    // unblock a JSON body read on all supported Node/Undici versions.
+    void reader?.cancel().catch(() => {});
+    expire({ok: false, status: 504, data: null});
+  };
+  const timer = setTimeout(abort, timeoutMs);
+  if (init.signal?.aborted) abort();
+  else init.signal?.addEventListener("abort", abort, {once: true});
   try {
-    const response = await fetch(url, {
-      ...init,
-      signal: init.signal ? AbortSignal.any([init.signal, timeout]) : timeout,
-      redirect: "error",
-      cache: "no-store",
-    });
-    const data: unknown = await response.json().catch(() => null);
-    return { ok: response.ok && (response.status === 204 || data !== null), status: response.status, data };
-  } catch {
-    return { ok: false, status: 502, data: null };
+    const work = (async (): Promise<Result> => {
+      try {
+        const response = await fetch(url, {
+          ...init, signal: controller.signal, redirect: "error", cache: "no-store",
+        });
+        reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let text = "";
+        while (reader) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          text += decoder.decode(value, {stream: true});
+        }
+        text += decoder.decode();
+        let data: unknown = null;
+        try { data = JSON.parse(text); } catch { /* Invalid JSON is an upstream failure. */ }
+        return {ok: response.ok && (response.status === 204 || data !== null), status: response.status, data};
+      } catch {
+        return {ok: false, status: 502, data: null};
+      } finally {
+        reader?.releaseLock();
+      }
+    })();
+    // This deadline covers headers AND body parsing even if an underlying fetch
+    // implementation fails to settle after abort. The work promise handles errors.
+    return await Promise.race([timeout, work]);
+  } finally {
+    clearTimeout(timer);
+    init.signal?.removeEventListener("abort", abort);
   }
 }
