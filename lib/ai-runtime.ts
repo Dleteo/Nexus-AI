@@ -5,8 +5,9 @@
 import type {AssistantScope} from "./assistant-scopes";
 export type AiProvider = "gemini" | "openai" | "ollama";
 
-export function readAiProvider(): { provider: AiProvider; model: string; key: string; endpoint?: string } | null {
-  const provider = process.env.AI_PROVIDER?.trim().toLowerCase();
+export function readAiProvider(scope:AssistantScope): { provider: AiProvider; model: string; key: string; endpoint?: string } | null {
+  const preferred = scope === "portfolio" ? process.env.AI_PORTFOLIO_PROVIDER : process.env.AI_TECHNICAL_PROVIDER;
+  const provider = (preferred || process.env.AI_PROVIDER)?.trim().toLowerCase();
   if (provider === "gemini" && process.env.GEMINI_API_KEY) {
     return {provider, model:process.env.GEMINI_MODEL || "gemini-2.5-flash", key:process.env.GEMINI_API_KEY};
   }
