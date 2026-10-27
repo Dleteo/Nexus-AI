@@ -12,7 +12,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
   const headers = { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` };
-  const conversationResponse = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(id)}&select=id,title,mode,project_id,created_at,updated_at`, { headers, cache: "no-store" });
+  const conversationResponse = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(id)}&select=id,title,scope,mode,project_id,created_at,updated_at`, { headers, cache: "no-store" });
   const conversations = await conversationResponse.json().catch(() => null);
   if (!conversationResponse.ok) return NextResponse.json({ error: "Could not load conversation." }, { status: 502 });
   if (!Array.isArray(conversations) || !conversations[0]) return NextResponse.json({ error: "Conversation not found." }, { status: 404 });
@@ -33,7 +33,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   }
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
-  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(id)}&select=id,title,mode,project_id,created_at,updated_at`, {
+  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(id)}&select=id,title,scope,mode,project_id,created_at,updated_at`, {
     method: "PATCH",
     headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
     body: JSON.stringify({ mode: body.mode }),
