@@ -69,7 +69,7 @@ class FakeWorkspace:
             if method == "GET":
                 return ok({"conversations": self.conversations})
             if method == "POST":
-                item = {"id": CONVERSATION_ID, "title": payload.get("title", "New conversation"), "mode": payload.get("mode", "assistant"), "project_id": None, "updated_at": STAMP}
+                item = {"id": CONVERSATION_ID, "title": ("Nexus Portfolio · " if payload.get("scope") == "portfolio" else "Nexus Technical · ") + "New conversation", "scope": payload.get("scope", "technical"), "mode": payload.get("mode", "assistant"), "project_id": None, "updated_at": STAMP}
                 self.conversations.insert(0, item)
                 return ok({"conversation": item}, status=201)
         if path.startswith("/api/assistant/conversations/"):
