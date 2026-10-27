@@ -27,15 +27,18 @@ function makePdf(lang:ResumeLang):Uint8Array {
  const d=resumeCopy[lang], p=professionalProfile;
  const pages:string[][]=[[]];let y=782;
  const newPage=()=>{pages.push([]);y=782;};
- function line(value:string, size=9, bold=false, indent=0, step=10.5) {
+ function line(value:string, size=9, bold=false, indent=0, step=10.5, color:"dark"|"red"|"white"="dark") {
   if(y<55)newPage();
-  pages[pages.length-1].push("BT /"+(bold?"F2":"F1")+" "+size+" Tf 1 0 0 1 "+(42+indent)+" "+y+" Tm "+pdfLiteral(value)+" Tj ET");
+  const ink=color==="red"?"0.84 0.07 0.16":color==="white"?"1 1 1":"0.12 0.10 0.13";
+  pages[pages.length-1].push(ink+" rg BT /"+(bold?"F2":"F1")+" "+size+" Tf 1 0 0 1 "+(42+indent)+" "+y+" Tm "+pdfLiteral(value)+" Tj ET");
   y-=step;
  }
  const body=(s:string,limit=92)=>{for(const l of wrap(s,limit))line(l);};
- const section=(heading:string)=>{if(y<100)newPage();y-=5;line(heading.toUpperCase(),10,true,0,15);};
- line(p.name,21,true,0,30);line(d.role+" | "+d.headline,9,false,0,15);
- line(p.location+" | github.com/Dleteo"+(p.linkedin?" | LinkedIn: "+p.linkedin:""),8,false,0,18);
+ const section=(heading:string)=>{if(y<100)newPage();y-=5;line(heading.toUpperCase(),10,true,0,15,"red");};
+ pages[0].push("0.08 0.06 0.08 rg 32 737 531 78 re f");
+ line(p.name.toUpperCase(),21,true,0,30,"white");line(d.role+" | "+d.headline,9,false,0,15,"white");
+ line(p.location+" | github.com/Dleteo",8,false,0,12);
+ line("Email: "+p.email+" | LinkedIn: "+(p.linkedin||"N/A"),8,false,0,18);
  section(d.headings.profile);body(d.summary);
  section(d.headings.projects);
  for(const item of d.projects){body(item.name+" | "+item.stack,88);body(item.summary);body(item.url.replace("https://github.com/","github.com/"),92);}
@@ -55,7 +58,7 @@ function makePdf(lang:ResumeLang):Uint8Array {
  const strong=push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
  const pageNums:number[]=[];
  for(const commands of pages){
-  const stream="0.08 0.12 0.19 rg\n"+commands.join("\n")+"\n";
+  const stream="1 1 1 rg 0 0 595 842 re f\n0.86 0.08 0.17 rg 32 726 531 4 re f\n"+commands.join("\n")+"\n";
   const streamNum=push("<< /Length "+byteString(stream).length+" >>\nstream\n"+stream+"endstream");
   const page=push("<< /Type /Page /Parent "+pageRoot+" 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 "+normal+" 0 R /F2 "+strong+" 0 R >> >> /Contents "+streamNum+" 0 R >>");
   pageNums.push(page);
