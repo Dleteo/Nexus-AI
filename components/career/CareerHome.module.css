@@ -285,3 +285,26 @@
   .processEducation>div{grid-template-columns:45px minmax(0,1fr)}
   .processColumn h3{font-size:20px}
 }
+
+
+/* Final portrait art direction: use the authentic supplied image as a red duotone,
+   eliminate its paper-white box, and scale it as a full-height editorial portrait. */
+.hero{min-height:720px;align-items:stretch;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+.heroContent{align-self:center;padding-top:120px}
+.heroVisual{height:auto!important;min-height:630px;align-self:stretch;align-items:stretch;overflow:visible}
+.heroPortrait{isolation:isolate;position:relative;min-height:630px!important;align-self:stretch;border:0;background:radial-gradient(ellipse at 55% 25%,#a02038,#5a0c1b 46%,#16070e 82%);box-shadow:none}
+.heroPortrait::after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(90deg,#08070866 0%,transparent 26%,transparent 80%,#08070888 100%),linear-gradient(0deg,#080708ee 0%,transparent 30%,transparent 78%,#08070877 100%)}
+.portraitPhoto{position:absolute;inset:0;background-image:url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");background-position:50% 30%;background-size:cover;background-repeat:no-repeat;filter:grayscale(1) contrast(1.2);mix-blend-mode:multiply;opacity:1;z-index:1}
+.portraitCaption{z-index:3;background:none;padding:26px 21px}
+.portraitCaption span{color:#ffa7b1}
+.heroSideStats{position:relative;z-index:4;flex-basis:112px}
+.heroSideStats div{display:block;padding:22px 0}
+.heroSideStats strong{font-size:42px;display:block}
+.heroSideStats span{font-size:10px}
+.heroMasthead{color:#d4142d;opacity:.95;top:30px;font-size:clamp(92px,15.5vw,250px);line-height:.9}
+.heroContent .sectionKicker{position:relative;z-index:4}
+.hero h1{font-size:clamp(59px,7.0vw,106px);max-width:680px}
+.heroDescription{max-width:460px}
+@media(max-width:1180px){.heroVisual,.heroPortrait{min-height:550px!important}.heroSideStats{flex-basis:100px}.heroSideStats strong{font-size:33px}}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr);min-height:0}.heroContent{padding-top:115px}.heroVisual{height:510px!important;min-height:0}.heroPortrait{min-height:510px!important}.heroMasthead{font-size:clamp(76px,16vw,135px)}}
+@media(max-width:600px){.heroContent{padding-top:94px}.heroVisual{height:350px!important;min-height:0}.heroPortrait{min-height:350px!important}.heroSideStats{flex-basis:77px}.heroSideStats strong{font-size:25px}.heroSideStats div{padding:14px 0}.heroSideStats span{font-size:8px}.portraitPhoto{background-position:53% 30%}.heroMasthead{font-size:clamp(69px,18vw,100px)}}
