@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import CrownMark from "../ui/CrownMark";
+import AssistantWorkspacePicker from "./AssistantWorkspacePicker";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import MessageContent from "./MessageContent";
 import {expertises, type Expertise} from "../../lib/assistant-expertise";
@@ -24,6 +24,7 @@ export default function AssistantApp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [scope,setScope]=useState<AssistantScope>("technical");
+  const [switching,setSwitching]=useState(false);
   const [expertise, setExpertise] = useState<Expertise>("general");
   const [currentResearch, setCurrentResearch] = useState(false);
   const [mode, setMode] = useState<Mode>("assistant");
@@ -143,6 +144,18 @@ export default function AssistantApp() {
   }
 
   const scopedConversations = conversations.filter(item=>scopeFromTitle(item.title)===scope);
+  function switchWorkspace(next:AssistantScope){
+    if(sending||next===scope)return;
+    setSwitching(true);
+    setScope(next);
+    setCurrent(null);
+    setMessages([]);
+    setDraft("");
+    setError("");
+    setRemaining(null);
+    setMobileHistoryOpen(false);
+    setSwitching(false);
+  }
   const activeMode = useMemo(() => modes.find((item) => item.id === mode) ?? modes[0], [mode]);
   useEffect(() => {
     if (sending || messages.length > 0) endOfMessages.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -155,21 +168,21 @@ export default function AssistantApp() {
   if (loading) return <main className="min-h-screen px-4 py-28 text-[#F4F1EB] sm:px-6"><div className="mx-auto grid max-w-7xl animate-pulse gap-5 lg:grid-cols-[260px_minmax(0,1fr)]"><div className="h-96 rounded-2xl bg-[#34322F]" /><div className="h-[70vh] rounded-2xl bg-[#34322F]" /></div></main>;
 
   return (
-    <main className="min-h-screen px-3 pb-5 pt-20 text-[#F4F1EB] sm:px-5 sm:pt-24">
-      <div className="royal-workspace-frame mx-auto grid max-w-[1500px] gap-0 lg:grid-cols-[250px_minmax(0,1fr)]">
-        <aside className="royal-workspace-sidebar flex min-h-0 flex-col border-b border-[#5F492D] p-4 lg:h-[calc(100vh-7.5rem)] lg:border-b-0 lg:border-r">
+    <main className="min-h-screen bg-[#080e18] px-3 pb-5 pt-20 text-slate-100 sm:px-5 sm:pt-24">
+      <div className="mx-auto grid max-w-[1500px] gap-0 overflow-hidden rounded-2xl border border-slate-700/80 bg-[#0d1725] shadow-[0_24px_80px_-45px_rgba(18,96,171,.42)] lg:grid-cols-[290px_minmax(0,1fr)]">
+        <aside className="flex min-h-0 flex-col border-b border-slate-700/70 bg-[#0b1421] p-4 lg:h-[calc(100vh-7.5rem)] lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between gap-2">
             <Link href="/" className="flex min-w-0 items-center gap-3">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#73552B] bg-[#211B13]"><CrownMark size={29}/></span>
-              <span><span className="block text-sm font-bold">Nexus<span className="text-[#D9B77B]">AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-[#BDB6AB]">AI WORKSPACE</span></span>
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-sky-500/60 bg-sky-500/10 text-xl font-black text-sky-300">N</span>
+              <span><span className="block text-sm font-bold">Nexus<span className="text-sky-300"> AI</span></span><span className="mt-0.5 block text-[10px] tracking-[0.12em] text-[#BDB6AB]">AI WORKSPACE</span></span>
             </Link>
             <Link href="/dashboard" aria-label="Open projects dashboard" title="Projects dashboard" className="grid size-9 shrink-0 place-items-center rounded-lg border border-[#34322F] text-[#BDB6AB] transition hover:border-[#4B463D] hover:text-[#D9B77B]">▦</Link>
           </div>
 
-          <div role="group" aria-label="Choose AI workspace" className="mt-5 grid grid-cols-2 gap-2">{(["portfolio","technical"] as const).map(item=><button type="button" key={item} aria-pressed={scope===item} onClick={()=>{setScope(item);setCurrent(null);setMessages([]);setError("");}} className={scope===item?"rounded-lg border border-[#D9B77B] bg-[#34322F] p-2 text-xs text-[#D9B77B]":"rounded-lg border border-[#34322F] p-2 text-xs text-[#BDB6AB]"}>{item==="portfolio"?"Mi portafolio":"Asistente técnico"}</button>)}</div>
-          <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ New conversation</button>
+          <AssistantWorkspacePicker active={scope} disabled={sending||switching} onSelect={switchWorkspace}/>
+          <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-6 w-full">＋ Nueva conversación</button>
 
-          <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#34322F] bg-[#111214] px-3 py-2 text-left text-xs font-semibold text-[#D9B77B] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Recent chats ({scopedConversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
+          <button type="button" onClick={() => setMobileHistoryOpen((open) => !open)} className="mt-4 flex items-center justify-between rounded-xl border border-[#34322F] bg-[#111214] px-3 py-2 text-left text-xs font-semibold text-[#D9B77B] lg:hidden" aria-expanded={mobileHistoryOpen} aria-controls="assistant-history">Historial reciente ({scopedConversations.length}) <span aria-hidden="true">{mobileHistoryOpen ? "−" : "+"}</span></button>
           <div className="mt-7 hidden items-center justify-between px-1 lg:flex"><p className="text-[10px] font-bold tracking-[0.17em] text-[#BDB6AB]">RECENT HISTORY</p><span className="text-[10px] text-[#AFA89E]">{scopedConversations.length}</span></div>
           <div id="assistant-history" className={`mt-3 min-h-0 flex-1 overflow-y-auto ${mobileHistoryOpen ? "block max-h-56" : "hidden lg:block"}`}>
             {scopedConversations.length === 0 ? <div className="rounded-xl border border-dashed border-[#34322F] px-3 py-6 text-center text-xs leading-5 text-[#BDB6AB]">Your saved conversations will appear here.</div> : <ul className="space-y-1.5">
@@ -191,7 +204,7 @@ export default function AssistantApp() {
           <header className="border-b border-[#4D3A23] bg-[#0F0E0C] px-4 py-4 sm:px-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div><p className="nexus-kicker mb-2">{scope==="portfolio"?"NEXUS PORTFOLIO":"NEXUS TECHNICAL"}</p><h1 className="nexus-royal-title text-2xl sm:text-3xl">{scope==="portfolio"?"Asistente de portafolio":activeMode.label}</h1><p className="mt-1.5 max-w-xl text-xs leading-5 text-[#BDB6AB] sm:text-sm">{scope==="portfolio"?"Revisa proyectos, redacta mejoras y prepara tu CV. No publica ni modifica código automáticamente.":activeMode.description}</p></div>
-              <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> READY TO HELP</div>
+              <div className="flex items-center gap-2 rounded-full border border-[#496F55] bg-[#1B3828] px-3 py-1.5 text-[10px] text-[#A7D8B2]"><span className="size-1.5 rounded-full bg-[#A7D8B2]" /> LISTO PARA AYUDAR</div>
             </div>
             {scope==="technical" && <div className="mt-5 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Choose assistant mode">
               {modes.map((item) => <button key={item.id} onClick={() => void chooseMode(item.id).catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo cambiar el modo."))} aria-pressed={mode === item.id} className={`shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${mode === item.id ? "border-[#4B463D] bg-[#34322F] text-[#D9B77B] shadow-none" : "border-[#34322F] bg-[#34322F] text-[#BDB6AB] hover:border-[#34322F] hover:text-[#E6E1D8]"}`}>{item.label}</button>)}
@@ -200,17 +213,22 @@ export default function AssistantApp() {
 
           <div className="royal-workspace-surface min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6 lg:p-8">
             {!current && <div className="mx-auto flex max-w-2xl flex-col items-center py-12 text-center sm:py-20">
-              <div className="relative grid size-20 place-items-center"><span className="absolute size-20 rounded-full bg-[#E0A74E]/15 blur-xl" aria-hidden="true"/><CrownMark size={70} className="relative drop-shadow-[0_0_20px_rgba(232,178,88,.55)]"/></div>
-              <p className="nexus-kicker mt-6">Start with a question</p><h2 className="royal-workspace-title mt-3 text-3xl sm:text-4xl">What are we working on?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-[#BDB6AB]">Plan a project, untangle an error, learn a concept step by step, or get ready for a technical interview.</p>
+              <div className="grid size-20 place-items-center rounded-3xl border border-sky-500/50 bg-sky-500/10 text-4xl font-black text-sky-300" aria-hidden="true">{scope==="portfolio"?"P":"T"}</div>
+              <p className="nexus-kicker mt-6">Start with a question</p><h2 className="royal-workspace-title mt-3 text-3xl sm:text-4xl">¿En qué trabajamos hoy?</h2><p className="mt-3 max-w-lg text-sm leading-7 text-[#BDB6AB]">{scope==="portfolio"?"Mejora los casos de estudio, prepara tu CV y organiza tu búsqueda de empleo.":"Resuelve consultas de hardware, software, programación y ciberseguridad defensiva."}</p>
               <div className="mt-7 grid w-full gap-3 text-left sm:grid-cols-2">
-                {[
+                {(scope==="portfolio" ? [
+                  { title: "Revisar mi CV", text: "Mejora el resumen sin inventar experiencia.", mode: "assistant" as Mode, icon: "↗" },
+                  { title: "Preparar entrevista", text: "Practica cómo explicar proyectos.", mode: "interview" as Mode, icon: "◇" },
+                  { title: "Analizar proyectos", text: "Convierte trabajo real en casos de estudio.", mode: "plan" as Mode, icon: "⌘" },
+                  { title: "Plan de mejora", text: "Identifica los siguientes pasos.", mode: "plan" as Mode, icon: "⌕" },
+                ] : [
                   { title: "Plan a project", text: "Turn an idea into clear tasks.", mode: "plan" as Mode, icon: "⌘" },
                   { title: "Debug an issue", text: "Find likely causes and next checks.", mode: "debug" as Mode, icon: "⌕" },
                   { title: "Learn a concept", text: "Understand code in plain language.", mode: "explain" as Mode, icon: "◇" },
                   { title: "Practice interviews", text: "Prepare structured technical answers.", mode: "interview" as Mode, icon: "↗" },
-                ].map((item) => <button key={item.mode} onClick={() => { setMode(item.mode); setDraft(item.title === "Plan a project" ? "Help me plan a project step by step." : item.title === "Debug an issue" ? "Help me debug an issue. Ask me for the relevant code and error." : item.title === "Learn a concept" ? "Explain a web development concept step by step in simple language." : "Start a junior web developer mock interview, one question at a time."); }} className="nexus-royal-card royal-quick-card group rounded-xl p-4"><span className="grid size-9 place-items-center rounded-lg border border-[#34322F] bg-[#34322F] text-lg text-[#D9B77B]">{item.icon}</span><span className="mt-3 block text-sm font-semibold text-[#E6E1D8]">{item.title} <span className="ml-1 text-[#AFA89E] transition group-hover:translate-x-1 group-hover:text-[#D9B77B]">↗</span></span><span className="mt-1.5 block text-xs leading-5 text-[#BDB6AB]">{item.text}</span></button>)}
+                ]).map((item) => <button key={item.title} onClick={() => { setMode(item.mode); setDraft(scope==="portfolio"?item.title+": Ayúdame a preparar una mejora concreta y verificable de mi portafolio.":item.title === "Plan a project" ? "Help me plan a project step by step." : item.title === "Debug an issue" ? "Help me debug an issue. Ask me for the relevant code and error." : item.title === "Learn a concept" ? "Explain a web development concept step by step in simple language." : "Start a junior web developer mock interview, one question at a time."); }} className="nexus-royal-card royal-quick-card group rounded-xl p-4"><span className="grid size-9 place-items-center rounded-lg border border-[#34322F] bg-[#34322F] text-lg text-[#D9B77B]">{item.icon}</span><span className="mt-3 block text-sm font-semibold text-[#E6E1D8]">{item.title} <span className="ml-1 text-[#AFA89E] transition group-hover:translate-x-1 group-hover:text-[#D9B77B]">↗</span></span><span className="mt-1.5 block text-xs leading-5 text-[#BDB6AB]">{item.text}</span></button>)}
               </div>
-              <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-7">Start a conversation ↗</button>
+              <button onClick={() => void newConversation().catch((cause) => setError(cause instanceof Error ? cause.message : "No se pudo crear la conversación."))} className="nexus-primary-button mt-7">Crear conversación ↗</button>
             </div>}
 
             {current && messages.length === 0 && <div className="mx-auto max-w-xl py-12 text-center"><div className="mx-auto grid size-12 place-items-center rounded-xl border border-[#4B463D] bg-[#34322F] text-xl text-[#D9B77B]">✦</div><h2 className="mt-4 text-xl font-semibold">Let’s make the next step clear.</h2><p className="mt-2 text-sm leading-6 text-[#BDB6AB]">Write a question or use one of the suggestions below.</p><div className="mt-5 flex flex-wrap justify-center gap-2"><button type="button" onClick={() => setDraft("Help me plan my next step.")} className="nexus-ghost-button text-xs">Help me plan</button><button type="button" onClick={() => setDraft("Explain this code to me step by step.")} className="nexus-ghost-button text-xs">Explain code</button><button type="button" onClick={() => setDraft("Help me debug an error. What should I check first?")} className="nexus-ghost-button text-xs">Debug an error</button></div></div>}
