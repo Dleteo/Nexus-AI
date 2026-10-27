@@ -218,3 +218,20 @@
   .portfolioContactMail{min-width:0}
   .portfolioContactMail input,.portfolioContactMail textarea{width:100%}
 }
+
+
+/* Final editorial pass from rendered browser QA evidence. */
+.heroEvidenceNote{font-size:10px;color:#a98f96;line-height:1.6;margin:0;padding:12px 0 0}
+.hero{position:relative}
+.heroContent{z-index:3}
+.heroVisual{position:relative;z-index:1}
+.heroPortrait{border:0;box-shadow:none;background:radial-gradient(ellipse at 52% 34%,#510b19 0,#210b11 42%,#080708 80%)}
+.portraitBackdrop{z-index:0;inset:9% -3% auto;color:#b11225;font-size:clamp(94px,15vw,240px);white-space:nowrap}
+.portraitPhoto{z-index:1;background-position:50% bottom;background-size:contain}
+.portraitCaption{z-index:2}
+.projectCard,.skillCard,.certificateCard{box-shadow:none}
+.portfolioContactChat{border-radius:3px;background:#0e0b0e}
+.portfolioContactHead{background:#170d13}
+.portfolioContactBody{background:#0d0b0e}
+@media(min-width:901px){.heroVisual{height:600px}.heroPortrait{min-height:600px}}
+@media(max-width:600px){.heroVisual{height:350px}.heroPortrait{min-height:350px}.heroEvidenceNote{padding-top:10px}}
