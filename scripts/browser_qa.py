@@ -17,7 +17,7 @@ def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Construyo experiencias digitales con propósito.").count() == 1,
+    expect(page.get_by_role("heading", name="Joshua Vallejo Sanchez").count() == 1,
            "Missing professional portfolio heading")
     expect(page.get_by_role("region", name="Asistente de contacto").count() == 1,
            "Portfolio contact assistant missing")
@@ -66,7 +66,7 @@ def audit(browser, width, label):
     print(f"PASS career homepage, responsive filters and navigation at {width}px", flush=True)
     for language, title in [("en", "Building digital experiences"), ("de", "Ich entwickle digitale Lösungen"), ("fr", "Je crée des expériences numériques"), ("pt", "Construo experiências digitais")]:
         page.goto(BASE + "/" + language, wait_until="networkidle")
-        expect(page.get_by_role("heading").filter(has_text=title).count() == 1, f"Missing localized heading for {language}")
+        expect(page.get_by_role("heading", name="Joshua Vallejo Sanchez").count() == 1, f"Missing localized heading for {language}")
         selected = page.get_by_role("group", name="Choose portfolio language").get_by_role("link", name={"en":"English","de":"Deutsch","fr":"Français","pt":"Português"}[language])
         expect(selected.get_attribute("aria-current") == "page", f"Current locale not indicated for {language}")
         download = page.get_by_role("link", name={"en":"Download English résumé (PDF)","de":"Lebenslauf auf Deutsch herunterladen (PDF)","fr":"Télécharger le CV en français (PDF)","pt":"Baixar currículo em português (PDF)"}[language])
