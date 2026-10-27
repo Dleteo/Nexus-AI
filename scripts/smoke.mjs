@@ -73,6 +73,14 @@ await checkPublicPage("/projects/nexus-ai", ["Nexus AI", "El problema", "Decisio
 await checkPublicPage("/projects/task-tracker", ["Task Tracker", "Lo que aprendí", "innerHTML"]);
 await checkPublicPage("/projects/hangman", ["Hangman Game", "Límites y trabajo pendiente"]);
 await checkPublicPage("/projects/nexus-foundation", ["Nexus Foundation", "Experimental", "Transformer"]);
+for (const [lang, sample] of [["en","The problem"],["de","Die Herausforderung"],["fr","Le problème"],["pt","O problema"]]) {
+  await checkPublicPage("/projects/nexus-ai?lang="+lang,[sample,"Nexus AI"]);
+  await checkPublicPage("/resume?lang="+lang,[lang==="en"?"PROFESSIONAL PROFILE":lang==="de"?"TECHNISCHE KENNTNISSE":lang==="fr"?"COMPÉTENCES TECHNIQUES":"COMPETÊNCIAS TÉCNICAS"]);
+  const response = await request("/api/resume/pdf?lang="+lang);
+  assert.equal(response.status,200);
+  assert.match(response.headers.get("content-type") ?? "",/application\\/pdf/i);
+  assert.ok((await response.arrayBuffer()).byteLength > 1000);
+}
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
