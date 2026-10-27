@@ -140,7 +140,7 @@ async function ready(){
 try{
   await listen(supabase,4311);
   await listen(ollama,11434);
-  child=spawn("npm",["run","start","--","--port","3113"],{env,stdio:["ignore","pipe","pipe"]});
+  child=spawn(process.execPath,["node_modules/next/dist/bin/next","start","--port","3113"],{env,stdio:["ignore","pipe","pipe"]});
   child.stdout.on("data",chunk=>{logs+=chunk.toString();});
   child.stderr.on("data",chunk=>{logs+=chunk.toString();});
   await ready();
