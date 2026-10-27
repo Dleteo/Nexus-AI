@@ -14,4 +14,5 @@ $$;
 grant usage on schema auth to authenticated;
 grant usage on schema public to authenticated, service_role;
 grant select, insert, update, delete on auth.users to service_role;
+alter default privileges in schema public grant all on tables to service_role;
 grant execute on function auth.uid() to authenticated;
