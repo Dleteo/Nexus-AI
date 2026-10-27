@@ -19,12 +19,14 @@ export type SupabaseConfig = {
 };
 
 export function getSupabaseConfig(): SupabaseConfig | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  // Explicit server configuration must override public build-time values. This
+  // also keeps isolated API tests on their local emulator after a public build.
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const apiKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
     process.env.SUPABASE_PUBLISHABLE_KEY ??
-    process.env.SUPABASE_ANON_KEY;
+    process.env.SUPABASE_ANON_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !apiKey) return null;
   return { url: url.replace(/\/$/, ""), apiKey };
 }
@@ -56,6 +58,8 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
     const response = await fetch(`${config.url}/auth/v1/user`, {
       headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` },
       cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+      redirect: "error",
     });
     if (response.ok) {
       const verifiedUser = await response.json() as SupabaseUser;
@@ -69,6 +73,8 @@ export async function getValidSession(session: AuthSession): Promise<AuthSession
     headers: { apikey: config.apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token: session.refresh_token }),
     cache: "no-store",
+    signal: AbortSignal.timeout(5000),
+    redirect: "error",
   });
   if (!response.ok) return null;
   const data = (await response.json()) as {

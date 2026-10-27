@@ -5,14 +5,63 @@ import {createRequire} from "node:module";
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
 
-async function importTs(path) {
+async function importTs(path, dependencies = {}) {
   const source = readFileSync(path, "utf8");
   const transpiled = ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
   const mod={exports:{}};
-  new Function("module","exports","require",transpiled)(mod,mod.exports,require);
+  new Function("module","exports","require",transpiled)(mod,mod.exports,
+    (name) => Object.hasOwn(dependencies,name) ? dependencies[name] : require(name));
   return mod.exports;
 }
 const {extractGroundingSources}=await importTs("lib/assistant-sources.ts");
+const {getSupabaseConfig}=await importTs("lib/supabase.ts",{"server-only":{}});
+const supabaseVariables=["SUPABASE_URL","SUPABASE_PUBLISHABLE_KEY","SUPABASE_ANON_KEY","NEXT_PUBLIC_SUPABASE_URL","NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY","NEXT_PUBLIC_SUPABASE_ANON_KEY"];
+const previousSupabaseVariables=new Map(supabaseVariables.map(name=>[name,process.env[name]]));
+try {
+  for (const name of supabaseVariables) delete process.env[name];
+  assert.equal(getSupabaseConfig(),null);
+  process.env.NEXT_PUBLIC_SUPABASE_URL="https://public.example.test/";
+  assert.equal(getSupabaseConfig(),null);
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY="public-anon";
+  assert.deepEqual(getSupabaseConfig(),{url:"https://public.example.test",apiKey:"public-anon"});
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="public-publishable";
+  assert.equal(getSupabaseConfig().apiKey,"public-publishable");
+  process.env.SUPABASE_URL="http://127.0.0.1:4311/";
+  process.env.SUPABASE_ANON_KEY="server-anon";
+  assert.deepEqual(getSupabaseConfig(),{url:"http://127.0.0.1:4311",apiKey:"server-anon"});
+  process.env.SUPABASE_PUBLISHABLE_KEY="server-publishable";
+  assert.deepEqual(getSupabaseConfig(),{url:"http://127.0.0.1:4311",apiKey:"server-publishable"});
+  delete process.env.SUPABASE_URL;
+  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  assert.equal(getSupabaseConfig(),null);
+} finally {
+  for (const [name,value] of previousSupabaseVariables) {
+    if (value===undefined) delete process.env[name];
+    else process.env[name]=value;
+  }
+}
+const {readAssistantAnswer}=await importTs("lib/assistant-response.ts");
+const providerAnswers={
+  ollama:text=>({message:{content:text}}),
+  gemini:text=>({candidates:[{content:{parts:[{text}]}}]}),
+  openai:text=>({output:[{content:[{type:"output_text",text}]}]}),
+};
+for (const [provider,response] of Object.entries(providerAnswers)) {
+  assert.equal(readAssistantAnswer(provider,response("  Test answer  ")),"Test answer");
+  assert.equal(readAssistantAnswer(provider,response(" ")),null);
+  assert.equal(readAssistantAnswer(provider,response("x".repeat(20_000))),"x".repeat(20_000));
+  assert.equal(readAssistantAnswer(provider,response("x".repeat(20_001))),null);
+  assert.equal(readAssistantAnswer(provider,response("😀".repeat(20_000))),"😀".repeat(20_000));
+  assert.equal(readAssistantAnswer(provider,response("😀".repeat(20_001))),null);
+  for (const malformed of [null,[],42,"invalid",{message:{content:{}}},
+    {candidates:{}},{candidates:[null]},{candidates:[{content:{parts:{}}}]},
+    {candidates:[{content:{parts:[null,{text:42}]}}]},
+    {output_text:{},output:{}},{output:[null,{content:{}},{content:[null,{type:"output_text",text:42}]}]},
+  ]) assert.equal(readAssistantAnswer(provider,malformed),null);
+}
+assert.equal(readAssistantAnswer("gemini",{candidates:[{content:{parts:[null,{text:"First "},{text:42},{text:"answer"}]}}]}),"First answer");
+assert.equal(readAssistantAnswer("openai",{output_text:" Direct answer "}),"Direct answer");
+assert.equal(readAssistantAnswer("openai",{output_text:{},output:[null,{content:[null,{type:"refusal",text:"hidden"},{type:"output_text",text:"Answer"}]}]}),"Answer");
 const gemini=extractGroundingSources("gemini",{candidates:[{groundingMetadata:{groundingChunks:[
  {web:{uri:"https://www.cisa.gov/known-exploited-vulnerabilities-catalog",title:"CISA"}},
  {web:{uri:"javascript:alert(1)",title:"Unsafe"}},
@@ -27,7 +76,97 @@ const openai=extractGroundingSources("openai",{output:[{content:[{annotations:[
 assert.equal(openai.length,1);
 assert.equal(openai[0].uri,"https://nvd.nist.gov/");
 assert.deepEqual(extractGroundingSources("ollama",{}),[]);
+for (const malformed of [null, [], 42, "invalid", {candidates:{}}, {candidates:[null]},
+ {candidates:[{groundingMetadata:{groundingChunks:{}}}]},
+ {candidates:[{groundingMetadata:{groundingChunks:[null, {web:42}]}}]},
+ {output:{}}, {output:[null, {content:{}}, {content:[null, {annotations:{}}]}]},
+ {output:[{content:[{annotations:[null, 42, {type:"url_citation",url:{}}]}]}]}]) {
+  assert.deepEqual(extractGroundingSources("gemini",malformed),[]);
+  assert.deepEqual(extractGroundingSources("openai",malformed),[]);
+}
+const citations=extractGroundingSources("openai",{output:[null,{content:[null,{annotations:[
+ null, {type:"url_citation",url:"https://user:secret@example.com/"},
+ {type:"url_citation",url:"http://example.com/"},
+ ...Array.from({length:8},(_,i)=>({type:"url_citation",url:`https://example.com/${i}`,title:" x ".repeat(200)})),
+]}]}]});
+assert.equal(citations.length,5);
+assert.equal(citations[0].uri,"https://example.com/0");
+assert.equal(citations[0].title.length,180);
+
+const {readAiProvider}=await importTs("lib/ai-runtime.ts");
+const providerVariables=["AI_PROVIDER","AI_PORTFOLIO_PROVIDER","AI_TECHNICAL_PROVIDER","GEMINI_API_KEY","GEMINI_MODEL","OPENAI_API_KEY","OPENAI_MODEL","OLLAMA_BASE_URL","OLLAMA_MODEL"];
+const previousVariables=new Map(providerVariables.map(name=>[name,process.env[name]]));
+const originalFetch=globalThis.fetch;
+try {
+  for (const name of providerVariables) delete process.env[name];
+  assert.equal(readAiProvider("technical"),null);
+  Object.assign(process.env,{AI_PROVIDER:" openai ",OPENAI_API_KEY:" test-key ",OPENAI_MODEL:" ",AI_PORTFOLIO_PROVIDER:"ollama",OLLAMA_MODEL:" local-model "});
+  assert.deepEqual(readAiProvider("technical"),{provider:"openai",model:"gpt-4.1-mini",key:"test-key"});
+  assert.deepEqual(readAiProvider("portfolio"),{provider:"ollama",model:"local-model",key:"",endpoint:"http://127.0.0.1:11434"});
+  process.env.AI_TECHNICAL_PROVIDER=" ";
+  assert.equal(readAiProvider("technical").provider,"openai");
+  process.env.OPENAI_API_KEY=" ";
+  assert.equal(readAiProvider("technical"),null);
+  process.env.AI_TECHNICAL_PROVIDER="gemini";
+  process.env.GEMINI_API_KEY=" ";
+  assert.equal(readAiProvider("technical"),null);
+  process.env.GEMINI_API_KEY="test-gemini";
+  assert.equal(readAiProvider("technical").provider,"gemini");
+  for (const endpoint of ["https://localhost:11434","http://example.com:11434","http://127.0.0.1:11434/path","http://user:secret@localhost:11434","http://localhost:11434?target=remote","http://localhost:11434/#fragment"]) {
+    process.env.OLLAMA_BASE_URL=endpoint;
+    assert.equal(readAiProvider("portfolio"),null,`Reject unsafe local endpoint ${endpoint}`);
+  }
+  for (const endpoint of ["http://localhost:11434","http://127.0.0.1:11434","http://[::1]:11434"]) {
+    process.env.OLLAMA_BASE_URL=endpoint;
+    assert.equal(readAiProvider("portfolio").provider,"ollama");
+  }
+  process.env.OLLAMA_MODEL=" ";
+  assert.equal(readAiProvider("portfolio"),null);
+
+  const dependencies={
+    "../../../../lib/session":{readSession:async()=>({access_token:"test-session"})},
+    "../../../../lib/supabase":{getSupabaseConfig:()=>({url:"http://database.test",apiKey:"test-publishable"})},
+    "../../../../lib/ai-runtime":{readAiProvider:()=>({provider:"ollama",model:"local-model",key:"",endpoint:"http://127.0.0.1:11434"})},
+  };
+  const {GET}=await importTs("app/api/assistant/status/route.ts",dependencies);
+  for (const [response,expected] of [
+    [()=>Response.json([]),"ready"],
+    [()=>Response.json({unexpected:"response"}),"database_unavailable"],
+    [()=>new Response("invalid JSON"),"database_unavailable"],
+    [()=>Response.json({code:"42703"},{status:400}),"database_migration_required"],
+    [()=>Response.json({code:"PGRST205"},{status:404}),"database_migration_required"],
+    [()=>Response.json({code:"PGRST301"},{status:401}),"database_unavailable"],
+    [()=>Response.json({error:"maintenance"},{status:503}),"database_unavailable"],
+    [()=>{throw new Error("timeout");},"database_unavailable"],
+  ]) {
+    globalThis.fetch=async()=>response();
+    const result=await GET();
+    assert.equal(result.status,200);
+    assert.equal(result.headers.get("cache-control"),"no-store");
+    const payload=await result.json();
+    assert.equal(payload.databaseReady,expected==="ready");
+    assert.equal(payload.assistants.length,2);
+    for (const assistant of payload.assistants) {
+      assert.equal(assistant.status,expected);
+      assert.equal(assistant.inferenceVerified,false);
+      assert.equal("key" in assistant,false);
+      assert.equal("endpoint" in assistant,false);
+    }
+  }
+  const {GET:signedOutStatus}=await importTs("app/api/assistant/status/route.ts",{
+    ...dependencies,
+    "../../../../lib/session":{readSession:async()=>null},
+  });
+  globalThis.fetch=async()=>{assert.fail("Signed-out readiness must not query the database");};
+  assert.equal((await signedOutStatus()).status,401);
+} finally {
+  globalThis.fetch=originalFetch;
+  for (const [name,value] of previousVariables) {
+    if (value===undefined) delete process.env[name];
+    else process.env[name]=value;
+  }
+}
 const route=readFileSync("app/api/assistant/chat/route.ts","utf8");
 assert.ok(route.indexOf('currentResearch && aiProvider === "ollama"') < route.indexOf('claim_assistant_request_for_user'));
 assert.match(route,/conversation\.scope !== scope/);
-console.log("PASS grounded provider citation extraction and early safety gates");
+console.log("PASS defensive citations, provider isolation, readiness diagnostics and early safety gates (simulated responses only)");

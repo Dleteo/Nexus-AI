@@ -5,18 +5,15 @@
 
 export type AssistantSource = { uri: string; title?: string };
 
-type GeminiGrounding = {
-  candidates?: Array<{
-    groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string; title?: string } }> };
-  }>;
-};
-type OpenAiOutput = {
-  output?: Array<{
-    content?: Array<{
-      annotations?: Array<{ type?: string; url?: string; title?: string }>;
-    }>;
-  }>;
-};
+function record(value: unknown): Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {};
+}
+
+function items(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
 
 function safeSource(uri: unknown, title?: unknown): AssistantSource | null {
   if (typeof uri !== "string" || uri.length > 2048) return null;
@@ -35,24 +32,38 @@ function safeSource(uri: unknown, title?: unknown): AssistantSource | null {
 
 export function extractGroundingSources(
   provider: "gemini" | "openai" | "ollama",
-  data: GeminiGrounding & OpenAiOutput,
+  data: unknown,
 ): AssistantSource[] {
-  const entries: Array<AssistantSource | null> =
-    provider === "gemini"
-      ? (data.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [])
-          .map((chunk) => safeSource(chunk.web?.uri, chunk.web?.title))
-      : provider === "openai"
-        ? (data.output ?? [])
-            .flatMap((item) => item.content ?? [])
-            .flatMap((item) => item.annotations ?? [])
-            .filter((annotation) => annotation.type === "url_citation")
-            .map((annotation) => safeSource(annotation.url, annotation.title))
-        : [];
-
+  // Successful HTTP responses still contain untrusted JSON. Malformed optional
+  // citations must never turn a generated/saved exchange into a failed request.
+  const payload = record(data);
+  const sources: AssistantSource[] = [];
   const seen = new Set<string>();
-  return entries.filter((source): source is AssistantSource => {
-    if (!source || seen.has(source.uri) || seen.size >= 5) return false;
+  function add(uri: unknown, title: unknown) {
+    const source = safeSource(uri, title);
+    if (!source || seen.has(source.uri)) return;
     seen.add(source.uri);
-    return true;
-  });
+    sources.push(source);
+  }
+
+  if (provider === "gemini") {
+    const candidate = record(items(payload.candidates)[0]);
+    const grounding = record(candidate.groundingMetadata);
+    for (const chunk of items(grounding.groundingChunks)) {
+      const web = record(record(chunk).web);
+      add(web.uri, web.title);
+      if (sources.length === 5) return sources;
+    }
+  } else if (provider === "openai") {
+    for (const output of items(payload.output)) {
+      for (const content of items(record(output).content)) {
+        for (const entry of items(record(content).annotations)) {
+          const annotation = record(entry);
+          if (annotation.type === "url_citation") add(annotation.url, annotation.title);
+          if (sources.length === 5) return sources;
+        }
+      }
+    }
+  }
+  return sources;
 }

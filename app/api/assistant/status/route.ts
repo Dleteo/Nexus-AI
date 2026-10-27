@@ -6,7 +6,7 @@ import { readAiProvider } from "../../../../lib/ai-runtime";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Status = "ready" | "not_configured" | "database_migration_required";
+type Status = "ready" | "not_configured" | "database_migration_required" | "database_unavailable";
 
 /**
  * Readiness is configuration-only. This endpoint NEVER calls paid model APIs,
@@ -18,6 +18,7 @@ export async function GET() {
 
   const config = getSupabaseConfig();
   let databaseReady = false;
+  let migrationRequired = false;
   if (config) {
     const response = await fetch(
       `${config.url}/rest/v1/assistant_conversations?select=scope&limit=0`,
@@ -30,7 +31,13 @@ export async function GET() {
         signal: AbortSignal.timeout(5000),
       },
     ).catch(() => null);
-    databaseReady = response?.ok === true;
+    const payload: unknown = await response?.json().catch(() => null);
+    databaseReady = response?.ok === true && Array.isArray(payload);
+    if (response && !response.ok) {
+      const code = payload !== null && typeof payload === "object" && "code" in payload ? payload.code : null;
+      // An outage or expired session is not evidence that a migration is missing.
+      migrationRequired = typeof code === "string" && ["42703", "42P01", "PGRST204", "PGRST205"].includes(code);
+    }
   }
 
   const statuses = (["portfolio", "technical"] as const).map((scope) => {
@@ -38,7 +45,7 @@ export async function GET() {
     const status: Status = !provider
       ? "not_configured"
       : !databaseReady
-        ? "database_migration_required"
+        ? migrationRequired ? "database_migration_required" : "database_unavailable"
         : "ready";
     return {
       scope,
