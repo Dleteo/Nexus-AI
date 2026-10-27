@@ -62,6 +62,10 @@ await checkPublicPage("/", [
   "Formación y",
   "Nexus AI",
 ]);
+await checkPublicPage("/en", ["Building digital experiences", "Selected projects", "Documented training hours"]);
+await checkPublicPage("/de", ["Ich entwickle digitale Lösungen", "Ausgewählte Projekte"]);
+await checkPublicPage("/fr", ["Je crée des expériences numériques", "Projets sélectionnés"]);
+await checkPublicPage("/pt", ["Construo experiências digitais", "Projetos selecionados"]);
 await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "PROYECTOS SELECCIONADOS", "Nexus AI", "COMPETENCIAS TÉCNICAS"]);
 await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
