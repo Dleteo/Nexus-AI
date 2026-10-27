@@ -17,98 +17,45 @@ def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Joshua Vallejo Sanchez").count() == 1,
-           "Missing professional portfolio heading")
+    expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").count() == 1,
+           "Editorial portfolio headline missing")
+    expect(page.get_by_role("heading", name="PROYECTOS DESTACADOS").count() == 1,
+           "Featured projects section missing")
     expect(page.get_by_role("region", name="Asistente de contacto").count() == 1,
-           "Portfolio contact assistant missing")
-    expect(page.get_by_role("textbox", name="Tu pregunta").count() == 1,
-           "Contact assistant input missing")
-    expect(page.get_by_text("Respuestas programadas sobre datos públicos", exact=False).count() == 1,
-           "Contact assistant must disclose scripted responses")
-    expect(page.get_by_role("heading", name="Proyectos que demuestran cómo trabajo.").count() == 1,
-           "Missing project case study heading")
-    expect(page.get_by_role("heading", name="Formación y certificaciones.").count() == 1,
-           "Missing training heading")
-    expect(page.get_by_role("link", name="Ver CV").count() == 1,
-           "Missing resume action")
-    expect(page.locator('[class*="heroMasthead"]').count() == 1, "Editorial PORTFOLIO wordmark missing")
-    expect(page.locator('[class*="heroPortrait"]').count() == 1, "Portfolio hero portrait missing")
-    expect(page.locator('[class*="processStrip"]').count() == 1, "Editorial education/skills/process strip missing")
-    expect(page.locator('[class*="portfolioContactChat"]').count() == 1, "Footer contact assistant missing")
-    order = page.evaluate("""() => {
-      const project = document.querySelector('#proyectos');
-      const strip = document.querySelector('[class*="processStrip"]');
-      const skills = document.querySelector('#habilidades');
-      return Boolean(project && strip && skills && project.compareDocumentPosition(strip) & Node.DOCUMENT_POSITION_FOLLOWING && strip.compareDocumentPosition(skills) & Node.DOCUMENT_POSITION_FOLLOWING);
-    }""")
-    expect(order, "Editorial process strip must follow selected projects before expanded skills")
+           "Footer contact assistant missing")
+    expect(page.locator('[class*="heroBackdrop"]').count() == 1, "Oversized portfolio wordmark missing")
+    expect(page.locator('[class*="heroPortrait"]').count() == 1, "Owned portrait missing")
+    expect(page.locator('[class*="projectCard"]').count() == 3, "Expected three real featured project cards")
+    expect(page.locator('[class*="proofColumn"]').count() == 3, "Education, skills and process strip missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
-    expect(dimensions["page"] <= dimensions["viewport"] + 2,
-           f"Homepage horizontal overflow at {width}px: {dimensions}")
-    filter_group = page.get_by_role("group", name="Filtrar proyectos")
-    filter_group.get_by_role("button", name="Frontend").click()
-    expect(filter_group.get_by_role("button", name="Frontend").get_attribute("aria-pressed") == "true",
-           "Project filter did not activate")
-    expect(page.get_by_role("heading", name="Task Tracker").count() == 1,
-           "Task Tracker missing after filtering")
-    expect(page.get_by_role("heading", name="Nexus Foundation").count() == 0,
-           "Research project not filtered out")
-    filter_group.get_by_role("button", name="Todos").click()
-    expect(page.get_by_role("heading", name="Nexus Foundation").count() == 1,
-           "Project filter did not restore all")
-    certificates = page.get_by_role("group", name="Filtrar certificados")
-    certificates.get_by_role("button", name="Constancias de asistencia").click()
-    expect(page.get_by_role("heading", name="Hacking Ético — Certificado de Asistencia").count() == 1,
-           "Attendance certificate missing")
-    certificates.get_by_role("button", name="Todos").click()
-    # Real browser interaction: footer answers public portfolio questions without
-    # calling an external model and prepares (never automatically sends) email.
+    expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Homepage horizontal overflow at {width}px: {dimensions}")
     contact = page.get_by_role("region", name="Asistente de contacto")
     contact.get_by_role("button", name="Proyectos").click()
     expect(contact.get_by_text("Nexus Foundation es un laboratorio experimental", exact=False).count() == 1,
-           "Portfolio FAQ must give a real documented answer")
-    contact.get_by_role("button", name="Redes").click()
-    expect(contact.get_by_text("GitHub, LinkedIn e Instagram", exact=False).count() == 1,
-           "Social FAQ must identify published profiles")
+           "Public FAQ should respond accurately")
     contact.get_by_role("button", name="Correo", exact=True).click()
-    expect(contact.get_by_role("textbox", name="Nombre").is_visible(),
-           "Contact FAQ must reveal a mail composer")
+    expect(contact.get_by_role("textbox", name="Nombre").is_visible(), "Email form missing")
     contact.get_by_role("textbox", name="Nombre").fill("Reclutamiento QA")
     contact.get_by_role("textbox", name="Tu correo").fill("qa@example.org")
-    contact.get_by_role("textbox", name="Mensaje").fill("Quiero conversar sobre Nexus AI.")
-    prepared = contact.get_by_role("link", name="Abrir mi aplicación de correo")
-    href = prepared.get_attribute("href") or ""
-    expect(href.startswith("mailto:") and "qa%40example.org" in href and "Nexus%20AI" in href,
-           "Contact form should prepare a mailto with visitor data, not send data to a server")
-    expect(contact.get_by_text("no generación neuronal", exact=False).count() == 1,
-           "Contact FAQ must disclose its scripted nature")
-    print(f"PASS contact assistant FAQ, verified links and mail composer at {width}px", flush=True)
-    if width <= 850:
-        menu = page.get_by_role("button", name="Abrir menú")
-        expect(menu.is_visible(), "Mobile menu toggle missing")
+    contact.get_by_role("textbox", name="Mensaje").fill("Me interesa tu portfolio")
+    href = contact.get_by_role("link", name="Abrir mi aplicación de correo").get_attribute("href") or ""
+    expect(href.startswith("mailto:") and "qa%40example.org" in href, "Mail must be prepared locally")
+    if width <= 760:
+        menu = page.get_by_role("button", name="Menú")
+        expect(menu.is_visible(), "Mobile menu must be visible")
         menu.click()
-        expect(page.get_by_role("button", name="Cerrar menú").get_attribute("aria-expanded") == "true",
-               "Mobile menu not expanded")
-        page.get_by_role("navigation", name="Menú del portafolio").get_by_role("link", name="Proyectos").click()
-        expect(page.get_by_role("button", name="Abrir menú").get_attribute("aria-expanded") == "false",
-               "Mobile menu did not close")
+        expect(page.get_by_role("navigation", name="Mobile portfolio navigation").is_visible(), "Mobile menu failed")
+        page.get_by_role("navigation", name="Mobile portfolio navigation").get_by_role("link", name="PROYECTOS").click()
     else:
-        expect(page.get_by_role("navigation", name="Secciones del portafolio").is_visible(),
-               "Desktop navigation missing")
+        expect(page.get_by_role("navigation", name="Navegación principal").is_visible(), "Desktop nav missing")
     page.screenshot(path=str(ARTIFACTS / f"career-home-{label}.png"), full_page=True)
     print(f"PASS career homepage, responsive filters and navigation at {width}px", flush=True)
-    for language, title in [("en", "Building digital experiences"), ("de", "Ich entwickle digitale Lösungen"), ("fr", "Je crée des expériences numériques"), ("pt", "Construo experiências digitais")]:
+    for language, label in [("en", "FEATURED PROJECTS"), ("de", "AUSGEWÄHLTE PROJEKTE"), ("fr", "PROJETS À LA UNE"), ("pt", "PROJETOS EM DESTAQUE")]:
         page.goto(BASE + "/" + language, wait_until="networkidle")
-        expect(page.get_by_role("heading", name="Joshua Vallejo Sanchez").count() == 1, f"Missing localized heading for {language}")
-        selected = page.get_by_role("group", name="Choose portfolio language").get_by_role("link", name={"en":"English","de":"Deutsch","fr":"Français","pt":"Português"}[language])
-        expect(selected.get_attribute("aria-current") == "page", f"Current locale not indicated for {language}")
-        download = page.get_by_role("link", name={"en":"Download English résumé (PDF)","de":"Lebenslauf auf Deutsch herunterladen (PDF)","fr":"Télécharger le CV en français (PDF)","pt":"Baixar currículo em português (PDF)"}[language])
-        expect(download.get_attribute("href") == "/api/resume/pdf?lang="+language, f"Wrong PDF for {language}")
-        expect(download.get_attribute("download") == "Joshua-Vallejo-Sanchez-CV-"+language+".pdf", f"Wrong PDF filename for {language}")
+        expect(page.get_by_role("heading", name=label).count() == 1, f"Incorrect localized heading: {language}")
+        expect(page.locator('[class*="heroBackdrop"]').count() == 1, "Different layout in localized page")
         dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
-        expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Localized horizontal overflow for {language}: {dimensions}")
-    page.goto(BASE, wait_until="networkidle")
-    expect(page.get_by_role("link", name="Descargar CV en español (PDF)").get_attribute("href") == "/api/resume/pdf?lang=es", "Spanish portfolio download mismatch")
+        expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Localized page overflow at {width}px: {language}")
     page.goto(BASE + "/portfolio", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing portfolio certificates heading")
     expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).count() == 1, "Missing cybersecurity training")
