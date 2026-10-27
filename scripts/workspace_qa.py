@@ -174,12 +174,17 @@ def assistant_test(browser, width, label):
     ctx = create_context(browser, width, fake)
     page = ctx.new_page()
     page.goto(BASE + "/assistant", wait_until="networkidle")
-    page.get_by_role("heading", name="What are we working on?").wait_for()
+    page.get_by_role("heading", name="¿En qué trabajamos hoy?").wait_for()
     no_overflow(page, "assistant-" + label)
     page.screenshot(path=str(SHOTS / f"assistant-empty-{label}.png"), full_page=True)
     ensure(page.get_by_role("button", name="Mi portafolio").is_visible(), "Portfolio assistant workspace missing")
     ensure(page.get_by_role("button", name="Asistente técnico").is_visible(), "Technical assistant workspace missing")
-    page.get_by_role("button", name=re.compile("New conversation", re.I)).first.click()
+    page.get_by_role("button", name="Mi portafolio").click()
+    playwright_expect(page.get_by_role("button", name="Mi portafolio")).to_have_attribute("aria-pressed","true")
+    ensure(page.get_by_text("Revisar mi CV").is_visible(), "Portfolio quick action missing")
+    page.get_by_role("button", name="Asistente técnico").click()
+    playwright_expect(page.get_by_role("button", name="Asistente técnico")).to_have_attribute("aria-pressed","true")
+    page.get_by_role("button", name=re.compile("Nueva conversación", re.I)).first.click()
     page.get_by_role("heading", name="Let’s make the next step clear.").wait_for()
     page.get_by_role("group", name="Choose assistant mode").get_by_role("button", name="Planificar").click()
     playwright_expect(
@@ -202,7 +207,7 @@ def assistant_test(browser, width, label):
     ensure(page.get_by_role("button", name="Copy message 2").is_visible(),
            "Assistant response is missing a copy button")
     if width < 1024:
-        history_toggle = page.get_by_role("button", name=re.compile("Recent chats"))
+        history_toggle = page.get_by_role("button", name=re.compile("Historial reciente"))
         history_toggle.click()
         playwright_expect(history_toggle).to_have_attribute("aria-expanded", "true")
         ensure(page.locator("#assistant-history").is_visible(),
