@@ -60,7 +60,7 @@ def audit(browser, width, label):
     print(f"PASS career homepage, responsive filters and navigation at {width}px", flush=True)
     for language, title in [("en", "Building digital experiences"), ("de", "Ich entwickle digitale Lösungen"), ("fr", "Je crée des expériences numériques"), ("pt", "Construo experiências digitais")]:
         page.goto(BASE + "/" + language, wait_until="networkidle")
-        expect(page.get_by_role("heading", name=lambda name: title in name).count() == 1, f"Missing localized heading for {language}")
+        expect(page.get_by_role("heading").filter(has_text=title).count() == 1, f"Missing localized heading for {language}")
         selected = page.get_by_role("group", name="Choose portfolio language").get_by_role("link", name={"en":"English","de":"Deutsch","fr":"Français","pt":"Português"}[language])
         expect(selected.get_attribute("aria-current") == "page", f"Current locale not indicated for {language}")
         dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
