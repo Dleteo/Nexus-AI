@@ -193,7 +193,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.orbGlow} aria-hidden="true" />
-              <div className={styles.heroPortrait} role="img" aria-label={t("Retrato del desarrollador de su portafolio anterior","Developer portrait from the previous portfolio","Porträt aus dem früheren Portfolio","Portrait provenant de l’ancien portfolio","Retrato do portfólio anterior")}>
+              <div className={styles.heroPortrait} role="img" aria-label={t("Retrato del desarrollador de su portafolio anterior")}>
                 <div className={styles.portraitBackdrop} aria-hidden="true">NEXUS</div>
                 <div className={styles.portraitPhoto} aria-hidden="true"/>
                 <div className={styles.portraitCaption}><span>DEVELOPER / 2026</span><strong>{professionalProfile.name}</strong></div>
