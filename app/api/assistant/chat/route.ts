@@ -4,6 +4,7 @@ import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabas
 import { buildExpertiseInstructions, isExpertise } from "../../../../lib/assistant-expertise";
 import {isAssistantScope} from "../../../../lib/assistant-scopes";
 import {readAiProvider} from "../../../../lib/ai-runtime";
+import {runFoundationTechnical} from "../../../../lib/foundation-runtime";
 import {extractGroundingSources} from "../../../../lib/assistant-sources";
 import {fetchAssistantJson, isAssistantConversation, isAssistantMessage, isUuid, readAssistantBody} from "../../../../lib/assistant-api";
 import {readAssistantAnswer} from "../../../../lib/assistant-response";
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
   if (!isUuid(conversationId)) return NextResponse.json({ error: "Select a valid conversation." }, { status: 400 });
   if (typeof mode !== "string" || !["assistant", "plan", "debug", "explain", "interview"].includes(mode)) return NextResponse.json({ error: "Invalid assistant mode." }, { status: 400 });
   if (message.length < 1 || message.length > 4000) return NextResponse.json({ error: "Message must be between 1 and 4,000 characters." }, { status: 400 });
-  if (currentResearch && aiProvider === "ollama") return NextResponse.json({error:"The local model cannot browse the web. Disable recent research or choose a hosted provider."},{status:400});
+  if (currentResearch && (aiProvider === "ollama" || aiProvider === "foundation")) return NextResponse.json({error:"The local model cannot browse the web. Disable recent research or choose a hosted provider."},{status:400});
   if (scope === "portfolio" && currentResearch) return NextResponse.json({error:"Current research is available only for the technical assistant."},{status:400});
 
   const authHeaders = { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` };
@@ -107,6 +108,10 @@ export async function POST(request: Request) {
     web_search_call?: unknown;
   };
   let providerResponse: Awaited<ReturnType<typeof fetchAssistantJson>> | null = null;
+  const localTechnical = aiProvider === "foundation"
+    ? await runFoundationTechnical(message, message.toLowerCase().startsWith("fuentes:") ? "sources" : "guide", deadline)
+    : null;
+  if (aiProvider === "foundation" && !localTechnical) return NextResponse.json({error:"Local Nexus Foundation engine is unavailable or timed out."},{status:503});
 
   if (aiProvider === "gemini") {
     providerResponse = await fetchAssistantJson(
@@ -161,12 +166,12 @@ export async function POST(request: Request) {
     }, 25000);
   }
 
-  if (!providerResponse || providerResponse.status === 504) {
+  if ((!providerResponse && !localTechnical) || providerResponse?.status === 504) {
     return NextResponse.json({ error: "The AI provider did not respond in time. Please try again." }, { status: 504 });
   }
 
-  const providerData = providerResponse.data as ProviderData | null;
-  if (!providerResponse.ok && providerResponse.status >= 400) {
+  const providerData = (providerResponse?.data ?? null) as ProviderData | null;
+  if (providerResponse && !providerResponse.ok && providerResponse.status >= 400) {
     if (aiProvider === "gemini" && providerResponse.status === 429) {
       return NextResponse.json({
         error: "Gemini reached a request or free-tier quota limit. Wait a little and check your current limits in Google AI Studio.",
@@ -220,9 +225,11 @@ export async function POST(request: Request) {
     }, { status: 502 });
   }
 
-  const answer = readAssistantAnswer(aiProvider, providerData);
+  const answer = localTechnical?.answer ?? readAssistantAnswer(aiProvider, providerData);
   if (!answer) return NextResponse.json({ error: "The AI returned an invalid, empty or excessively long response. Please try a shorter question.", code: "AI_INVALID_RESPONSE" }, { status: 502 });
-  const sources = extractGroundingSources(aiProvider, providerData ?? {});
+  const sources = localTechnical
+    ? localTechnical.sources.filter(source => {try {const u=new URL(source.url);return u.protocol==="https:" && !u.username && !u.password;}catch{return false;}}).slice(0,5).map(source=>({uri:source.url,title:source.name}))
+    : extractGroundingSources(aiProvider, providerData ?? {});
 
   const saveResponse = await fetchAssistantJson(`${config.url}/rest/v1/rpc/save_assistant_exchange_for_user`, {
     method: "POST",
