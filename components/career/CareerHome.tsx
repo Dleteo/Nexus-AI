@@ -7,6 +7,7 @@ import { certifications, totalTrainingHours } from "../../data/certifications";
 import { selectedGithubProjects } from "../../data/github-projects";
 import { professionalProfile } from "../../data/profile";
 import styles from "./CareerHome.module.css";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 type Category = "all" | "product" | "frontend" | "research";
 type CredentialFilter = "all" | "Course completion" | "Attendance certificate";
@@ -163,7 +164,7 @@ export default function CareerHome() {
       <div className={styles.content}>
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}><span className={styles.liveDot}/><span>PORTAFOLIO DE DESARROLLADOR</span></div>
-          <nav className={styles.topbarActions} aria-label="Accesos rápidos">
+          <nav className={styles.topbarActions} aria-label="Accesos rápidos"><LanguageSwitcher language="es"/>
             <a href={professionalProfile.github} target="_blank" rel="noopener noreferrer" className={styles.topLink}>GitHub <Arrow external/></a>
             <Link href="/resume" className={styles.topButton}>Ver CV <Arrow/></Link>
             <button type="button" aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={mobileMenuOpen} aria-controls="career-mobile-nav" className={styles.menuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? "Cerrar" : "Menú"} <span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button>
