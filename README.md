@@ -11,7 +11,7 @@ Nexus AI is a portfolio project built with Next.js, React, TypeScript, Tailwind 
 - User-owned project creation, editing, archiving, restoration, and deletion, backed by Supabase Postgres and row-level security.
 - AI Assistant with modes for Copilot, planning, debugging, learning, and interview practice.
 - Persistent assistant conversations, message history, and a per-user daily request limit.
-- Gemini provider support, with optional OpenAI provider configuration; provider API keys remain server-side.
+- Two workspaces: **Nexus Portfolio** (advice and draft improvements; no autonomous deployment) and **Nexus Technical** (hardware, software, programming, defensive security).\n- Explicit model backends: local Ollama, Gemini, or OpenAI. API keys remain server-side; local Ollama runs only on server loopback.\n- Optional web-grounded research for hosted providers; local Ollama has no built-in live web search.
 - GitHub Actions CI for ESLint, TypeScript, and production builds.
 
 ## Tech stack
@@ -99,3 +99,18 @@ GitHub Actions runs the same checks for pull requests and pushes to `main`.
 ## Portfolio accuracy and case study
 
 Nexus AI is the principal featured case study for an aspiring Junior Web Developer. The portfolio distinguishes browser skills practiced directly from React/Next.js/Supabase features implemented using AI-assisted development. See [docs/portfolio-evidence.md](docs/portfolio-evidence.md) for the evidence and future visual redesign acceptance criteria. Nexus Foundation is described separately as experimental research; the hosted assistant uses an external provider, not that unfinished model. No paid developer experience, customers, published live product or unverified credentials are claimed.
+
+
+## Model independence, privacy and ownership
+
+The GitHub repository and application source are controlled by the repository owner. The local research repository **Nexus Foundation** is separate and is not the model behind Nexus AI. An external model provider retains ownership and licensing of its **own** model and infrastructure; using its API does not confer ownership of those model weights.
+
+**Nexus Portfolio** provides suggestions, draft text and planning only. It cannot autonomously edit the repository, merge a pull request or deploy production. Any future write-capable GitHub connector must require explicit, scoped approval and undergo review.
+
+**Nexus Technical** handles hardware diagnostics, software, programming, and **defensive** cybersecurity. Current vulnerability claims, firmware compatibility and 2026 software releases require evidence from the relevant vendor or independent advisories. Local models can be inaccurate and cannot browse the web through the current Ollama integration.
+
+Conversations are stored in Supabase and sent to the selected model provider for inference. When `AI_PROVIDER=ollama` is used, model inference is local to the application server; Supabase storage still follows its own separate hosting policy. Do not submit API tokens, passwords or private code to a third-party provider without appropriate authorization. Do not train Nexus Foundation on private conversations or third-party outputs without consent and a licensing review.
+
+**Important:** the technical and portfolio workspaces are separated by labeled conversation records, not by independent database partitions or encryption keys. This is organizational separation with request validation, **not** a claim of cryptographic isolation. Protect account credentials, Supabase RLS and deployment secrets.
+
+Read provider terms and verify model license, free-tier restrictions and quotas before deploying. No live, paid provider account is provisioned by this repository.
