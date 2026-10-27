@@ -67,6 +67,11 @@ class FakeWorkspace:
             if method == "DELETE":
                 self.projects = [p for p in self.projects if p["id"] != project_id]
                 return ok({"ok": True})
+        if path == "/api/assistant/status" and method == "GET":
+            return ok({"databaseReady": True, "assistants": [
+                {"scope": "portfolio", "status": "ready", "provider": "ollama", "inferenceVerified": False},
+                {"scope": "technical", "status": "not_configured", "provider": None, "inferenceVerified": False},
+            ]})
         if path == "/api/assistant/conversations":
             if method == "GET":
                 self.conversation_loads += 1
@@ -179,12 +184,14 @@ def assistant_test(browser, width, label):
     page = ctx.new_page()
     page.goto(BASE + "/assistant", wait_until="networkidle")
     page.get_by_role("heading", name="¿En qué trabajamos hoy?").wait_for()
+    page.get_by_role("status", name="Estado de configuración del asistente").get_by_text("MODELO NO CONFIGURADO").wait_for()
     no_overflow(page, "assistant-" + label)
     page.screenshot(path=str(SHOTS / f"assistant-empty-{label}.png"), full_page=True)
     ensure(page.get_by_role("button", name="Mi portafolio").is_visible(), "Portfolio assistant workspace missing")
     ensure(page.get_by_role("button", name="Asistente técnico").is_visible(), "Technical assistant workspace missing")
     page.get_by_role("button", name="Mi portafolio").click()
     playwright_expect(page.get_by_role("button", name="Mi portafolio")).to_have_attribute("aria-pressed","true")
+    page.get_by_role("status", name="Estado de configuración del asistente").get_by_text("CONFIGURADO · SIN PRUEBA REAL").wait_for()
     ensure(page.get_by_text("Revisar mi CV").is_visible(), "Portfolio quick action missing")
     page.get_by_role("button", name="Asistente técnico").click()
     playwright_expect(page.get_by_role("button", name="Asistente técnico")).to_have_attribute("aria-pressed","true")
