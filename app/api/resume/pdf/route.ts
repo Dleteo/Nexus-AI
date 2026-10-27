@@ -1,6 +1,7 @@
 import { certifications, totalTrainingHours } from "../../../../data/certifications";
 import { professionalProfile } from "../../../../data/profile";
 import { resumeCopy, type ResumeLang } from "../../../../data/resume-copy";
+import { isSiteLanguage } from "../../../../data/site-languages";
 
 export const runtime = "nodejs";
 
@@ -71,7 +72,8 @@ function makePdf(lang:ResumeLang):Uint8Array {
 }
 export async function GET(request:Request){
  const url=new URL(request.url);
- const lang:ResumeLang=url.searchParams.get("lang")==="en"?"en":"es";
+ const requested=url.searchParams.get("lang");
+ const lang:ResumeLang=requested&&isSiteLanguage(requested)?requested:"es";
  const bytes=makePdf(lang);
  const buffer=new ArrayBuffer(bytes.byteLength);
  new Uint8Array(buffer).set(bytes);
