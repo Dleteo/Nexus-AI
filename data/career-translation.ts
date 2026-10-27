@@ -172,8 +172,8 @@ const entries = [
  ],
  [
   "Construyo experiencias digitales",
-  "I build digital experiences",
-  "Ich entwickle digitale Erlebnisse",
+  "Building digital experiences",
+  "Ich entwickle digitale Lösungen",
   "Je crée des expériences numériques",
   "Construo experiências digitais"
  ],
