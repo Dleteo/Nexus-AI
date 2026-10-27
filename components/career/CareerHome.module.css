@@ -235,3 +235,16 @@
 .portfolioContactBody{background:#0d0b0e}
 @media(min-width:901px){.heroVisual{height:600px}.heroPortrait{min-height:600px}}
 @media(max-width:600px){.heroVisual{height:350px}.heroPortrait{min-height:350px}.heroEvidenceNote{padding-top:10px}}
+
+
+/* Large editorial typography, behind the real portrait and never clickable. */
+.hero{isolation:isolate}
+.heroMasthead{position:absolute;z-index:0;top:36px;left:0;width:100%;font-size:clamp(88px,15.8vw,265px);font-family:Impact,"Arial Narrow",Arial,sans-serif;font-weight:950;line-height:.82;letter-spacing:-.075em;color:#b80f22;white-space:nowrap;overflow:hidden;pointer-events:none;user-select:none;text-align:center;opacity:.76}
+.heroContent{z-index:3;padding-top:115px}
+.heroVisual{z-index:2}
+.heroPortrait{background:transparent}
+.portraitBackdrop{display:none}
+.portraitPhoto{filter:contrast(1.09) brightness(.94);background-position:50% bottom}
+.heroStatement{max-width:510px}
+@media(max-width:900px){.heroMasthead{font-size:clamp(76px,16vw,145px);top:20px}.heroContent{padding-top:90px}.heroVisual{z-index:2}}
+@media(max-width:600px){.heroMasthead{font-size:clamp(69px,18vw,100px);top:28px}.heroContent{padding-top:95px}.heroPortrait{background:radial-gradient(circle at 50% 40%,#4b0d19,#090608 80%)}}
