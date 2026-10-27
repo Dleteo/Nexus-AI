@@ -72,6 +72,9 @@ jobs:
       - name: Build production app
         run: npm run build
 
+      - name: Integration-test both assistant APIs with isolated model and database emulators
+        run: node scripts/assistant_integration_qa.mjs
+
       - name: Smoke-test compiled pages and signed-out routes
         run: |
           npm run start -- --port 3100 > /tmp/nexus-smoke.log 2>&1 &
