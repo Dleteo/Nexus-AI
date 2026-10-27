@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   if (title.length > 120) return NextResponse.json({ error: "Title must be 120 characters or fewer." }, { status: 400 });
   if (!["assistant", "plan", "debug", "explain", "interview"].includes(mode)) return NextResponse.json({ error: "Invalid assistant mode." }, { status: 400 });
   if (projectId !== null && (typeof projectId !== "string" || !/^[0-9a-f-]{36}$/i.test(projectId))) return NextResponse.json({ error: "Invalid project ID." }, { status: 400 });
-  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?select=id,title,mode,project_id,created_at,updated_at`, {
+  const response = await fetch(`${config.url}/rest/v1/assistant_conversations?select=id,title,scope,mode,project_id,created_at,updated_at`, {
     method: "POST",
     headers: { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json", Prefer: "return=representation" },
     body: JSON.stringify({ user_id: session.user.id, title, scope, mode, project_id: projectId }),
