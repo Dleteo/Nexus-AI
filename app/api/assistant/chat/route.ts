@@ -3,6 +3,7 @@ import { readSession } from "../../../../lib/session";
 import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabase";
 import { buildExpertiseInstructions, isExpertise } from "../../../../lib/assistant-expertise";
 import {isAssistantScope,scopeFromTitle} from "../../../../lib/assistant-scopes";
+import {readAiProvider} from "../../../../lib/ai-runtime";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -21,18 +22,12 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: "Sign in to use Nexus AI." }, { status: 401 });
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
-  const aiProvider = (process.env.AI_PROVIDER || (process.env.GEMINI_API_KEY ? "gemini" : "openai")).trim().toLowerCase();
-  if (aiProvider !== "gemini" && aiProvider !== "openai") {
-    return NextResponse.json({ error: "AI_PROVIDER must be either gemini or openai." }, { status: 503 });
-  }
-  const providerKey = aiProvider === "gemini" ? process.env.GEMINI_API_KEY : process.env.OPENAI_API_KEY;
-  if (!providerKey) {
-    const keyName = aiProvider === "gemini" ? "GEMINI_API_KEY" : "OPENAI_API_KEY";
-    return NextResponse.json({
-      error: `The ${aiProvider === "gemini" ? "Gemini" : "OpenAI"} provider is not configured. Add ${keyName} to .env.local and restart the development server.`,
-      code: "AI_PROVIDER_NOT_CONFIGURED",
-    }, { status: 503 });
-  }
+  const runtimeProvider = readAiProvider();
+  if (!runtimeProvider) return NextResponse.json({
+    error: "Configure AI_PROVIDER explicitly (gemini, openai or ollama) and its server-side credentials or local model.",
+    code: "AI_PROVIDER_NOT_CONFIGURED",
+  }, {status:503});
+  const {provider:aiProvider, model, key:providerKey, endpoint:localEndpoint} = runtimeProvider;
 
   const body = await request.json().catch(() => null) as { conversationId?: string; message?: string; mode?: Mode; expertise?: string; currentResearch?: boolean; scope?: string } | null;
   const conversationId = body?.conversationId ?? "";
@@ -94,6 +89,7 @@ export async function POST(request: Request) {
   type ProviderData = {
     output_text?: string;
     output?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
+    message?: { content?: string };
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string; title?: string } }> } }>;
     error?: { message?: string; type?: string; code?: string; status?: string };
     groundingMetadata?: { groundingChunks?: Array<{web?: {uri?:string; title?:string}}> };
@@ -103,7 +99,6 @@ export async function POST(request: Request) {
   let providerData: ProviderData | null = null;
 
   if (aiProvider === "gemini") {
-    const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
     providerResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
@@ -122,12 +117,12 @@ export async function POST(request: Request) {
         cache: "no-store",
       },
     ).catch(() => null);
-  } else {
+  } else if (aiProvider === "openai") {
     providerResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${providerKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
+        model,
         instructions: systemInstructions,
         input: [...history, { role: "user", content: message }].map((item) => ({ role: item.role, content: item.content })),
         ...(currentResearch ? {tools:[{type:"web_search"}]} : {}),
@@ -137,6 +132,26 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(25000),
       cache: "no-store",
     }).catch(() => null);
+  }
+
+  if (aiProvider === "ollama" && localEndpoint) {
+    if (currentResearch) return NextResponse.json({error:"Local Ollama has no web search integration; turn off recent research or use a configured hosted provider."},{status:400});
+    providerResponse = await fetch(localEndpoint + "/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model,
+        stream:false,
+        messages:[
+          {role:"system",content:systemInstructions},
+          ...history.map(item=>({role:item.role,content:item.content})),
+          {role:"user",content:message},
+        ],
+        options:{num_predict:1200},
+      }),
+      signal:AbortSignal.timeout(25000),
+      cache:"no-store",
+    }).catch(()=>null);
   }
 
   if (!providerResponse) {
@@ -193,12 +208,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       error: aiProvider === "gemini"
-        ? "Gemini could not complete the request. Check the API key, model availability, and provider status."
-        : "The AI service could not complete this request. Check provider configuration and billing.",
+        ? "Gemini could not complete the request. Check model availability and provider status."
+        : aiProvider === "ollama" ? "Local model could not complete the request. Check Ollama and installed model." : "The AI service could not complete this request. Check provider configuration and billing.",
     }, { status: 502 });
   }
 
-  const answer = aiProvider === "gemini"
+  const answer = aiProvider === "ollama" ? providerData?.message?.content?.trim() : aiProvider === "gemini"
     ? providerData?.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim()
     : (
       providerData?.output_text ||
