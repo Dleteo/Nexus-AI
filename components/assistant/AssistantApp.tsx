@@ -4,10 +4,11 @@ import Link from "next/link";
 import CrownMark from "../ui/CrownMark";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import MessageContent from "./MessageContent";
+import {expertises, type Expertise} from "../../lib/assistant-expertise";
 
 type Mode = "assistant" | "plan" | "debug" | "explain" | "interview";
 type Conversation = { id: string; title: string; mode: Mode; project_id: string | null; updated_at: string };
-type Message = { id?: string; role: "user" | "assistant"; content: string; created_at?: string };
+type Message = { sources?: Array<{uri:string;title?:string}>; id?: string; role: "user" | "assistant"; content: string; created_at?: string };
 const modes: { id: Mode; label: string; description: string }[] = [
   { id: "assistant", label: "Copilot", description: "Resuelve problemas y avanza con tu idea." },
   { id: "plan", label: "Planificar", description: "Convierte una idea en tareas concretas." },
@@ -21,6 +22,8 @@ export default function AssistantApp() {
   const [current, setCurrent] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
+  const [expertise, setExpertise] = useState<Expertise>("general");
+  const [currentResearch, setCurrentResearch] = useState(false);
   const [mode, setMode] = useState<Mode>("assistant");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -89,11 +92,11 @@ export default function AssistantApp() {
     try {
       const response = await fetch("/api/assistant/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversationId: current.id, message: content, mode }),
+        body: JSON.stringify({ conversationId: current.id, message: content, mode, expertise, currentResearch }),
       });
-      const data = await response.json() as { answer?: string; error?: string; requestsRemaining?: number };
+      const data = await response.json() as { answer?: string; error?: string; requestsRemaining?: number; sources?: Array<{uri:string;title?:string}>; researchRequested?:boolean };
       if (!response.ok || !data.answer) throw new Error(data.error ?? "No se pudo obtener una respuesta.");
-      setMessages((list) => [...list, { role: "assistant", content: data.answer! }]);
+      setMessages((list) => [...list, { role: "assistant", content: data.answer!, sources: data.sources ?? [] }]);
       setRemaining(data.requestsRemaining ?? null);
       setConversations((list) => list.map((item) => item.id === current.id ? { ...item, mode, title: item.title === "New conversation" ? content.slice(0, 80) : item.title, updated_at: new Date().toISOString() } : item).sort((a,b) => b.updated_at.localeCompare(a.updated_at)));
     } catch (cause) {
@@ -213,6 +216,7 @@ export default function AssistantApp() {
                   <button type="button" aria-label={`Copy message ${index + 1}`} onClick={() => void copyMessage(message.content, index)} className="rounded-lg border border-[#34322F] bg-[#1D1E20] px-2.5 py-1 text-[11px] font-medium text-[#D9B77B] transition hover:bg-[#34322F]">{copiedMessage === index ? "Copied!" : "Copy"}</button>
                 </div>
                 <MessageContent content={message.content} />
+                {message.sources && message.sources.length > 0 && <div className="mt-3 border-t border-[#34322F] pt-3 text-xs"><p className="mb-2 font-semibold text-[#A7D8B2]">Fuentes consultadas</p>{message.sources.map((source,index)=><a key={source.uri+index} className="block break-all py-1 text-[#A7D8B2] underline" href={source.uri} target="_blank" rel="noopener noreferrer">{source.title || source.uri} ↗</a>)}</div>}
               </article>
             </div>)}
             <div ref={endOfMessages} aria-hidden="true" />
@@ -220,6 +224,14 @@ export default function AssistantApp() {
             {error && <p role="alert" className="rounded-xl border border-[#8D5456] bg-[#3C2628] px-4 py-3 text-sm text-[#FFB0A9]">{error}</p>}
           </div>
 
+          <div className="flex flex-wrap items-center gap-3 border-t border-[#34322F] bg-[#111214] px-4 py-3 text-xs sm:px-5">
+            <label htmlFor="assistant-specialty" className="font-semibold text-[#D9B77B]">Especialidad</label>
+            <select id="assistant-specialty" value={expertise} onChange={event=>setExpertise(event.target.value as Expertise)} className="rounded-lg border border-[#73552B] bg-[#1D1E20] px-3 py-2 text-[#F4F1EB]">
+              {expertises.map(item=><option key={item} value={item}>{({general:"General",hardware:"Hardware",software:"Software",cybersecurity:"Ciberseguridad"})[item]}</option>)}
+            </select>
+            <label className="flex cursor-pointer items-center gap-2 text-[#D9B77B]"><input type="checkbox" checked={currentResearch} onChange={event=>setCurrentResearch(event.target.checked)} disabled={sending} className="size-4 accent-[#D9B77B]"/>Consultar fuentes recientes</label>
+            <span className="text-[#BDB6AB]">La búsqueda depende del proveedor. No compartas datos sensibles.</span>
+          </div>
           <form onSubmit={sendMessage} className="border-t border-[#493A25] bg-[#0B0A09] p-3 sm:p-5">
             <label htmlFor="assistant-message" className="sr-only">Your message</label>
             <div className="rounded-2xl border border-[#B58749]/80 bg-[#121110] p-3 shadow-[0_0_22px_-15px_rgba(242,185,92,.7)] transition focus-within:border-[#F1C77E] focus-within:shadow-[0_0_18px_-10px_rgba(240,183,83,.8)] sm:p-4">
