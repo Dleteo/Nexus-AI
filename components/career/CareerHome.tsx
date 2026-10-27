@@ -197,7 +197,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             </div>
             <div className={styles.heroVisual}>
               <div className={styles.heroPortrait} role="img" aria-label={t("Retrato del desarrollador de su portafolio anterior")}>
-                <div className={styles.portraitBackdrop} aria-hidden="true">N</div>
+                <div className={styles.portraitBackdrop} aria-hidden="true">NEXUS</div>
                 <div className={styles.portraitPhoto} aria-hidden="true"/>
                 <div className={styles.portraitCaption}><span>DEVELOPER / 2026</span><strong>{professionalProfile.name}</strong></div>
               </div>
@@ -209,13 +209,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
             </div>
           </section>
 
-          <section className={styles.metrics} aria-label={t("Indicadores documentados")}>
-            <div><strong>{totalTrainingHours.toLocaleString(language==="es"?"es-ES":language, { maximumFractionDigits: 1 })} <span>h</span></strong><small>{t("Formación documentada")}</small></div>
-            <div><strong>{certifications.length.toString().padStart(2, "0")}</strong><small>{t("Certificados y constancias")}</small></div>
-            <div><strong>11</strong><small>{t("Repositorios revisados en GitHub*")}</small></div>
-            <div><strong>01</strong><small>{t("Producto principal con IA")}</small></div>
-          </section>
-          <p className={styles.metricsNote}>{t("* Conteo revisado el 26/10/2026. Las horas de cursos no se presentan como horas de programación; el registro de práctica se añadirá cuando haya datos medibles.")}</p>
+          <p className={styles.heroEvidenceNote}>{t("* Conteo revisado el 26/10/2026. Las horas de cursos no se presentan como horas de programación; el registro de práctica se añadirá cuando haya datos medibles.")}</p>
 
           <section className={styles.section} id="proyectos" aria-labelledby="projects-title">
             <div className={styles.sectionHeading}><div><p className={styles.sectionKicker}>{t("01 / TRABAJO SELECCIONADO")}</p><h2 id="projects-title">{t("Proyectos que demuestran")} <em>{t("cómo trabajo.")}</em></h2><p>{t("Una selección breve con objetivos, decisiones técnicas y acceso a código real.")}</p></div><a className={styles.textLink} href={professionalProfile.github} target="_blank" rel="noopener noreferrer">{t("Ver repositorios")} <Arrow external/></a></div>
