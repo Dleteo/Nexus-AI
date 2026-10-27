@@ -8,6 +8,7 @@ import { selectedGithubProjects } from "../../data/github-projects";
 import { professionalProfile } from "../../data/profile";
 import styles from "./CareerHome.module.css";
 import LanguageSwitcher from "./LanguageSwitcher";
+import FeaturedTechnicalChat from "./FeaturedTechnicalChat";
 import {cvDownloadPath,cvFileName,cvDownloadLabels,cvPath,type SiteLanguage} from "../../data/site-languages";
 import {careerTranslate} from "../../data/career-translation";
 
@@ -194,7 +195,7 @@ export default function CareerHome({language="es"}:{language?:SiteLanguage}) {
               <div className={styles.orbGlow} aria-hidden="true" />
               <div className={styles.heroPreviewCard}>
                 <div className={styles.heroPreviewTop}><span>{t("FEATURED WORK / 001")}</span><span className={styles.blueIndicator}/></div>
-                <ProjectVisual project={projects[0]} language={language}/>
+                <FeaturedTechnicalChat language={language}/>
                 <div className={styles.heroPreviewCaption}><div><span>{t("PROYECTO DESTACADO")}</span><strong>Nexus AI Workspace</strong></div><Link href="#proyectos" aria-label={t("Ir al proyecto Nexus AI")}><Arrow/></Link></div>
               </div>
               <span className={styles.visualFootnote}>{t("Código real. Progreso demostrable.")}</span>
