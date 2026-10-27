@@ -248,3 +248,27 @@
 .heroStatement{max-width:510px}
 @media(max-width:900px){.heroMasthead{font-size:clamp(76px,16vw,145px);top:20px}.heroContent{padding-top:90px}.heroVisual{z-index:2}}
 @media(max-width:600px){.heroMasthead{font-size:clamp(69px,18vw,100px);top:28px}.heroContent{padding-top:95px}.heroPortrait{background:radial-gradient(circle at 50% 40%,#4b0d19,#090608 80%)}}
+
+
+/* Shared editorial proof-of-work strip, not invented career claims. */
+.processStrip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:95px;border-top:1px solid #6c2532;border-bottom:1px solid #6c2532;background:#0b090b}
+.processColumn{min-width:0;padding:30px 25px 35px;border-right:1px solid #5a2630}
+.processColumn:first-child{padding-left:0}
+.processColumn:last-child{padding-right:0;border-right:0}
+.processColumn h3{font-size:clamp(18px,2vw,25px);line-height:1.1;letter-spacing:-.04em;font-weight:850;margin:0 0 12px;display:flex;justify-content:space-between;gap:12px}
+.processColumn h3 span{color:#f04456}
+.processIntro{min-height:44px;color:#b9a5ab;font-size:11px;line-height:1.6}
+.processEducation>div{display:grid;grid-template-columns:55px 1fr;gap:10px;border-bottom:1px solid #3f222b;padding:12px 0}
+.processEducation>div>span{color:#ff5264;font-size:11px;font-weight:800}
+.processEducation strong{display:block;font-size:12px;line-height:1.35;color:#f2e7e9}
+.processEducation small{display:block;font-size:10px;color:#b39da3;margin-top:4px}
+.processColumn>a{display:inline-block;color:#ff8591;font-size:11px;margin-top:18px}
+.processSkillTags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.processSkillTags span{border:1px solid #66404a;border-radius:3px;font-size:11px;padding:9px 11px;color:#ead5d9}
+.processCaution{font-size:10px;color:#b19ca4;line-height:1.6;margin-top:16px}
+.processSteps{list-style:none;margin:0;padding:0}
+.processSteps li{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:10px 0}
+.processSteps li>span{font-size:19px;font-weight:900;color:#ef4053}
+.processSteps strong{display:block;color:#ff6070;font-size:11px;letter-spacing:.08em}
+.processSteps p{font-size:11px;color:#c6b0b6;line-height:1.55;margin:4px 0 0}
+@media(max-width:900px){.processStrip{grid-template-columns:1fr;gap:0}.processColumn{border-right:0;border-bottom:1px solid #5a2630;padding:25px 0}.processColumn:last-child{border:0}.processIntro{min-height:0}}
