@@ -1,4 +1,3 @@
-import "server-only";
 import { spawn } from "node:child_process";
 import { isAbsolute, win32 } from "node:path";
 
