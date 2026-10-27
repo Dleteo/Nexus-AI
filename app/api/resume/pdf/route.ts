@@ -27,13 +27,13 @@ function makePdf(lang:ResumeLang):Uint8Array {
  const d=resumeCopy[lang], p=professionalProfile;
  const pages:string[][]=[[]];let y=782;
  const newPage=()=>{pages.push([]);y=782;};
- function line(value:string, size=9, bold=false, indent=0, step=13) {
+ function line(value:string, size=9, bold=false, indent=0, step=10.5) {
   if(y<55)newPage();
   pages[pages.length-1].push("BT /"+(bold?"F2":"F1")+" "+size+" Tf 1 0 0 1 "+(42+indent)+" "+y+" Tm "+pdfLiteral(value)+" Tj ET");
   y-=step;
  }
  const body=(s:string,limit=92)=>{for(const l of wrap(s,limit))line(l);};
- const section=(heading:string)=>{if(y<100)newPage();y-=9;line(heading.toUpperCase(),10,true,0,19);};
+ const section=(heading:string)=>{if(y<100)newPage();y-=5;line(heading.toUpperCase(),10,true,0,15);};
  line(p.name,21,true,0,30);line(d.role+" | "+d.headline,9,false,0,15);
  line(p.location+" | github.com/Dleteo"+(p.linkedin?" | LinkedIn: "+p.linkedin:""),8,false,0,18);
  section(d.headings.profile);body(d.summary);
@@ -47,7 +47,7 @@ function makePdf(lang:ResumeLang):Uint8Array {
  for(const c of certifications)body(c.title+" | "+c.issuer+" | "+c.hours+" h | "+(c.credentialType==="Course completion"?d.completedLabel:d.attendanceLabel),111);
  section(d.headings.research);body(d.research);
  section(d.headings.languages);body(d.languages);
- y-=6;body(d.footnote,112);
+ y-=3;body(d.footnote,112);
  const objects:string[]=[""];
  const push=(obj:string)=>{objects.push(obj);return objects.length-1;};
  const catalog=push("");const pageRoot=push("");
