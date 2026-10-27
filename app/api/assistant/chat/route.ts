@@ -4,6 +4,7 @@ import { getSupabaseConfig, getSupabaseSecretKey } from "../../../../lib/supabas
 import { buildExpertiseInstructions, isExpertise } from "../../../../lib/assistant-expertise";
 import {isAssistantScope} from "../../../../lib/assistant-scopes";
 import {readAiProvider} from "../../../../lib/ai-runtime";
+import {extractGroundingSources} from "../../../../lib/assistant-sources";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -41,6 +42,8 @@ export async function POST(request: Request) {
   if (!/^[0-9a-f-]{36}$/i.test(conversationId)) return NextResponse.json({ error: "Select a valid conversation." }, { status: 400 });
   if (!["assistant", "plan", "debug", "explain", "interview"].includes(mode)) return NextResponse.json({ error: "Invalid assistant mode." }, { status: 400 });
   if (message.length < 1 || message.length > 4000) return NextResponse.json({ error: "Message must be between 1 and 4,000 characters." }, { status: 400 });
+  if (currentResearch && aiProvider === "ollama") return NextResponse.json({error:"The local model cannot browse the web. Disable recent research or choose a hosted provider."},{status:400});
+  if (scope === "portfolio" && currentResearch) return NextResponse.json({error:"Current research is available only for the technical assistant."},{status:400});
 
   const authHeaders = { apikey: config.apiKey, Authorization: `Bearer ${session.access_token}` };
   const conversationResponse = await fetch(`${config.url}/rest/v1/assistant_conversations?id=eq.${encodeURIComponent(conversationId)}&select=id,title,scope,mode,project_id`, { headers: authHeaders, cache: "no-store" });
@@ -134,7 +137,6 @@ export async function POST(request: Request) {
   }
 
   if (aiProvider === "ollama" && localEndpoint) {
-    if (currentResearch) return NextResponse.json({error:"Local Ollama has no web search integration; turn off recent research or use a configured hosted provider."},{status:400});
     providerResponse = await fetch(localEndpoint + "/api/chat",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -236,7 +238,6 @@ export async function POST(request: Request) {
     cache: "no-store",
   });
   if (!saveResponse.ok) return NextResponse.json({ error: "The answer was generated but could not be saved. Please try again before leaving this conversation." }, { status: 502 });
-  const rawSources = aiProvider === "gemini" ? providerData?.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [] : [];
-  const sources = rawSources.map(x=>x.web).filter((x):x is {uri:string;title?:string}=>Boolean(x?.uri && /^https:\/\//.test(x.uri))).slice(0,5);
+  const sources = extractGroundingSources(aiProvider, providerData ?? {});
   return NextResponse.json({ answer, sources, researchRequested: currentResearch, requestsRemaining: usage[0].requests_remaining });
 }
