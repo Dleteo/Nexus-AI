@@ -59,3 +59,22 @@
   filter:none;
 }
 @media(max-width:430px){.heroPortrait{opacity:1}}
+
+
+/* Natural-color portrait handoff. Optional project asset has priority; until it is
+   installed, the original sketch remains visible with restrained color glazing.
+   This is an artistic reconstruction, not recovered original camera colors. */
+.heroPortrait{
+  background-image:
+    url("/portfolio/portrait-color-reconstruction.webp"),
+    radial-gradient(ellipse 33% 38% at 52% 41%, rgba(208,154,119,.80) 0%,rgba(203,150,115,.42) 63%,transparent 100%),
+    linear-gradient(180deg,rgba(102,152,189,.48) 0%,rgba(167,166,146,.26) 51%,rgba(33,42,50,.65) 100%),
+    url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");
+  background-size:cover,100% 100%,100% 100%,contain;
+  background-position:center bottom,center,center,center bottom;
+  background-repeat:no-repeat;
+  background-blend-mode:normal,color,color,normal;
+  background-color:#141013;
+  filter:none;
+  mix-blend-mode:normal;
+}
