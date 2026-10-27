@@ -57,16 +57,11 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkSignedOutApi("/api/assistant/status");
-await checkPublicPage("/", [
-  "Construyo experiencias digitales",
-  "Proyectos que demuestran",
-  "Formación y",
-  "Nexus AI",
-]);
-await checkPublicPage("/en", ["Building digital experiences", "Projects that show", "Documented training"]);
-await checkPublicPage("/de", ["Ich entwickle digitale Lösungen", "Projekte, die zeigen,"]);
-await checkPublicPage("/fr", ["Je crée des expériences numériques", "Des projets qui montrent"]);
-await checkPublicPage("/pt", ["Construo experiências digitais", "Projetos que mostram"]);
+await checkPublicPage("/", ["PORTFOLIO","PROYECTOS DESTACADOS","TRABAJEMOS","Nexus AI Workspace","NEXUS / CONTACT"]);
+await checkPublicPage("/en", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER"]);
+await checkPublicPage("/de", ["PORTFOLIO","AUSGEWÄHLTE PROJEKTE"]);
+await checkPublicPage("/fr", ["PORTFOLIO","PROJETS À LA UNE"]);
+await checkPublicPage("/pt", ["PORTFOLIO","PROJETOS EM DESTAQUE"]);
 await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "PROYECTOS SELECCIONADOS", "Nexus AI", "COMPETENCIAS TÉCNICAS"]);
 await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
