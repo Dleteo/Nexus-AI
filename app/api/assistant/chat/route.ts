@@ -89,7 +89,7 @@ export async function POST(request: Request) {
   type ProviderData = {
     output_text?: string;
     output?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; groundingMetadata?: {groundingChunks?: Array<{web?: {uri?:string;title?:string}}>}} }>;
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string; title?: string } }> } }>;
     error?: { message?: string; type?: string; code?: string; status?: string };
     groundingMetadata?: { groundingChunks?: Array<{web?: {uri?:string; title?:string}}> };
     web_search_call?: unknown;
