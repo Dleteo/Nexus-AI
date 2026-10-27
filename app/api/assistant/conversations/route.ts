@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { readSession } from "../../../../lib/session";
 import { getSupabaseConfig } from "../../../../lib/supabase";
+import {conversationTitle,isAssistantScope} from "../../../../lib/assistant-scopes";
 
 export const runtime = "nodejs";
 
@@ -23,8 +24,10 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: "Sign in to start a conversation." }, { status: 401 });
   const config = getSupabaseConfig();
   if (!config) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
-  const body = await request.json().catch(() => null) as { title?: string; mode?: string; projectId?: string | null } | null;
-  const title = body?.title?.trim() || "New conversation";
+  const body = await request.json().catch(() => null) as { title?: string; mode?: string; projectId?: string | null; scope?: string } | null;
+  const scope = body?.scope ?? "technical";
+  if (!isAssistantScope(scope)) return NextResponse.json({error:"Invalid assistant workspace."},{status:400});
+  const title = conversationTitle(scope);
   const mode = body?.mode ?? "assistant";
   const projectId = body?.projectId ?? null;
   if (title.length > 120) return NextResponse.json({ error: "Title must be 120 characters or fewer." }, { status: 400 });
