@@ -1,5 +1,7 @@
 # Traspaso para Codex — Nexus AI
 
+> **Actualización del 28/10/2026:** los cinco proyectos destacados (Workspace, Commerce, Studio, Monitor y Factory) ya cuentan con casos de estudio accesibles desde el portafolio, en cinco idiomas, y una guía de entrevista centrada en esos proyectos. Ver [AVANCE_CINCO_PROYECTOS_2026-10-28.md](AVANCE_CINCO_PROYECTOS_2026-10-28.md). Son mejoras de evidencia y UX; no habilitan ejecución P1 ni IA autónoma. Consultar CI del HEAD actual.
+
 **Fecha de referencia:** 28 de octubre de 2026.
 **Repositorio:** `Dleteo/Nexus-AI`
 **Rama de trabajo:** `feat/career-portfolio-20261026`
