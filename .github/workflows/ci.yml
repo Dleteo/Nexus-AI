@@ -80,6 +80,15 @@ jobs:
       - name: Test local SQLite backend and concurrent checkout
         run: python -m unittest discover -s labs/commerce -p "test_*.py" -v
 
+      - name: Integration-test optional localhost SQLite commerce API
+        run: |
+          set -e
+          demo_dir=$(mktemp -d)
+          NEXUS_LABS_SQLITE=1 NEXUS_COMMERCE_DB="$demo_dir/commerce.sqlite3" npm run dev -- --hostname 127.0.0.1 --port 3108 > /tmp/nexus-commerce-dev.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf "$demo_dir"' EXIT
+          node scripts/commerce_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-commerce-dev.log; exit 1; }
+
       - name: Build production app
         run: npm run build
 
