@@ -6,9 +6,10 @@ Nexus Software Factory is an **offline-first, local-only prototype** demonstrati
 
 1. **Proposal:** Write a request (10–500 characters) and choose feature/bug/refactor. It creates an auditable job and a fixed static-page implementation plan.
 2. **Review:** Inspect the plan and click an explicit approval checkbox. A separate action records approval before any artifact can be generated.
-3. **Generation:** Click **Generate and run static QA**. The Python backend constructs a small `index.html` and `styles.css` from fixed templates, plus a README and QA results. Input is HTML-escaped.
-4. **Quality checks:** Six deterministic assertions verify fixed filenames, heading content, local stylesheet, absence of script tags, bounded output and escaped text. These are **static validation checks**, not tests of generated executable code.
-5. **Artifact:** Download a ZIP with `index.html`, `styles.css`, `README.md`, and `qa-results.json`. Job status and ordered audit events persist in local SQLite.
+3. **Source review:** Click **Preview generated source** to inspect the fixed HTML/CSS/README and SHA-256 hashes before approving. The UI keeps the approval action disabled until the source preview is loaded. The API still requires explicit approval but does not maintain a server-side proof that a human inspected the source.
+4. **Generation:** Click **Generate and run static QA**. The Python backend constructs a small `index.html` and `styles.css` from fixed templates, plus a README, QA results and SHA-256 manifest. Input is HTML-escaped.
+5. **Quality checks:** Six deterministic assertions verify fixed filenames, heading content, local stylesheet, absence of script tags, bounded output and escaped text. These are **static validation checks**, not tests of generated executable code.
+6. **Artifact:** Download a ZIP with `index.html`, `styles.css`, `README.md`, and `qa-results.json`, and `manifest.json`. A ZIP is verified against its manifest again before download. SHA-256 protects against accidental corruption but is **not** a signature or proof that the code is safe. Job status and ordered audit events persist in local SQLite.
 
 SQLite enforces workflow transitions and ensures that concurrent requests cannot both complete the same build. Retains at most 40 jobs and lists the most recent 20.
 
@@ -30,8 +31,12 @@ Run `npm run dev`, open `http://localhost:3000/labs?lab=factory`, then choose **
 python -m unittest discover -s labs/factory -p "test_*.py" -v
 ```
 
-GitHub Actions also starts one Next.js dev server with disposable local databases for all four Labs, exercises the real HTTP endpoint, checks human approval, ZIP download and input escaping, and verifies that the Factory route is locked out of production.
+GitHub Actions also starts one Next.js dev server with disposable local databases for all four Labs, exercises the real HTTP endpoint, checks human approval, source preview, ZIP download, file integrity and input escaping, and verifies that the Factory route is locked out of production.
 
 ## Deliberate limitations / next stages
 
 The workflow currently supports **one fixed static landing-page template** regardless of feature/bug/refactor label. No dynamic planning intelligence, agent orchestration, code-writing model, GitHub PRs, sandboxed execution of generated code, actual unit tests of generated apps, continuous integration on generated projects or external deployments. Possible future steps: patch/diff preview, a disposable worktree, allowlisted test commands in a strict subprocess sandbox, optional user-installed local Ollama and a human-approved GitHub PR integration.
+
+## Security limitations for future Codex work
+
+The local source preview and ZIP use a deterministic allowlisted template. No generated JavaScript runs. The manifest is not signed and should not be interpreted as supply-chain attestation. Production builds return HTTP 503 for all Factory routes. Before ever supporting autonomous patches, repository code, executable generators or third-party users, introduce a sandbox with filesystem and network isolation, resource limits, strict allowlisted commands, reviewable diffs and a separate approval boundary. See [`docs/CODEX_NEXT_PHASE.md`](../../docs/CODEX_NEXT_PHASE.md).
