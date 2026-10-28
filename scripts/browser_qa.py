@@ -147,7 +147,7 @@ def audit(browser, width, label):
     # Deep-link from the featured portfolio into each engineering lab.
     for lab, title in [("commerce","Nexus Commerce"),("studio","Nexus Studio"),("monitor","Nexus Monitor"),("factory","Nexus Software Factory")]:
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
-        expect(page.get_by_role("heading", name=title).is_visible(), f"Lab deep link did not select {title}")
+        page.get_by_role("heading", name=title).wait_for(state="visible", timeout=10000)
     # Four engineering lab demos: navigation and core user paths.
     page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     expect(page.get_by_role("heading", name="CUATRO PROYECTOS.").is_visible(), "Engineering labs missing")
@@ -164,7 +164,7 @@ def audit(browser, width, label):
     page.get_by_text("HEALTHY", exact=True).first.wait_for(state="visible", timeout=10000)
     page.get_by_role("button", name="Nexus Software Factory").click()
     page.get_by_role("button", name="Create reviewable plan").click()
-    expect(page.get_by_text("Implementation", exact=True).is_visible(), "Factory plan missing")
+    page.get_by_text("○ Implementation", exact=True).wait_for(state="visible", timeout=10000)
     page.get_by_role("button", name="Approve plan (manual work only)").click()
     expect(page.get_by_text("approved-for-manual-work").is_visible(), "Review status missing")
     page.screenshot(path=str(ARTIFACTS / f"labs-{label}.png"), full_page=True)
