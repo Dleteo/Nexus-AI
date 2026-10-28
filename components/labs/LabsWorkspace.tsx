@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import FactoryExecutionStatus from "./FactoryExecutionStatus";
 import LabQuickStart from "./LabQuickStart";
@@ -375,7 +375,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
     setNotice("");
     window.history.replaceState(null,"",window.location.pathname+"?lab="+nextLab);
   }
-  function labNavigationKeyDown(event:React.KeyboardEvent<HTMLElement>){
+  function labNavigationKeyDown(event:KeyboardEvent<HTMLElement>){
     const keys=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"];
     if(!keys.includes(event.key))return;
     event.preventDefault();
