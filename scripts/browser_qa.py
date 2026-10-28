@@ -220,6 +220,12 @@ def audit(browser, width, label):
     page.goto(BASE + "/interview", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Presentación profesional para entrevistas").is_visible(), "Missing interview guide")
     expect(page.locator("details").count() >= 5, "Expected interview practice questions")
+    expect(page.get_by_role("heading", name="Cinco proyectos para explicar ante entrevistadores").count() == 1,
+           "Five-project interview walkthrough missing")
+    expect(page.get_by_role("link", name="Ver caso de estudio").count() == 5,
+           "Interview guide must link exactly five featured case studies")
+    expect(page.get_by_text("¿Software Factory es una IA que programa sola?").count() == 1,
+           "Factory limitations must be rehearsable in the interview guide")
     page.goto(BASE + "/projects/nexus-ai", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Nexus AI", exact=True).is_visible(), "Missing case study")
     page.goto(BASE + "/login", wait_until="networkidle")
