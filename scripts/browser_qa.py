@@ -25,6 +25,15 @@ def audit(browser, width, label):
            "Footer contact assistant missing")
     expect(page.locator('[class*="heroBackdrop"]').count() == 1, "Oversized portfolio wordmark missing")
     expect(page.locator('[class*="heroPortrait"]').count() == 1, "Owned portrait missing")
+    portrait = page.locator('[class*="heroPortrait"]')
+    applied_mask = portrait.evaluate("(el) => getComputedStyle(el).maskImage")
+    expect("portrait-silhouette-mask.svg" in applied_mask,
+           "Background removal mask is not applied to the portrait")
+    mask_asset = page.request.get(BASE + "/portfolio/portrait-silhouette-mask.svg")
+    expect(mask_asset.status == 200, "Background removal asset could not be loaded")
+    image_asset = page.request.get(BASE + "/portfolio/portrait-color-reconstruction.webp")
+    expect(image_asset.status == 200, "Original portrait image missing")
+
     expect(page.locator('[class*="projectCard"]').count() == 3, "Expected three real featured project cards")
     expect(page.locator('[class*="proofColumn"]').count() == 3, "Education, skills and process strip missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
