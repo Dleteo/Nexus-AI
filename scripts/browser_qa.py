@@ -84,6 +84,21 @@ def audit_featured_case_studies(browser):
             page.get_by_role("heading", name=title, exact=True).wait_for(state="visible", timeout=15000)
             expect(page.locator('section[aria-label] input[type="checkbox"]').count() == 4,
                    f"Interview prep checklist missing: {language} {slug}")
+            challenge = page.get_by_role("region", name={
+                "es":"Desafío técnico","en":"Architecture challenge",
+                "de":"Architekturaufgabe","fr":"Défi d'architecture",
+                "pt":"Desafio de arquitetura",
+            }[language])
+            expect(challenge.get_by_role("button").count() == 3, f"Architecture choices missing: {language} {slug}")
+            if language == "es":
+                correct_index = {
+                    "nexus-ai":1,"nexus-commerce":2,"nexus-studio":0,
+                    "nexus-monitor":1,"nexus-software-factory":2,
+                }[slug]
+                challenge.get_by_role("button").nth(correct_index).click()
+                expect(challenge.get_by_role("status").is_visible(), f"Learning feedback missing: {slug}")
+                challenge.get_by_role("button", name="Intentar otra vez").click()
+
             if language == "es" and slug == "nexus-ai":
                 region = page.get_by_role("region", name="Prepara cómo explicar este proyecto")
                 region.get_by_role("checkbox").first.check()
@@ -263,6 +278,12 @@ def audit(browser, width, label):
     expect(page.get_by_role("button", name="Add to cart").count() == 1, "Category filter did not work")
     page.get_by_role("combobox", name="Category").select_option("all")
     page.get_by_role("button", name="Add to cart").first.click()
+    page.get_by_role("button", name="Add one Mechanical Keyboard").click()
+    expect(page.get_by_text("Mechanical Keyboard × 2").is_visible(),
+           "Cart quantity increase failed")
+    page.get_by_role("button", name="Remove one Mechanical Keyboard").click()
+    expect(page.get_by_text("Mechanical Keyboard × 1").is_visible(),
+           "Cart quantity decrease failed")
     page.get_by_role("button", name="Place demo order").click()
     expect(page.get_by_role("button", name="Export demo orders CSV").is_enabled(),
            "Commerce CSV export should unlock after a demo order")
@@ -280,6 +301,24 @@ def audit(browser, width, label):
     expect(page.get_by_text("Build something remarkable.", exact=True).count() >= 1, "Undo text edit failed")
     page.get_by_role("button", name="Redo", exact=True).click()
     expect(page.get_by_text("Browser editor test", exact=True).count() >= 1, "Redo text edit failed")
+
+    studio_json = ('{"format":"nexus-studio-document","version":1,'
+                   '"source":"browser-simulation","blocks":'
+                   '[{"id":"hero-new","type":"hero","text":"Imported locally"}]}')
+    page.locator("#studio-import-json").set_input_files({
+        "name":"nexus-studio-document.json",
+        "mimeType":"application/json",
+        "buffer":studio_json.encode("utf-8"),
+    })
+    page.get_by_text("Validated preview: 1 blocks").wait_for(state="visible")
+    expect(page.get_by_text("Browser editor test", exact=True).count() >= 1,
+           "Review-only import should not replace current editor")
+    page.get_by_role("button", name="Replace editor with preview").click()
+    page.get_by_text("Imported locally", exact=True).first.wait_for(state="visible")
+    page.get_by_role("button", name="Undo", exact=True).click()
+    expect(page.get_by_text("Browser editor test", exact=True).count() >= 1,
+           "Imported Studio document must be undoable")
+
     page.get_by_role("button", name="Nexus Monitor").click()
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Monitor SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
@@ -288,6 +327,7 @@ def audit(browser, width, label):
     page.get_by_text("HEALTHY", exact=True).first.wait_for(state="visible", timeout=10000)
     expect(page.get_by_text("p95 successful latency:", exact=False).is_visible(), "Monitor p95 missing")
     expect(page.get_by_role("button", name="Export manual samples CSV").is_enabled(), "Monitor CSV export missing")
+    expect(page.get_by_role("region", name="Manual incident analysis").is_visible(), "Manual incident analysis missing")
     page.get_by_role("button", name="Nexus Software Factory").click()
     page.get_by_role("button", name="Use local Factory").click()
     page.get_by_text("Local Factory unavailable.", exact=False).wait_for(state="visible", timeout=10000)
