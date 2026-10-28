@@ -33,7 +33,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [notice,setNotice]=useState("");
   const [ready,setReady]=useState(false);
   const isSpanish=language==="es";
-  useEffect(()=>{setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);},[]);
+  useEffect(()=>{const frame=requestAnimationFrame(()=>{setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
   useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,inventory,cart,orders,blocks,checks,proposals]);
   const btn="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-red-400 disabled:opacity-40";
   const primary="rounded-xl bg-[#de4e65] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#bc304c] focus-visible:outline-2 focus-visible:outline-white disabled:opacity-40";
