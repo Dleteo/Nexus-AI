@@ -151,4 +151,17 @@ for (const [method, options] of [
 }
 console.log("PASS production Monitor SQLite backend remains disabled");
 
+// A factory that can produce source artifacts is never remotely accessible in production.
+for(const [method, options] of [
+  ["GET", {}],
+  ["POST", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"propose",request:"Build a website starter",kind:"feature"})}],
+]){
+  const response=await request("/api/labs/factory",options);
+  assert.equal(response.status,503,"Factory write API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason,"local-backend-disabled");
+}
+const artifactResponse=await request("/api/labs/factory?artifact=1234567890abcdef1234567890abcdef");
+assert.equal(artifactResponse.status,503,"Factory artifact download must be disabled in production");
+console.log("PASS production Factory pipeline and artifacts remain disabled");
+
 console.log("All production HTTP smoke checks passed.");
