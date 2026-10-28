@@ -105,6 +105,17 @@ Archivos: `lib/labs-insights.mjs` + `lib/labs-insights.d.mts`, `scripts/labs_ins
 - Capturas incluidas en `qa-screenshots/` y publicadas en el artefacto `nexus-qa-screenshots` para revisión visual posterior.
 
 **Alcance:** auditoría automática seleccionada, **no certificación WCAG**, evaluación con lector de pantalla ni cobertura exhaustiva de colores o interacciones. No se cambió la ejecución P1, producción ni servicios externos.
+## Preparación de la experiencia del reclutador — asistente de contacto
+
+**Problema detectado:** el asistente público de contacto seguía describiendo como principales los proyectos antiguos Nexus Foundation, Task Tracker y Hangman, aunque el portafolio ya destaca Workspace, Commerce, Studio, Monitor y Factory. Además, la pregunta «Nexus Technical» podía quedar clasificada como consulta general de proyectos por contener «Nexus».
+
+**Correcciones:**
+- `components/career/PortfolioContactChat.tsx`: reemplaza las respuestas de proyectos por las cinco demostraciones presentes, en es/en/de/fr/pt, con límites concretos. Al seleccionar «Proyectos/Projects/Projekte/Projets/Projetos», muestra cinco enlaces a sus casos de estudio con el idioma conservado.
+- La clasificación de Nexus Technical tiene prioridad sobre el término genérico Nexus; el asunto técnico informa que necesita inicio de sesión y motor configurado, sin inventar inferencia real.
+- El tema de la respuesta se conserva como estado explícito para no confundir la traducción del botón con la detección de intenciones. El formulario de correo anuncia `aria-controls` y tiene un grupo etiquetado. No se envía correo automáticamente.
+- `scripts/browser_qa.py`: pruebas sobre las cinco páginas, enlaces exactos, preguntas técnicas escritas y apertura/cierre accesible del formulario de correo.
+
+**Límites:** respuestas por reglas sobre información del portafolio, no un LLM propio entrenado. Sin servicios externos, cambios de identidad pública ni operaciones de correo enviadas por servidor. El CI del HEAD actual debe completar todas las pruebas antes de declarar la entrega aprobada.
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
