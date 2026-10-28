@@ -105,3 +105,35 @@
 
 /* Use the same installed portrait asset for the CV, across all locales. */
 .heroPhoto::before{background-image:url("/portfolio/portrait-color-reconstruction.webp");filter:none;background-size:cover;background-position:50% 32%}
+
+
+/* Readable, keyboard-accessible screen CV. Print/PDF layout stays unchanged. */
+@media screen{
+  .resumePage :is(a,summary,button):focus-visible{
+    outline:3px solid #ffb5c3;outline-offset:3px
+  }
+  .minimalControls .langPicker summary,.backButton{min-height:44px}
+  .langMenu a{min-height:44px;display:flex;align-items:center}
+  .langMenu a:focus-visible,.langMenu a[aria-current="page"]{background:#75283c}
+  .actionLink,.projectItem,.pill,.cta{min-height:44px}
+}
+@media screen and (max-width:650px){
+  .summary,.infoCard p,.timelineItem p,.learning small,.projectItem small,
+  .subtle,.note,.location,.foot{
+    font-size:clamp(12px,3.3vw,14px);line-height:1.65
+  }
+  .infoCard,.projectItem{padding:15px}
+  .projectItem strong,.timelineItem strong,.learning strong{font-size:13px;line-height:1.5}
+  .role{font-size:clamp(12px,3.2vw,14px);line-height:1.5}
+  .skillGrid span,.pill{font-size:12px;line-height:1.4}
+  .columns,.bottom{gap:20px}
+  .minimalControls{flex-wrap:wrap}
+  .minimalControls .langPicker summary,.backButton{min-height:44px;font-size:12px}
+}
+@media screen and (prefers-reduced-motion:reduce){
+  .resumePage *, .resumePage *::before, .resumePage *::after{
+    scroll-behavior:auto!important;
+    animation-duration:0.01ms!important;
+    transition-duration:0.01ms!important
+  }
+}
