@@ -253,6 +253,17 @@ def audit(browser, width, label):
            "Interview guide must link exactly five featured case studies")
     expect(page.get_by_text("¿Software Factory es una IA que programa sola?").count() == 1,
            "Factory limitations must be rehearsable in the interview guide")
+    compare = page.get_by_role("region", name="Compara las cinco arquitecturas")
+    expect(compare.is_visible(), "Interview project comparison is missing")
+    compare.get_by_label("Primer proyecto").select_option("nexus-commerce")
+    compare.get_by_label("Segundo proyecto").select_option("nexus-studio")
+    expect(compare.get_by_role("heading", name="Nexus Commerce").count() == 1,
+           "Commerce architecture should appear in comparison")
+    expect(compare.get_by_role("heading", name="Nexus Studio").count() == 1,
+           "Studio architecture should appear in comparison")
+    compare.get_by_label("Segundo proyecto").select_option("nexus-commerce")
+    expect(compare.get_by_text("Has elegido el mismo proyecto.", exact=False).is_visible(),
+           "Comparison must indicate identical selections")
     page.goto(BASE + "/projects/nexus-ai", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Nexus AI", exact=True).is_visible(), "Missing case study")
     page.goto(BASE + "/login", wait_until="networkidle")
@@ -279,6 +290,10 @@ def audit(browser, width, label):
     page.get_by_role("combobox", name="Category").select_option("all")
     page.get_by_role("button", name="Add to cart").first.click()
     page.get_by_role("button", name="Add one Mechanical Keyboard").click()
+    cart_review = page.get_by_role("region", name="Cart price breakdown")
+    expect(cart_review.is_visible(), "Itemized demo cart estimate missing")
+    expect(cart_review.get_by_text("Total estimated:", exact=False).is_visible(),
+           "Cart total estimate must be visible")
     expect(page.get_by_text("Mechanical Keyboard × 2").is_visible(),
            "Cart quantity increase failed")
     page.get_by_role("button", name="Remove one Mechanical Keyboard").click()
@@ -291,6 +306,8 @@ def audit(browser, width, label):
     page.get_by_role("button", name="Nexus Studio").click()
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "HTML editor export missing")
     expect(page.get_by_role("button", name="Export blocks JSON").is_visible(), "Studio JSON export missing")
+    expect(page.get_by_role("region", name="Studio static content audit").is_visible(),
+           "Studio limited content audit missing")
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Studio SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "Browser editor must remain usable without SQLite")
@@ -328,6 +345,10 @@ def audit(browser, width, label):
     expect(page.get_by_text("p95 successful latency:", exact=False).is_visible(), "Monitor p95 missing")
     expect(page.get_by_role("button", name="Export manual samples CSV").is_enabled(), "Monitor CSV export missing")
     expect(page.get_by_role("region", name="Manual incident analysis").is_visible(), "Manual incident analysis missing")
+    manual_window = page.get_by_role("region", name="Manual sample window")
+    expect(manual_window.is_visible(), "Monitor sample window missing")
+    manual_window.get_by_label("Select sample window").select_option("5")
+    expect(manual_window.get_by_text("Samples in window").is_visible(), "Sample window summary missing")
     page.get_by_role("button", name="Nexus Software Factory").click()
     page.get_by_role("button", name="Use local Factory").click()
     page.get_by_text("Local Factory unavailable.", exact=False).wait_for(state="visible", timeout=10000)
