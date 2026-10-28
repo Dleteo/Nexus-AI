@@ -188,3 +188,27 @@
   .projectCard{transition:none}
   .projectCard:hover{transform:none}
 }
+
+
+/* Keyboard accessibility and touch ergonomics without changing the editorial layout. */
+.page :is(a,button,summary,input,select,textarea):focus-visible{
+  outline:3px solid #ffb2c2;
+  outline-offset:3px;
+}
+.page main:focus{outline:none}
+.skip{left:12px}
+.skip:focus-visible{top:8px;left:12px;border-radius:4px;box-shadow:0 6px 22px #0009}
+.mobileNav a:focus-visible,.languageOptions a:focus-visible{
+  background:#522331;color:#fff
+}
+@media (max-width:760px){
+  .mobileNav a{display:flex;align-items:center;min-height:44px;border-bottom:1px solid #48212c}
+  .menuToggle,.languages summary,.cv{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .projectCard a:focus-visible{outline-offset:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  .page *, .page *::before, .page *::after{
+    scroll-behavior:auto!important;animation-duration:0.01ms!important;
+    transition-duration:0.01ms!important
+  }
+}
