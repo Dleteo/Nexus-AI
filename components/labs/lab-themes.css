@@ -40,3 +40,30 @@
 .factory-pipeline section{border-color:#775035;background:linear-gradient(145deg,#30241b,#211b18)}
 .factory-pipeline [role="status"]{border-color:#926039}
 @media(max-width:600px){.lab-product-banner{min-height:160px}.lab-product-banner-art{opacity:.11}.lab-product-banner p{max-width:38ch}}
+
+/* Application composition: commerce reads as a store, Studio as a canvas,
+   Monitor as telemetry, and Factory as a review pipeline. */
+.commerce-storefront [aria-label="Product catalog"]>div:first-child{padding:16px;border:1px solid #28685a;border-radius:16px;background:#102b25}
+.commerce-storefront [aria-label="Product catalog"] article{overflow:hidden;box-shadow:0 14px 35px -28px #000}
+.commerce-storefront [aria-label="Product catalog"] article>div[aria-hidden="true"]{border:1px solid #397b68;border-radius:13px}
+.commerce-storefront [aria-label="Product catalog"] article h3{letter-spacing:-.025em}
+.commerce-storefront [aria-label="Product catalog"] article p{overflow-wrap:anywhere}
+.commerce-storefront [aria-label="Cart price breakdown"]{border-color:#28685a;background:#0c201b}
+.studio-designer>div:nth-child(n+2){min-width:0}
+.studio-designer [class*="xl:grid-cols-"]>aside{box-shadow:inset 3px 0 #c5a6ff}
+.studio-designer [class*="xl:grid-cols-"]>aside button{transition:border-color .16s,background-color .16s}
+.studio-designer [class*="xl:grid-cols-"]>aside button:hover{border-color:#bda0de}
+.monitor-console [role="img"]{border-radius:12px;background:repeating-linear-gradient(0deg,transparent 0 23px,#34617c45 24px),linear-gradient(180deg,#101e2b,#0a1822);padding:14px}
+.monitor-console [role="img"]>div{min-width:3px}
+.monitor-console section h3{color:#e8f8ff}
+.factory-pipeline [aria-label="Factory job board"]{background:#211a15}
+.factory-pipeline [aria-label="Local factory pipeline counts"]>div{border:1px solid #775035;background:#2b2119}
+.factory-pipeline textarea,.factory-pipeline select{border-color:#775035;background:#17120f}
+.nexus-lab-workspace :is(input,select,textarea){max-width:100%}
+.nexus-lab-workspace :is(button,a){overflow-wrap:anywhere}
+@media(max-width:480px){
+  .nexus-lab-shell [data-lab-navigation] button{font-size:12px;min-height:78px}
+  .nexus-lab-shell [data-lab-navigation] strong{font-size:13px;line-height:1.3}
+  .nexus-lab-workspace .lab-product-banner{padding:19px}
+  .nexus-lab-workspace .lab-product-banner strong{font-size:32px}
+}
