@@ -139,3 +139,10 @@
 .factory-pipeline [aria-label="Factory job board"]{border-left:3px solid #dc9d5d}
 @media(max-width:1023px){.nexus-lab-shell [data-lab-navigation]{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.commerce-storefront .commerce-cart{position:relative;top:auto}}
 @media(max-width:640px){.nexus-lab-shell .nexus-lab-workspace{padding:10px;border-radius:14px}.commerce-storefront .commerce-catalog{padding:10px}.studio-designer .studio-editor-layout{padding:7px}.studio-designer .studio-editor-layout>aside{min-height:0}}
+
+/* Dedicated pages: links have the same geometry as legacy lab-switch buttons. */
+.nexus-lab-shell [data-lab-navigation] a{display:block;min-width:0;width:100%;border-radius:12px;text-decoration:none;transition:border-color .16s,background-color .16s}
+.nexus-lab-shell [data-lab-navigation] a[aria-current="page"]{border-color:var(--lab-accent);background:var(--lab-accent-soft);box-shadow:inset 4px 0 var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] a:hover{border-color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] a span{color:var(--lab-accent)}
+.nexus-lab-shell [data-standalone="true"]{min-height:100vh}
