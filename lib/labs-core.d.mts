@@ -13,3 +13,7 @@ export function buildFactoryProposal(request:string,kind?:string):FactoryProposa
 
 export function observedAvailability(checks:ReadonlyArray<Check>):{sampleCount:number;percent:number|null;minMs:number|null;maxMs:number|null};
 export function renderFactoryIssueMarkdown(proposal:FactoryProposal|null):string;
+
+export function filterProducts(inventory:ReadonlyArray<Product>,search?:string,category?:string):Product[];
+export function successfulLatencyP95(checks:ReadonlyArray<Check>):number|null;
+export function reviewFactoryPlan(plan:FactoryProposal,explicitApproval:boolean):FactoryProposal;
