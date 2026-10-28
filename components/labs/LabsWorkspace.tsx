@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import FactoryExecutionStatus from "./FactoryExecutionStatus";
+import "./lab-themes.css";
 import LabQuickStart from "./LabQuickStart";
 import {summarizeCart,auditStudioBlocks,summarizeSampleWindow,summarizeFactoryBoard} from "../../lib/labs-insights.mjs";
 import {setCartQuantity,parseStudioDocument,summarizeManualIncidents,filterFactoryJobs} from "../../lib/labs-demo-tools.mjs";
@@ -387,18 +388,18 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
     const buttons=event.currentTarget.querySelectorAll<HTMLButtonElement>("button");
     buttons[nextIndex]?.focus();
   }
-  return <main lang={language} className="min-h-screen bg-[#111115] px-4 py-8 text-[#f6f0ee] sm:px-8">
+  return <main lang={language} data-lab={active} className="nexus-lab-shell min-h-screen px-4 py-8 text-[#f6f0ee] sm:px-8">
     <div className="mx-auto max-w-7xl">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div><p className="text-xs font-semibold uppercase tracking-[.3em] text-[#ed8797]">NEXUS / ENGINEERING LABS</p><h1 className="mt-2 text-4xl font-black tracking-tight sm:text-6xl">{isSpanish?"CUATRO PROYECTOS.":"FOUR PROJECTS."}</h1><p className="mt-2 max-w-2xl text-sm text-stone-400">{isSpanish?"Prototipos interactivos con lógica real. Los límites de cada módulo se muestran con transparencia.":"Interactive prototypes with real application logic. Capabilities and limitations are disclosed."}</p></div>
         <Link href={language==="es"?"/":"/"+language} className={btn}>{isSpanish?"← Volver al portafolio":"← Back to portfolio"}</Link>
       </header>
       <div className="grid gap-5 lg:grid-cols-[245px_1fr]">
-        <nav aria-label="Nexus labs" onKeyDown={labNavigationKeyDown} className="flex flex-wrap content-start gap-2 lg:flex-col">
+        <nav data-lab-navigation aria-label="Nexus labs" onKeyDown={labNavigationKeyDown} className="flex flex-wrap content-start gap-2 lg:flex-col">
           {projects.map((p,index)=><button key={p.id} type="button" aria-pressed={active===p.id} aria-controls="nexus-active-lab" onClick={()=>selectLab(p.id)} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></button>)}
         </nav>
-        <div id="nexus-active-lab" role="region" aria-label="Active engineering lab" className="min-w-0 space-y-5">
-          <div className={card}><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-2xl font-bold">{projects.find(p=>p.id===active)?.name}</h2><span className="rounded-full border border-amber-500/40 px-3 py-1 text-xs text-amber-200">LOCAL MVP · NO PRODUCTION</span></div><Link href={"/projects/"+labStudySlugs[active]+"?lang="+language} className="mt-4 inline-flex items-center rounded-lg border border-[#db6b83] px-4 py-2 text-sm font-semibold text-[#f2a6b8] hover:border-[#f1adbc] hover:text-white focus-visible:outline-2 focus-visible:outline-white">{({es:"Leer arquitectura y pruebas",en:"Read architecture and tests",de:"Architektur und Tests",fr:"Architecture et tests",pt:"Arquitetura e testes"} as const)[language]} <span className="ml-2" aria-hidden="true">↗</span></Link>
+        <div id="nexus-active-lab" role="region" aria-label="Active engineering lab" className="nexus-lab-workspace min-w-0 space-y-5">
+          <div className={card+" nexus-lab-intro"}><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-2xl font-bold">{projects.find(p=>p.id===active)?.name}</h2><span className="rounded-full border border-amber-500/40 px-3 py-1 text-xs text-amber-200">LOCAL MVP · NO PRODUCTION</span></div><Link href={"/projects/"+labStudySlugs[active]+"?lang="+language} className="mt-4 inline-flex items-center rounded-lg border border-[#db6b83] px-4 py-2 text-sm font-semibold text-[#f2a6b8] hover:border-[#f1adbc] hover:text-white focus-visible:outline-2 focus-visible:outline-white">{({es:"Leer arquitectura y pruebas",en:"Read architecture and tests",de:"Architektur und Tests",fr:"Architecture et tests",pt:"Arquitetura e testes"} as const)[language]} <span className="ml-2" aria-hidden="true">↗</span></Link>
             <p className="mt-2 text-sm leading-6 text-stone-400">{active==="commerce"?"Product catalog, cart and simulated checkout. Optional local SQLite transactions; no real payments or public database.":active==="studio"?"Build a landing page, edit text, reorder elements and export safe static HTML.":active==="monitor"?"Checks the health endpoint of this application only. No arbitrary external targets or background polling.":"Rule-based task planning and human-review workflow. No AI inference, repository edits or automatic code execution."}</p><LabQuickStart language={language} lab={active}/>
           </div>
           {notice&&<p role="status" className="rounded-lg border border-white/15 bg-white/5 p-3 text-sm">{notice}</p>}
