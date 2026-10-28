@@ -77,6 +77,20 @@ Archivos: `lib/labs-insights.mjs` + `lib/labs-insights.d.mts`, `scripts/labs_ins
 
 **Límites:** siguen intactos el bloqueo en producción, el modo gratuito/local, la propiedad del repositorio y el aislamiento P1 sin verificar. Ninguna métrica presentada acredita pagos, accesibilidad certificada, disponibilidad continua, inferencia de IA real o ejecución de código generado.
 
+## Pulido de accesibilidad, móvil y navegación (28 de octubre)
+
+**Fase de cierre visual y de usabilidad sin cambios de producción:**
+
+- **Workspace / página principal:** el enlace de salto a contenido ahora apunta al landmark real; el menú móvil comunica \`aria-expanded\` y \`aria-controls\`, se cierra con Escape y devuelve el foco al botón. Se reforzaron los estados de foco, las áreas táctiles y la preferencia de movimiento reducido en CSS sin sustituir el retrato ni cambiar el tema editorial.
+- **Commerce, Studio, Monitor y Software Factory:** la navegación entre laboratorios comunica selección con \`aria-pressed\`, vincula botones y panel activo mediante \`aria-controls\`, y permite ArrowRight/ArrowDown/ArrowLeft/ArrowUp, Home y End conservando URL compartible. Cada laboratorio tiene una **guía de tres pasos en es/en/de/fr/pt**, con limitaciones reales y sin funciones falsas.
+- **CV:** textos secundarios más legibles en teléfonos, controles de idioma/regreso con áreas táctiles de 44 px y indicadores de foco de teclado. Los estilos se limitaron a \`@media screen\`, conservando el aspecto de impresión/PDF y la fotografía existente.
+- **Casos de estudio:** al abrir una demo desde su caso de estudio se mantiene el idioma seleccionado; se prueban las 20 combinaciones (4 laboratorios × 5 idiomas).
+- **Pruebas:** \`scripts/browser_qa.py\` verifica foco tras Escape, salto a contenido, controles de CV móvil, navegación de laboratorios con teclado, cinco guías traducidas y conservación de idioma al visitar las demos. Se mantienen las suites de TypeScript, HTTP/SQLite, CV, asistentes y visual responsive ya existentes.
+
+**Seguridad y honestidad:** Studio/Commerce/Monitor/Factory mantienen sus capacidades y límites descritos, Factory P1 permanece desactivada, no se ejecuta código desconocido, no hay pagos, sandbox ni inferencia real nueva. No se instalaron proveedores de IA ni servicios de pago. El PR debe continuar abierto.
+
+**Validación:** antes de reportar éxito, comprobar que la ejecución CI terminada corresponde al SHA HEAD actual de \`feat/career-portfolio-20261026\`. No reclamar una puntuación formal de accesibilidad WCAG: esta fase verifica interacciones concretas, pero no sustituye una auditoría completa con lectores de pantalla.
+
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
