@@ -47,6 +47,22 @@ Archivos de implementación: `lib/labs-exports.mjs`, `lib/labs-exports.d.mts`, `
 
 Estas son exportaciones de datos visibles y notas personales, no informes de auditoría independientes. No se ha habilitado ejecutar código ajeno ni instalado un modelo de IA.
 
+## Fase funcional: cinco mejoras adicionales (28 de octubre)
+
+Esta fase agrega interacción real sin habilitar servicios externos, pagos ni código generado ejecutable:
+
+1. **Commerce**: botones para aumentar y disminuir las cantidades del carrito dentro del stock disponible. `setCartQuantity` rechaza cantidades fraccionarias, negativas, productos desconocidos e inventarios inconsistentes; no cambia transacciones del backend.
+2. **Studio**: importar únicamente un documento JSON con formato `nexus-studio-document` v1. Antes de cambiar bloques, el usuario ve una vista previa validada y decide si reemplaza el editor. Hay límite de archivo, IDs únicos, esquema restringido y Undo. En SQLite importa como **cambios sin guardar**, no como revisión falsamente persistida.
+3. **Monitor**: analizar de forma transparente el número de rachas consecutivas de fallos, racha actual, máxima y muestras lentas, calculado solamente sobre muestras manuales; **no mide disponibilidad continua**.
+4. **Factory**: tablero de trabajos SQLite que permite filtrar por `proposed/approved/built` y buscar solicitudes sin mutar ni ejecutar nada. Las aprobaciones, ZIP y pruebas del backend mantienen los límites de Codex.
+5. **Nexus AI Workspace / portafolio**: desafío interactivo de arquitectura en las páginas de los cinco casos de estudio, en español, inglés, alemán, francés y portugués. El ejercicio distingue capacidades reales de funciones futuras, sin fingir certificación ni prueba ejecutada.
+
+Código puro verificable: `lib/labs-demo-tools.mjs` y `scripts/labs_demo_tools_qa.mjs`. Interfaz: `components/labs/LabsWorkspace.tsx`, `components/career/ArchitectureChallenge.tsx` y `app/projects/[slug]/page.tsx`. Regresiones de navegador ampliadas en `scripts/browser_qa.py`. El CI ejecuta tests unitarios, tipos, build, pruebas de los cuatro SQLite, las cinco traducciones y navegador.
+
+**Seguridad**: la importación trata texto de bloques como datos; no evalúa JS ni ejecuta HTML. Factory no ejecuta código generado y el sandbox P1 sigue desactivado. Ningún control representa pagos, monitorización 24/7 o inferencia autónoma.
+
+**Codex** debe continuar desde el HEAD y el CI verde exacto, no reimplementar estas mejoras. La tarea difícil pendiente sigue siendo el aislamiento P1, seguido de diff con segunda aprobación P2 e IA local optativa P3. No modificar `main`, servicios de producción o proveedores sin permiso.
+
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
