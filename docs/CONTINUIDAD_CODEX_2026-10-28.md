@@ -16,6 +16,13 @@ Documento vivo de esta sesión, solicitado por el propietario para poder continu
 - PR abierto, sin fusionar. Se recuperó la rama existente sin rehacer los Labs.
 - `npm ci` completado en el entorno local de trabajo.
 
+## Continuación tras «okay sigue»
+
+- Se retomó desde `8f12841c1be3544ad1c00abc6cce36d4d44fc701`, con árbol limpio, PR #46 abierto y [CI #465 verde](https://github.com/Dleteo/Nexus-AI/actions/runs/40683889929) comprobada de nuevo para ese SHA.
+- La inspección de sólo lectura sigue sin acreditar runtime rootless ni cgroup delegado escribible por el usuario. No se instalaron herramientas ni se configuró infraestructura.
+- Trabajo de esta continuación **en curso**: validar snapshots/ZIP de entrada sólo en memoria, sin extraer/escribir/ejecutar; reflejar explícitamente `execution.status=not_run` separado de QA estática; ampliar el inventario de capacidades con observaciones acotadas, sin convertirlas en garantías.
+- P1 sigue bloqueada; no se implementa ejecución, P2, P3 ni acceso a nuevos proveedores. Actualizar este apartado con commits y pruebas al terminar.
+
 ## Trabajo realizado y por qué
 
 1. **P0 HTTP:** guardas compartidas para los cuatro Labs; Host/puerto estricto, Origin POST obligatorio y exacto, bloqueo cross-site/same-site y forwarding conflictivo. Se conserva 503 en producción. Los cuerpos se leen por streaming con límite de bytes y plazo total. Monitor ya no deriva el puerto de destino de un Host arbitrario: usa el listener real de Next. Esto evita CSRF, lecturas ilimitadas y sondeo de otros puertos mediante Host falsificado.
