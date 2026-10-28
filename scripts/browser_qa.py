@@ -132,6 +132,58 @@ def audit_featured_case_studies(browser):
     context.close()
     print("PASS five documented projects and four lab evidence links", flush=True)
 
+def audit_contact_guide_multilingual(browser):
+    """The public contact guide must describe the five current demos and preserve locale."""
+    context = browser.new_context(viewport={"width": 1280, "height": 900})
+    page = context.new_page()
+    translations = {
+        "es": ("/", "Asistente de contacto", "Proyectos", "Casos de estudio destacados"),
+        "en": ("/en", "Contact assistant", "Projects", "Featured case studies"),
+        "de": ("/de", "Kontaktassistent", "Projekte", "Fallstudien der Hauptprojekte"),
+        "fr": ("/fr", "Assistant de contact", "Projets", "Études de cas principales"),
+        "pt": ("/pt", "Assistente de contato", "Projetos", "Estudos de caso em destaque"),
+    }
+    slugs = ["nexus-ai", "nexus-commerce", "nexus-studio", "nexus-monitor",
+             "nexus-software-factory"]
+    for lang, (path, name, button, nav_label) in translations.items():
+        page.goto(BASE + path, wait_until="networkidle")
+        contact = page.get_by_role("region", name=name)
+        contact.get_by_role("button", name=button, exact=True).click()
+        guide = contact.get_by_role("navigation", name=nav_label)
+        expect(guide.get_by_role("link").count() == 5,
+               f"All five current projects should be discoverable in {lang}")
+        for slug in slugs:
+            href = f"/projects/{slug}?lang={lang}"
+            expect(guide.locator('a[href="' + href + '"]').count() == 1,
+                   f"Contact guide must link localized evidence {lang}: {slug}")
+        expect(contact.get_by_text("Nexus Foundation es un laboratorio", exact=False).count() == 0,
+               "Featured answer must not revert to the outdated project listing")
+        page.screenshot(path=str(ARTIFACTS / f"contact-five-projects-{lang}.png"),full_page=False)
+    # Typed technical questions have a different scope from the portfolio guide.
+    page.goto(BASE + "/", wait_until="networkidle")
+    contact = page.get_by_role("region", name="Asistente de contacto")
+    contact.get_by_role("textbox", name="Tu pregunta").fill("Nexus Technical")
+    contact.get_by_role("button", name="Preguntar").click()
+    expect(contact.get_by_text("Requiere inicio de sesión y motor configurado", exact=False).count() == 1,
+           "Technical questions must disclose sign-in and model requirements")
+    expect(contact.get_by_role("navigation", name="Casos de estudio destacados").count() == 0,
+           "Technical answer must not be misclassified as a portfolio project")
+    toggle = contact.get_by_role("button", name="Preparar correo", exact=False)
+    expect(toggle.get_attribute("aria-controls") == "nexus-contact-email-form",
+           "Email toggle must describe the panel it expands")
+    toggle.click()
+    expect(toggle.get_attribute("aria-expanded") == "true",
+           "Email panel expanded state must be announced")
+    expect(contact.get_by_role("group", name="Preparar un mensaje de correo").is_visible(),
+           "Email draft form needs a labeled group")
+    toggle.click()
+    expect(toggle.get_attribute("aria-expanded") == "false",
+           "Email panel should be explicitly collapsible")
+    expect(contact.get_by_role("group", name="Preparar un mensaje de correo").count() == 0,
+           "Closing the email form should remove the draft inputs")
+    context.close()
+    print("PASS five localized contact guides, technical-question routing and accessible email form",flush=True)
+
 def audit_labs_keyboard_and_localization(browser):
     """Four accessible lab selections and five-language guided walkthroughs."""
     context=browser.new_context(viewport={"width":1280,"height":900})
@@ -202,8 +254,10 @@ def audit(browser, width, label):
     expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Homepage horizontal overflow at {width}px: {dimensions}")
     contact = page.get_by_role("region", name="Asistente de contacto")
     contact.get_by_role("button", name="Proyectos").click()
-    expect(contact.get_by_text("Nexus Foundation es un laboratorio experimental", exact=False).count() == 1,
-           "Public FAQ should respond accurately")
+    expect(contact.get_by_text("Estos son mis cinco proyectos destacados", exact=False).count() == 1,
+           "Contact guide must accurately feature the current five projects")
+    expect(contact.get_by_role("navigation", name="Casos de estudio destacados").get_by_role("link").count() == 5,
+           "Contact answer must link all five featured case studies")
     contact.get_by_role("button", name="Correo", exact=True).click()
     expect(contact.get_by_role("textbox", name="Nombre").is_visible(), "Email form missing")
     contact.get_by_role("textbox", name="Nombre").fill("Reclutamiento QA")
@@ -445,6 +499,7 @@ def main():
             audit_factory_execution_disclosure(browser)
             audit_featured_case_studies(browser)
             audit_labs_keyboard_and_localization(browser)
+            audit_contact_guide_multilingual(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
