@@ -3,9 +3,9 @@ import {seedProducts,addToCart,placeOrder,moveBlock,escapeHtml,renderPageHtml,su
 const inventory=seedProducts.map(p=>({...p}));
 const first=addToCart({},inventory,"keyboard");assert.equal(first.ok,true);assert.equal(first.cart.keyboard,1);
 const order=placeOrder(first.cart,inventory);assert.equal(order.ok,true);assert.equal(order.total,79);assert.equal(order.inventory[0].stock,7);
-assert.equal(placeOrder({keyboard:999},inventory).ok,false);assert.equal(placeOrder({},inventory).ok,false);
+assert.equal(placeOrder({keyboard:999},inventory).ok,false);assert.equal(placeOrder({},inventory).ok,false);assert.equal(Array.isArray(placeOrder({},inventory).inventory),true);
 assert.equal(addToCart({keyboard:8},inventory,"keyboard").ok,false);
-const blocks=[{id:"a",type:"hero",text:"Hello"},{id:"b",type:"text",text:"world"}];assert.equal(moveBlock(blocks,0,1)[0].id,"b");assert.equal(moveBlock(blocks,0,-1)[0].id,"a");
+const blocks=[{id:"a",type:"hero",text:"Hello"},{id:"b",type:"text",text:"world"}];assert.equal(moveBlock(blocks,0,1)[0].id,"b");assert.equal(moveBlock(blocks,0,-1)[0].id,"a");assert.notEqual(moveBlock(blocks,0,-1),blocks);
 assert.equal(escapeHtml("<script>"),"&lt;script&gt;");assert.ok(!renderPageHtml([{id:"x",type:"hero",text:"<script>alert(1)</script>"}]).includes("<script>"));
 assert.deepEqual(summarizeChecks([{at:"now",ok:true,ms:20},{at:"now",ok:false,ms:200}]),{total:2,successful:1,failed:1,averageMs:20});
 assert.equal(buildFactoryProposal("tiny"),null);const plan=buildFactoryProposal("Implement registration validation");assert.equal(plan.status,"awaiting-review");assert.equal(plan.stages[2].completed,false);
