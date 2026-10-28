@@ -29,13 +29,20 @@
 @media(max-width:760px){.header{height:64px;padding:0 16px}.desktopNav{display:none}.menuToggle{display:block}.headerRight{gap:8px}.cv{padding:10px}.brand{font-size:17px}.logo{height:34px;width:34px;font-size:22px}.mobileNav{display:flex;flex-direction:column;padding:10px 20px;background:#160a0e}.mobileNav a{padding:12px;color:#fff}.hero{min-height:800px}.heroBackdrop{font-size:clamp(85px,20vw,155px)}.heroLeft{width:65%;padding:260px 0 85px 22px}.heroLeft h1{font-size:clamp(53px,8vw,76px)}.heroRight{right:15px;top:32%;width:25%}.heroManifesto{font-size:11px}.numbers{padding-left:9px;margin-top:16px}.numbers strong{font-size:27px}.numbers span{font-size:8px}.heroDescription{max-width:300px}.heroAvailability{right:20px}.projectGrid{grid-template-columns:1fr}.projectPicture{height:240px}.proof{grid-template-columns:1fr}.proofColumn{border-right:0;border-bottom:1px solid #52212a;padding:25px 20px}.contact{grid-template-columns:1fr}.contactLeft{min-height:380px}.contactRight{padding:20px}}
 @media(max-width:430px){.brand small{font-size:6px}.languages summary{padding:8px}.cv{font-size:10px}.hero{min-height:735px}.heroBackdrop{top:15px}.heroLeft{width:80%;padding:220px 0 65px 18px}.heroLeft h1{font-size:clamp(49px,13vw,65px)}.heroDescription{font-size:11px;max-width:240px}.role{font-size:10px}.heroRight{right:8px;top:38%;width:19%}.heroManifesto{font-size:9px}.numbers strong{font-size:21px}.numbers span{font-size:7px}.numbers{border-left-width:1px;padding-left:5px}.numbers>div{gap:3px;display:block}.heroAvailability{font-size:8px}.primary,.secondary{padding:10px;font-size:10px}.contactLeft h2{font-size:46px}.sectionHeader a{font-size:9px}}
 
-/* Editorial portfolio — reference-aligned, single authoritative visual pass.
-   Keep the user's actual portrait pixels and the existing cutout mask. */
+/* Stable editorial hero. Sizes/positions are relative to this section rather
+   than browser scroll offset; lettering and left copy stay inside the viewport. */
+.page{width:100%;max-width:100%;overflow-x:clip}
+.header{position:sticky;top:0;z-index:50;height:58px;padding-inline:clamp(18px,3.2vw,54px);background:#090709}
 .hero{
-  min-height:clamp(585px,43vw,710px);
-  background:#080608;
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,35%) minmax(0,47%) minmax(0,18%);
+  align-items:end;
+  width:100%;
+  min-height:clamp(600px,45vw,700px);
   isolation:isolate;
   overflow:hidden;
+  background:#080608;
 }
 .hero::before{
   content:"";
@@ -43,47 +50,48 @@
   inset:0;
   z-index:1;
   pointer-events:none;
-  background:
-    radial-gradient(ellipse 28% 49% at 58% 71%,
-      rgba(185,10,43,.40) 0%,
-      rgba(120,10,30,.25) 38%,
-      rgba(55,6,19,.12) 59%,
-      transparent 83%);
+  background:radial-gradient(ellipse 26% 42% at 57% 72%,
+      rgba(176,13,42,.34),rgba(100,9,28,.17) 42%,transparent 79%);
 }
-.header{height:58px;padding-inline:clamp(20px,3.3vw,54px)}
 .heroBackdrop{
+  position:absolute;
+  inset:14px 0 auto;
   z-index:0;
-  top:2px;
-  left:0;
-  right:0;
+  width:100%;
+  max-width:100%;
+  text-align:center;
   font-family:var(--font-editorial-poster),Impact,"Arial Narrow",sans-serif;
-  font-size:clamp(110px,17.2vw,278px);
-  line-height:.89;
-  letter-spacing:-.045em;
+  font-size:clamp(100px,16vw,260px);
+  line-height:.93;
+  letter-spacing:-.048em;
   font-weight:400;
-  opacity:1;
-  color:#df0e2c;
+  white-space:nowrap;
+  color:#e60b2e;
+  pointer-events:none;
 }
 .heroLeft{
+  grid-column:1;
   z-index:3;
-  width:35%;
-  padding:clamp(163px,14.3vw,226px) 0 34px clamp(32px,3.3vw,55px);
+  align-self:end;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:0 clamp(10px,1.5vw,23px) 40px clamp(24px,3vw,50px);
 }
 .heroLeft h1{
   font-family:var(--font-editorial-poster),Impact,"Arial Narrow",sans-serif;
-  font-size:clamp(57px,5.9vw,89px);
+  font-size:clamp(55px,5.5vw,88px);
   font-weight:400;
-  letter-spacing:-.023em;
+  letter-spacing:-.02em;
   line-height:.96;
 }
 .handwritten{
   font-family:var(--font-editorial-script),Georgia,cursive;
-  font-size:clamp(36px,3.6vw,59px);
+  font-size:clamp(36px,3.4vw,58px);
   font-style:normal;
-  transform:rotate(-6deg);
+  transform:rotate(-5deg);
 }
-.role,.heroManifesto,.sectionHeader h2,.proofColumn h2,
-.contactLeft h2,.cardTop,.projectTitle h3{
+.role,.heroManifesto,.sectionHeader h2,.proofColumn h2,.contactLeft h2,.cardTop,.projectTitle h3{
   font-family:var(--font-editorial-condensed),"Arial Narrow",Arial,sans-serif;
 }
 .sectionHeader h2,.proofColumn h2{font-weight:800;letter-spacing:.015em}
@@ -91,39 +99,42 @@
 .heroPortrait{
   position:absolute;
   z-index:2;
-  left:38%;
-  width:38%;
-  height:73%;
+  left:36%;
+  width:43%;
+  height:77%;
   bottom:0;
-  background-image:url("/portfolio/portrait-color-reconstruction.webp");
+  background:url("/portfolio/portrait-color-reconstruction.webp") center 40% / cover no-repeat;
   background-color:transparent;
-  background-size:cover;
-  background-position:center 40%;
-  background-repeat:no-repeat;
   background-blend-mode:normal;
   mix-blend-mode:normal;
   filter:none;
   opacity:1;
-  box-shadow:none;
   border:0;
+  box-shadow:none;
   -webkit-mask-image:url("/portfolio/portrait-silhouette-mask.svg");
   mask-image:url("/portfolio/portrait-silhouette-mask.svg");
-  -webkit-mask-size:cover;
-  mask-size:cover;
   -webkit-mask-position:center 40%;
   mask-position:center 40%;
+  -webkit-mask-size:cover;
+  mask-size:cover;
   -webkit-mask-repeat:no-repeat;
   mask-repeat:no-repeat;
   mask-mode:alpha;
 }
-.heroRight{z-index:3;right:3.5%;width:15.5%;top:34%}
+.heroRight{
+  position:absolute;
+  z-index:3;
+  top:37%;
+  right:3%;
+  width:15%;
+}
 .heroManifesto{font-size:12px;line-height:1.35}
-.numbers{margin-top:26px;padding-left:15px}
+.numbers{margin-top:25px;padding-left:15px}
 .numbers>div{padding:13px 0}
-.numbers strong{font-size:clamp(29px,3vw,39px)}
+.numbers strong{font-size:clamp(28px,2.8vw,40px)}
 .numbers span{font-size:9px}
-.heroAvailability{z-index:3;right:3.5%;bottom:16px}
-.projects{padding:22px clamp(25px,3vw,50px) 26px}
+.heroAvailability{z-index:3;right:3%;bottom:14px}
+.projects{padding:21px clamp(24px,3vw,50px) 27px}
 .sectionHeader{margin-bottom:12px;padding-bottom:10px}
 .projectGrid{gap:13px}
 .projectCard{border-color:#74303b;transition:border-color .2s ease,transform .2s ease}
@@ -145,32 +156,35 @@
 .mockPanels span{flex:1;display:flex;justify-content:space-between;border:1px solid #315378;background:#152c4b;color:#69b4f5;padding:7px;font-size:11px}
 .mockPanels i{font-size:9px;font-style:normal;color:#d4e8ff}
 @media(max-width:1000px){
-  .hero{min-height:630px}
-  .heroLeft{width:43%;padding-top:170px}
-  .heroRight{width:19%}
-  .heroPortrait{left:36%;width:45%;height:69%}
+  .hero{min-height:640px}
+  .heroLeft{padding:0 12px 40px 24px}
+  .heroLeft h1{font-size:clamp(55px,6.8vw,78px)}
+  .heroBackdrop{font-size:clamp(95px,15.7vw,175px)}
+  .heroPortrait{left:35%;width:46%;height:72%}
+  .heroRight{width:18%;right:2%;top:37%}
 }
 @media(max-width:760px){
   .header{height:58px}
-  .hero{min-height:725px}
-  .heroBackdrop{font-size:clamp(85px,19vw,159px)}
-  .hero::before{background:radial-gradient(ellipse 45% 42% at 58% 72%,rgba(185,10,43,.32),transparent 84%)}
-  .heroLeft{width:66%;padding:225px 0 45px 20px}
-  .heroLeft h1{font-size:clamp(53px,8vw,76px)}
-  .heroPortrait{left:27%;width:65%;height:63%}
-  .heroRight{right:12px;top:35%;width:22%}
-  .heroAvailability{right:15px}
+  .hero{display:block;min-height:730px}
+  .heroBackdrop{top:20px;font-size:clamp(76px,16vw,135px)}
+  .hero::before{background:radial-gradient(ellipse 45% 42% at 60% 72%,rgba(176,13,42,.30),transparent 85%)}
+  .heroLeft{position:absolute;left:0;top:215px;width:64%;padding:0 8px 25px 20px}
+  .heroLeft h1{font-size:clamp(52px,8.4vw,74px)}
+  .heroPortrait{left:25%;width:68%;height:64%}
+  .heroRight{top:35%;width:21%;right:10px}
+  .heroAvailability{right:12px}
   .projectPicture{height:230px}
 }
 @media(max-width:430px){
-  .hero{min-height:675px}
-  .heroLeft{width:77%;padding:210px 0 45px 18px}
-  .heroLeft h1{font-size:clamp(49px,13vw,65px)}
-  .heroPortrait{left:20%;width:77%;height:59%}
+  .hero{min-height:710px}
+  .heroBackdrop{font-size:16vw}
+  .heroLeft{top:190px;width:75%;padding-left:16px}
+  .heroLeft h1{font-size:clamp(46px,12vw,62px)}
+  .heroPortrait{left:19%;width:79%;height:61%}
   .heroRight{right:6px;width:19%;top:36%}
   .projectPicture{height:210px}
 }
 @media(prefers-reduced-motion:reduce){
- .projectCard{transition:none}
- .projectCard:hover{transform:none}
+  .projectCard{transition:none}
+  .projectCard:hover{transform:none}
 }
