@@ -24,7 +24,7 @@ type FactoryResponse = {ok:boolean;reason?:string;job?:FactoryJob;jobs?:FactoryJ
 type StudioRevision = {revision:number;createdAt:string};
 type StudioResponse = {ok:boolean;reason?:string;revision?:number;blocks?:Block[];revisions?:StudioRevision[]};
 const initialBlocks:Block[]=[{id:"hero-1",type:"hero",text:"Build something remarkable."},{id:"text-2",type:"text",text:"Your next idea starts here."},{id:"button-3",type:"button",text:"Get started"}];
-type LabId = "commerce"|"studio"|"monitor"|"factory";
+export type LabId = "commerce"|"studio"|"monitor"|"factory";
 const projects: {id:LabId;name:string;category:string}[]=[
   {id:"commerce",name:"Nexus Commerce",category:"FULL STACK CONCEPT"},
   {id:"studio",name:"Nexus Studio",category:"FRONTEND EDITOR"},
@@ -34,8 +34,8 @@ const projects: {id:LabId;name:string;category:string}[]=[
 const labStudySlugs:Record<LabId,string>={commerce:"nexus-commerce",studio:"nexus-studio",monitor:"nexus-monitor",factory:"nexus-software-factory"};
 const key=(name:string)=>"nexus-labs-v1-"+name;
 function stored<T>(name:string,fallback:T):T {try{const raw=localStorage.getItem(key(name));return raw ? JSON.parse(raw) as T : fallback;}catch{return fallback;}}
-export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) {
-  const [active,setActive]=useState<LabId>("commerce");
+export default function LabsWorkspace({language="es",initialLab="commerce",standalone=false}:{language?:SiteLanguage;initialLab?:LabId;standalone?:boolean}) {
+  const [active,setActive]=useState<LabId>(initialLab);
   const [inventory,setInventory]=useState<Product[]>([...seedProducts]);
   const [cart,setCart]=useState<Record<string,number>>({});
   const [orders,setOrders]=useState<{total:number;count:number}[]>([]);
@@ -76,7 +76,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [notice,setNotice]=useState("");
   const [ready,setReady]=useState(false);
   const isSpanish=language==="es";
-  useEffect(()=>{const frame=requestAnimationFrame(()=>{const query=new URLSearchParams(window.location.search).get("lab");if(projects.some(p=>p.id===query))setActive(query as LabId);setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
+  useEffect(()=>{const frame=requestAnimationFrame(()=>{const query=new URLSearchParams(window.location.search).get("lab");if(!standalone && projects.some(p=>p.id===query))setActive(query as LabId);setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
   useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){if(sqliteMode && (name==="inventory"||name==="cart"||name==="orders"))continue;if(studioLocal&&name==="blocks")continue;if(monitorLocal&&name==="checks")continue;try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,sqliteMode,studioLocal,monitorLocal,inventory,cart,orders,blocks,checks,proposals]);
   const btn="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-red-400 disabled:opacity-40";
   const primary="rounded-xl bg-[#de4e65] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#bc304c] focus-visible:outline-2 focus-visible:outline-white disabled:opacity-40";
@@ -374,7 +374,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   function selectLab(nextLab:LabId){
     setActive(nextLab);
     setNotice("");
-    window.history.replaceState(null,"",window.location.pathname+"?lab="+nextLab);
+    if(!standalone)window.history.replaceState(null,"",window.location.pathname+"?lab="+nextLab);
   }
   function labNavigationKeyDown(event:KeyboardEvent<HTMLElement>){
     const keys=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"];
@@ -388,15 +388,15 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
     const buttons=event.currentTarget.querySelectorAll<HTMLButtonElement>("button");
     buttons[nextIndex]?.focus();
   }
-  return <main lang={language} data-lab={active} className="nexus-lab-shell min-h-screen px-4 py-8 text-[#f6f0ee] sm:px-8">
+  return <main lang={language} data-lab={active} data-standalone={standalone?"true":"false"} className="nexus-lab-shell min-h-screen px-4 py-8 text-[#f6f0ee] sm:px-8">
     <div className="mx-auto max-w-7xl">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
-        <div><p className="text-xs font-semibold uppercase tracking-[.3em] text-[#ed8797]">NEXUS / ENGINEERING LABS</p><h1 className="mt-2 text-4xl font-black tracking-tight sm:text-6xl">{isSpanish?"CUATRO PROYECTOS.":"FOUR PROJECTS."}</h1><p className="mt-2 max-w-2xl text-sm text-stone-400">{isSpanish?"Prototipos interactivos con lógica real. Los límites de cada módulo se muestran con transparencia.":"Interactive prototypes with real application logic. Capabilities and limitations are disclosed."}</p></div>
+        <div><p className="text-xs font-semibold uppercase tracking-[.3em] text-[#ed8797]">{standalone ? "NEXUS / "+projects.find(p=>p.id===active)?.category : "NEXUS / ENGINEERING LABS"}</p><h1 className="mt-2 text-4xl font-black tracking-tight sm:text-6xl">{standalone ? projects.find(p=>p.id===active)?.name : isSpanish?"CUATRO PROYECTOS.":"FOUR PROJECTS."}</h1><p className="mt-2 max-w-2xl text-sm text-stone-400">{standalone ? ({commerce:"Product catalog, inventory and simulated checkout.",studio:"Visual page editor with live preview and safe exports.",monitor:"Manual service checks, latency and health analysis.",factory:"Reviewable software planning and fixed-template packages."} as const)[active] : isSpanish?"Prototipos interactivos con lógica real. Los límites de cada módulo se muestran con transparencia.":"Interactive prototypes with real application logic. Capabilities and limitations are disclosed."}</p></div>
         <Link href={language==="es"?"/":"/"+language} className={btn}>{isSpanish?"← Volver al portafolio":"← Back to portfolio"}</Link>
       </header>
       <div className="nexus-labs-layout grid gap-5 lg:grid-cols-[245px_1fr]">
-        <nav data-lab-navigation aria-label="Nexus labs" onKeyDown={labNavigationKeyDown} className="flex flex-wrap content-start gap-2 lg:flex-col">
-          {projects.map((p,index)=><button key={p.id} type="button" aria-pressed={active===p.id} aria-controls="nexus-active-lab" onClick={()=>selectLab(p.id)} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></button>)}
+        <nav data-lab-navigation aria-label="Nexus labs" onKeyDown={standalone?undefined:labNavigationKeyDown} className="flex flex-wrap content-start gap-2 lg:flex-col">
+          {projects.map((p,index)=>standalone?<Link key={p.id} href={(language==="es"?"/labs/":"/"+language+"/labs/")+p.id} aria-current={active===p.id?"page":undefined} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></Link>:<button key={p.id} type="button" aria-pressed={active===p.id} aria-controls="nexus-active-lab" onClick={()=>selectLab(p.id)} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></button>)}
         </nav>
         <div id="nexus-active-lab" role="region" aria-label="Active engineering lab" className="nexus-lab-workspace min-w-0 space-y-5">
           <div className={card+" nexus-lab-intro"}><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-2xl font-bold">{projects.find(p=>p.id===active)?.name}</h2><span className="rounded-full border border-amber-500/40 px-3 py-1 text-xs text-amber-200">LOCAL MVP · NO PRODUCTION</span></div><Link href={"/projects/"+labStudySlugs[active]+"?lang="+language} className="mt-4 inline-flex items-center rounded-lg border border-[#db6b83] px-4 py-2 text-sm font-semibold text-[#f2a6b8] hover:border-[#f1adbc] hover:text-white focus-visible:outline-2 focus-visible:outline-white">{({es:"Leer arquitectura y pruebas",en:"Read architecture and tests",de:"Architektur und Tests",fr:"Architecture et tests",pt:"Arquitetura e testes"} as const)[language]} <span className="ml-2" aria-hidden="true">↗</span></Link>
