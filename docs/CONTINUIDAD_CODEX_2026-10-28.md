@@ -4,7 +4,9 @@ Documento vivo de esta sesión, solicitado por el propietario para poder continu
 
 ## Lee esto primero — estado para ChatGPT
 
-Último punto comprobado al retomar: `f7f285febd63f0a4b1ec410195736ea877c24743`, con [CI #466 verde](https://github.com/Dleteo/Nexus-AI/actions/runs/40686052125), rama limpia y PR #46 abierto. Ese resultado valida **ese SHA**, no modificaciones posteriores.
+Último punto comprobado al retomar: `7ba8c31e6725f54dde95c63dda0649537efc883d`, con [CI #467 verde](https://github.com/Dleteo/Nexus-AI/actions/runs/40687860216), rama limpia y PR #46 abierto. Ese resultado valida **ese SHA**, no modificaciones posteriores.
+
+**Nueva continuación («hasta donde alcances, pero deja nota»), en curso:** se revisan recursos HTTP, lifecycle del runner y backends locales. La auditoría encontró que Monitor descartaba fallos de protocolo HTTP (`BadStatusLine`/`IncompleteRead`) sin persistir una muestra fallida ni alimentar alertas; hay reproducer con un listener de ensayo loopback, sin red externa. Corrección y regresiones pendientes de cerrar. El runner pasó revisión y probes acotados (descriptores estables, ocho llamadas admitidas/novena rechazada y recuperación tras cancelar), sin cambios de implementación ni evidencia de sandbox. P1/P2/P3 siguen bloqueadas en los mismos términos.
 
 | Parte | Ya hecho | Qué falta |
 |---|---|---|
