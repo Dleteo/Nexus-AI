@@ -118,4 +118,15 @@ await checkSignedOutApi("/api/assistant/chat", {
   }),
 });
 
+// The local-only SQLite backend must never be remotely writable on production builds.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({cart:{keyboard:1}}) }],
+]) {
+  const response = await request("/api/labs/commerce", options);
+  assert.equal(response.status, 503, "SQLite API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production SQLite backend remains disabled");
+
 console.log("All production HTTP smoke checks passed.");
