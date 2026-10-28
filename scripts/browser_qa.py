@@ -34,7 +34,7 @@ def audit(browser, width, label):
     image_asset = page.request.get(BASE + "/portfolio/portrait-color-reconstruction.webp")
     expect(image_asset.status == 200, "Original portrait image missing")
 
-    expect(page.locator('[class*="projectCard"]').count() == 3, "Expected three real featured project cards")
+    expect(page.locator('[class*="projectCard"]').count() == 5, "Expected Nexus AI and four engineering lab featured cards")
     expect(page.locator('[class*="proofColumn"]').count() == 3, "Education, skills and process strip missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Homepage horizontal overflow at {width}px: {dimensions}")
@@ -144,8 +144,12 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="Create your account.").is_visible(), "Register heading missing")
     expect(page.get_by_role("button", name="Create account").is_visible(), "Registration button missing")
     page.screenshot(path=str(ARTIFACTS / f"register-{label}.png"), full_page=True)
+    # Deep-link from the featured portfolio into each engineering lab.
+    for lab, title in [("commerce","Nexus Commerce"),("studio","Nexus Studio"),("monitor","Nexus Monitor"),("factory","Nexus Software Factory")]:
+        page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
+        expect(page.get_by_role("heading", name=title).is_visible(), f"Lab deep link did not select {title}")
     # Four engineering lab demos: navigation and core user paths.
-    page.goto(BASE + "/labs", wait_until="networkidle")
+    page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     expect(page.get_by_role("heading", name="CUATRO PROYECTOS.").is_visible(), "Engineering labs missing")
     expect(page.get_by_role("button", name="Add to cart").count() == 4, "Commerce catalog missing")
     page.get_by_role("button", name="Add to cart").first.click()
