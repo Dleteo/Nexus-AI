@@ -1,8 +1,12 @@
 """Monitor tests: real SQLite history, safe target, alerts, retention and concurrency."""
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 import json
 from pathlib import Path
+import socket
+import socketserver
 import tempfile
+from threading import Thread
 import unittest
 
 from backend import connect, execute, record, snapshot, summarize, SLOW_MS
@@ -11,6 +15,43 @@ from backend import connect, execute, record, snapshot, summarize, SLOW_MS
 def sample(ok=True, ms=42):
     return {"ok": ok, "ms": ms, "status_code": 200 if ok else 503,
             "note": "healthy" if ok else "unhealthy-response"}
+
+
+@contextmanager
+def broken_local_health_response(payload):
+    """Trusted bounded protocol fixture; never listens outside loopback."""
+    requests, closed, errors = [], [], []
+
+    class Handler(socketserver.BaseRequestHandler):
+        def handle(self):
+            self.request.settimeout(2)
+            try:
+                incoming = bytearray()
+                while b"\r\n\r\n" not in incoming and len(incoming) < 4096:
+                    chunk = self.request.recv(4096 - len(incoming))
+                    if not chunk:
+                        break
+                    incoming.extend(chunk)
+                requests.append(bytes(incoming))
+                if payload:
+                    self.request.sendall(payload)
+                # Force a response EOF while still observing the client's close.
+                self.request.shutdown(socket.SHUT_WR)
+                closed.append(self.request.recv(1) == b"")
+            except OSError as error:
+                errors.append(type(error).__name__)
+
+    server = socketserver.TCPServer(("127.0.0.1", 0), Handler)
+    thread = Thread(target=lambda: server.serve_forever(poll_interval=0.01), daemon=True)
+    thread.start()
+    try:
+        yield server.server_address[1], requests, closed, errors
+    finally:
+        server.shutdown()
+        thread.join(timeout=3)
+        server.server_close()
+        if thread.is_alive():
+            raise RuntimeError("local HTTP fixture did not stop")
 
 
 class MonitorBackendTests(unittest.TestCase):
@@ -89,6 +130,33 @@ class MonitorBackendTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     record(db, value)
             self.assertEqual(len(snapshot(db)["checks"]), 0)
+
+    def test_protocol_failures_persist_and_feed_alerts_without_socket_leaks(self):
+        execute({"action": "probe", "port": 3100}, self.db, probe=lambda _: sample())
+        replies = [
+            ("bad-status", b"NOT_HTTP\r\n\r\n", None),
+            ("truncated-chunk", b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nab", 200),
+            ("disconnected", b"", None),
+            ("invalid-status", b"HTTP/1.1 600 Nonstandard\r\nContent-Length: 0\r\n\r\n", None),
+        ]
+        for index, (label, payload, expected_status) in enumerate(replies, start=1):
+            with self.subTest(reply=label):
+                with broken_local_health_response(payload) as (port, requests, closed, errors):
+                    state = execute({"action": "probe", "port": port}, self.db)
+                self.assertEqual(errors, [])
+                self.assertEqual(closed, [True], "Probe must close the local connection after protocol errors")
+                self.assertEqual(len(requests), 1)
+                self.assertTrue(requests[0].startswith(b"GET /api/labs/health HTTP/1.1\r\n"))
+                self.assertTrue(state["ok"])
+                self.assertFalse(state["checks"][0]["ok"])
+                self.assertEqual(state["checks"][0]["note"], "connection-error")
+                self.assertEqual(state["checks"][0]["statusCode"], expected_status)
+                self.assertTrue(0 <= state["checks"][0]["ms"] <= 30000)
+                self.assertEqual(state["alert"]["samples"], index + 1)
+                self.assertEqual(state["alert"]["consecutiveFailures"], index)
+                self.assertEqual(state["alert"]["level"], "critical" if index >= 3 else "warning")
+                persisted = execute({"action": "list"}, self.db)
+                self.assertEqual(persisted["checks"], state["checks"])
 
 
 if __name__ == "__main__":

@@ -50,6 +50,10 @@ def probe_local_health(port: int) -> dict:
     try:
         conn.request("GET", "/api/labs/health", headers={"Accept": "application/json"})
         response = conn.getresponse()
+        # http.client accepts any three-digit status, including 600..999.
+        # Keep malformed responses as failed samples, never invalid DB records.
+        if not 100 <= response.status <= 599:
+            raise http.client.HTTPException("invalid-status")
         response_code = response.status
         if response_code == 200:
             payload = response.read(2049)
@@ -57,7 +61,7 @@ def probe_local_health(port: int) -> dict:
                 doc = json.loads(payload)
                 ok = isinstance(doc, dict) and doc.get("status") == "ok" and doc.get("service") == "nexus-labs"
         note = "healthy" if ok else "unhealthy-response"
-    except (OSError, TimeoutError, json.JSONDecodeError, ValueError):
+    except (OSError, http.client.HTTPException, TimeoutError, json.JSONDecodeError, ValueError):
         note = "connection-error"
     finally:
         conn.close()
