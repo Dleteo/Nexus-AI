@@ -213,3 +213,17 @@
 @media(max-width:430px){
   .heroPortrait{left:26%;width:72%;height:58%}
 }
+
+
+/* Ajuste solicitado: retrato centrado, sin difuminado en ningún borde. */
+.heroPortrait{
+  left:34%;
+  width:40%;
+  height:72%;
+  -webkit-mask-image:none;
+  mask-image:none;
+  filter:none;
+  opacity:1;
+}
+@media(max-width:760px){.heroPortrait{left:22%;width:63%;height:63%}}
+@media(max-width:430px){.heroPortrait{left:17%;width:72%;height:58%}}
