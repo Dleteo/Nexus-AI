@@ -26,7 +26,7 @@ function classify(query:string):Topic {
   if(/corre|email|mail|contact|contrat|hire|job|recrut|escribir|contat/.test(q))return "email";
   if(/github|linkedin|instagram|red|social|network|perfil|reseau/.test(q))return "social";
   if(/nexus\s*technical|tecnico|technical|technisch|technique|tecnico\s*nexus/.test(q))return "technical";
-  if(/proyec|project|portfolio|portafolio|nexus|projeto|projekt/.test(q))return "projects";
+  if(/proyec|project|projet|portfolio|portafolio|nexus|projeto|projekt/.test(q))return "projects";
   if(/habil|skill|exper|certif|curso|stack|learn|techno|bildung|formac/.test(q))return "skills";
   if(/python|code|codi|program|software|hardware|typescript|error|cve|security|segurid/.test(q))return "technical";
   return "unknown";
@@ -80,14 +80,14 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
   const locale={es:0,en:1,de:2,fr:3,pt:4}[language];
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>[es,en,de,fr,pt][locale];
   const [question,setQuestion]=useState("");
-  const [conversation,setConversation]=useState<{question:string;reply:string}|null>(null);
+  const [conversation,setConversation]=useState<{topic:Topic;question:string;reply:string}|null>(null);
   const [showEmail,setShowEmail]=useState(false);
   const [visitor,setVisitor]=useState("");
   const [replyEmail,setReplyEmail]=useState("");
   const [message,setMessage]=useState("");
 
   function answer(topic:Topic,input:string) {
-    setConversation({question:input,reply:sentences[topic][locale]});
+    setConversation({topic,question:input,reply:sentences[topic][locale]});
     if(topic==="email")setShowEmail(true);
   }
   function submit(event:FormEvent<HTMLFormElement>) {
@@ -108,7 +108,7 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     <div className={styles.portfolioContactBody} role="log" aria-live="polite" aria-label={t("Respuestas de contacto","Contact answers","Kontaktantworten","Réponses de contact","Respostas de contato")}>
       {conversation?<><div className={styles.portfolioContactQuestion}>{conversation.question}</div><div className={styles.portfolioContactReply}><b>Nexus</b><p>{conversation.reply}</p></div></>:<div className={styles.portfolioContactReply}><b>Nexus</b><p>{t("Hola. Pregúntame por los proyectos, las habilidades o cómo contactar al desarrollador.","Hello. Ask about projects, skills or how to contact the developer.","Hallo. Frage nach Projekten, Kenntnissen oder Kontaktmöglichkeiten.","Bonjour. Demandez des informations sur les projets, compétences ou contacts.","Olá. Pergunte sobre projetos, habilidades ou contato.")}</p></div>}
     </div>
-    {conversation&&classify(conversation.question)==="projects"&&<nav aria-label={t("Casos de estudio destacados","Featured case studies","Fallstudien der Hauptprojekte","Études de cas principales","Estudos de caso em destaque")} className="mt-3 grid gap-2 sm:grid-cols-2">
+    {conversation?.topic==="projects"&&<nav aria-label={t("Casos de estudio destacados","Featured case studies","Fallstudien der Hauptprojekte","Études de cas principales","Estudos de caso em destaque")} className="mt-3 grid gap-2 sm:grid-cols-2">
       {featuredCaseStudies.map(study=><Link key={study.slug} href={"/projects/"+study.slug+"?lang="+language}
         className="rounded-lg border border-[#854253] bg-[#1e151b] px-3 py-2 text-xs font-semibold text-[#ffd2dc] hover:border-[#f39bb0] focus-visible:outline-2 focus-visible:outline-[#f39bb0]">{study.name} ↗</Link>)}
     </nav>}
