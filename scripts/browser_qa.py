@@ -157,7 +157,7 @@ def audit(browser, width, label):
     expect(page.get_by_text("Browser editor test", exact=True).count() >= 1, "Live editing failed")
     page.get_by_role("button", name="Nexus Monitor").click()
     page.get_by_role("button", name="Run health check").click()
-    expect(page.get_by_text("HEALTHY").first.is_visible(), "Same-origin health probe failed")
+    page.get_by_text("HEALTHY", exact=True).first.wait_for(state="visible", timeout=10000)
     page.get_by_role("button", name="Nexus Software Factory").click()
     page.get_by_role("button", name="Create reviewable plan").click()
     expect(page.get_by_text("Implementation", exact=True).is_visible(), "Factory plan missing")
