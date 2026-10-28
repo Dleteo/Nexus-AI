@@ -77,6 +77,11 @@ jobs:
       - name: Test four engineering labs domain logic
         run: node scripts/labs_unit_qa.mjs
 
+      - name: Test local evidence exports and interview preparation
+        run: |
+          node scripts/labs_exports_qa.mjs
+          node scripts/interview_prep_qa.mjs
+
       - name: Test local HTTP security and trusted Python process bounds
         run: |
           node scripts/labs_http_unit_qa.mjs
