@@ -33,6 +33,20 @@ En GitHub Actions deben pasar `npm run lint`, TypeScript, build, suites de servi
 
 **P1 sigue bloqueada:** ninguna vista de proyecto o caso de estudio implica que un sandbox seguro esté habilitado. No ejecutar código generado en Next.js ni en el host. Mantener costo obligatorio $0, repositorio bajo control del propietario, PR abierto, sin despliegues ni merge.
 
+## Nueva entrega de interacción (28 de octubre)
+
+Sin tocar los backends ni el sandbox de Codex se añadió una nueva capa **offline / sin APIs de pago**:
+
+- **Commerce:** botón `Export demo orders CSV`; líneas, totales y origen con etiqueta explícita de simulación; no incluye clientes ni afirma pagos.
+- **Studio:** botón `Export blocks JSON`; documento de bloques validado con texto literal, revisión SQLite solo si coincide con el estado guardado y ninguna ejecución de HTML.
+- **Monitor:** botón `Export manual samples CSV`; resultados y latencias acotados, con identificador de muestras manuales (no disponibilidad continua).
+- **Factory:** `Export review audit Markdown` en modo SQLite, con eventos, QA estática y advertencia permanente de ejecución `NOT RUN`.
+- **Workspace y los otros cuatro:** guía de entrevista interactiva en **5 idiomas** dentro de cada caso de estudio, con revisión manual de cuatro temas y exportación de notas `.md`. Marcar un tema no ejecuta pruebas.
+
+Archivos de implementación: `lib/labs-exports.mjs`, `lib/labs-exports.d.mts`, `lib/interview-prep.mjs`, `lib/interview-prep.d.mts`, `components/career/InterviewReviewChecklist.tsx`, y cambios en `LabsWorkspace.tsx` y las páginas de casos. Las pruebas son `scripts/labs_exports_qa.mjs`, `scripts/interview_prep_qa.mjs` y cobertura adicional en `scripts/browser_qa.py`; se incluyeron en GitHub Actions. **Comprobar el CI del commit final por SHA antes de declararlo validado.**
+
+Estas son exportaciones de datos visibles y notas personales, no informes de auditoría independientes. No se ha habilitado ejecutar código ajeno ni instalado un modelo de IA.
+
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
