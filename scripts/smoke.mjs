@@ -140,4 +140,15 @@ for (const [method, options] of [
 }
 console.log("PASS production Studio SQLite backend remains disabled");
 
+// The monitor backend performs no probes or writes in production.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }],
+]) {
+  const response = await request("/api/labs/monitor", options);
+  assert.equal(response.status, 503, "Monitor local API must be disabled in production: " + method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production Monitor SQLite backend remains disabled");
+
 console.log("All production HTTP smoke checks passed.");
