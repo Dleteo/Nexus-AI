@@ -63,6 +63,20 @@ Código puro verificable: `lib/labs-demo-tools.mjs` y `scripts/labs_demo_tools_q
 
 **Codex** debe continuar desde el HEAD y el CI verde exacto, no reimplementar estas mejoras. La tarea difícil pendiente sigue siendo el aislamiento P1, seguido de diff con segunda aprobación P2 e IA local optativa P3. No modificar `main`, servicios de producción o proveedores sin permiso.
 
+## Fase de explicación técnica y análisis comparativo (28 de octubre)
+
+**Entrega funcional en los cinco frentes, sin cambiar backends ni proveedores:**
+
+- **Workspace:** en `/interview` se pueden comparar dos de los cinco proyectos, leyendo del caso de estudio las tecnologías, el problema real, una decisión de arquitectura y una limitación. Sin rankings inventados ni métricas simuladas de rendimiento.
+- **Commerce:** desglose del carrito antes de confirmar: unidades, precio unitario, subtotal por línea y total calculado en centavos enteros, validando cantidades y stock. **Es una estimación del catálogo**, sin impuestos, envíos ni pagos.
+- **Studio:** revisión de contenido del documento: total de bloques y palabras, bloques vacíos, jerarquía de encabezados y etiquetas de botones largas. Las reglas son heurísticas estáticas; **no constituyen certificación de accesibilidad**.
+- **Monitor:** selector de últimas 5/10/30/100 o todas las muestras cargadas, con éxito observado y p95 de las solicitudes exitosas. Son **ventanas por número de sondeos manuales**, no minutos ni SLA.
+- **Factory:** contadores de trabajos locales propuestos, aprobados, construidos y con QA estática aprobada, limitados a los registros cargados. Los contadores no activan ejecuciones, modelos ni PRs.
+
+Archivos: `lib/labs-insights.mjs` + `lib/labs-insights.d.mts`, `scripts/labs_insights_qa.mjs`, `components/labs/LabsWorkspace.tsx`, `components/career/ProjectArchitectureCompare.tsx` y `app/interview/page.tsx`. CI y navegación se amplían en `.github/workflows/ci.yml` y `scripts/browser_qa.py`. Revisar el SHA exacto del PR y su CI para aceptar la entrega.
+
+**Límites:** siguen intactos el bloqueo en producción, el modo gratuito/local, la propiedad del repositorio y el aislamiento P1 sin verificar. Ninguna métrica presentada acredita pagos, accesibilidad certificada, disponibilidad continua, inferencia de IA real o ejecución de código generado.
+
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
