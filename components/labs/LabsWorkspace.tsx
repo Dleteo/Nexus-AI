@@ -9,6 +9,8 @@ type Product = {id:string; name:string; category:string; price:number; stock:num
 type Block = {id:string; type:"hero"|"text"|"button"; text:string};
 type Check = {at:string; ok:boolean; ms:number};
 type Proposal = {request:string;kind:string;status:string;stages:{id:string;label:string;detail:string;completed:boolean}[];acceptance:string[]};
+type StudioRevision = {revision:number;createdAt:string};
+type StudioResponse = {ok:boolean;reason?:string;revision?:number;blocks?:Block[];revisions?:StudioRevision[]};
 const initialBlocks:Block[]=[{id:"hero-1",type:"hero",text:"Build something remarkable."},{id:"text-2",type:"text",text:"Your next idea starts here."},{id:"button-3",type:"button",text:"Get started"}];
 type LabId = "commerce"|"studio"|"monitor"|"factory";
 const projects: {id:LabId;name:string;category:string}[]=[
@@ -33,6 +35,12 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [undoBlocks,setUndoBlocks]=useState<Block[][]>([]);
   const [redoBlocks,setRedoBlocks]=useState<Block[][]>([]);
   const editorSnapshot=useRef<Block[]|null>(null);
+  const [studioLocal,setStudioLocal]=useState(false);
+  const [studioBusy,setStudioBusy]=useState(false);
+  const [studioRevision,setStudioRevision]=useState(0);
+  const [studioHistory,setStudioHistory]=useState<StudioRevision[]>([]);
+  const [studioRestore,setStudioRestore]=useState("0");
+  const [studioSaved,setStudioSaved]=useState("");
   const [checks,setChecks]=useState<Check[]>([]);
   const [isChecking,setIsChecking]=useState(false);
   const [request,setRequest]=useState("Create an accessible registration form with email validation");
@@ -44,7 +52,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [ready,setReady]=useState(false);
   const isSpanish=language==="es";
   useEffect(()=>{const frame=requestAnimationFrame(()=>{const query=new URLSearchParams(window.location.search).get("lab");if(projects.some(p=>p.id===query))setActive(query as LabId);setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
-  useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){if(sqliteMode && (name==="inventory"||name==="cart"||name==="orders"))continue;try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,sqliteMode,inventory,cart,orders,blocks,checks,proposals]);
+  useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){if(sqliteMode && (name==="inventory"||name==="cart"||name==="orders"))continue;if(studioLocal&&name==="blocks")continue;try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,sqliteMode,studioLocal,inventory,cart,orders,blocks,checks,proposals]);
   const btn="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-red-400 disabled:opacity-40";
   const primary="rounded-xl bg-[#de4e65] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#bc304c] focus-visible:outline-2 focus-visible:outline-white disabled:opacity-40";
   const card="rounded-2xl border border-white/10 bg-[#1e1e23] p-5";
@@ -100,6 +108,69 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
     }catch{setNotice("Local SQLite unavailable. No order was confirmed.");}
     finally{setSqliteBusy(false);}
   }
+  function applyStudioResponse(data:StudioResponse,loadBlocks:boolean){
+    if(!data.ok||!Number.isSafeInteger(data.revision)||!Array.isArray(data.blocks)||!Array.isArray(data.revisions)){
+      throw new Error("invalid-studio-response");
+    }
+    setStudioRevision(data.revision as number);
+    setStudioHistory(data.revisions);
+    if(loadBlocks){
+      setBlocks(data.blocks);setSelected(0);setUndoBlocks([]);setRedoBlocks([]);
+      setStudioSaved(JSON.stringify(data.blocks));
+    }
+  }
+  async function connectStudio(){
+    if(studioBusy)return;
+    setStudioBusy(true);
+    try{
+      const response=await fetch("/api/labs/studio",{cache:"no-store"});
+      const data=await response.json() as StudioResponse;
+      if(!response.ok||!data.ok)throw new Error(data.reason||"backend-unavailable");
+      applyStudioResponse(data,true);setStudioLocal(true);setStudioRestore("0");
+      setNotice("Studio SQLite connected. Your browser-only draft remains stored separately.");
+    }catch{setNotice("Studio SQLite unavailable. Enable NEXUS_LABS_STUDIO_SQLITE=1 in local development with Python installed.");}
+    finally{setStudioBusy(false);}
+  }
+  function disconnectStudio(){
+    if(studioBusy)return;
+    setStudioLocal(false);
+    setBlocks(stored("blocks",initialBlocks));setSelected(0);setUndoBlocks([]);setRedoBlocks([]);
+    setNotice("Browser editor restored. SQLite revision history was kept on local disk.");
+  }
+  async function studioCommand(command:object,restore:boolean){
+    if(!studioLocal||studioBusy)return;
+    setStudioBusy(true);
+    try{
+      const response=await fetch("/api/labs/studio",{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(command),
+      });
+      const data=await response.json() as StudioResponse;
+      if(response.status===409){
+        setNotice("Revision conflict: another local session saved changes. Your edits remain here; use Refresh from SQLite to reload.");
+        return;
+      }
+      if(!response.ok||!data.ok){
+        setNotice("Studio save failed: "+(data.reason||"invalid-document")+". Your edits remain in the editor.");
+        return;
+      }
+      applyStudioResponse(data,restore);
+      if(!restore&&data.blocks)setStudioSaved(JSON.stringify(data.blocks));
+      setNotice(restore?"Older snapshot restored as new revision "+data.revision+".":"Document saved as SQLite revision "+data.revision+".");
+    }catch{setNotice("Studio SQLite connection failed. Your current edits remain in the editor.");}
+    finally{setStudioBusy(false);}
+  }
+  async function refreshStudio(){
+    if(!studioLocal||studioBusy)return;
+    setStudioBusy(true);
+    try{
+      const response=await fetch("/api/labs/studio",{cache:"no-store"});
+      const data=await response.json() as StudioResponse;
+      if(!response.ok||!data.ok)throw new Error("unavailable");
+      applyStudioResponse(data,true);
+      setNotice("Reloaded latest saved revision from SQLite. Previous unsaved edits were replaced.");
+    }catch{setNotice("Unable to refresh local SQLite. No edits were replaced.");}
+    finally{setStudioBusy(false);}
+  }
   async function checkService(){if(isChecking)return;setIsChecking(true);const start=performance.now();try{const response=await fetch("/api/labs/health",{cache:"no-store"});const json=await response.json();const ok=response.ok&&json.status==="ok";setChecks(previous=>[{at:new Date().toISOString(),ok,ms:Math.round(performance.now()-start)},...previous].slice(0,30));}catch{setChecks(previous=>[{at:new Date().toISOString(),ok:false,ms:Math.round(performance.now()-start)},...previous].slice(0,30));}finally{setIsChecking(false);}}
   const stats=summarizeChecks(checks);
   const observed=observedAvailability(checks);
@@ -127,10 +198,10 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
             <section aria-label="Product catalog"><div className="mb-4 flex flex-col gap-3 sm:flex-row"><label className="flex-1 text-sm">Search products<input type="search" value={search} onChange={event=>setSearch(event.target.value)} placeholder="Keyboard, audio, displays..." className="mt-2 block w-full rounded-xl border border-white/20 bg-[#111115] p-3 text-white"/></label><label className="text-sm">Category<select value={category} onChange={event=>setCategory(event.target.value)} className="mt-2 block w-full rounded-xl border border-white/20 bg-[#111115] p-3 text-white"><option value="all">All categories</option>{[...new Set(inventory.map(p=>p.category))].map(name=><option key={name} value={name}>{name}</option>)}</select></label></div><p className="mb-3 text-sm text-stone-400" role="status">{filteredInventory.length} products found</p><div className="grid gap-3 sm:grid-cols-2">{filteredInventory.map(p=><article className={card} key={p.id}><div className="mb-4 flex aspect-[8/5] items-center justify-center rounded-xl bg-gradient-to-br from-[#532c39] to-[#24252e] text-5xl" aria-hidden="true">{p.id==="keyboard"?"⌨":p.id==="headset"?"◉":p.id==="monitor"?"▣":"⌁"}</div><p className="text-xs uppercase tracking-widest text-stone-400">{p.category}</p><h3 className="mt-1 text-xl font-bold">{p.name}</h3><p className="mt-2 text-[#ee9dad]">{money(p.price)} · {p.stock} available</p><button className={primary+" mt-4 w-full"} disabled={p.stock<1||(cart[p.id]||0)>=p.stock} onClick={()=>{const result=addToCart(cart,inventory,p.id);if(result.ok)setCart(result.cart);else setNotice("Not enough stock.");}}>Add to cart</button></article>)}{filteredInventory.length===0&&<p className="text-sm text-stone-400">No matching products. Try a different search.</p>}</div></section>
             <aside className={card+" h-fit"}><h3 className="text-xl font-bold">Shopping cart</h3><div className="mt-4 space-y-3">{inventory.filter(p=>(cart[p.id]||0)>0).map(p=><div key={p.id} className="flex items-center justify-between gap-2 text-sm"><span>{p.name} × {cart[p.id]}</span><button className={btn} aria-label={"Remove one "+p.name} onClick={()=>setCart(old=>({...old,[p.id]:Math.max(0,(old[p.id]||0)-1)}))}>−</button></div>)}</div><div className="mt-5 border-t border-white/10 pt-3 text-xl font-bold">{money(total)}</div><button className={primary+" mt-4 w-full"} disabled={total===0||sqliteBusy} onClick={checkoutOrder}>Place demo order</button><p className="mt-4 text-sm text-stone-400">Demo orders: {orders.length}</p><div aria-label="Local order history" className="mt-3 space-y-2">{orders.slice(0,5).map((order,i)=><p key={i} className="rounded-lg bg-[#111115] p-2 text-xs">#{orders.length-i} · {order.count} product lines · {money(order.total)}</p>)}</div>{!sqliteMode&&<button className={btn+" mt-3 w-full"} onClick={()=>{setInventory([...seedProducts]);setCart({});setOrders([]);setNotice("Local commerce demo reset.");}}>Reset demo inventory</button>}</aside>
           </div></div>}
-          {active==="studio"&&<div className="grid gap-4 xl:grid-cols-[310px_1fr]">
-            <aside className={card+" space-y-4"}><h3 className="font-bold">Page blocks</h3><div className="space-y-2">{blocks.map((b,i)=><button key={b.id} className={"block w-full rounded-lg border p-3 text-left text-sm "+(selected===i?"border-[#de4e65] bg-[#43252c]":"border-white/10")} onClick={()=>setSelected(i)}>{i+1}. {b.type} — {b.text.slice(0,25)}</button>)}</div><div className="flex flex-wrap gap-2">{(["hero","text","button"] as const).map(type=><button key={type} className={btn} onClick={()=>{editBlocks([...blocks,{id:crypto.randomUUID(),type,text:type==="hero"?"New heading":type==="button"?"Click here":"New paragraph"}]);setSelected(blocks.length);}}>+ {type}</button>)}</div>{blocks[selected]&&<><label htmlFor="block-editor" className="block text-sm font-semibold">Selected block text</label><textarea id="block-editor" className="w-full rounded-lg border border-white/20 bg-[#111115] p-3" rows={4} maxLength={500} value={blocks[selected].text} onFocus={()=>{editorSnapshot.current=blocks.map(b=>({...b}));}} onBlur={finishEditingText} onChange={e=>updateBlock(e.target.value)}/><div className="flex gap-2"><button className={btn} onClick={()=>{editBlocks(moveBlock(blocks,selected,-1));setSelected(x=>Math.max(0,x-1));}}>↑ Move</button><button className={btn} onClick={()=>{editBlocks(moveBlock(blocks,selected,1));setSelected(x=>Math.min(blocks.length-1,x+1));}}>↓ Move</button><button className={btn} onClick={()=>{editBlocks(blocks.filter((_,i)=>i!==selected));setSelected(0);}}>Delete</button></div></>}<div className="flex gap-2"><button className={btn+" flex-1"} disabled={undoBlocks.length===0} onClick={undoEditor}>Undo</button><button className={btn+" flex-1"} disabled={redoBlocks.length===0} onClick={redoEditor}>Redo</button></div><button className={primary+" w-full"} onClick={downloadHtml}>Export HTML</button></aside>
+          {active==="studio"&&<div className="space-y-4"><div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#1e1e23] p-4"><div><p className="font-semibold">{studioLocal?"SQLite version history · revision "+studioRevision:"Browser-only editor"}</p><p className="text-xs text-stone-400">{studioLocal?"Saved snapshots on this computer · "+(JSON.stringify(blocks)!==studioSaved?"Unsaved changes":"All changes saved"):"Drafts saved automatically to browser storage. SQLite mode is optional on localhost."}</p></div>{studioLocal?<button className={btn} disabled={studioBusy} onClick={disconnectStudio}>Use browser editor</button>:<button className={btn} disabled={studioBusy} onClick={connectStudio}>Use local SQLite</button>}</div>{studioLocal&&<div className="flex flex-wrap items-end gap-3 rounded-xl border border-white/10 bg-[#1e1e23] p-4"><button className={primary} disabled={studioBusy||JSON.stringify(blocks)===studioSaved} onClick={()=>studioCommand({action:"save",expectedRevision:studioRevision,blocks},false)}>{studioBusy?"Working…":"Save revision"}</button><button className={btn} disabled={studioBusy} onClick={refreshStudio}>Refresh from SQLite</button><label className="text-sm">Restore saved revision<select className="mt-2 block min-w-36 rounded-lg border border-white/20 bg-[#111115] p-2" value={studioRestore} onChange={e=>setStudioRestore(e.target.value)}>{studioHistory.map(item=><option key={item.revision} value={String(item.revision)}>Revision {item.revision}</option>)}</select></label><button className={btn} disabled={studioBusy||studioHistory.length===0} onClick={()=>studioCommand({action:"restore",expectedRevision:studioRevision,revision:Number(studioRestore)},true)}>Restore as new revision</button></div>}<div className="grid gap-4 xl:grid-cols-[310px_1fr]">
+            <aside className={card+" space-y-4"}><h3 className="font-bold">Page blocks</h3><div className="space-y-2">{blocks.map((b,i)=><button key={b.id} className={"block w-full rounded-lg border p-3 text-left text-sm "+(selected===i?"border-[#de4e65] bg-[#43252c]":"border-white/10")} onClick={()=>setSelected(i)}>{i+1}. {b.type} — {b.text.slice(0,25)}</button>)}</div><div className="flex flex-wrap gap-2">{(["hero","text","button"] as const).map(type=><button key={type} className={btn} disabled={studioBusy||blocks.length>=30} onClick={()=>{editBlocks([...blocks,{id:crypto.randomUUID(),type,text:type==="hero"?"New heading":type==="button"?"Click here":"New paragraph"}]);setSelected(blocks.length);}}>+ {type}</button>)}</div>{blocks[selected]&&<><label htmlFor="block-editor" className="block text-sm font-semibold">Selected block text</label><textarea id="block-editor" className="w-full rounded-lg border border-white/20 bg-[#111115] p-3" rows={4} maxLength={500} value={blocks[selected].text} disabled={studioBusy} onFocus={()=>{editorSnapshot.current=blocks.map(b=>({...b}));}} onBlur={finishEditingText} onChange={e=>updateBlock(e.target.value)}/><div className="flex gap-2"><button className={btn} disabled={studioBusy} onClick={()=>{editBlocks(moveBlock(blocks,selected,-1));setSelected(x=>Math.max(0,x-1));}}>↑ Move</button><button className={btn} disabled={studioBusy} onClick={()=>{editBlocks(moveBlock(blocks,selected,1));setSelected(x=>Math.min(blocks.length-1,x+1));}}>↓ Move</button><button className={btn} disabled={studioBusy} onClick={()=>{editBlocks(blocks.filter((_,i)=>i!==selected));setSelected(0);}}>Delete</button></div></>}<div className="flex gap-2"><button className={btn+" flex-1"} disabled={studioBusy||undoBlocks.length===0} onClick={undoEditor}>Undo</button><button className={btn+" flex-1"} disabled={studioBusy||redoBlocks.length===0} onClick={redoEditor}>Redo</button></div><button className={primary+" w-full"} onClick={downloadHtml}>Export HTML</button></aside>
             <section className={card}><p className="mb-5 text-xs font-semibold uppercase tracking-[.2em] text-stone-400">Live preview</p><div className="min-h-80 rounded-xl bg-[#f7f2ee] p-8 text-[#19191d]">{blocks.map(b=>b.type==="hero"?<h2 key={b.id} className="my-5 text-4xl font-black">{b.text}</h2>:b.type==="button"?<span key={b.id} className="my-3 inline-block rounded-lg bg-[#bd334e] px-5 py-3 font-semibold text-white">{b.text}</span>:<p key={b.id} className="my-4 leading-7">{b.text}</p>)}</div><p className="mt-3 text-xs text-stone-400">Buttons in the preview are visual components; exported output is static HTML.</p></section>
-          </div>}
+          </div></div>}
           {active==="monitor"&&<section className={card}><div className="flex flex-wrap justify-between gap-3"><div><h3 className="text-xl font-bold">Nexus API Health</h3><p className="mt-1 text-sm text-stone-400">GET /api/labs/health · same-origin only</p></div><button className={primary} disabled={isChecking} onClick={checkService}>{isChecking?"Checking…":"Run health check"}</button></div><div className="mt-6 grid gap-3 sm:grid-cols-3">{[{name:"Checks",value:stats.total},{name:"Successful",value:stats.successful},{name:"Average success",value:stats.averageMs===null?"—":stats.averageMs+" ms"}].map(s=><div className="rounded-xl bg-[#111115] p-5" key={s.name}><p className="text-sm text-stone-400">{s.name}</p><strong className="mt-2 block text-3xl">{s.value}</strong></div>)}</div><p className="mt-5 rounded-lg bg-[#111115] p-4 text-sm">Observed successful checks: <strong>{observed.percent===null?"—":observed.percent+"%"}</strong> · Range: {observed.minMs===null?"—":observed.minMs+"–"+observed.maxMs+" ms"} · {observed.sampleCount} samples</p><p className="mt-3 text-sm text-stone-400">p95 successful latency: <strong>{p95===null?"—":p95+" ms"}</strong> (last {checks.length} manually initiated checks)</p><div role="img" aria-label="Last checks latency bars, green successful, red failed" className="mt-4 flex h-24 items-end gap-1 rounded-xl bg-[#111115] p-3">{checks.slice(0,20).reverse().map((entry,i)=><span key={i} title={(entry.ok?"OK ":"ERROR ")+entry.ms+" ms"} className={"min-w-0 flex-1 rounded-t-sm "+(entry.ok?"bg-emerald-400":"bg-rose-500")} style={{height:Math.max(8,Math.min(100,Math.round(entry.ms/Math.max(1,observed.maxMs||1)*100)))+"%"}}/>)}</div><h4 className="mt-8 font-bold">Recent checks</h4><div className="mt-3 space-y-2">{checks.length===0&&<p className="text-sm text-stone-400">No checks yet. Start the first manual probe.</p>}{checks.map((entry,i)=><div key={i} className="flex justify-between rounded-lg bg-[#111115] p-3 text-sm"><span>{new Date(entry.at).toLocaleTimeString(language)}</span><span className={entry.ok?"text-emerald-400":"text-rose-400"}>{entry.ok?"HEALTHY":"ERROR"}</span><span>{entry.ms} ms</span></div>)}</div><button className={btn+" mt-5"} onClick={()=>setChecks([])}>Clear local history</button><p className="mt-4 text-xs text-stone-400">Measures client-observed latency; results are not server logs or continuous uptime evidence.</p></section>}
           {active==="factory"&&<div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
             <section className={card+" space-y-4"}><h3 className="text-xl font-bold">New engineering request</h3><label htmlFor="factory-request" className="block text-sm">Describe what you want to build</label><textarea id="factory-request" className="w-full rounded-lg border border-white/20 bg-[#111115] p-3" maxLength={500} rows={5} value={request} onChange={e=>setRequest(e.target.value)}/><label htmlFor="factory-kind" className="block text-sm">Request type</label><select id="factory-kind" className="w-full rounded-lg border border-white/20 bg-[#111115] p-3" value={kind} onChange={e=>setKind(e.target.value)}><option value="feature">Feature</option><option value="bug">Bug fix</option><option value="refactor">Refactor</option></select><button className={primary+" w-full"} onClick={()=>{const p=buildFactoryProposal(request,kind);if(!p){setNotice("Describe a task using 10 to 500 characters.");return;}setProposals(old=>[p,...old].slice(0,15));setSelectedProposal(0);setReviewConfirmed(false);setNotice("Rule-based plan prepared; implementation and testing are NOT automatic.");}}>Create reviewable plan</button><p className="text-xs text-stone-400">This workflow is a deterministic planning prototype. It never modifies code or uses an AI provider.</p></section>
