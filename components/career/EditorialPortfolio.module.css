@@ -227,3 +227,25 @@
 }
 @media(max-width:760px){.heroPortrait{left:22%;width:63%;height:63%}}
 @media(max-width:430px){.heroPortrait{left:17%;width:72%;height:58%}}
+
+
+/* Hero portrait: keep the original color photo untouched, but use an image-
+   aligned alpha mask to eliminate the background and feather only its outline.
+   Both image and mask use identical cover size and center positioning. */
+.heroPortrait{
+  background-image:url("/portfolio/portrait-color-reconstruction.webp");
+  background-size:cover;
+  background-position:center 40%;
+  background-repeat:no-repeat;
+  filter:none;
+  opacity:1;
+  -webkit-mask-image:url("/portfolio/portrait-silhouette-mask.svg");
+  mask-image:url("/portfolio/portrait-silhouette-mask.svg");
+  -webkit-mask-size:cover;
+  mask-size:cover;
+  -webkit-mask-position:center 40%;
+  mask-position:center 40%;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  mask-mode:alpha;
+}
