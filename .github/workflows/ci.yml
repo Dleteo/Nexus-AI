@@ -74,6 +74,9 @@ jobs:
       - name: Verify optional live-model probe without real providers
         run: node scripts/live_model_probe_qa.mjs
 
+      - name: Test four engineering labs domain logic
+        run: node scripts/labs_unit_qa.mjs
+
       - name: Build production app
         run: npm run build
 
