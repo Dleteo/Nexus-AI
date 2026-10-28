@@ -70,7 +70,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
   const skills=["HTML / CSS","JavaScript","TypeScript","React","Next.js","Python","Supabase","Git / GitHub","Automated tests","Responsive UI","PostgreSQL / RLS","Accessibility"];
   const langs=siteLanguages.map(l=>({code:l.code,name:l.nativeName}));
   return <div className={s.page} id="inicio" lang={language}>
-    <a className={s.skip} href="#main-content">{t("Ir al contenido","Skip to content","Zum Inhalt","Aller au contenu","Ir ao conteúdo")}</a>
+    <a className={s.skip} href="#main-content" onFocus={event=>{event.currentTarget.style.transform="none";}} onBlur={event=>{event.currentTarget.style.transform="translateY(-200px)";}}>{t("Ir al contenido","Skip to content","Zum Inhalt","Aller au contenu","Ir ao conteúdo")}</a>
     <header className={s.header}>
       <Link className={s.brand} href={portfolioPath(language)} aria-label="Nexus Portfolio"><span className={s.logo}>N</span><span>NEXUS<small>DEVELOPER PORTFOLIO</small></span></Link>
       <nav className={s.desktopNav} aria-label={t("Navegación principal","Primary navigation","Hauptnavigation","Navigation principale","Navegação principal")}>{nav.map(n=><a key={n.href} href={n.href}>{n.label}</a>)}</nav>
