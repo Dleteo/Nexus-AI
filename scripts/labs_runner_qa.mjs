@@ -82,6 +82,22 @@ try {
   process.chdir(fakeRoot);
   await assert.rejects(runLabsPython("commerce", { action: "list" }), /local-script-symlink/);
   process.chdir(root);
+  await rm(path.join(fakeRoot, "labs", "sqlite_storage.py"));
+  await writeFile(path.join(fakeRoot, "labs", "sqlite_storage.py"), "raise RuntimeError('must-not-import')\n");
+  const fakeFactory = path.join(fakeRoot, "labs", "factory");
+  await mkdir(fakeFactory);
+  await writeFile(path.join(fakeFactory, "backend.py"), "raise RuntimeError('must-not-run')\n");
+  process.env.NEXUS_LABS_FACTORY = "1";
+  for (const linked of ["__init__.py", "sandbox_snapshot.py"]) {
+    for (const file of ["__init__.py", "sandbox_snapshot.py"]) {
+      if (file === linked) await symlink(path.join(root, "labs", "factory", file), path.join(fakeFactory, file));
+      else await writeFile(path.join(fakeFactory, file), "raise RuntimeError('must-not-import')\n");
+    }
+    process.chdir(fakeRoot);
+    await assert.rejects(runLabsPython("factory", { action: "list" }), /local-script-symlink/);
+    process.chdir(root);
+    for (const file of ["__init__.py", "sandbox_snapshot.py"]) await rm(path.join(fakeFactory, file));
+  }
   // Python -I must ignore a malicious import shadow in the working directory.
   await writeFile(path.join(temporary, "json.py"), "raise RuntimeError('shadow-import')\n");
   process.chdir(temporary);

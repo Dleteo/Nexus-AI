@@ -7,9 +7,11 @@ import stat
 import tempfile
 import unittest
 import warnings
+from unittest.mock import patch
 from zipfile import ZipFile, ZipInfo, ZIP_BZIP2, ZIP_DEFLATED
 
 from backend import connect, execute, FILES, sha256, verify_artifact
+from factory.sandbox_snapshot import SnapshotFile, validate_snapshot
 
 REQUEST = "Create a portfolio landing page with accessible typography"
 
@@ -121,6 +123,44 @@ class FactoryBackendTests(unittest.TestCase):
         self.assertEqual(persisted["status"], "proposed")
         self.assertEqual([event["stage"] for event in persisted["events"]], ["requirements"])
         self.assertFalse(persisted["downloadReady"])
+
+    def test_execution_stays_not_run_after_static_qa_and_ignored_self_reports(self):
+        expected = {"enabled": False, "status": "not_run", "reason": "isolation_not_verified"}
+        with patch.dict("os.environ", {"NEXUS_FACTORY_EXECUTION": "1", "NEXUS_SANDBOX_ENABLED": "1"}):
+            job = execute({"action": "propose", "request": REQUEST, "kind": "feature",
+                           "execution": {"enabled": True, "status": "passed"}}, self.db)["job"]
+            self.assertEqual(job["execution"], expected)
+            for action in ("approve", "build"):
+                job = execute({"action": action, "id": job["id"], "confirmed": True,
+                               "execution": {"enabled": True, "status": "passed"}}, self.db)["job"]
+                self.assertEqual(job["execution"], expected)
+            self.assertTrue(job["qa"]["passed"])
+            self.assertEqual(execute({"action": "preview", "id": job["id"]}, self.db)
+                             ["preview"]["execution"], expected)
+            self.assertEqual(execute({"action": "list"}, self.db)["jobs"][0]["execution"], expected)
+            for action in ("execute", "run", "test"):
+                self.assertEqual(execute({"action": action, "id": job["id"]}, self.db)["reason"],
+                                 "unsupported-action")
+            self.assertEqual(execute({"action": "list"}, self.db)["jobs"][0]["execution"], expected)
+
+    def test_snapshot_digest_matches_preview_bytes_and_changes_only_with_source(self):
+        job = self.make_job("Review a source snapshot with accents: café and áéíóú")
+        preview = execute({"action": "preview", "id": job["id"]}, self.db)["preview"]
+        displayed = [SnapshotFile(item["name"], item["content"].encode("utf-8"))
+                     for item in preview["files"]]
+        snapshot = validate_snapshot(displayed)
+        self.assertEqual(preview["snapshot"], {"sha256": snapshot.digest, "fileCount": 3,
+                                             "totalBytes": sum(len(item.content) for item in displayed)})
+        self.assertEqual(execute({"action": "preview", "id": job["id"]}, self.db)
+                         ["preview"]["snapshot"], preview["snapshot"])
+        execute({"action": "approve", "id": job["id"], "confirmed": True}, self.db)
+        execute({"action": "build", "id": job["id"]}, self.db)
+        self.assertEqual(execute({"action": "preview", "id": job["id"]}, self.db)
+                         ["preview"]["snapshot"], preview["snapshot"])
+        different = self.make_job("Review another source snapshot with different text")
+        other = execute({"action": "preview", "id": different["id"]}, self.db)["preview"]
+        self.assertNotEqual(other["snapshot"]["sha256"], preview["snapshot"]["sha256"])
+        self.assertFalse(other["execution"]["enabled"])
 
     def built_zip(self):
         job = self.make_job()

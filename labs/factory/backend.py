@@ -26,6 +26,7 @@ import zlib
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "labs"))
 from sqlite_storage import connect_private_db
+from factory.sandbox_snapshot import SnapshotFile, validate_snapshot
 DEFAULT_DB = ROOT / ".nexus-local" / "factory.sqlite3"
 ID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 KINDS = {"feature", "bug", "refactor"}
@@ -96,6 +97,11 @@ def plan_for(request: str, kind: str) -> dict:
     }
 
 
+def execution_status() -> dict:
+    """Static QA and human template approval cannot attest sandbox execution."""
+    return {"enabled": False, "status": "not_run", "reason": "isolation_not_verified"}
+
+
 def serialize(db: sqlite3.Connection, row: sqlite3.Row) -> dict:
     events = [
         {"stage": r["stage"], "detail": r["detail"], "at": r["created_at"]}
@@ -111,6 +117,7 @@ def serialize(db: sqlite3.Connection, row: sqlite3.Row) -> dict:
         "events": events,
         "qa": json.loads(row["qa_json"]) if row["qa_json"] else None,
         "downloadReady": row["status"] == "built" and row["artifact"] is not None,
+        "execution": execution_status(),
     }
 
 
@@ -249,6 +256,7 @@ def inspect_proposed_files(db: sqlite3.Connection, job_id: object) -> dict:
         return {"ok": False, "reason": "job-not-found"}
     files = generate(row["request"], row["kind"])
     qa = check_artifacts(files, row["request"])
+    snapshot = validate_snapshot([SnapshotFile(name, files[name]) for name in FILES[:3]])
     return {
         "ok": True,
         "preview": {
@@ -258,6 +266,9 @@ def inspect_proposed_files(db: sqlite3.Connection, job_id: object) -> dict:
                 for name in FILES[:3]
             ],
             "qa": qa,
+            "snapshot": {"sha256": snapshot.digest, "fileCount": len(snapshot.files),
+                         "totalBytes": snapshot.total_bytes},
+            "execution": execution_status(),
             "note": "Read-only source preview. No code has been executed and no ZIP has been built.",
         },
     }
