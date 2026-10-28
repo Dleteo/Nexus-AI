@@ -540,8 +540,8 @@ def audit_standalone_labs(browser):
                    "Project header missing for "+lab)
             expect(page.get_by_role("button",name=action).count()>0,
                    "Real product operation missing for "+lab)
-            expect(page.locator(".lab-visual").count()==1,
-                   "Project-specific functional visual composition missing for "+lab)
+            expect(page.locator(".lab-overview-screen").count()==1,
+                   "Product-specific live data preview missing for "+lab)
             expect(not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),
                    "Horizontal overflow for "+lab)
             page.screenshot(path=str(ARTIFACTS/f"standalone-{lab}-{width}.png"),full_page=True)
