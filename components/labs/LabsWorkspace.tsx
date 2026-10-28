@@ -77,7 +77,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
       const result=placeOrder(cart,inventory);
       if(!result.ok){setNotice("Unable to place order: "+result.reason);return;}
       setInventory(result.inventory);setOrders(previous=>[{total:result.total,count:result.lines.length},...previous]);setCart({});
-      setNotice("Demo order created in browser storage. No payment was collected.");
+      setNotice("Demo order created. Saved in browser storage; no payment was collected.");
       return;
     }
     if(sqliteBusy)return;
