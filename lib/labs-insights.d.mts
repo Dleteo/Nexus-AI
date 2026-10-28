@@ -1,0 +1,11 @@
+export type CartProduct={id:string;name:string;price:number;stock:number};
+export type CartLine={id:string;name:string;quantity:number;unitPrice:number;subtotal:number};
+export type CartSummary={valid:boolean;lines:CartLine[];units:number;total:number;reason:string|null};
+export function summarizeCart(cart:Record<string,number>,products:ReadonlyArray<CartProduct>):CartSummary;
+export type StudioAudit={ok:boolean;issues:string[];words:number;blocks:number};
+export function auditStudioBlocks(blocks:ReadonlyArray<{id:string;type:string;text:string}>):StudioAudit;
+export type WindowCheck={ok:boolean;ms:number;at:string};
+export type SampleSummary={count:number;success:number;failures:number;successPercent:number|null;p95Ms:number|null;checks:WindowCheck[]};
+export function summarizeSampleWindow(checks:ReadonlyArray<WindowCheck>,limit?:number):SampleSummary;
+export type FactoryBoardSummary={total:number;proposed:number;approved:number;built:number;passedStaticQa:number};
+export function summarizeFactoryBoard(jobs:ReadonlyArray<{status:string;qa?:{passed:boolean}|null}>):FactoryBoardSummary;
