@@ -7,8 +7,9 @@ in disposable/ignored SQLite. All file names and contents are controlled here.
 from __future__ import annotations
 
 import base64
+import hashlib
 from datetime import datetime, timezone
-from html import escape, unescape
+from html import escape
 from html.parser import HTMLParser
 from io import BytesIO
 import json
@@ -18,14 +19,14 @@ import re
 import sqlite3
 import sys
 from uuid import uuid4
-from zipfile import ZipFile, ZIP_DEFLATED
+from zipfile import ZipFile, ZIP_DEFLATED, BadZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DB = ROOT / ".nexus-local" / "factory.sqlite3"
 ID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 KINDS = {"feature", "bug", "refactor"}
 MAX_JOBS = 40
-FILES = ("index.html", "styles.css", "README.md", "qa-results.json")
+FILES = ("index.html", "styles.css", "README.md", "qa-results.json", "manifest.json")
 STYLES = """*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:2rem;background:#12151d;color:#f5f7fb;font:18px/1.6 system-ui,sans-serif}main{max-width:760px;padding:3rem;border:1px solid #394051;border-radius:20px;background:#1d2430}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.1}p{color:#c8d1df}.tag{font-size:.8rem;letter-spacing:.2em;color:#9dbbff;text-transform:uppercase}"""
 PLAN_STAGES = (
     "Requirements documented",
@@ -233,6 +234,70 @@ def check_artifacts(files: dict[str, bytes], request: str) -> dict:
     return {"passed": all(item["passed"] for item in checks), "checks": checks, "mode": "static-validation"}
 
 
+def sha256(data: bytes) -> str:
+    """Hex SHA-256; useful for accidental corruption checks, not a signature."""
+    return hashlib.sha256(data).hexdigest()
+
+
+def inspect_proposed_files(db: sqlite3.Connection, job_id: object) -> dict:
+    """Review files without executing or persisting artifacts. No approval required."""
+    row = lookup(db, job_id)
+    if row is None:
+        return {"ok": False, "reason": "job-not-found"}
+    files = generate(row["request"], row["kind"])
+    qa = check_artifacts(files, row["request"])
+    return {
+        "ok": True,
+        "preview": {
+            "jobId": row["id"],
+            "files": [
+                {"name": name, "content": files[name].decode("utf-8"), "sha256": sha256(files[name])}
+                for name in FILES[:3]
+            ],
+            "qa": qa,
+            "note": "Read-only source preview. No code has been executed and no ZIP has been built.",
+        },
+    }
+
+
+def manifest_for(files: dict[str, bytes]) -> dict:
+    return {
+        "schemaVersion": 1,
+        "algorithm": "sha256",
+        "files": {name: {"sha256": sha256(files[name]), "size": len(files[name])}
+                  for name in FILES[:-1]},
+        "scope": "Archive integrity only; not an identity, authenticity or security signature.",
+    }
+
+
+def verify_artifact(archive_bytes: bytes) -> bool:
+    """Reject modified or inconsistent ZIPs before returning them to the browser."""
+    if not isinstance(archive_bytes, bytes) or len(archive_bytes) > 120_000:
+        return False
+    try:
+        with ZipFile(BytesIO(archive_bytes), "r") as archive:
+            infos = archive.infolist()
+            if tuple(info.filename for info in infos) != FILES:
+                return False
+            if any(info.is_dir() or info.file_size <= 0 or info.file_size > 12_000 for info in infos):
+                return False
+            files = {info.filename: archive.read(info) for info in infos}
+        manifest = json.loads(files["manifest.json"].decode("utf-8"))
+        if manifest.get("schemaVersion") != 1 or manifest.get("algorithm") != "sha256":
+            return False
+        if set(manifest.get("files", {})) != set(FILES[:-1]):
+            return False
+        if not all(
+            manifest["files"][name] == {"sha256": sha256(files[name]), "size": len(files[name])}
+            for name in FILES[:-1]
+        ):
+            return False
+        qa = json.loads(files["qa-results.json"].decode("utf-8"))
+        return qa.get("passed") is True and qa.get("mode") == "static-validation"
+    except (BadZipFile, OSError, ValueError, UnicodeDecodeError, TypeError, KeyError, AttributeError):
+        return False
+
+
 def build(db: sqlite3.Connection, job_id: object) -> dict:
     if lookup(db, job_id) is None:
         return {"ok": False, "reason": "job-not-found"}
@@ -248,10 +313,14 @@ def build(db: sqlite3.Connection, job_id: object) -> dict:
             db.execute("ROLLBACK")
             return {"ok": False, "reason": "qa-failed"}
         files["qa-results.json"] = json.dumps(qa, indent=2).encode("utf-8")
+        files["manifest.json"] = json.dumps(manifest_for(files), indent=2).encode("utf-8")
         buffer = BytesIO()
         with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
             for name in FILES:
                 archive.writestr(name, files[name])
+        if not verify_artifact(buffer.getvalue()):
+            db.execute("ROLLBACK")
+            return {"ok": False, "reason": "artifact-integrity-failed"}
         db.execute(
             "UPDATE factory_jobs SET status='built', artifact=?, qa_json=? WHERE id=?",
             (buffer.getvalue(), json.dumps(qa), job_id),
@@ -271,6 +340,8 @@ def artifact(db: sqlite3.Connection, job_id: object) -> dict:
     row = lookup(db, job_id)
     if row is None or row["status"] != "built" or row["artifact"] is None:
         return {"ok": False, "reason": "artifact-not-found"}
+    if not verify_artifact(row["artifact"]):
+        return {"ok": False, "reason": "artifact-integrity-failed"}
     return {"ok": True, "filename": "nexus-factory-" + row["id"][:8] + ".zip",
             "base64": base64.b64encode(row["artifact"]).decode("ascii")}
 
@@ -279,7 +350,7 @@ def execute(command: object, db_path: Path) -> dict:
     if not isinstance(command, dict):
         return {"ok": False, "reason": "invalid-request"}
     action = command.get("action")
-    if action not in ("list", "propose", "approve", "build", "artifact"):
+    if action not in ("list", "propose", "preview", "approve", "build", "artifact"):
         return {"ok": False, "reason": "unsupported-action"}
     with connect(db_path) as db:
         if action == "list":
@@ -287,6 +358,8 @@ def execute(command: object, db_path: Path) -> dict:
             return {"ok": True, "jobs": [serialize(db, lookup(db, row["id"])) for row in ids]}
         if action == "propose":
             return propose(db, command.get("request"), command.get("kind"))
+        if action == "preview":
+            return inspect_proposed_files(db, command.get("id"))
         if action == "approve":
             return approve(db, command.get("id"), command.get("confirmed"))
         if action == "build":
