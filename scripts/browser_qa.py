@@ -153,21 +153,22 @@ def audit_labs_keyboard_and_localization(browser):
         expect(page.get_by_role("region",name="Active engineering lab").count()==1,
                f"Active lab panel missing: {language}")
     page.goto(BASE+"/labs?lab=commerce",wait_until="networkidle")
-    commerce=page.get_by_role("button",name="Nexus Commerce")
+    lab_navigation=page.get_by_role("navigation",name="Nexus labs")
+    commerce=lab_navigation.get_by_role("button",name="Nexus Commerce")
     commerce.focus()
     page.keyboard.press("ArrowRight")
-    studio=page.get_by_role("button",name="Nexus Studio")
+    studio=lab_navigation.get_by_role("button",name="Nexus Studio")
     expect(studio.get_attribute("aria-pressed")=="true","ArrowRight should select Studio")
     expect(studio.evaluate("(el) => document.activeElement === el"),
            "Arrow navigation should move keyboard focus")
     expect("lab=studio" in page.url,"Keyboard lab navigation must update shareable URL")
     page.keyboard.press("End")
-    expect(page.get_by_role("button",name="Nexus Software Factory").get_attribute("aria-pressed")=="true",
+    expect(lab_navigation.get_by_role("button",name="Nexus Software Factory").get_attribute("aria-pressed")=="true",
            "End should select last lab")
     page.keyboard.press("Home")
     expect(commerce.get_attribute("aria-pressed")=="true","Home should select first lab")
     for lab in ["commerce","studio","monitor","factory"]:
-        page.get_by_role("button",name={"commerce":"Nexus Commerce","studio":"Nexus Studio",
+        lab_navigation.get_by_role("button",name={"commerce":"Nexus Commerce","studio":"Nexus Studio",
             "monitor":"Nexus Monitor","factory":"Nexus Software Factory"}[lab]).click()
         expect(page.get_by_role("region",name="Recorrido de la demostración").locator("ol > li").count()==3,
                f"Demo guide must follow selected module: {lab}")
