@@ -39,6 +39,66 @@ No ejecuta la suite adversaria, no acredita rootless y no permite habilitación
 por bandera o variable de entorno. Sus tests verifican esta negativa, no un
 sandbox. `--help` muestra ayuda y no evalúa disponibilidad.
 
+## Preparación de inputs implementada, sin ejecución
+
+La continuación incorpora `labs/factory/sandbox_snapshot.py`, con dos entradas
+puramente en memoria: `validate_snapshot()` para archivos suministrados
+explícitamente y `snapshot_from_zip()` para bytes de un ZIP. Nunca leen el
+repositorio ni extraen, escriben, importan o ejecutan el contenido. El módulo
+rechaza rutas absolutas/traversal, prefijos Windows/ADS, enlaces y archivos
+especiales en ZIP, nombres privados conocidos, colisiones casefold/NFKC y
+conflictos archivo/directorio, incluidos alias en los prefijos de directorios.
+Los nombres se rechazan si no son canónicos; no se renombran silenciosamente.
+
+Límites aplicados a **datos de entrada**: 100 archivos, 1 MiB por archivo y
+8 MiB total; ZIP hasta 9 MiB, ratio máximo 200 y directorio central acotado
+antes de cargarlo. Sólo ZIP clásico de un disco, stored/deflate, sin comentarios,
+extras, descriptores ni ZIP64. Son restricciones deliberadas del nuevo importador
+de snapshots; no sustituyen ni migran el verificador de artefactos de Factory.
+La validación verifica también coherencia de headers/tamaños/CRC y número de
+miembros. Los límites de datos no prueban cuotas del futuro contenedor.
+
+El resultado es una tupla de `SnapshotFile(path, content)` inmutables con SHA-256
+determinista. El framing v1 es dominio `nexus-factory-snapshot:v1` seguido de NUL
+y, por cada archivo ordenado por path UTF-8, longitud de path uint32 big-endian,
+path UTF-8, longitud de contenido uint64 big-endian y bytes. Ese digest identifica
+los archivos suministrados: **no firma, no detecta secretos arbitrarios y no
+acredita aprobación, ejecución ni aislamiento**. El operador debe seleccionar y
+revisar los archivos; el futuro worker debe validar sus inputs de nuevo.
+
+El preview real de Factory valida sus tres fuentes HTML/CSS/README y devuelve
+`snapshot: {sha256, fileCount, totalBytes}`. El digest no incluye
+`qa-results.json` ni `manifest.json`: identifica los archivos mostrados. Jobs y
+preview incorporan `execution: {enabled: false, status: "not_run", reason:
+"isolation_not_verified"}`, incluso después de aprobar/construir un ZIP con QA
+estática verde. Las acciones `run`/`test`/`execute` siguen rechazadas; ni el
+cliente ni una bandera de entorno pueden declarar ejecución verificada.
+El aviso se muestra en los cinco idiomas, tanto en planner como en Factory local.
+El flujo de aprobación actual no se ha convertido en la aprobación de un diff
+exacto ni de una ejecución: eso sigue siendo P2.
+
+El preflight añade observaciones Linux acotadas: UID mapping, presencia de
+membresía cgroup v2/controladores, escritura observada con `os.access` y socket
+rootless convencional presente/ausente. No publica la ruta del cgroup ni contacta
+el socket. Archivos ausentes, errores de permisos y datos malformados quedan
+desconocidos. La escritura observada **no acredita delegación efectiva**; todos
+los controles P1 permanecen `unverified`, ejecución desactivada y exit 2.
+
+Pruebas reproducibles de esta preparación:
+
+```sh
+python3 -m unittest discover -s labs/factory -p 'test_*.py' -v
+python3 -m unittest discover -s scripts -p 'test_sandbox_preflight.py' -v
+```
+
+CI descubre automáticamente los tests del módulo. La integración HTTP reproduce
+el digest de manera independiente desde los bytes del preview y comprueba que
+aprobar/construir no cambia el snapshot ni convierte QA estática en ejecución.
+La prueba de navegador con job construido simulado comprueba sólo el aviso en
+cinco idiomas; no es evidencia de runtime. Los tests de snapshots bloquean
+escritura, extracción, procesos y red mientras procesan datos adversarios inertes.
+Esta preparación verifica inputs en memoria; **P1 sigue sin estar aceptada**.
+
 ## Frontera propuesta para una futura implementación
 
 Next.js sólo entregaría un snapshot validado y una solicitud declarativa a un

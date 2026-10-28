@@ -13,6 +13,8 @@ Nexus Software Factory is an **offline-first, local-only prototype** demonstrati
 
 SQLite enforces workflow transitions and ensures that concurrent requests cannot both complete the same build. Retains at most 40 jobs and lists the most recent 20.
 
+The source preview also returns the digest, file count and byte size of an immutable in-memory snapshot of those three displayed files. It does not include QA/manifest files, write a workspace or run its contents. Jobs and previews report `execution.enabled=false` and `execution.status=not_run`, even after static QA passes. The interface discloses this distinction in ES/EN/DE/FR/PT. No execution action, runtime or provider has been enabled; see the [P1 preparation and remaining isolation requirements](../../docs/FACTORY_SANDBOX_P1.md).
+
 ## Local setup
 
 Install Python 3, Node.js and the repository's NPM dependencies. In `.env.local` add:
