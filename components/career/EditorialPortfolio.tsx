@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {useState} from "react";
 import {certifications, totalTrainingHours} from "../../data/certifications";
-import {selectedGithubProjects} from "../../data/github-projects";
 import {professionalProfile} from "../../data/profile";
 import {siteLanguages, cvPath, portfolioPath, type SiteLanguage} from "../../data/site-languages";
 import PortfolioContactChat from "./PortfolioContactChat";
@@ -17,29 +16,41 @@ const local=(language:SiteLanguage,es:string,en:string,de:string,fr:string,pt:st
 
 const cards=[
   {
-    number:"01",name:"Nexus AI Workspace",type:"FULL STACK / IA",
+    number:"01",name:"Nexus AI Workspace",type:"FULL STACK / AI",
     href:"/projects/nexus-ai",repo:"https://github.com/Dleteo/Nexus-AI",
     technologies:["Next.js","TypeScript","Supabase"],
-    description:["Plataforma de proyectos con autenticación y asistencia técnica.","Project workspace with authentication and technical assistance.","Projektbereich mit Anmeldung und technischer Hilfe.","Espace projets avec authentification et assistance technique.","Área de projetos com autenticação e assistência técnica."],
+    description:["Espacio de proyectos, autenticación y asistencia técnica; desarrollo asistido por IA.","Project workspace, authentication and technical assistance; AI-assisted implementation.","Projektbereich, Anmeldung und technische Hilfe; KI-gestützte Umsetzung.","Espace projets, authentification et assistance technique ; développement assisté par IA.","Área de projetos, autenticação e assistência técnica; implementação assistida por IA."],
   },
   {
-    number:"02",name:"Task Tracker",type:"JAVASCRIPT / WEB",
-    href:"/projects/task-tracker",repo:selectedGithubProjects[0].repoUrl,
-    technologies:["JavaScript","HTML","CSS"],
-    image:selectedGithubProjects[0].previewImage,
-    description:["Gestor de tareas con almacenamiento local.","Task manager with local browser storage.","Aufgabenverwaltung mit lokalem Speicher.","Gestionnaire de tâches avec stockage local.","Gerenciador de tarefas com armazenamento local."],
+    number:"02",name:"Nexus Commerce",type:"COMMERCE / DEMO",
+    lab:"commerce",repo:"https://github.com/Dleteo/Nexus-AI",
+    technologies:["JavaScript","React","Business logic"],
+    description:["Catálogo, carrito, inventario y pedidos simulados con persistencia local; sin pagos reales.","Catalog, cart, inventory and simulated orders with local storage; no real payments.","Katalog, Warenkorb, Lager und simulierte Bestellungen im lokalen Speicher; keine echten Zahlungen.","Catalogue, panier, stock et commandes simulées en stockage local ; aucun paiement réel.","Catálogo, carrinho, estoque e pedidos simulados com dados locais; sem pagamentos reais."],
   },
   {
-    number:"03",name:"Hangman Game",type:"JAVASCRIPT / JUEGO",
-    href:"/projects/hangman",repo:selectedGithubProjects[1].repoUrl,
-    technologies:["JavaScript","DOM","HTML"],
-    image:selectedGithubProjects[1].previewImage,
-    description:["Juego de palabras con interacción y lógica de estados.","Word game with interactive state and logic.","Wortspiel mit Interaktionen und Zustandslogik.","Jeu de mots interactif et logique d’états.","Jogo de palavras interativo e lógica de estados."],
+    number:"03",name:"Nexus Studio",type:"VISUAL EDITOR / DEMO",
+    lab:"studio",repo:"https://github.com/Dleteo/Nexus-AI",
+    technologies:["React","TypeScript","HTML"],
+    description:["Editor de bloques con vista previa, reorganización, deshacer y exportación HTML.","Block editor with live preview, reordering, undo and HTML export.","Blockeditor mit Vorschau, Umordnung, Rückgängig und HTML-Export.","Éditeur de blocs avec aperçu, réorganisation, annulation et export HTML.","Editor de blocos com prévia, reordenação, desfazer e exportação HTML."],
+  },
+  {
+    number:"04",name:"Nexus Monitor",type:"API HEALTH / DEMO",
+    lab:"monitor",repo:"https://github.com/Dleteo/Nexus-AI",
+    technologies:["HTTP","Metrics","Testing"],
+    description:["Comprobaciones manuales del endpoint local, latencia e historial de resultados; no es vigilancia continua.","Manual health checks of a local endpoint with latency metrics and history; not continuous monitoring.","Manuelle Zustandsprüfungen eines lokalen Endpunkts mit Latenz und Verlauf; kein Dauer-Monitoring.","Vérification manuelle de l'API locale, latence et historique ; sans surveillance continue.","Verificações manuais da API local, latência e histórico; sem monitoramento contínuo."],
+  },
+  {
+    number:"05",name:"Nexus Software Factory",type:"WORKFLOW / PROTOTYPE",
+    lab:"factory",repo:"https://github.com/Dleteo/Nexus-AI",
+    technologies:["Workflow","Review","Markdown"],
+    description:["Planificación basada en reglas, revisión humana y exportación de tareas; aún no ejecuta agentes de IA.","Rule-based planning, human review and task export; no autonomous AI agents yet.","Regelbasierte Planung, menschliche Freigabe und Aufgabenexport; noch keine autonomen KI-Agenten.","Planification fondée sur des règles, validation humaine et export de tâches ; sans agents IA autonomes.","Planejamento baseado em regras, revisão humana e exportação de tarefas; ainda sem agentes autônomos."],
   },
 ] as const;
 
 export default function EditorialPortfolio({language="es"}:{language?:SiteLanguage}) {
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>local(language,es,en,de,fr,pt);
+  const labHref=(lab:string)=> (language==="es"?"/labs":"/"+language+"/labs")+"?lab="+lab;
+  const cardHref=(card:(typeof cards)[number])=> "lab" in card ? labHref(card.lab) : card.href+"?lang="+language;
   const [menu,setMenu]=useState(false);
   const nav=[
     {label:t("INICIO","HOME","START","ACCUEIL","INÍCIO"),href:"#inicio"},
@@ -95,8 +106,8 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
         <div className={s.sectionHeader}><h2 id="projects-title">{t("PROYECTOS DESTACADOS","FEATURED PROJECTS","AUSGEWÄHLTE PROJEKTE","PROJETS À LA UNE","PROJETOS EM DESTAQUE")} <span className={s.spark}>✦</span></h2><a href={professionalProfile.github} target="_blank" rel="noopener noreferrer">{t("VER TODOS LOS REPOSITORIOS","VIEW ALL REPOSITORIES","ALLE REPOSITORIES","VOIR TOUS LES DÉPÔTS","VER REPOSITÓRIOS")} <span>⟶</span></a></div>
         <div className={s.projectGrid}>{cards.map(card=><article className={s.projectCard} key={card.number}>
           <div className={s.cardTop}><b>{card.number} /</b><span>{card.type}</span></div>
-          <Link className={s.projectPicture} href={card.href+"?lang="+language} aria-label={card.name}>
-            {"image" in card && card.image ? <Image src={card.image} alt={card.name} fill unoptimized sizes="(max-width:700px) 100vw, 33vw" className={s.projectImg}/>:
+          <Link className={s.projectPicture} href={cardHref(card)} aria-label={card.name}>
+            {"lab" in card ? <div aria-hidden="true" className="flex h-full flex-col justify-between overflow-hidden bg-gradient-to-br from-[#391d2a] via-[#1a1a25] to-[#14151c] p-5"><span className="text-[10px] font-bold uppercase tracking-[.25em] text-[#f1a1b1]">NEXUS / ENGINEERING LABS</span><div><strong className="block text-2xl font-black leading-tight text-white sm:text-3xl">{card.name}</strong><span className="mt-2 block text-[10px] font-semibold tracking-widest text-[#dd9eac]">{card.type}</span></div><div className="flex gap-2"><span className="h-2 w-1/2 rounded-sm bg-[#de4e65]"/><span className="h-2 w-1/4 rounded-sm bg-[#6d4e64]"/><span className="h-2 w-1/6 rounded-sm bg-[#de4e65]/40"/></div></div> :
               <div className={s.nexusMock} aria-hidden="true">
                 <div className={s.mockSidebar}><b>N</b><span>⌂</span><span>▣</span><span>☰</span><span>⚙</span></div>
                 <div className={s.mockWorkspace}>
@@ -108,7 +119,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
                 </div>
               </div>}
           </Link>
-          <div className={s.projectCopy}><div className={s.projectTitle}><h3>{card.name}</h3><Link href={card.href+"?lang="+language} aria-label={t("Ver proyecto","View project","Projekt ansehen","Voir le projet","Ver projeto")+" "+card.name}>↗</Link></div><p>{card.description[({es:0,en:1,de:2,fr:3,pt:4} as const)[language]]}</p><div className={s.tags}>{card.technologies.map(v=><span key={v}>{v}</span>)}</div></div>
+          <div className={s.projectCopy}><div className={s.projectTitle}><h3>{card.name}</h3><Link href={cardHref(card)} aria-label={t("Ver proyecto","View project","Projekt ansehen","Voir le projet","Ver projeto")+" "+card.name}>↗</Link></div><p>{card.description[({es:0,en:1,de:2,fr:3,pt:4} as const)[language]]}</p><div className={s.tags}>{card.technologies.map(v=><span key={v}>{v}</span>)}</div></div>
         </article>)}</div>
         <div className="mt-8 rounded-2xl border border-[#de4e65]/40 bg-[#241c20] p-6"><p className="text-xs font-bold tracking-[.2em] text-[#ee9dad]">NEXUS ENGINEERING LABS · 04</p><h3 className="mt-2 text-2xl font-bold text-white">{t("CUATRO NUEVOS PROYECTOS INTERACTIVOS","FOUR NEW INTERACTIVE PROJECTS","VIER NEUE INTERAKTIVE PROJEKTE","QUATRE NOUVEAUX PROJETS INTERACTIFS","QUATRO NOVOS PROJETOS INTERATIVOS")}</h3><p className="mt-3 text-sm leading-7 text-[#cfc5c7]">Nexus Commerce · Nexus Studio · Nexus Monitor · Nexus Software Factory. {t("Prototipos funcionales en desarrollo, con limitaciones documentadas.","Functional prototypes in development, with documented limitations.","Funktionsfähige Prototypen in Entwicklung mit dokumentierten Grenzen.","Prototypes fonctionnels en développement avec limites documentées.","Protótipos funcionais em desenvolvimento, com limitações documentadas.")}</p><Link className="mt-5 inline-flex rounded-xl bg-[#de4e65] px-5 py-3 text-sm font-bold text-white hover:bg-[#b92f49]" href={language==="es"?"/labs":"/"+language+"/labs"}>{t("EXPLORAR LOS 4 PROYECTOS →","EXPLORE ALL 4 PROJECTS →","ALLE 4 PROJEKTE ANSEHEN →","DÉCOUVRIR LES 4 PROJETS →","EXPLORAR OS 4 PROJETOS →")}</Link></div>
         <p className={s.evidence}><span>●</span> {t("Proyectos demostrables; sin clientes ni resultados comerciales inventados.","Verifiable projects; no invented clients or commercial results.","Nachweisbare Projekte; keine erfundenen Kunden oder Erfolge.","Projets vérifiables ; aucun client ou résultat inventé.","Projetos verificáveis; sem clientes ou resultados inventados.")}</p>
