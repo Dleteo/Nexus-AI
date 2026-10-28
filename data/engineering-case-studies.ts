@@ -1,0 +1,148 @@
+import type {CaseStudy} from "./case-studies";
+
+/** Recruiter-facing case studies. Each claim points to public code on the review branch. */
+const root = "https://github.com/Dleteo/Nexus-AI/blob/feat/career-portfolio-20261026/";
+const repo = "https://github.com/Dleteo/Nexus-AI/tree/feat/career-portfolio-20261026";
+
+export const engineeringCaseStudies: CaseStudy[] = [
+  {
+    slug: "nexus-commerce",
+    title: "Nexus Commerce",
+    eyebrow: "02 / COMERCIO Y TRANSACCIONES",
+    lead: "Tienda de demostración con catálogo, carrito, inventario y un backend SQLite local opcional para pedidos transaccionales.",
+    role: "Proyecto de portafolio con implementación asistida por IA y pruebas automatizadas; sin clientes ni pagos reales.",
+    status: "MVP experimental · backend SQLite exclusivamente en desarrollo local",
+    tech: ["Next.js", "TypeScript", "Python", "SQLite", "HTTP", "GitHub Actions"],
+    problem: "El navegador puede simular una compra, pero no garantiza stock consistente cuando dos solicitudes intentan comprar las mismas unidades.",
+    approach: [
+      "Separé el carrito de navegador, que usa almacenamiento local, de un modo de servidor opcional con Python y SQLite.",
+      "Guardé los precios en centavos enteros en el backend y calculé el total sin confiar en valores enviados por el comprador.",
+      "Implementé la compra con una transacción BEGIN IMMEDIATE que valida todas las líneas antes de actualizar inventario y pedido.",
+      "Bloqueé la API de escritura en producción y probé concurrencia, cantidades inválidas y persistencia mediante peticiones HTTP.",
+    ],
+    evidence: [
+      {label:"Transacciones e inventario",detail:"Validación, stock y escritura atómica en SQLite.",url:root+"labs/commerce/backend.py"},
+      {label:"Pruebas de concurrencia",detail:"Dos compras simultáneas no pueden sobrepasar el inventario.",url:root+"labs/commerce/test_backend.py"},
+      {label:"API protegida",detail:"Adaptador de desarrollo local con validación de peticiones.",url:root+"app/api/labs/commerce/route.ts"},
+      {label:"Prueba HTTP",detail:"Verifica pedidos y persistencia desde Next.js.",url:root+"scripts/commerce_http_qa.mjs"},
+    ],
+    lessons: [
+      "El cálculo de stock debe realizarse dentro de una transacción, no solo en el carrito visual.",
+      "El backend debe calcular precios y validar cantidades en lugar de confiar en datos del navegador.",
+      "Las pruebas de concurrencia y la respuesta de la API son parte de la evidencia técnica.",
+    ],
+    limitations: [
+      "No hay usuarios reales, pagos, impuestos, devoluciones ni procesamiento financiero.",
+      "SQLite se habilita solo en la máquina local de desarrollo; la demo pública utiliza estado del navegador.",
+      "Faltan autenticación, permisos por usuario e idempotencia para ofrecer un servicio remoto.",
+    ],
+    repository: repo,
+    demo:"/labs?lab=commerce",
+    next:"Implementar autenticación y órdenes idempotentes en un entorno de ensayo, sin integrar pagos reales.",
+  },
+  {
+    slug:"nexus-studio",
+    title:"Nexus Studio",
+    eyebrow:"03 / EDITOR VISUAL Y VERSIONADO",
+    lead:"Editor de bloques con vista previa, exportación HTML y un historial SQLite opcional con protección de revisiones.",
+    role:"Proyecto de portafolio asistido por IA, con validaciones de entradas y pruebas de guardado/restauración.",
+    status:"MVP experimental · guardado de revisiones solo en desarrollo local",
+    tech:["React","TypeScript","HTML","Python","SQLite","Playwright"],
+    problem:"Editar contenido y recuperar versiones sin sobrescribir inadvertidamente una revisión guardada desde otra sesión.",
+    approach:[
+      "Organicé el documento en bloques de texto, encabezado y botón con edición, reordenación y undo/redo.",
+      "Exporté una página HTML estática escapando el contenido para que las etiquetas ingresadas sean texto, no instrucciones ejecutables.",
+      "Guardé snapshots SQLite con un contador de revisión y rechacé escrituras desactualizadas con conflicto HTTP 409.",
+      "Permití restaurar una versión anterior como una nueva revisión, preservando el historial original.",
+    ],
+    evidence:[
+      {label:"Backend versionado",detail:"Snapshots, validación de bloques y control de revisión.",url:root+"labs/studio/backend.py"},
+      {label:"Pruebas del editor",detail:"Conflictos simultáneos, restauración e inputs adversarios.",url:root+"labs/studio/test_backend.py"},
+      {label:"API de Studio",detail:"Guardado y restauración protegidos por el modo local.",url:root+"app/api/labs/studio/route.ts"},
+      {label:"Pruebas HTTP",detail:"Validación end-to-end del contrato de revisiones.",url:root+"scripts/studio_http_qa.mjs"},
+    ],
+    lessons:[
+      "La edición concurrente necesita control explícito de versiones; guardar siempre el último cambio puede borrar trabajo.",
+      "Un historial restaurable debe conservar sus snapshots previos.",
+      "El HTML exportado exige escapado y pruebas de entradas especiales.",
+    ],
+    limitations:[
+      "El backend es local y no dispone de colaboración simultánea en tiempo real ni autenticación.",
+      "La exportación genera archivos estáticos; no publica automáticamente un sitio.",
+      "Faltan drag-and-drop accesible, estilos avanzados y aislamiento de vistas previas externas.",
+    ],
+    repository:repo,
+    demo:"/labs?lab=studio",
+    next:"Añadir controles visuales y drag-and-drop accesible, manteniendo protección de versiones y pruebas XSS.",
+  },
+  {
+    slug:"nexus-monitor",
+    title:"Nexus Monitor",
+    eyebrow:"04 / OBSERVABILIDAD Y ESTADO HTTP",
+    lead:"Dashboard de mediciones manuales de salud y latencia con historial SQLite, percentil p95 y alertas locales.",
+    role:"Laboratorio de observabilidad de portafolio con backend Python y pruebas automatizadas.",
+    status:"MVP de medición manual · no es vigilancia continua ni un SLA",
+    tech:["Python","SQLite","HTTP","React","TypeScript","Testing"],
+    problem:"Una petición fallida o una respuesta malformada necesita dejar evidencia; no basta con mostrar un indicador verde.",
+    approach:[
+      "Limité las consultas del backend al endpoint de salud de Nexus AI en loopback, sin aceptar objetivos arbitrarios.",
+      "Registré muestras HTTP y fallos de protocolo como mediciones fallidas persistentes en SQLite.",
+      "Calculé éxito observado y p95 sobre las muestras; distinguí alertas por fallo reciente, lentitud y fallos consecutivos.",
+      "Añadí pruebas de respuestas HTTP defectuosas, almacenamiento limitado y bloqueo de la API en producción.",
+    ],
+    evidence:[
+      {label:"Motor de medición",detail:"Probe local, persistencia, p95 y alertas.",url:root+"labs/monitor/backend.py"},
+      {label:"Pruebas HTTP y errores",detail:"Regresiones de respuestas malformadas y estado crítico.",url:root+"labs/monitor/test_backend.py"},
+      {label:"API de Monitor",detail:"Restricciones del endpoint local.",url:root+"app/api/labs/monitor/route.ts"},
+      {label:"Pruebas de integración",detail:"Comprobaciones y persistencia vía Next.js.",url:root+"scripts/monitor_http_qa.mjs"},
+    ],
+    lessons:[
+      "La observabilidad requiere conservar también los fallos, no únicamente las respuestas exitosas.",
+      "El porcentaje de éxito de una muestra no equivale a disponibilidad continua.",
+      "Un sistema de monitorización debe limitar los destinos para evitar peticiones de servidor arbitrarias.",
+    ],
+    limitations:[
+      "Las mediciones se inician manualmente; no hay daemon de vigilancia, avisos externos ni un SLO medido.",
+      "El backend solo prueba el servicio local conocido y no permite monitorizar sitios públicos.",
+      "El número de muestras está acotado y no representa tiempo total de funcionamiento.",
+    ],
+    repository:repo,
+    demo:"/labs?lab=monitor",
+    next:"Diseñar tareas programadas locales y opt-in con destinos permitidos, sin afirmar un SLA antes de medirlo.",
+  },
+  {
+    slug:"nexus-software-factory",
+    title:"Nexus Software Factory",
+    eyebrow:"05 / GENERACIÓN CONTROLADA Y REVISIÓN HUMANA",
+    lead:"Flujo local para aprobar una solicitud, generar una plantilla HTML/CSS, verificar sus archivos y entregar un ZIP revisable.",
+    role:"Prototipo de automatización asistido por IA durante el desarrollo; su ejecución actual es determinista y no invoca modelos.",
+    status:"MVP controlado · ejecución de código generado desactivada por seguridad",
+    tech:["Python","SQLite","Next.js","SHA-256","ZIP","Security tests"],
+    problem:"Demostrar un flujo de entrega con controles y evidencia sin presentar como segura una ejecución de código que todavía no está aislada.",
+    approach:[
+      "Separé propuesta, vista previa de fuentes, aprobación explícita, generación y QA estática en etapas auditables.",
+      "Generé únicamente archivos de una plantilla fija; su contenido se escapa, se revisa y se empaqueta con manifiesto e integridad verificable.",
+      "Añadí límites de archivos y validaciones de snapshots y ZIPs que no extraen ni ejecutan datos suministrados.",
+      "Dejé la ejecución marcada como not_run hasta contar con aislamiento real verificable, sin lanzar procesos de código generado.",
+    ],
+    evidence:[
+      {label:"Pipeline de Factory",detail:"Aprobación, generación fija y verificaciones.",url:root+"labs/factory/backend.py"},
+      {label:"Snapshots seguros",detail:"Validación de rutas, límites y ZIP sin ejecución.",url:root+"labs/factory/sandbox_snapshot.py"},
+      {label:"Pruebas adversarias",detail:"Integridad y generación bajo condiciones controladas.",url:root+"labs/factory/test_backend.py"},
+      {label:"Diseño del sandbox pendiente",detail:"Restricciones de seguridad y evidencias necesarias antes de ejecutar código.",url:root+"docs/FACTORY_SANDBOX_P1.md"},
+    ],
+    lessons:[
+      "Una plantilla generada no equivale a un agente que programa, y QA estática no equivale a ejecutar pruebas.",
+      "Aprobar un plan no autoriza automáticamente ejecutar código ni publicar cambios.",
+      "La evidencia de aislamiento debe probarse con un runtime real antes de permitir ejecución de código ajeno.",
+    ],
+    limitations:[
+      "No hay inferencia autónoma, Ollama activo, generación libre de aplicaciones ni PRs automáticos.",
+      "El sandbox real P1 no está acreditado; no se ejecutan archivos generados ni comandos suministrados por usuarios.",
+      "Los hashes SHA-256 detectan cambios en los datos, pero no son firmas digitales ni auditorías de seguridad.",
+    ],
+    repository:repo,
+    demo:"/labs?lab=factory",
+    next:"Validar un runtime aislado en un entorno de ensayo dedicado antes de habilitar ejecución o agentes locales.",
+  },
+];
