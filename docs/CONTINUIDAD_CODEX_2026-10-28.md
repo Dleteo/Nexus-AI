@@ -16,16 +16,45 @@ Documento vivo de esta sesión, solicitado por el propietario para poder continu
 - PR abierto, sin fusionar. Se recuperó la rama existente sin rehacer los Labs.
 - `npm ci` completado en el entorno local de trabajo.
 
-## Trabajo en curso (no confundir con terminado)
+## Trabajo realizado y por qué
 
-1. P0 HTTP: endurecer Host/Origin/CSRF, límites de lectura y cancelación de las cuatro APIs; conservar 503 en producción.
-2. P0 Python: centralizar un runner exclusivo de backends confiables, acotar entrada/salida/tiempo, limpiar credenciales heredadas y cancelar procesos.
-3. P0 disco: rechazar enlaces simbólicos en SQLite y sus auxiliares; reforzar validación ZIP, metadatos y compatibilidad de artefactos antiguos.
-4. P1: documentar un sandbox real y preflight conservador. Este entorno carece de garantías rootless verificadas; ejecución de código generado permanece **desactivada**, estado `not_run`.
+1. **P0 HTTP:** guardas compartidas para los cuatro Labs; Host/puerto estricto, Origin POST obligatorio y exacto, bloqueo cross-site/same-site y forwarding conflictivo. Se conserva 503 en producción. Los cuerpos se leen por streaming con límite de bytes y plazo total. Monitor ya no deriva el puerto de destino de un Host arbitrario: usa el listener real de Next. Esto evita CSRF, lecturas ilimitadas y sondeo de otros puertos mediante Host falsificado.
+2. **P0 Python:** runner exclusivo de cuatro backends confiables, Python aislado `-I`, entorno mínimo sin claves ni proxies, límites de entrada/salida/tiempo/concurrencia y cancelación de grupo POSIX. No es un sandbox ni acepta código de tareas. En Windows la ejecución HTTP Python falla cerrada por falta de Job Objects verificados; las demos de navegador siguen disponibles.
+3. **P0 disco:** helper SQLite para los cuatro Labs que rechaza enlaces, archivos especiales/hardlinks, ancestros ajenos y escritura de terceros; crea almacenamiento nuevo con 0700/0600. Reforzada validación ZIP y comparación con plantilla reproducida: alterar contenido y manifiesto ya no pasa. ZIP legado sin manifiesto devuelve 422 sin borrar historial; regenerar exige nueva propuesta/aprobación.
+4. **P1:** diseño verificable y preflight offline, siempre `enabled=false`, `not_run`, exit 2. El Docker observado no acredita rootless; no se lanzaron contenedores ni cargas no confiables. **P1 no está aceptada** y no se avanza a P2/P3.
+5. **Continuidad:** esta hoja, auditoría detallada, diseño P1 y nuevas regresiones integradas en CI. Coste obligatorio $0; no nuevos proveedores, modelos, permisos ni infraestructura.
 
-## Pruebas y commits
+Detalles y límites: [auditoría P0](LABS_SECURITY_P0_2026-10-28.md) y [diseño P1](FACTORY_SANDBOX_P1.md). Las comprobaciones de filesystem no eliminan carreras con procesos del mismo UID; archivos antiguos 0644 pueden seguir siendo legibles por otros. Host no prueba peer local: `npm run dev` ahora usa 127.0.0.1 por defecto, sin proxy/túnel.
 
-Pendientes de completar y registrar antes de la entrega. La CI inicial no valida cambios posteriores. No hay inferencia real ni tests de código generado ejecutados.
+## Commits pequeños de esta sesión
+
+| Commit | Cambio |
+|---|---|
+| `980ec5b` | Hoja de continuidad inicial, para conservar el contexto desde el principio |
+| `5f4735a` | SQLite seguro y ZIP Factory íntegro, con regresiones |
+| `ca68a41` | Runner Python confiable acotado y entorno sin credenciales |
+| `29ea01e` | Cuatro APIs: autoridad local, CSRF, streaming y puerto Monitor fijo |
+| `b657d37` | Diseño P1 y preflight que no habilita ejecución |
+
+El commit que incorpora la actualización final de esta hoja integra también las nuevas comprobaciones de CI y el enlace desde el handoff. Consultar `git log -8 --oneline` para sus SHA completos.
+
+## Pruebas y evidencia
+
+- Pasaron localmente: instalación, lint (una advertencia preexistente por import sin usar en `CareerProcessStrip.tsx`), tipos, lógica de Labs, regresiones HTTP offline, runner confiable y limpieza Linux, 13 tests nuevos SQLite, 5 tests preflight y suites Python Commerce 5 / Studio 5 / Monitor 5 / Factory 12.
+- Pasaron las **cuatro APIs reales** sobre Next en desarrollo con SQLite desechable y la suite HTTP adversaria: receptor señuelo sin conexiones, CSRF, tipos, exceso de bytes Unicode y registros intactos tras rechazos.
+- Pasaron las suites de asistentes/proveedores simulados y probe sintético. **No demuestran inferencia real**.
+- El primer typecheck encontró tipos generados `.next/dev` de una rama anterior; se borró sólo esa caché generada y `next typegen` + TypeScript pasaron.
+- `npm run build` local no terminó: la política de red restringida bloquea Google Fonts usados por el layout existente. No se modificó el diseño ni se eludió la política de red. La compilación completa, navegador, PDFs y PostgreSQL se comprueban con CI del HEAD en GitHub.
+- La CI inicial verde **no valida cambios posteriores**. Al cerrar esta hoja, consultar la pestaña Actions del PR y confirmar que el SHA de la corrida es el HEAD actual. La respuesta final de la sesión y descripción del PR registran el resultado remoto observado, si ya terminó.
+
+No hay inferencia real, ejecución de código generado ni sandbox validado. No se hicieron merge, despliegue, migraciones reales ni lectura de repositorios privados.
+
+## Pendiente y próximo paso
+
+1. Revisar CI del HEAD exacto y cualquier fallo antes de aprobar el PR; mantenerlo abierto.
+2. Revisar humanamente los cambios P0 y sus límites de loopback/almacenamiento privado/Windows.
+3. P1 sólo puede habilitarse tras verificar en Linux dedicado rootless, red/credenciales ausentes, mounts, cgroups CPU/RAM/PIDs/disco, salida, timeout/cancelación y limpieza con la suite adversaria descrita. Este entorno no lo acredita: **no ejecutar pruebas de código generado en el host para compensarlo**.
+4. P2 diff/aprobación y P3 Ollama siguen pendientes; no conectar proveedores ni repos privados sin autorización. No rehacer los cuatro Labs.
 
 ## Para continuar en ChatGPT
 

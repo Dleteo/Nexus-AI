@@ -9,6 +9,8 @@
 
 ## PRIORIDAD ACTUAL PARA CODEX (28 OCT 2026)
 
+**Continuación P0/P1 del 28 de octubre:** leer [la hoja de continuidad en español](CONTINUIDAD_CODEX_2026-10-28.md), [auditoría P0](LABS_SECURITY_P0_2026-10-28.md) y [diseño P1](FACTORY_SANDBOX_P1.md). Se han reforzado las cuatro APIs, el runner confiable, SQLite y ZIP, con nuevas regresiones. La ejecución de código generado sigue desactivada; el sandbox P1 no está verificado. Comprobar CI del HEAD actual antes de revisión; no reutilizar el verde inicial ni reconstruir lo ya entregado.
+
 **Leer primero [docs/CODEX_NEXT_PHASE.md](CODEX_NEXT_PHASE.md).** Es el traspaso actualizado para el trabajo más difícil: auditoría de seguridad P0, sandbox real P1, generación de diffs/PR con aprobación humana P2, agentes Ollama opcionales P3 y profesionalización de los cuatro Labs P4. No reconstruir lo ya implementado.
 
 Los cuatro Labs ya tienen backend SQLite local opcional, API Next.js y pruebas; Factory también tiene preview de archivos, manifiesto SHA-256 y verificación de ZIP al descargar. **No hay agente autónomo, ejecución de código generado ni autorización para tocar producción**. El CI del SHA actual debe comprobarse al comenzar.
