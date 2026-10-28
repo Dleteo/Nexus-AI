@@ -1,45 +1,17 @@
-import { execFile } from "node:child_process";
-import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
+import { localLabsAccess, readLabsJson } from "@/lib/labs-http.mjs";
+import { runLabsPython } from "@/lib/labs-python-runner.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const noCache = { "Cache-Control": "no-store" };
-const unavailable = () => NextResponse.json(
-  { ok: false, reason: "local-backend-disabled" }, { status: 503, headers: noCache },
+const failure = (reason: string, status: number) => NextResponse.json(
+  { ok: false, reason }, { status, headers: noCache },
 );
-
-/**
- * The SQLite demo has no accounts. It is disabled in production and on any
- * non-loopback Host to prevent accidentally exposing a writable shared store.
- */
-function isLocalDevelopment(req: NextRequest): boolean {
-  if (process.env.NODE_ENV !== "development" || process.env.NEXUS_LABS_SQLITE !== "1") {
-    return false;
-  }
-  const hostname = req.headers.get("host")?.toLowerCase().split(":")[0];
-  return hostname === "localhost" || hostname === "127.0.0.1";
-}
-
-function runPython(command: object): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const python = process.platform === "win32" ? "python" : "python3";
-    const child = execFile(
-      python,
-      [path.join(process.cwd(), "labs", "commerce", "backend.py")],
-      { timeout: 5000, maxBuffer: 65536 },
-      (error, stdout) => error ? reject(error) : resolve(stdout),
-    );
-    if (!child.stdin) { reject(new Error("stdin-unavailable")); return; }
-    child.stdin.on("error", reject);
-    child.stdin.end(JSON.stringify(command));
-  });
-}
-
-async function invoke(command: object): Promise<NextResponse> {
+async function invoke(command: object, signal: AbortSignal): Promise<NextResponse> {
   try {
-    const output: unknown = JSON.parse(await runPython(command));
+    const output: unknown = JSON.parse(await runLabsPython("commerce", command, { signal }));
     if (!output || typeof output !== "object" || !("ok" in output)) {
       throw new Error("invalid-backend-output");
     }
@@ -55,32 +27,19 @@ async function invoke(command: object): Promise<NextResponse> {
 }
 
 export async function GET(req: NextRequest) {
-  if (!isLocalDevelopment(req)) return unavailable();
-  return invoke({ action: "list" });
+  const access = localLabsAccess(req, "NEXUS_LABS_SQLITE");
+  if (!access.ok) return failure(access.reason, access.status);
+  return invoke({ action: "list" }, req.signal);
 }
 
 export async function POST(req: NextRequest) {
-  if (!isLocalDevelopment(req)) return unavailable();
-  const origin = req.headers.get("origin");
-  if (origin) {
-    try {
-      if (new URL(origin).origin !== req.nextUrl.origin) {
-        return NextResponse.json({ ok: false, reason: "origin-denied" }, { status: 403, headers: noCache });
-      }
-    } catch {
-      return NextResponse.json({ ok: false, reason: "origin-denied" }, { status: 403, headers: noCache });
-    }
-  }
-  const body = await req.text();
-  if (body.length > 2048) {
-    return NextResponse.json({ ok: false, reason: "invalid-cart" }, { status: 400, headers: noCache });
-  }
-  let data: unknown;
-  try { data = JSON.parse(body); } catch {
-    return NextResponse.json({ ok: false, reason: "invalid-json" }, { status: 400, headers: noCache });
-  }
+  const access = localLabsAccess(req, "NEXUS_LABS_SQLITE");
+  if (!access.ok) return failure(access.reason, access.status);
+  const body = await readLabsJson(req, 2048);
+  if (!body.ok) return failure(body.reason, body.status);
+  const data = body.value;
   if (!data || typeof data !== "object" || Array.isArray(data) || !("cart" in data)) {
     return NextResponse.json({ ok: false, reason: "invalid-cart" }, { status: 400, headers: noCache });
   }
-  return invoke({ action: "checkout", cart: data.cart });
+  return invoke({ action: "checkout", cart: data.cart }, req.signal);
 }

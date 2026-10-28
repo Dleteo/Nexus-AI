@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 const origin = process.argv[2] || "http://127.0.0.1:3108";
 async function call(method,body,extraHeaders={}) {
   const response=await fetch(new URL("/api/labs/commerce",origin),{
-    method,headers:{"Content-Type":"application/json",...extraHeaders},
+    method,headers:{"Content-Type":"application/json",Origin:origin,...extraHeaders},
     ...(body===undefined?{}:{body:JSON.stringify(body)}),
     cache:"no-store",signal:AbortSignal.timeout(10000),
   });

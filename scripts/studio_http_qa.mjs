@@ -4,7 +4,7 @@ const origin = process.argv[2] || "http://127.0.0.1:3109";
 async function call(method, payload, extraHeaders={}) {
   const response = await fetch(new URL("/api/labs/studio", origin), {
     method,
-    headers: {"Content-Type":"application/json",...extraHeaders},
+    headers: {"Content-Type":"application/json",Origin:origin,...extraHeaders},
     ...(payload===undefined?{}:{body:JSON.stringify(payload)}),
     cache:"no-store",signal:AbortSignal.timeout(10000),
   });

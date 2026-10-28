@@ -6,7 +6,7 @@ async function request(method, data, headers = {}) {
   const response = await fetch(new URL("/api/labs/monitor", origin), {
     method,
     cache: "no-store",
-    headers: { "Content-Type": "application/json", ...headers },
+    headers: { "Content-Type": "application/json", Origin:origin, ...headers },
     ...(data===undefined ? {} : {body: JSON.stringify(data)}),
     signal: AbortSignal.timeout(12000),
   });
@@ -40,7 +40,7 @@ assert.ok(second.data.checks[0].id>second.data.checks[1].id);
 const crossOrigin=await request("POST",{},{"Origin":"https://external.example"});
 assert.equal(crossOrigin.status,403,"Cross-site probe requests must be rejected");
 const withoutType=await fetch(new URL("/api/labs/monitor",origin),{
-  method:"POST",body:"{}",headers:{"Content-Type":"text/plain"},signal:AbortSignal.timeout(8000),
+  method:"POST",body:"{}",headers:{"Content-Type":"text/plain",Origin:origin},signal:AbortSignal.timeout(8000),
 });
 assert.equal(withoutType.status,415);
 console.log("PASS Nexus Monitor fixed-target HTTP probes, persistent history, alert calculations and origin checks");
