@@ -37,7 +37,7 @@ export const engineeringCaseStudies: CaseStudy[] = [
       "Faltan autenticación, permisos por usuario e idempotencia para ofrecer un servicio remoto.",
     ],
     repository: repo,
-    demo:"/labs?lab=commerce",
+    demo:"/labs/commerce",
     next:"Implementar autenticación y órdenes idempotentes en un entorno de ensayo, sin integrar pagos reales.",
   },
   {
@@ -72,7 +72,7 @@ export const engineeringCaseStudies: CaseStudy[] = [
       "Faltan drag-and-drop accesible, estilos avanzados y aislamiento de vistas previas externas.",
     ],
     repository:repo,
-    demo:"/labs?lab=studio",
+    demo:"/labs/studio",
     next:"Añadir controles visuales y drag-and-drop accesible, manteniendo protección de versiones y pruebas XSS.",
   },
   {
@@ -107,7 +107,7 @@ export const engineeringCaseStudies: CaseStudy[] = [
       "El número de muestras está acotado y no representa tiempo total de funcionamiento.",
     ],
     repository:repo,
-    demo:"/labs?lab=monitor",
+    demo:"/labs/monitor",
     next:"Diseñar tareas programadas locales y opt-in con destinos permitidos, sin afirmar un SLA antes de medirlo.",
   },
   {
@@ -142,7 +142,7 @@ export const engineeringCaseStudies: CaseStudy[] = [
       "Los hashes SHA-256 detectan cambios en los datos, pero no son firmas digitales ni auditorías de seguridad.",
     ],
     repository:repo,
-    demo:"/labs?lab=factory",
+    demo:"/labs/factory",
     next:"Validar un runtime aislado en un entorno de ensayo dedicado antes de habilitar ejecución o agentes locales.",
   },
 ];
