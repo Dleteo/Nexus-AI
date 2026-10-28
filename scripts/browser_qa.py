@@ -487,6 +487,29 @@ def audit(browser, width, label):
     context.close()
     print(f"PASS auth pages at {width}px", flush=True)
 
+
+def audit_case_study_visual_consistency(browser):
+    """Prevent the old learning-project theme from drifting away from Nexus editorial."""
+    for width in (375, 1440):
+        context = browser.new_context(viewport={"width": width, "height": 900})
+        page = context.new_page()
+        for slug in ("task-tracker", "hangman", "nexus-ai", "nexus-commerce", "nexus-studio", "nexus-monitor", "nexus-software-factory"):
+            page.goto(BASE + "/projects/" + slug + "?lang=es", wait_until="networkidle")
+            expect(page.get_by_role("heading", level=1).count() == 1, "Case study must have one primary heading")
+            header = page.locator("main > header")
+            expect(header.count() == 1, "Case study needs a shared editorial header")
+            expect(header.get_by_role("link", name="NEXUS AI").is_visible(), "Portfolio branding missing")
+            expect(header.get_by_role("link", name="VER CV").is_visible(), "Localized CV navigation missing")
+            background = page.locator("main").evaluate("(element) => getComputedStyle(element).backgroundColor")
+            expect(background == "rgb(8, 6, 8)", "Case study has diverged from editorial dark theme")
+            overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
+            expect(not overflow, "Horizontal overflow on " + slug)
+            if slug == "task-tracker":
+                expect(page.get_by_text("PROYECTO DE APRENDIZAJE").is_visible(), "Learning project should be clearly labeled")
+            if slug in ("task-tracker", "nexus-ai"):
+                page.screenshot(path=str(ARTIFACTS / f"case-{slug}-{width}.png"), full_page=True)
+        context.close()
+
 def main():
     binary = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
     expect(binary is not None, "Chrome/Chromium not installed on runner")
@@ -500,6 +523,7 @@ def main():
             audit_featured_case_studies(browser)
             audit_labs_keyboard_and_localization(browser)
             audit_contact_guide_multilingual(browser)
+            audit_case_study_visual_consistency(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
