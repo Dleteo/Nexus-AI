@@ -49,7 +49,7 @@ export default function InterviewReviewChecklist({study,language}:{study:CaseStu
   const labels=text[language];
   const [checked,setChecked]=useState<boolean[]>([false,false,false,false]);
   function download(){
-    const content=buildInterviewPrepMarkdown(study,labels.tasks,checked);
+    const content=buildInterviewPrepMarkdown(study,labels.tasks,checked,language);
     const blob=new Blob([content],{type:"text/markdown;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");
