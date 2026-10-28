@@ -48,7 +48,7 @@ const cards=[
 
 export default function EditorialPortfolio({language="es"}:{language?:SiteLanguage}) {
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>local(language,es,en,de,fr,pt);
-  const labHref=(lab:string)=> (language==="es"?"/labs":"/"+language+"/labs")+"?lab="+lab;
+  const labHref=(lab:string)=> (language==="es"?"/labs/":"/"+language+"/labs/")+lab;
   const cardHref=(card:(typeof cards)[number])=> "lab" in card ? labHref(card.lab) : card.href+"?lang="+language;
   const studyHref=(card:(typeof cards)[number])=>"/projects/"+("lab" in card ? (card.lab==="factory"?"nexus-software-factory":"nexus-"+card.lab) : "nexus-ai")+"?lang="+language;
   const [menu,setMenu]=useState(false);
