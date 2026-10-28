@@ -13,6 +13,50 @@ def expect(condition, reason):
     if not condition:
         raise AssertionError(reason)
 
+def audit_factory_execution_disclosure(browser):
+    """Presentation regression only: mocked static QA must never imply execution."""
+    context = browser.new_context(viewport={"width": 1280, "height": 900})
+    page = context.new_page()
+    job = {
+        "id": "1" * 32,
+        "request": "A static starter with successful template checks",
+        "kind": "feature",
+        "status": "built",
+        "createdAt": "2026-10-28T00:00:00Z",
+        "plan": {
+            "template": "static-landing-page", "scope": "Fixed template only",
+            "files": ["index.html", "styles.css", "README.md"], "stages": [], "acceptance": [],
+        },
+        "events": [],
+        "qa": {"passed": True, "mode": "static-validation", "checks": [{"name": "Static template files", "passed": True}]},
+        "downloadReady": True,
+        "execution": {"enabled": False, "status": "not_run", "reason": "isolation_not_verified"},
+    }
+    calls = []
+    def factory_response(route):
+        calls.append(route.request.method)
+        route.fulfill(status=200, json={"ok": True, "jobs": [job]})
+    page.route("**/api/labs/factory", factory_response)
+    try:
+        for language, title in [
+            ("es", "Pruebas de ejecución: no ejecutadas"),
+            ("en", "Execution tests: not run"),
+            ("de", "Ausführungstests: nicht ausgeführt"),
+            ("fr", "Tests d’exécution : non exécutés"),
+            ("pt", "Testes de execução: não executados"),
+        ]:
+            path = "/labs" if language == "es" else "/" + language + "/labs"
+            page.goto(BASE + path + "?lab=factory", wait_until="networkidle")
+            page.get_by_role("heading", name=title, exact=True).wait_for(state="visible")
+            page.get_by_role("button", name="Use local Factory", exact=True).click()
+            page.get_by_text("QA: PASSED · static-validation", exact=True).wait_for(state="visible")
+            expect(page.get_by_role("region", name=title, exact=True).is_visible(),
+                   f"Static QA success must leave execution visibly not run in {language}")
+        expect(calls == ["GET"] * 5, "Disclosure must not submit execution or build requests")
+        print("PASS five-language execution disclosure with mocked successful static QA; no sandbox verified", flush=True)
+    finally:
+        context.close()
+
 def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
@@ -205,6 +249,7 @@ def main():
             audit(browser, 375, "mobile")
             audit(browser, 768, "tablet")
             audit(browser, 1440, "desktop")
+            audit_factory_execution_disclosure(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
