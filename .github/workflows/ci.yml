@@ -81,6 +81,7 @@ jobs:
         run: |
           node scripts/labs_exports_qa.mjs
           node scripts/interview_prep_qa.mjs
+          node scripts/labs_demo_tools_qa.mjs
 
       - name: Test local HTTP security and trusted Python process bounds
         run: |
