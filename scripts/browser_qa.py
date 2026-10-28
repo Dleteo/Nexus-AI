@@ -82,6 +82,18 @@ def audit_featured_case_studies(browser):
                    f"Missing featured case study link: {language} {slug}")
             page.goto(BASE + url, wait_until="domcontentloaded")
             page.get_by_role("heading", name=title, exact=True).wait_for(state="visible", timeout=15000)
+            expect(page.locator('section[aria-label] input[type="checkbox"]').count() == 4,
+                   f"Interview prep checklist missing: {language} {slug}")
+            if language == "es" and slug == "nexus-ai":
+                region = page.get_by_role("region", name="Prepara cómo explicar este proyecto")
+                region.get_by_role("checkbox").first.check()
+                expect(region.get_by_text("1/4 partes revisadas").is_visible(),
+                       "Manual interview review state did not update")
+                with page.expect_download() as download_info:
+                    region.get_by_role("button", name="Descargar notas de entrevista").click()
+                expect(download_info.value.suggested_filename == "nexus-interview-nexus-ai.md",
+                       "Interview notes download missing")
+
             expect(page.get_by_role("link", name="GitHub source" if language=="en" else
                                     "Código en GitHub" if language=="es" else
                                     "GitHub-Code" if language=="de" else
@@ -252,9 +264,12 @@ def audit(browser, width, label):
     page.get_by_role("combobox", name="Category").select_option("all")
     page.get_by_role("button", name="Add to cart").first.click()
     page.get_by_role("button", name="Place demo order").click()
+    expect(page.get_by_role("button", name="Export demo orders CSV").is_enabled(),
+           "Commerce CSV export should unlock after a demo order")
     expect(page.get_by_role("status").get_by_text("Demo order created.", exact=False).is_visible(), "Checkout failed")
     page.get_by_role("button", name="Nexus Studio").click()
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "HTML editor export missing")
+    expect(page.get_by_role("button", name="Export blocks JSON").is_visible(), "Studio JSON export missing")
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Studio SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "Browser editor must remain usable without SQLite")
@@ -272,12 +287,14 @@ def audit(browser, width, label):
     page.get_by_role("button", name="Run health check").click()
     page.get_by_text("HEALTHY", exact=True).first.wait_for(state="visible", timeout=10000)
     expect(page.get_by_text("p95 successful latency:", exact=False).is_visible(), "Monitor p95 missing")
+    expect(page.get_by_role("button", name="Export manual samples CSV").is_enabled(), "Monitor CSV export missing")
     page.get_by_role("button", name="Nexus Software Factory").click()
     page.get_by_role("button", name="Use local Factory").click()
     page.get_by_text("Local Factory unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Create reviewable plan").is_visible(), "Browser planning mode should remain usable")
     page.get_by_role("button", name="Create reviewable plan").click()
     page.get_by_text("○ Implementation", exact=True).wait_for(state="visible", timeout=10000)
+    expect(page.get_by_role("button", name="Create reviewable plan").is_visible(), "Factory browser planning must remain available")
     approve = page.get_by_role("button", name="Approve plan (manual work only)")
     expect(approve.is_disabled(), "Factory must require explicit human confirmation")
     page.get_by_role("checkbox", name="I reviewed this plan.", exact=False).check()
