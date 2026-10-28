@@ -9,6 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 **Before modifying this repository, read [docs/CODEX_HANDOFF.md](docs/CODEX_HANDOFF.md).** It records the current architecture, verified CI status, unfinished work, security constraints and next tasks. Recheck GitHub state because the handoff can become outdated.
 
+- For difficult Nexus Labs/Factory work, **read [docs/CODEX_NEXT_PHASE.md](docs/CODEX_NEXT_PHASE.md)** and follow its P0/P1 gates before introducing any executable code or external agent.
 - Work on branch `feat/career-portfolio-20261026` and keep [PR #46](https://github.com/Dleteo/Nexus-AI/pull/46) open. **No merge, production deployment, production Supabase migration, spending or external service configuration without explicit owner approval.**
 - Keep **Nexus Portfolio** (portfolio/CV/projects/interviews) and **Nexus Technical** (hardware/software/programming/defensive cybersecurity) functionally separate but under one Nexus AI visual identity.
 - Keep provider integration swappable (Ollama local / Gemini / OpenAI) and API secrets server-only. Never imply synthetic integration tests prove live model inference.
