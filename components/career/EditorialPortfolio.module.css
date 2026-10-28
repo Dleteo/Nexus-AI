@@ -1,6 +1,6 @@
 
 .page{--red:#f1283c;--ink:#080608;--border:#44202b;min-height:100vh;background:#080608;color:#f5f1f1;font-family:Arial,Helvetica,sans-serif}
-.page *{box-sizing:border-box}.page a{text-decoration:none}.skip{position:absolute;top:-100px;z-index:99}.skip:focus{top:5px;background:#fff;color:#000;padding:12px}
+.page *{box-sizing:border-box}.page a{text-decoration:none}.skip{position:fixed;top:8px;left:12px;transform:translateY(-200px);z-index:99}.skip:focus{top:8px;transform:none;background:#fff;color:#000;padding:12px}
 .header{height:76px;display:flex;align-items:center;justify-content:space-between;gap:25px;padding:0 clamp(20px,4vw,65px);border-bottom:1px solid #71212e;background:#090709;position:relative;z-index:15}
 .brand{display:flex;gap:12px;align-items:center;font-size:21px;font-weight:900;letter-spacing:.045em;color:white}.brand small{display:block;font-size:8px;letter-spacing:.19em;font-weight:600;color:#a5a0a4;margin-top:5px}.logo{display:grid;place-items:center;border:2px solid var(--red);color:var(--red);width:44px;height:44px;border-radius:3px;font-size:27px}
 .desktopNav{display:flex;align-items:center;gap:clamp(12px,2.4vw,37px)}.desktopNav a{font-size:11px;font-weight:800;color:#e0d9dc}.desktopNav a:hover{color:var(--red)}
@@ -198,7 +198,7 @@
 .page main:focus{outline:none}
 .skip{left:12px}
 .skip:focus,.skip:focus-visible{
-  position:fixed;top:8px;left:12px;z-index:1000;
+  position:fixed;top:8px;left:12px;transform:none;z-index:1000;
   background:#fff;color:#0d090b;padding:12px;border-radius:4px;
   outline:3px solid #a50027;outline-offset:3px;
   box-shadow:0 6px 22px #0009
