@@ -115,6 +115,12 @@ def audit_featured_case_studies(browser):
                                     "Code GitHub" if language=="fr" else "Código no GitHub").count()==1,
                    f"Missing code provenance: {language} {slug}")
             expect(page.locator("section").count() >= 4, f"Case study incomplete: {slug}")
+            if slug != "nexus-ai":
+                lab_id = "factory" if slug == "nexus-software-factory" else slug.removeprefix("nexus-")
+                localized_path = ("/labs" if language == "es" else "/" + language + "/labs")
+                demo_href = localized_path + "?lab=" + lab_id
+                expect(page.locator('a[href="' + demo_href + '"]').count() == 1,
+                       f"Case-study demo must retain locale {language}: {slug}")
             page.goto(BASE + home, wait_until="domcontentloaded")
         print(f"PASS five case studies in {language}", flush=True)
     for lab, slug in [("commerce","nexus-commerce"),("studio","nexus-studio"),
