@@ -129,4 +129,15 @@ for (const [method, options] of [
 }
 console.log("PASS production SQLite backend remains disabled");
 
+// Studio SQLite writes must remain strictly disabled on production builds.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({action:"save",expectedRevision:0,blocks:[]}) }],
+]) {
+  const response = await request("/api/labs/studio", options);
+  assert.equal(response.status, 503, "Studio local API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production Studio SQLite backend remains disabled");
+
 console.log("All production HTTP smoke checks passed.");
