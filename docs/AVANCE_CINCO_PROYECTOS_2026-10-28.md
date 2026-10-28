@@ -91,6 +91,20 @@ Archivos: `lib/labs-insights.mjs` + `lib/labs-insights.d.mts`, `scripts/labs_ins
 
 **Validación:** antes de reportar éxito, comprobar que la ejecución CI terminada corresponde al SHA HEAD actual de \`feat/career-portfolio-20261026\`. No reclamar una puntuación formal de accesibilidad WCAG: esta fase verifica interacciones concretas, pero no sustituye una auditoría completa con lectores de pantalla.
 
+## Auditoría visual y accesibilidad de los cinco frentes — 28 de octubre
+
+**Diagnóstico medible:** los CTA principales de la portada y de descarga del CV utilizaban texto blanco sobre rojo brillante (aprox. **4,1:1**, por debajo de 4,5:1 para texto normal en WCAG AA). Se cambió el texto a tono oscuro `#120a0d` conservando el fondo rojo y el diseño. Chromium comprueba el contraste de los colores renderizados.
+
+**Nueva prueba automática:** `scripts/visual_accessibility_qa.py`, ejecutada en el CI después de las pruebas funcionales:
+
+- Capturas a 375 px de portada, CV, Commerce, Studio, Monitor, Factory, caso de estudio y entrevistas; portada y CV también a 320 px.
+- Comprobación de ausencia de scroll horizontal y foco visible para el enlace de salto al contenido.
+- Contraste de los dos CTA principales calculado mediante estilos de Chromium (mínimo 4,5:1).
+- Respeto de `prefers-reduced-motion` en la transición de las tarjetas.
+- Acciones de CV y selectores de laboratorio con área táctil de al menos 44 px de alto.
+- Capturas incluidas en `qa-screenshots/` y publicadas en el artefacto `nexus-qa-screenshots` para revisión visual posterior.
+
+**Alcance:** auditoría automática seleccionada, **no certificación WCAG**, evaluación con lector de pantalla ni cobertura exhaustiva de colores o interacciones. No se cambió la ejecución P1, producción ni servicios externos.
 ## Próxima prioridad técnica
 
 Verificar el CI del SHA final; realizar revisión humana del diseño en los cinco idiomas; cuando exista entorno Linux de prueba dedicado, validar efectivamente el aislamiento P1 según `docs/FACTORY_SANDBOX_P1.md`. P2 (diferencias revisables) y P3 (IA local opcional) continúan sin iniciarse.
