@@ -16,7 +16,14 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
  const {slug}=await params;const {lang}=await searchParams;const locale:SiteLanguage=lang&&isSiteLanguage(lang)?lang:"es";const base=getCaseStudy(slug);if(!base)notFound();const project=translatedCaseStudy(base,locale);const label=caseLabels[locale];const back=portfolioPath(locale);
  const section="mt-12 border-t border-[#512330] pt-8";
  const isLearning=["task-tracker","hangman","nexus-foundation"].includes(slug);
- return <main lang={locale} className="min-h-screen min-w-0 overflow-x-clip bg-[#080608] text-[#f5f1f1]">\n  <header className="sticky top-0 z-40 border-b border-[#71212e] bg-[#090709]/95 px-5 backdrop-blur-md sm:px-9">\n   <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-3 py-2">\n    <Link href={back} className="inline-flex items-center gap-3 font-black tracking-[.08em] text-white focus-visible:outline-2 focus-visible:outline-[#f1283c]"><span aria-hidden="true" className="grid h-9 w-9 place-items-center border-2 border-[#f1283c] text-xl text-[#ff5b70]">N</span><span>NEXUS <span className="text-[#ff6375]">AI</span></span></Link>\n    <div className="flex flex-wrap items-center gap-3 text-xs font-semibold sm:gap-5"><Link href={back+"#proyectos"} className="text-[#f4a3b6] hover:text-white">{label.back}</Link><Link href={cvPath(locale)} className="rounded-md border border-[#f1283c] px-4 py-2.5 text-[#ff8291] transition-colors hover:bg-[#32111b]">{locale==="es"?"VER CV":locale==="en"?"VIEW CV":locale==="de"?"LEBENSLAUF":locale==="fr"?"VOIR CV":"VER CV"}</Link></div>\n   </div>\n  </header>\n  <div className="px-5 py-9 sm:px-9 sm:py-14">
+ return <main lang={locale} className="min-h-screen min-w-0 overflow-x-clip bg-[#080608] text-[#f5f1f1]">
+  <header className="sticky top-0 z-40 border-b border-[#71212e] bg-[#090709]/95 px-5 backdrop-blur-md sm:px-9">
+   <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-3 py-2">
+    <Link href={back} className="inline-flex items-center gap-3 font-black tracking-[.08em] text-white focus-visible:outline-2 focus-visible:outline-[#f1283c]"><span aria-hidden="true" className="grid h-9 w-9 place-items-center border-2 border-[#f1283c] text-xl text-[#ff5b70]">N</span><span>NEXUS <span className="text-[#ff6375]">AI</span></span></Link>
+    <div className="flex flex-wrap items-center gap-3 text-xs font-semibold sm:gap-5"><Link href={back+"#proyectos"} className="text-[#f4a3b6] hover:text-white">{label.back}</Link><Link href={cvPath(locale)} className="rounded-md border border-[#f1283c] px-4 py-2.5 text-[#ff8291] transition-colors hover:bg-[#32111b]">{locale==="es"?"VER CV":locale==="en"?"VIEW CV":locale==="de"?"LEBENSLAUF":locale==="fr"?"VOIR CV":"VER CV"}</Link></div>
+   </div>
+  </header>
+  <div className="px-5 py-9 sm:px-9 sm:py-14">
   <div className="mx-auto min-w-0 max-w-4xl">
    <nav aria-label="Ruta de navegación" className="mb-9 flex flex-wrap items-center gap-3 text-sm text-[#f4a3b6]">
     <Link className="hover:underline" href={back}>{label.back}</Link><span className="text-slate-500">/</span><Link className="hover:underline" href={back+"#proyectos"}>{label.project}</Link><span className="text-slate-500">/</span><span className="text-slate-200">{project.title}</span>
@@ -38,6 +45,7 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
    <ArchitectureChallenge slug={project.slug} language={locale}/>
    <InterviewReviewChecklist study={project} language={locale}/>
    <div className="mt-12 flex flex-wrap gap-4">{project.repository&&<a href={project.repository} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#ed8797] px-5 py-3 font-semibold text-[#180c11]">{label.code} ↗</a>}{project.demo&&(project.demo.startsWith("/")?<Link href={project.demo.startsWith("/labs?")&&locale!=="es"?"/"+locale+project.demo:project.demo} className="rounded-lg border border-slate-600 px-5 py-3">{project.slug==="nexus-ai"?label.assistant:label.demo} →</Link>:<a href={project.demo} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-5 py-3">{label.demo} ↗</a>)}<Link href={back+"#proyectos"} className="rounded-lg border border-slate-600 px-5 py-3">{label.project}</Link></div>
+  </div>
   </div>
  </main>;
 }
