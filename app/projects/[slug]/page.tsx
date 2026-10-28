@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import InterviewReviewChecklist from "../../../components/career/InterviewReviewChecklist";
+import ArchitectureChallenge from "../../../components/career/ArchitectureChallenge";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy } from "../../../data/case-studies";
@@ -33,6 +34,7 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
    {project.evidence.length>0&&<section className={section}><h2 className="text-2xl font-semibold">{label.evidence}</h2><div className="mt-5 grid gap-3">{project.evidence.map(x=><a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-slate-700 bg-[#211920] p-5 hover:border-[#e56b85] focus-visible:outline-2 focus-visible:outline-[#eb819b]"><strong className="text-[#f3bccb]">{locale==="es"?x.label:x.url.split("/").slice(-2).join("/")} ↗</strong>{locale==="es"&&<p className="mt-2 text-sm text-slate-300">{x.detail}</p>}</a>)}</div></section>}
    <section className={section}><h2 className="text-2xl font-semibold">{label.lessons}</h2><ul className="mt-5 list-disc space-y-3 pl-5 leading-7 text-slate-300">{project.lessons.map(x=><li key={x}>{x}</li>)}</ul></section>
    <section className={section}><h2 className="text-2xl font-semibold">{label.limits}</h2><ul className="mt-5 list-disc space-y-3 pl-5 leading-7 text-slate-300">{project.limitations.map(x=><li key={x}>{x}</li>)}</ul><p className="mt-5 text-[#f3bccb]"><strong>{label.next}:</strong> {project.next}</p></section>
+   <ArchitectureChallenge slug={project.slug} language={locale}/>
    <InterviewReviewChecklist study={project} language={locale}/>
    <div className="mt-12 flex flex-wrap gap-4">{project.repository&&<a href={project.repository} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#ed8797] px-5 py-3 font-semibold text-[#180c11]">{label.code} ↗</a>}{project.demo&&(project.demo.startsWith("/")?<Link href={project.demo} className="rounded-lg border border-slate-600 px-5 py-3">{project.slug==="nexus-ai"?label.assistant:label.demo} →</Link>:<a href={project.demo} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-5 py-3">{label.demo} ↗</a>)}<Link href={back+"#proyectos"} className="rounded-lg border border-slate-600 px-5 py-3">{label.project}</Link></div>
   </div>
