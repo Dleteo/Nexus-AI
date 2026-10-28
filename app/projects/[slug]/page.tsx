@@ -25,10 +25,10 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
   </header>
   <div className="px-5 py-9 sm:px-9 sm:py-14">
   <div className="mx-auto min-w-0 max-w-4xl">
-   <nav aria-label="Ruta de navegación" className="mb-9 flex flex-wrap items-center gap-3 text-sm text-[#f4a3b6]">
+   <nav aria-label={({es:"Ruta de navegación",en:"Breadcrumb",de:"Brotkrumennavigation",fr:"Fil d’Ariane",pt:"Navegação estrutural"} as const)[locale]} className="mb-9 flex flex-wrap items-center gap-3 text-sm text-[#f4a3b6]">
     <Link className="hover:underline" href={back}>{label.back}</Link><span className="text-slate-500">/</span><Link className="hover:underline" href={back+"#proyectos"}>{label.project}</Link><span className="text-slate-500">/</span><span className="text-slate-200">{project.title}</span>
    </nav>
-   <div className="mb-7 flex flex-wrap gap-2" role="group" aria-label="Case study language">{siteLanguages.map(item=><Link key={item.code} href={"/projects/"+slug+"?lang="+item.code} lang={item.code} aria-current={locale===item.code?"page":undefined} className={locale===item.code?"rounded-lg border border-[#eb819b] bg-[#4b2531] px-3 py-2 text-xs":"rounded-lg border border-slate-600 px-3 py-2 text-xs text-slate-300"}>{item.nativeName}</Link>)}</div>
+   <div className="mb-7 flex flex-wrap gap-2" role="group" aria-label={({es:"Idioma del proyecto",en:"Case study language",de:"Sprache der Fallstudie",fr:"Langue de l’étude de cas",pt:"Idioma do estudo de caso"} as const)[locale]}>{siteLanguages.map(item=><Link key={item.code} href={"/projects/"+slug+"?lang="+item.code} lang={item.code} aria-current={locale===item.code?"page":undefined} className={locale===item.code?"inline-flex min-h-11 items-center rounded-lg border border-[#eb819b] bg-[#4b2531] px-3 py-2 text-xs text-white":"inline-flex min-h-11 items-center rounded-lg border border-[#76515a] px-3 py-2 text-xs text-slate-200 transition-colors hover:border-[#eb819b] hover:text-white"}>{item.nativeName}</Link>)}</div>
    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#f4a3b6]">{isLearning ? ({es:"PROYECTO DE APRENDIZAJE",en:"LEARNING PROJECT",de:"LERNPROJEKT",fr:"PROJET D’APPRENTISSAGE",pt:"PROJETO DE APRENDIZAGEM"} as const)[locale] : "NEXUS / CASE STUDY"} · {project.tech.slice(0,3).join(" · ")}</p>
    <h1 className="mt-5 break-words font-[family-name:var(--font-editorial-condensed)] text-5xl font-extrabold tracking-tight sm:text-7xl">{project.title}</h1>
    <p className="mt-6 max-w-3xl text-xl leading-relaxed text-slate-300">{project.lead}</p>
