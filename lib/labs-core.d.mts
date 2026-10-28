@@ -10,3 +10,6 @@ export function escapeHtml(value:unknown):string;
 export function renderPageHtml(blocks:ReadonlyArray<Block>):string;
 export function summarizeChecks(checks:ReadonlyArray<Check>):{total:number;successful:number;failed:number;averageMs:number|null};
 export function buildFactoryProposal(request:string,kind?:string):FactoryProposal|null;
+
+export function observedAvailability(checks:ReadonlyArray<Check>):{sampleCount:number;percent:number|null;minMs:number|null;maxMs:number|null};
+export function renderFactoryIssueMarkdown(proposal:FactoryProposal|null):string;
