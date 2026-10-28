@@ -399,6 +399,18 @@ def audit(browser, width, label):
     for lab, title in [("commerce","Nexus Commerce"),("studio","Nexus Studio"),("monitor","Nexus Monitor"),("factory","Nexus Software Factory")]:
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
         page.get_by_role("heading", name=title).wait_for(state="visible", timeout=10000)
+    # Each engineering product has a distinct visual surface and accessible navigation.
+    for lab, identity in (("commerce", "Digital storefront"), ("studio", "Design workspace"),
+                          ("monitor", "Service observability"), ("factory", "Engineering pipeline")):
+        page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
+        shell = page.locator("main.nexus-lab-shell")
+        expect(shell.get_attribute("data-lab") == lab, "Wrong active product identity: " + lab)
+        expect(page.get_by_text(identity, exact=True).is_visible(), "Missing product-specific workspace: " + lab)
+        expect(page.locator(".lab-product-banner").count() == 1, "Missing unique product header: " + lab)
+        expect(not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"),
+               "Horizontal overflow in " + lab)
+    # Return to Commerce for the existing functional flows.
+    page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     # Four engineering lab demos: navigation and core user paths.
     page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     expect(page.get_by_role("heading", name="CUATRO PROYECTOS.").is_visible(), "Engineering labs missing")
