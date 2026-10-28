@@ -192,3 +192,24 @@
  .heroPortrait{left:18%;width:79%;height:60%}
  .heroRight{width:19%}
 }
+
+
+/* Retrato integrado: menor presencia hacia la izquierda, bordes suaves.
+   La imagen original mantiene su nitidez y color; solo se difumina el contorno. */
+.heroPortrait{
+  left:40%;
+  width:40%;
+  height:72%;
+  bottom:0;
+  background-position:center 40%;
+  filter:none;
+  opacity:1;
+  -webkit-mask-image:radial-gradient(ellipse 72% 74% at 50% 50%,#000 45%,rgba(0,0,0,.95) 52%,transparent 78%);
+  mask-image:radial-gradient(ellipse 72% 74% at 50% 50%,#000 45%,rgba(0,0,0,.95) 52%,transparent 78%);
+}
+@media(max-width:760px){
+  .heroPortrait{left:29%;width:63%;height:63%}
+}
+@media(max-width:430px){
+  .heroPortrait{left:26%;width:72%;height:58%}
+}
