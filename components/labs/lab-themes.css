@@ -1,0 +1,23 @@
+/* Distinct product interfaces: palettes are scoped to the active lab only.
+   No behavior, safety gate, or local data flow is modified. */
+.nexus-lab-shell{--lab-accent:#34d6a3;--lab-accent-soft:#153a32;--lab-border:#28685a;--lab-surface:#112521;--lab-ink:#dcfff2;background:radial-gradient(ellipse at 80% 0%,#133d32 0%,transparent 52%),#081713;transition:background-color .18s ease}
+.nexus-lab-shell[data-lab="studio"]{--lab-accent:#c5a6ff;--lab-accent-soft:#342445;--lab-border:#685085;--lab-surface:#261e31;--lab-ink:#f3eaff;background:radial-gradient(ellipse at 83% 0%,#3e2b57 0%,transparent 52%),#14111c}
+.nexus-lab-shell[data-lab="monitor"]{--lab-accent:#69cafa;--lab-accent-soft:#17394c;--lab-border:#2e6885;--lab-surface:#152632;--lab-ink:#e8f8ff;background:radial-gradient(ellipse at 83% 0%,#16415a 0%,transparent 52%),#081620}
+.nexus-lab-shell[data-lab="factory"]{--lab-accent:#f7b46b;--lab-accent-soft:#482c1b;--lab-border:#926039;--lab-surface:#2c211a;--lab-ink:#fff0dd;background:radial-gradient(ellipse at 83% 0%,#50301b 0%,transparent 52%),#19130f}
+.nexus-lab-shell>div>header{border-color:var(--lab-border)}
+.nexus-lab-shell>div>header h1{font-family:var(--font-editorial-condensed),Arial,sans-serif;letter-spacing:.015em}
+.nexus-lab-shell>div>header p:first-child{color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button{min-width:0;border-radius:12px;text-align:left;transition:border-color .16s,background-color .16s,transform .16s}
+.nexus-lab-shell [data-lab-navigation] button[aria-pressed="true"]{border-color:var(--lab-accent);background:var(--lab-accent-soft);box-shadow:inset 3px 0 var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button:hover{border-color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button span{color:var(--lab-accent)}
+.nexus-lab-intro{border-color:var(--lab-border)!important;background:linear-gradient(110deg,var(--lab-accent-soft),var(--lab-surface))!important}
+.nexus-lab-intro h2{color:var(--lab-ink);font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(1.8rem,3vw,2.7rem)}
+.nexus-lab-workspace>div:not(.nexus-lab-intro) :is(section,aside,article){min-width:0}
+.nexus-lab-workspace a:focus-visible,.nexus-lab-workspace button:focus-visible{outline:3px solid var(--lab-accent);outline-offset:3px}
+.nexus-lab-shell[data-lab="commerce"] .nexus-lab-workspace article>div[aria-hidden="true"]{background:linear-gradient(145deg,#17564a,#0c2924)}
+.nexus-lab-shell[data-lab="studio"] .nexus-lab-workspace [aria-label="Active engineering lab"]{background-color:transparent}
+.nexus-lab-shell[data-lab="monitor"] .nexus-lab-workspace [role="status"]{border-color:var(--lab-border)}
+.nexus-lab-shell[data-lab="factory"] .nexus-lab-intro{border-left:4px solid var(--lab-accent)!important}
+@media(max-width:700px){.nexus-lab-shell{padding-inline:14px}.nexus-lab-shell [data-lab-navigation]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nexus-lab-shell [data-lab-navigation] button{padding:12px}.nexus-lab-intro{padding:16px!important}}
+@media(prefers-reduced-motion:reduce){.nexus-lab-shell,.nexus-lab-shell [data-lab-navigation] button{transition:none}}
