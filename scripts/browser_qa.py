@@ -406,7 +406,7 @@ def audit(browser, width, label):
         shell = page.locator("main.nexus-lab-shell")
         expect(shell.get_attribute("data-lab") == lab, "Wrong active product identity: " + lab)
         expect(page.get_by_text(identity, exact=True).is_visible(), "Missing product-specific workspace: " + lab)
-        expect(page.locator(".lab-product-banner").count() == 1, "Missing unique product header: " + lab)
+        expect(page.locator(".lab-product-overview").count() == 1, "Missing unique product overview: " + lab)
         expect(not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"),
                "Horizontal overflow in " + lab)
     # Return to Commerce for the existing functional flows.
