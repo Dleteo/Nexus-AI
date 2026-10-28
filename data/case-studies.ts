@@ -1,3 +1,5 @@
+import {engineeringCaseStudies} from "./engineering-case-studies";
+
 export type CaseStudy = {
   slug: string;
   title: string;
@@ -33,11 +35,15 @@ export const caseStudies: CaseStudy[] = [
       "Añadí validaciones de lint, tipos, build y pruebas HTTP/navegador en GitHub Actions.",
     ],
     evidence: [
+      { label: "Auditoría de seguridad", detail: "Controles de las cuatro APIs y restricciones documentadas del workspace.", url: "https://github.com/Dleteo/Nexus-AI/blob/feat/career-portfolio-20261026/docs/LABS_SECURITY_P0_2026-10-28.md" },
+      { label: "Pruebas del espacio de trabajo", detail: "Pruebas de navegación y estados de la aplicación.", url: "https://github.com/Dleteo/Nexus-AI/blob/feat/career-portfolio-20261026/scripts/workspace_qa.py" },
       { label: "Rutas del asistente", detail: "Límites, autenticación y llamadas al proveedor desde servidor.", url: "https://github.com/Dleteo/Nexus-AI/blob/main/app/api/assistant/chat/route.ts" },
       { label: "Migraciones SQL y RLS", detail: "Tablas para conversaciones y acceso vinculado al usuario.", url: "https://github.com/Dleteo/Nexus-AI/blob/main/supabase/migrations/20261023130000_assistant_copilot_foundation.sql" },
       { label: "Validación continua", detail: "CI: ESLint, TypeScript, build y pruebas funcionales.", url: "https://github.com/Dleteo/Nexus-AI/blob/main/.github/workflows/ci.yml" },
     ],
     lessons: [
+      "Separar la gestión del portafolio y la asistencia técnica ayuda a establecer responsabilidades y límites distintos.",
+      "La integración con modelos externos no constituye evidencia de un modelo propio entrenado.",
       "Las claves privadas no deben incorporarse al frontend ni al control de versiones.",
       "Un proyecto funcional necesita criterios de prueba además de una interfaz atractiva.",
       "Una herramienta de IA requiere límites, validación y honestidad sobre lo que sí puede hacer.",
@@ -137,6 +143,7 @@ export const caseStudies: CaseStudy[] = [
     repository: "",
     next: "Definir pruebas reproducibles y ampliar exclusivamente datos autorizados antes de afirmar capacidades nuevas.",
   },
+  ...engineeringCaseStudies,
 ];
 
 export function getCaseStudy(slug: string): CaseStudy | undefined {
