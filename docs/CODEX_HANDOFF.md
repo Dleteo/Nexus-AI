@@ -1,10 +1,17 @@
 # Traspaso para Codex — Nexus AI
 
-**Fecha de referencia:** 27 de octubre de 2026.
+**Fecha de referencia:** 28 de octubre de 2026.
 **Repositorio:** `Dleteo/Nexus-AI`
 **Rama de trabajo:** `feat/career-portfolio-20261026`
 **Pull request:** [#46](https://github.com/Dleteo/Nexus-AI/pull/46) hacia `main`.
-**Último CI verificado al redactar esta nota:** [ejecución 40501411120](https://github.com/Dleteo/Nexus-AI/actions/runs/40501411120), completada correctamente en el commit `3d6695fb7b66be086ecd141034d1fbe569594331`. **Vuelve a comprobar CI**, pues esta información puede quedar desactualizada.
+**Última ejecución CI verde verificada antes de la actualización de Factory:** [40625072790](https://github.com/Dleteo/Nexus-AI/actions/runs/40625072790) en `6d41ce063239707e7fa550653d59824971652f0b`. **La rama ya avanzó:** consulta el SHA del PR y su CI, no des por validado un commit posterior por esta nota.
+
+
+## PRIORIDAD ACTUAL PARA CODEX (28 OCT 2026)
+
+**Leer primero [docs/CODEX_NEXT_PHASE.md](CODEX_NEXT_PHASE.md).** Es el traspaso actualizado para el trabajo más difícil: auditoría de seguridad P0, sandbox real P1, generación de diffs/PR con aprobación humana P2, agentes Ollama opcionales P3 y profesionalización de los cuatro Labs P4. No reconstruir lo ya implementado.
+
+Los cuatro Labs ya tienen backend SQLite local opcional, API Next.js y pruebas; Factory también tiene preview de archivos, manifiesto SHA-256 y verificación de ZIP al descargar. **No hay agente autónomo, ejecución de código generado ni autorización para tocar producción**. El CI del SHA actual debe comprobarse al comenzar.
 
 ## Encargo
 
