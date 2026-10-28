@@ -24,6 +24,8 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [inventory,setInventory]=useState<Product[]>([...seedProducts]);
   const [cart,setCart]=useState<Record<string,number>>({});
   const [orders,setOrders]=useState<{total:number;count:number}[]>([]);
+  const [sqliteMode,setSqliteMode]=useState(false);
+  const [sqliteBusy,setSqliteBusy]=useState(false);
   const [search,setSearch]=useState("");
   const [category,setCategory]=useState("all");
   const [blocks,setBlocks]=useState<Block[]>(initialBlocks);
@@ -42,7 +44,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [ready,setReady]=useState(false);
   const isSpanish=language==="es";
   useEffect(()=>{const frame=requestAnimationFrame(()=>{const query=new URLSearchParams(window.location.search).get("lab");if(projects.some(p=>p.id===query))setActive(query as LabId);setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
-  useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,inventory,cart,orders,blocks,checks,proposals]);
+  useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){if(sqliteMode && (name==="inventory"||name==="cart"||name==="orders"))continue;try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,sqliteMode,inventory,cart,orders,blocks,checks,proposals]);
   const btn="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-red-400 disabled:opacity-40";
   const primary="rounded-xl bg-[#de4e65] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#bc304c] focus-visible:outline-2 focus-visible:outline-white disabled:opacity-40";
   const card="rounded-2xl border border-white/10 bg-[#1e1e23] p-5";
@@ -53,6 +55,51 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const p95=successfulLatencyP95(checks);
   function updateBlock(text:string){setBlocks(previous=>previous.map((block,index)=>index===selected?{...block,text}:block));}
   function downloadHtml(){const blob=new Blob([renderPageHtml(blocks)],{type:"text/html"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nexus-studio-export.html";a.click();URL.revokeObjectURL(url);}
+  async function enableSqlite(){
+    if(sqliteBusy)return;
+    setSqliteBusy(true);
+    try {
+      const response=await fetch("/api/labs/commerce",{cache:"no-store"});
+      const data=await response.json();
+      if(!response.ok||!data.ok||!Array.isArray(data.inventory)||!Array.isArray(data.orders))throw new Error(data.reason||"backend-unavailable");
+      setSqliteMode(true);setInventory(data.inventory);setOrders(data.orders);setCart({});
+      setNotice("Local SQLite connected. Orders now persist on this computer, not in the cloud.");
+    }catch{
+      setNotice("Local SQLite unavailable. Run npm run dev with NEXUS_LABS_SQLITE=1 and Python installed. Browser demo remains active.");
+    }finally{setSqliteBusy(false);}
+  }
+  function disableSqlite(){
+    setSqliteMode(false);setInventory(stored("inventory",[...seedProducts]));setOrders(stored("orders",[]));setCart({});
+    setNotice("Browser-only demo restored. SQLite records remain in your local database.");
+  }
+  async function checkoutOrder(){
+    if(!sqliteMode){
+      const result=placeOrder(cart,inventory);
+      if(!result.ok){setNotice("Unable to place order: "+result.reason);return;}
+      setInventory(result.inventory);setOrders(previous=>[{total:result.total,count:result.lines.length},...previous]);setCart({});
+      setNotice("Demo order created in browser storage. No payment was collected.");
+      return;
+    }
+    if(sqliteBusy)return;
+    setSqliteBusy(true);
+    try{
+      const response=await fetch("/api/labs/commerce",{
+        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cart}),
+      });
+      const data=await response.json();
+      if(!response.ok||!data.ok){
+        if(data.reason==="insufficient-stock"){
+          const latest=await fetch("/api/labs/commerce",{cache:"no-store"});
+          if(latest.ok){const fresh=await latest.json();setInventory(fresh.inventory);setOrders(fresh.orders);}
+        }
+        setNotice("SQLite order rejected: "+(data.reason||"backend-error")+". Your cart was not charged.");
+        return;
+      }
+      setInventory(data.inventory);setOrders(data.orders);setCart({});
+      setNotice("Order #"+data.orderId+" saved atomically in local SQLite. No payment collected.");
+    }catch{setNotice("Local SQLite unavailable. No order was confirmed.");}
+    finally{setSqliteBusy(false);}
+  }
   async function checkService(){if(isChecking)return;setIsChecking(true);const start=performance.now();try{const response=await fetch("/api/labs/health",{cache:"no-store"});const json=await response.json();const ok=response.ok&&json.status==="ok";setChecks(previous=>[{at:new Date().toISOString(),ok,ms:Math.round(performance.now()-start)},...previous].slice(0,30));}catch{setChecks(previous=>[{at:new Date().toISOString(),ok:false,ms:Math.round(performance.now()-start)},...previous].slice(0,30));}finally{setIsChecking(false);}}
   const stats=summarizeChecks(checks);
   const observed=observedAvailability(checks);
@@ -76,10 +123,10 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
             <p className="mt-2 text-sm leading-6 text-stone-400">{active==="commerce"?"Product catalog, shopping cart, stock validation and simulated checkout. No real payment or server database.":active==="studio"?"Build a landing page, edit text, reorder elements and export safe static HTML.":active==="monitor"?"Checks the health endpoint of this application only. No arbitrary external targets or background polling.":"Rule-based task planning and human-review workflow. No AI inference, repository edits or automatic code execution."}</p>
           </div>
           {notice&&<p role="status" className="rounded-lg border border-white/15 bg-white/5 p-3 text-sm">{notice}</p>}
-          {active==="commerce"&&<div className="grid gap-5 xl:grid-cols-[1fr_290px]">
+          {active==="commerce"&&<div className="space-y-3"><div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#1e1e23] p-4"><div><p className="font-semibold">{sqliteMode?"SQLite backend: active on this computer":"Browser-only demo"}</p><p className="text-xs text-stone-400">{sqliteMode?"Real server-side transactions, local disk persistence. Never enabled in production.":"No server database required. Optional SQLite mode works only on localhost in development."}</p></div>{sqliteMode?<button className={btn} disabled={sqliteBusy} onClick={disableSqlite}>Use browser demo</button>:<button className={btn} disabled={sqliteBusy} onClick={enableSqlite}>{sqliteBusy?"Connecting…":"Use local SQLite"}</button>}</div><div className="grid gap-5 xl:grid-cols-[1fr_290px]">
             <section aria-label="Product catalog"><div className="mb-4 flex flex-col gap-3 sm:flex-row"><label className="flex-1 text-sm">Search products<input type="search" value={search} onChange={event=>setSearch(event.target.value)} placeholder="Keyboard, audio, displays..." className="mt-2 block w-full rounded-xl border border-white/20 bg-[#111115] p-3 text-white"/></label><label className="text-sm">Category<select value={category} onChange={event=>setCategory(event.target.value)} className="mt-2 block w-full rounded-xl border border-white/20 bg-[#111115] p-3 text-white"><option value="all">All categories</option>{[...new Set(inventory.map(p=>p.category))].map(name=><option key={name} value={name}>{name}</option>)}</select></label></div><p className="mb-3 text-sm text-stone-400" role="status">{filteredInventory.length} products found</p><div className="grid gap-3 sm:grid-cols-2">{filteredInventory.map(p=><article className={card} key={p.id}><div className="mb-4 flex aspect-[8/5] items-center justify-center rounded-xl bg-gradient-to-br from-[#532c39] to-[#24252e] text-5xl" aria-hidden="true">{p.id==="keyboard"?"⌨":p.id==="headset"?"◉":p.id==="monitor"?"▣":"⌁"}</div><p className="text-xs uppercase tracking-widest text-stone-400">{p.category}</p><h3 className="mt-1 text-xl font-bold">{p.name}</h3><p className="mt-2 text-[#ee9dad]">{money(p.price)} · {p.stock} available</p><button className={primary+" mt-4 w-full"} disabled={p.stock<1||(cart[p.id]||0)>=p.stock} onClick={()=>{const result=addToCart(cart,inventory,p.id);if(result.ok)setCart(result.cart);else setNotice("Not enough stock.");}}>Add to cart</button></article>)}{filteredInventory.length===0&&<p className="text-sm text-stone-400">No matching products. Try a different search.</p>}</div></section>
-            <aside className={card+" h-fit"}><h3 className="text-xl font-bold">Shopping cart</h3><div className="mt-4 space-y-3">{inventory.filter(p=>(cart[p.id]||0)>0).map(p=><div key={p.id} className="flex items-center justify-between gap-2 text-sm"><span>{p.name} × {cart[p.id]}</span><button className={btn} aria-label={"Remove one "+p.name} onClick={()=>setCart(old=>({...old,[p.id]:Math.max(0,(old[p.id]||0)-1)}))}>−</button></div>)}</div><div className="mt-5 border-t border-white/10 pt-3 text-xl font-bold">{money(total)}</div><button className={primary+" mt-4 w-full"} disabled={total===0} onClick={()=>{const result=placeOrder(cart,inventory);if(!result.ok){setNotice("Unable to place order: "+result.reason);return;}setInventory(result.inventory);setOrders(previous=>[{total:result.total,count:result.lines.length},...previous]);setCart({});setNotice("Demo order created. No payment was collected.");}}>Place demo order</button><p className="mt-4 text-sm text-stone-400">Demo orders: {orders.length}</p><div aria-label="Local order history" className="mt-3 space-y-2">{orders.slice(0,5).map((order,i)=><p key={i} className="rounded-lg bg-[#111115] p-2 text-xs">#{orders.length-i} · {order.count} product lines · {money(order.total)}</p>)}</div><button className={btn+" mt-3 w-full"} onClick={()=>{setInventory([...seedProducts]);setCart({});setOrders([]);setNotice("Local commerce demo reset.");}}>Reset demo inventory</button></aside>
-          </div>}
+            <aside className={card+" h-fit"}><h3 className="text-xl font-bold">Shopping cart</h3><div className="mt-4 space-y-3">{inventory.filter(p=>(cart[p.id]||0)>0).map(p=><div key={p.id} className="flex items-center justify-between gap-2 text-sm"><span>{p.name} × {cart[p.id]}</span><button className={btn} aria-label={"Remove one "+p.name} onClick={()=>setCart(old=>({...old,[p.id]:Math.max(0,(old[p.id]||0)-1)}))}>−</button></div>)}</div><div className="mt-5 border-t border-white/10 pt-3 text-xl font-bold">{money(total)}</div><button className={primary+" mt-4 w-full"} disabled={total===0||sqliteBusy} onClick={checkoutOrder}>Place demo order</button><p className="mt-4 text-sm text-stone-400">Demo orders: {orders.length}</p><div aria-label="Local order history" className="mt-3 space-y-2">{orders.slice(0,5).map((order,i)=><p key={i} className="rounded-lg bg-[#111115] p-2 text-xs">#{orders.length-i} · {order.count} product lines · {money(order.total)}</p>)}</div>{!sqliteMode&&<button className={btn+" mt-3 w-full"} onClick={()=>{setInventory([...seedProducts]);setCart({});setOrders([]);setNotice("Local commerce demo reset.");}}>Reset demo inventory</button>}</aside>
+          </div></div>}
           {active==="studio"&&<div className="grid gap-4 xl:grid-cols-[310px_1fr]">
             <aside className={card+" space-y-4"}><h3 className="font-bold">Page blocks</h3><div className="space-y-2">{blocks.map((b,i)=><button key={b.id} className={"block w-full rounded-lg border p-3 text-left text-sm "+(selected===i?"border-[#de4e65] bg-[#43252c]":"border-white/10")} onClick={()=>setSelected(i)}>{i+1}. {b.type} — {b.text.slice(0,25)}</button>)}</div><div className="flex flex-wrap gap-2">{(["hero","text","button"] as const).map(type=><button key={type} className={btn} onClick={()=>{editBlocks([...blocks,{id:crypto.randomUUID(),type,text:type==="hero"?"New heading":type==="button"?"Click here":"New paragraph"}]);setSelected(blocks.length);}}>+ {type}</button>)}</div>{blocks[selected]&&<><label htmlFor="block-editor" className="block text-sm font-semibold">Selected block text</label><textarea id="block-editor" className="w-full rounded-lg border border-white/20 bg-[#111115] p-3" rows={4} maxLength={500} value={blocks[selected].text} onFocus={()=>{editorSnapshot.current=blocks.map(b=>({...b}));}} onBlur={finishEditingText} onChange={e=>updateBlock(e.target.value)}/><div className="flex gap-2"><button className={btn} onClick={()=>{editBlocks(moveBlock(blocks,selected,-1));setSelected(x=>Math.max(0,x-1));}}>↑ Move</button><button className={btn} onClick={()=>{editBlocks(moveBlock(blocks,selected,1));setSelected(x=>Math.min(blocks.length-1,x+1));}}>↓ Move</button><button className={btn} onClick={()=>{editBlocks(blocks.filter((_,i)=>i!==selected));setSelected(0);}}>Delete</button></div></>}<div className="flex gap-2"><button className={btn+" flex-1"} disabled={undoBlocks.length===0} onClick={undoEditor}>Undo</button><button className={btn+" flex-1"} disabled={redoBlocks.length===0} onClick={redoEditor}>Redo</button></div><button className={primary+" w-full"} onClick={downloadHtml}>Export HTML</button></aside>
             <section className={card}><p className="mb-5 text-xs font-semibold uppercase tracking-[.2em] text-stone-400">Live preview</p><div className="min-h-80 rounded-xl bg-[#f7f2ee] p-8 text-[#19191d]">{blocks.map(b=>b.type==="hero"?<h2 key={b.id} className="my-5 text-4xl font-black">{b.text}</h2>:b.type==="button"?<span key={b.id} className="my-3 inline-block rounded-lg bg-[#bd334e] px-5 py-3 font-semibold text-white">{b.text}</span>:<p key={b.id} className="my-4 leading-7">{b.text}</p>)}</div><p className="mt-3 text-xs text-stone-400">Buttons in the preview are visual components; exported output is static HTML.</p></section>
