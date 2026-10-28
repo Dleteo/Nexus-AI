@@ -77,10 +77,10 @@ def audit(browser):
         skip_style=skip.evaluate("""(el)=>{
           const s=getComputedStyle(el);
           return {position:s.position,outlineStyle:s.outlineStyle,
-            outlineWidth:parseFloat(s.outlineWidth),top:el.getBoundingClientRect().top};
+            outlineWidth:parseFloat(s.outlineWidth),transform:s.transform,top:el.getBoundingClientRect().top};
         }""")
         check(skip_style["outlineStyle"]!="none" and skip_style["outlineWidth"]>=2 and
-              skip_style["top"]>=0 and skip_style["position"]=="fixed",
+              skip_style["top"]>=0 and skip_style["position"]=="fixed" and skip_style["transform"]=="none",
               f"Skip link must show a fixed visible keyboard indicator: {skip_style}")
         card=page.locator('[class*="projectCard"]').first
         duration=card.evaluate("""(el)=>Math.max(...getComputedStyle(el)
