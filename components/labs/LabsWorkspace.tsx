@@ -34,7 +34,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
   const [notice,setNotice]=useState("");
   const [ready,setReady]=useState(false);
   const isSpanish=language==="es";
-  useEffect(()=>{const frame=requestAnimationFrame(()=>{setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
+  useEffect(()=>{const frame=requestAnimationFrame(()=>{const query=new URLSearchParams(window.location.search).get("lab");if(projects.some(p=>p.id===query))setActive(query as LabId);setInventory(stored("inventory",[...seedProducts]));setCart(stored("cart",{}));setOrders(stored("orders",[]));setBlocks(stored("blocks",initialBlocks));setChecks(stored("checks",[]));setProposals(stored("proposals",[]));setReady(true);});return ()=>cancelAnimationFrame(frame);},[]);
   useEffect(()=>{if(!ready)return;for(const [name,value] of Object.entries({inventory,cart,orders,blocks,checks,proposals})){try{localStorage.setItem(key(name),JSON.stringify(value));}catch{}}},[ready,inventory,cart,orders,blocks,checks,proposals]);
   const btn="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-red-400 disabled:opacity-40";
   const primary="rounded-xl bg-[#de4e65] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#bc304c] focus-visible:outline-2 focus-visible:outline-white disabled:opacity-40";
@@ -57,7 +57,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
       </header>
       <div className="grid gap-5 lg:grid-cols-[245px_1fr]">
         <nav aria-label="Nexus labs" className="flex flex-wrap content-start gap-2 lg:flex-col">
-          {projects.map((p,index)=><button key={p.id} type="button" aria-current={active===p.id?"page":undefined} onClick={()=>{setActive(p.id);setNotice("");}} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></button>)}
+          {projects.map((p,index)=><button key={p.id} type="button" aria-current={active===p.id?"page":undefined} onClick={()=>{setActive(p.id);setNotice("");window.history.replaceState(null,"",window.location.pathname+"?lab="+p.id);}} className={"rounded-2xl border p-4 text-left transition "+(active===p.id?"border-[#de4e65] bg-[#43252c]":"border-white/10 bg-[#1e1e23] hover:border-white/30")}><span className="block text-xs text-[#ed8797]">0{index+1} / {p.category}</span><strong className="mt-1 block text-base">{p.name}</strong></button>)}
         </nav>
         <div className="min-w-0 space-y-5">
           <div className={card}><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-2xl font-bold">{projects.find(p=>p.id===active)?.name}</h2><span className="rounded-full border border-amber-500/40 px-3 py-1 text-xs text-amber-200">LOCAL MVP · NO PRODUCTION</span></div>
