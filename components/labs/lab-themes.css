@@ -112,3 +112,30 @@
 .lab-factory-terminal strong{color:#f6cd92;font-size:10px}
 @media(max-width:950px){.lab-product-banner{padding-right:26px;padding-bottom:250px}.lab-visual{top:auto;bottom:18px;right:20px;left:20px;transform:none;width:auto;height:210px}.lab-product-banner p{max-width:70ch}}
 @media(max-width:560px){.lab-product-banner{padding-bottom:190px}.lab-visual{height:165px;right:12px;left:12px;bottom:12px}.lab-visual-heading,.lab-monitor-title,.lab-factory-title{padding:7px;font-size:8px}.lab-commerce-items{padding:8px}.lab-commerce-items span{font-size:19px}.lab-commerce-items small{font-size:6px}.lab-studio-canvas{margin:10px 5px;padding:7px}.lab-studio-tools{padding:10px 0;gap:6px}.lab-studio-inspector{padding:10px 5px}.lab-monitor-metrics{padding:6px}.lab-monitor-plot{height:34px}.lab-factory-flow{padding:8px}.lab-factory-flow span{padding:7px 4px}.lab-factory-terminal{padding:7px}}
+
+/* Product-grade layout: the four applications no longer use the same chrome.
+   Functionality and accessibility stay attached to their existing controls. */
+.nexus-lab-shell .nexus-labs-layout{align-items:start}
+.nexus-lab-shell [data-lab-navigation]{position:sticky;top:18px;padding:12px;border:1px solid var(--lab-border);border-radius:20px;background:color-mix(in srgb,var(--lab-surface),#000 20%);box-shadow:0 20px 45px -30px #000}
+.nexus-lab-shell [data-lab-navigation] button{width:100%}
+.nexus-lab-shell [data-lab-navigation] button[aria-pressed="true"]{box-shadow:inset 4px 0 var(--lab-accent),0 8px 22px -15px var(--lab-accent)}
+.nexus-lab-shell .nexus-lab-workspace{border:1px solid var(--lab-border);padding:clamp(12px,2vw,24px);border-radius:24px;background:color-mix(in srgb,var(--lab-surface),#050607 38%);box-shadow:0 28px 65px -40px #000}
+.commerce-storefront .commerce-layout{align-items:start}
+.commerce-storefront .commerce-catalog{padding:18px;border:1px solid #27614f;border-radius:18px;background:#0d241e}
+.commerce-storefront .commerce-catalog>div:has(label){background:#102d25}
+.commerce-storefront .commerce-catalog article{display:flex;flex-direction:column;min-height:315px;border-radius:17px}
+.commerce-storefront .commerce-catalog article button{margin-top:auto}
+.commerce-storefront .commerce-cart{position:sticky;top:18px;border-color:#348167;background:#09271e;box-shadow:0 25px 50px -35px #000}
+.commerce-storefront .commerce-cart h3{padding-bottom:12px;border-bottom:1px solid #31715c}
+.studio-designer .studio-editor-layout{align-items:start;gap:12px;padding:12px;border:1px solid #614981;border-radius:18px;background:#15101d}
+.studio-designer .studio-editor-layout>aside{border:1px solid #6f568c;border-radius:12px;min-height:480px}
+.studio-designer .studio-editor-layout>div{min-width:0;border:1px solid #4d3b67;border-radius:12px;background:#211b2c;padding:12px}
+.studio-designer .studio-editor-layout textarea{min-height:95px}
+.monitor-console section{box-shadow:0 18px 55px -38px #000}
+.monitor-console section .grid>div{border:1px solid #28657d;background:#0d2738}
+.monitor-console [role="img"]{min-height:110px}
+.factory-pipeline>div[class*="grid"]{align-items:start;padding:12px;border:1px solid #795138;border-radius:18px;background:#19130e}
+.factory-pipeline section{box-shadow:0 18px 40px -30px #000}
+.factory-pipeline [aria-label="Factory job board"]{border-left:3px solid #dc9d5d}
+@media(max-width:1023px){.nexus-lab-shell [data-lab-navigation]{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.commerce-storefront .commerce-cart{position:relative;top:auto}}
+@media(max-width:640px){.nexus-lab-shell .nexus-lab-workspace{padding:10px;border-radius:14px}.commerce-storefront .commerce-catalog{padding:10px}.studio-designer .studio-editor-layout{padding:7px}.studio-designer .studio-editor-layout>aside{min-height:0}}
