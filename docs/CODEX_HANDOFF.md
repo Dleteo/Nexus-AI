@@ -4,7 +4,7 @@
 **Repositorio:** `Dleteo/Nexus-AI`
 **Rama de trabajo:** `feat/career-portfolio-20261026`
 **Pull request:** [#46](https://github.com/Dleteo/Nexus-AI/pull/46) hacia `main`.
-**Última ejecución CI verde verificada antes de la actualización de Factory:** [40625072790](https://github.com/Dleteo/Nexus-AI/actions/runs/40625072790) en `6d41ce063239707e7fa550653d59824971652f0b`. **La rama ya avanzó:** consulta el SHA del PR y su CI, no des por validado un commit posterior por esta nota.
+**Último punto comprobado al retomar esta continuación:** [CI #466 verde](https://github.com/Dleteo/Nexus-AI/actions/runs/40686052125) en `f7f285febd63f0a4b1ec410195736ea877c24743`. Consulta siempre el SHA actual del PR y su CI; esta referencia no valida cambios posteriores. La [hoja de continuidad](CONTINUIDAD_CODEX_2026-10-28.md) separa lo entregado, lo que está en curso y lo pendiente.
 
 
 ## PRIORIDAD ACTUAL PARA CODEX (28 OCT 2026)

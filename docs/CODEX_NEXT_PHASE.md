@@ -7,6 +7,8 @@
 
 Lee en este orden: `AGENTS.md`, `docs/CODEX_HANDOFF.md`, este archivo y `docs/FOUR-ENGINEERING-LABS.md`. **No hagas merge, deploy, compras, cambios de visibilidad, conexiones a proveedores, migraciones a Supabase de producción ni leas repositorios privados sin permiso expreso del dueño**. Costo obligatorio $0. Los dos asistentes Nexus Portfolio y Nexus Technical deben mantenerse separados pero con la misma identidad visual.
 
+**Estado de continuidad:** P0 ya tiene controles y regresiones adicionales; P1 ya tiene validación de snapshots/ZIP inertes, digest del preview y estado `not_run` en API/UI/preflight. No reconstruir esas piezas. **El runtime aislado sigue sin verificarse y P1 no está aceptada; P2/P3 siguen bloqueadas.** Leer el resumen actual de [la nota para ChatGPT](CONTINUIDAD_CODEX_2026-10-28.md) y el [diseño P1](FACTORY_SANDBOX_P1.md) antes de ampliar capacidades.
+
 ## Inventario que YA funciona — no rehacer
 
 | Laboratorio | Implementado | Pendiente (no fingir) |

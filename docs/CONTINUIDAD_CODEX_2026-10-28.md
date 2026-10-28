@@ -2,6 +2,21 @@
 
 Documento vivo de esta sesión, solicitado por el propietario para poder continuar en ChatGPT si se agota el crédito. No contiene secretos ni datos de repositorios privados.
 
+## Lee esto primero — estado para ChatGPT
+
+Último punto comprobado al retomar: `f7f285febd63f0a4b1ec410195736ea877c24743`, con [CI #466 verde](https://github.com/Dleteo/Nexus-AI/actions/runs/40686052125), rama limpia y PR #46 abierto. Ese resultado valida **ese SHA**, no modificaciones posteriores.
+
+| Parte | Ya hecho | Qué falta |
+|---|---|---|
+| P0 | Guardas de cuatro APIs, CSRF, límites/cancelación del runner confiable, checks SQLite, integridad ZIP y regresiones | Revisión humana; cerrar cualquier borde reproducible nuevo sin rehacer los Labs |
+| P1, preparación | Inputs/snapshots inmutables, ZIP en memoria, digest del preview, estado `not_run` en API/UI con cinco idiomas, preflight de metadata | **Runtime y aislamiento reales sin verificar**: rootless, red/credenciales ausentes, mounts, cuotas CPU/RAM/PIDs/disco, timeout/cancelación y limpieza por tarea |
+| P2 y P3 | No iniciadas | Sólo después de P1: diff exacto/segunda aprobación y proveedor local opcional; nunca automatizar GitHub ni habilitar modelos por defecto |
+| Cuatro Labs | Se conservan Commerce, Studio, Monitor y Factory, con demos y backends locales opcionales | Profesionalización P4 pendiente; sin pagos, multiusuario público ni servicios nuevos |
+
+Continuación actual: revisar el verificador de ZIP que descarga Factory para reutilizar la descompresión estricta ya implementada en snapshots. Se ha reproducido un caso de datos comprimidos ocultos tras el tamaño declarado; **corrección y evidencia final todavía en curso**. No ejecutar el contenido para probarlo.
+
+No interpretar los tests de parsing o la QA estática como tests de código generado. Ejecución sigue desactivada, sin merge/despliegue, coste obligatorio $0 y código bajo control del propietario. El detalle histórico y los comandos están más abajo.
+
 ## Encargo y límites
 
 - Repositorio público `Dleteo/Nexus-AI`, rama `feat/career-portfolio-20261026`, [PR #46](https://github.com/Dleteo/Nexus-AI/pull/46) abierto; plan: [issue #47](https://github.com/Dleteo/Nexus-AI/issues/47).
