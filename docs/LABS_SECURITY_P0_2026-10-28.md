@@ -18,6 +18,8 @@ Plan: [issue #47](https://github.com/Dleteo/Nexus-AI/issues/47). Trabajo sobre l
 
 Las cuatro rutas conservan HTTP 503 en producción, incluso con las banderas locales activas. Las respuestas no exponen stderr, rutas de disco ni credenciales. Los errores de validación no modifican los registros. No se extrae ningún ZIP ni se ejecutan sus archivos.
 
+**Monitor, protocolo HTTP:** `http.client.HTTPException` (status malformado, chunked truncado o desconexión) y status fuera de 100–599 ahora generan muestras fallidas `connection-error`, en lugar de abortar sin historial ni alerta. La prueba usa cuatro respuestas defectuosas desde un receptor efímero en 127.0.0.1, comprueba persistencia/alerta crítica y cierre de socket. Se conservan destino fijo, límites de lectura y timeout; no hay destinos externos ni daemon.
+
 **Revisión posterior del ZIP:** se reprodujo un BLOB que declaraba 445 bytes pero descomprimía 845. `ZipFile.read` devolvía sólo el prefijo declarado, de modo que CRC/manifiesto y comparación contra el contenido esperado podían pasar ignorando los bytes ocultos. La descarga ahora reutiliza `snapshot_from_zip`, con descompresión real acotada, EOF, ausencia de datos sobrantes y CRC. Se mantienen los límites Factory de 120 KB/12 KB y la allowlist ordenada; se rechazan comentarios/extras/ZIP64 y prefijos/trailers sin modificar el generador ni borrar historial. Otra regresión bloquea aliases reservados de Windows con espacios antes de la extensión, tanto en snapshots directos como ZIP. Esto refuerza la validación de datos; P1 continúa sin runtime verificado.
 
 ## Uso local y compatibilidad

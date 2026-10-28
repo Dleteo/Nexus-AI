@@ -13,6 +13,8 @@
 
 **Preparación P1 posterior:** ya existen snapshots/ZIP inertes validados en memoria, digest del preview de tres fuentes y estado `execution.not_run` en API/UI (cinco idiomas), separado de QA estática. El preflight observa metadata de cgroups/UID/socket sin acreditar aislamiento. La suite Factory incluye las nuevas regresiones automáticamente. No volver a implementar estas piezas ni interpretar sus tests como sandbox operativo; runtime y pruebas de aislamiento reales siguen pendientes, igual que P2/P3.
 
+**Última corrección:** Monitor persiste también respuestas HTTP malformadas, truncadas, desconectadas o con status inválido como checks fallidos, alimentando historial/alertas. Hay regresión real con receptor loopback efímero; no se añade escaneo ni servicio. La [nota para ChatGPT](CONTINUIDAD_CODEX_2026-10-28.md) contiene commits, pruebas y los bloqueos pendientes; se cerró el alcance cuando el propietario indicó 10% de uso restante.
+
 **Leer primero [docs/CODEX_NEXT_PHASE.md](CODEX_NEXT_PHASE.md).** Es el traspaso actualizado para el trabajo más difícil: auditoría de seguridad P0, sandbox real P1, generación de diffs/PR con aprobación humana P2, agentes Ollama opcionales P3 y profesionalización de los cuatro Labs P4. No reconstruir lo ya implementado.
 
 Los cuatro Labs ya tienen backend SQLite local opcional, API Next.js y pruebas; Factory también tiene preview de archivos, manifiesto SHA-256 y verificación de ZIP al descargar. **No hay agente autónomo, ejecución de código generado ni autorización para tocar producción**. El CI del SHA actual debe comprobarse al comenzar.
