@@ -12,12 +12,20 @@ const socials=[
   {name:"LinkedIn",url:professionalProfile.linkedin},
   {name:"Instagram",url:professionalProfile.instagram},
 ] as const;
+const featuredCaseStudies=[
+  {slug:"nexus-ai",name:"Nexus AI Workspace"},
+  {slug:"nexus-commerce",name:"Nexus Commerce"},
+  {slug:"nexus-studio",name:"Nexus Studio"},
+  {slug:"nexus-monitor",name:"Nexus Monitor"},
+  {slug:"nexus-software-factory",name:"Nexus Software Factory"},
+] as const;
 
 type Topic="projects"|"skills"|"social"|"email"|"technical"|"unknown";
 function classify(query:string):Topic {
   const q=query.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
   if(/corre|email|mail|contact|contrat|hire|job|recrut|escribir|contat/.test(q))return "email";
   if(/github|linkedin|instagram|red|social|network|perfil|reseau/.test(q))return "social";
+  if(/nexus\s*technical|tecnico|technical|technisch|technique|tecnico\s*nexus/.test(q))return "technical";
   if(/proyec|project|portfolio|portafolio|nexus|projeto|projekt/.test(q))return "projects";
   if(/habil|skill|exper|certif|curso|stack|learn|techno|bildung|formac/.test(q))return "skills";
   if(/python|code|codi|program|software|hardware|typescript|error|cve|security|segurid/.test(q))return "technical";
@@ -25,11 +33,11 @@ function classify(query:string):Topic {
 }
 const sentences:Record<Topic,[string,string,string,string,string]>={
   projects:[
-    "Nexus AI es una aplicación Next.js/TypeScript con proyectos y asistentes. Nexus Foundation es un laboratorio experimental de Transformer propio. También hay proyectos de JavaScript como Task Tracker y Hangman.",
-    "Nexus AI is a Next.js/TypeScript project workspace with assistants. Nexus Foundation is an experimental original Transformer lab. The portfolio also includes Task Tracker and Hangman.",
-    "Nexus AI ist eine Next.js/TypeScript-Anwendung. Nexus Foundation ist ein experimentelles Transformer-Labor. Dazu kommen Task Tracker und Hangman.",
-    "Nexus AI est une application Next.js/TypeScript. Nexus Foundation est un laboratoire expérimental de Transformer. Le portfolio comprend aussi Task Tracker et Hangman.",
-    "Nexus AI é um aplicativo Next.js/TypeScript. Nexus Foundation é um laboratório experimental de Transformer. Também há Task Tracker e Hangman."
+    "Estos son mis cinco proyectos destacados: Nexus AI Workspace (portafolio y asistentes), Commerce (inventario y compras simuladas), Studio (editor y revisiones), Monitor (sondeos manuales) y Software Factory (plantillas revisadas, sin ejecutar código). Puedes abrir sus casos de estudio aquí mismo.",
+    "My five featured projects are Nexus AI Workspace (portfolio and assistants), Commerce (inventory and simulated orders), Studio (editor and revisions), Monitor (manual health checks), and Software Factory (reviewed templates, no code execution). Open their case studies below.",
+    "Meine fünf Hauptprojekte sind Nexus AI Workspace (Portfolio und Assistenten), Commerce (Lager und Testbestellungen), Studio (Editor und Versionen), Monitor (manuelle Prüfungen) und Software Factory (geprüfte Vorlagen ohne Codeausführung). Die Fallstudien sind unten verlinkt.",
+    "Mes cinq projets principaux sont Nexus AI Workspace (portfolio et assistants), Commerce (stock et commandes simulées), Studio (éditeur et versions), Monitor (contrôles manuels) et Software Factory (modèles validés, sans exécution de code). Les études de cas sont accessibles ci-dessous.",
+    "Meus cinco projetos principais são Nexus AI Workspace (portfólio e assistentes), Commerce (estoque e pedidos simulados), Studio (editor e revisões), Monitor (verificações manuais) e Software Factory (modelos revisados, sem executar código). Veja os estudos de caso abaixo."
   ],
   skills:[
     "Perfil junior: HTML, CSS, JavaScript, React, Next.js, Supabase, pruebas automatizadas y GitHub. La formación documentada no equivale a experiencia profesional de programación.",
@@ -100,6 +108,10 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     <div className={styles.portfolioContactBody} role="log" aria-live="polite" aria-label={t("Respuestas de contacto","Contact answers","Kontaktantworten","Réponses de contact","Respostas de contato")}>
       {conversation?<><div className={styles.portfolioContactQuestion}>{conversation.question}</div><div className={styles.portfolioContactReply}><b>Nexus</b><p>{conversation.reply}</p></div></>:<div className={styles.portfolioContactReply}><b>Nexus</b><p>{t("Hola. Pregúntame por los proyectos, las habilidades o cómo contactar al desarrollador.","Hello. Ask about projects, skills or how to contact the developer.","Hallo. Frage nach Projekten, Kenntnissen oder Kontaktmöglichkeiten.","Bonjour. Demandez des informations sur les projets, compétences ou contacts.","Olá. Pergunte sobre projetos, habilidades ou contato.")}</p></div>}
     </div>
+    {conversation&&classify(conversation.question)==="projects"&&<nav aria-label={t("Casos de estudio destacados","Featured case studies","Fallstudien der Hauptprojekte","Études de cas principales","Estudos de caso em destaque")} className="mt-3 grid gap-2 sm:grid-cols-2">
+      {featuredCaseStudies.map(study=><Link key={study.slug} href={"/projects/"+study.slug+"?lang="+language}
+        className="rounded-lg border border-[#854253] bg-[#1e151b] px-3 py-2 text-xs font-semibold text-[#ffd2dc] hover:border-[#f39bb0] focus-visible:outline-2 focus-visible:outline-[#f39bb0]">{study.name} ↗</Link>)}
+    </nav>}
     <div className={styles.portfolioContactChoices}>
       <button type="button" onClick={()=>answer("projects",t("Proyectos","Projects","Projekte","Projets","Projetos"))}>{t("Proyectos","Projects","Projekte","Projets","Projetos")}</button>
       <button type="button" onClick={()=>answer("skills",t("Habilidades","Skills","Kenntnisse","Compétences","Habilidades"))}>{t("Habilidades","Skills","Kenntnisse","Compétences","Habilidades")}</button>
@@ -114,8 +126,8 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
       {socials.map(item=><a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer">{item.name} ↗</a>)}
       <Link href="/assistant">Nexus Technical ↗</Link>
     </nav>
-    <div className={styles.portfolioContactMailTrigger}><button type="button" onClick={()=>setShowEmail(x=>!x)} aria-expanded={showEmail}>{t("Preparar correo","Compose email","E-Mail vorbereiten","Préparer un e-mail","Preparar e-mail")} ↗</button></div>
-    {showEmail&&<div className={styles.portfolioContactMail}>
+    <div className={styles.portfolioContactMailTrigger}><button type="button" aria-controls="nexus-contact-email-form" onClick={()=>setShowEmail(x=>!x)} aria-expanded={showEmail}>{t("Preparar correo","Compose email","E-Mail vorbereiten","Préparer un e-mail","Preparar e-mail")} ↗</button></div>
+    {showEmail&&<div id="nexus-contact-email-form" role="group" aria-label={t("Preparar un mensaje de correo","Prepare an email message","E-Mail-Nachricht vorbereiten","Préparer un message e-mail","Preparar mensagem de e-mail")} className={styles.portfolioContactMail}>
       <input maxLength={80} value={visitor} onChange={e=>setVisitor(e.target.value)} aria-label={t("Nombre","Name","Name","Nom","Nome")} placeholder={t("Tu nombre","Your name","Dein Name","Votre nom","Seu nome")}/>
       <input type="email" maxLength={160} value={replyEmail} onChange={e=>setReplyEmail(e.target.value)} aria-label={t("Tu correo","Your email","Deine E-Mail","Votre e-mail","Seu e-mail")} placeholder={t("Tu correo","Your email","Deine E-Mail","Votre e-mail","Seu e-mail")}/>
       <textarea rows={3} maxLength={1000} value={message} onChange={e=>setMessage(e.target.value)} aria-label={t("Mensaje","Message","Nachricht","Message","Mensagem")} placeholder={t("Tu mensaje","Your message","Deine Nachricht","Votre message","Sua mensagem")}/>
