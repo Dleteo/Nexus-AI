@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {seedProducts,addToCart,placeOrder,moveBlock,escapeHtml,renderPageHtml,summarizeChecks,buildFactoryProposal} from "../lib/labs-core.mjs";
+import {seedProducts,addToCart,placeOrder,moveBlock,escapeHtml,renderPageHtml,summarizeChecks,observedAvailability,renderFactoryIssueMarkdown,buildFactoryProposal} from "../lib/labs-core.mjs";
 const inventory=seedProducts.map(p=>({...p}));
 const first=addToCart({},inventory,"keyboard");assert.equal(first.ok,true);assert.equal(first.cart.keyboard,1);
 const order=placeOrder(first.cart,inventory);assert.equal(order.ok,true);assert.equal(order.total,79);assert.equal(order.inventory[0].stock,7);
@@ -9,4 +9,8 @@ const blocks=[{id:"a",type:"hero",text:"Hello"},{id:"b",type:"text",text:"world"
 assert.equal(escapeHtml("<script>"),"&lt;script&gt;");assert.ok(!renderPageHtml([{id:"x",type:"hero",text:"<script>alert(1)</script>"}]).includes("<script>"));
 assert.deepEqual(summarizeChecks([{at:"now",ok:true,ms:20},{at:"now",ok:false,ms:200}]),{total:2,successful:1,failed:1,averageMs:20});
 assert.equal(buildFactoryProposal("tiny"),null);const plan=buildFactoryProposal("Implement registration validation");assert.equal(plan.status,"awaiting-review");assert.equal(plan.stages[2].completed,false);
-console.log("Nexus labs: 12 domain assertions passed");
+assert.deepEqual(observedAvailability([]),{sampleCount:0,percent:null,minMs:null,maxMs:null});
+assert.deepEqual(observedAvailability([{ok:true,ms:10},{ok:false,ms:30}]),{sampleCount:2,percent:50,minMs:10,maxMs:30});
+const draft=renderFactoryIssueMarkdown(plan);
+assert.match(draft,/Engineering request/);assert.match(draft,/No AI inference/);
+console.log("Nexus labs: domain assertions passed");
