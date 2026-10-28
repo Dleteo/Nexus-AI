@@ -315,7 +315,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
       if(format==="commerce"){
         downloadFile("nexus-commerce-demo-orders.csv",commerceLedgerCsv(orders,sqliteMode),"text/csv");
       }else if(format==="studio"){
-        downloadFile("nexus-studio-document.json",studioDocumentJson(blocks,studioLocal,studioRevision),"application/json");
+        downloadFile("nexus-studio-document.json",studioDocumentJson(blocks,studioLocal,studioLocal&&JSON.stringify(blocks)===studioSaved?studioRevision:null),"application/json");
       }else if(format==="monitor"){
         downloadFile("nexus-monitor-manual-samples.csv",monitorSamplesCsv(checks,monitorLocal),"text/csv");
       }else if(selectedFactoryJob){
