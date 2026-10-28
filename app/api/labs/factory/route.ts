@@ -46,7 +46,7 @@ async function invoke(command: object): Promise<NextResponse> {
       });
     }
     return NextResponse.json(data, {
-      status: data.ok ? 200 : data.reason === "approval-required" || data.reason === "invalid-transition" ? 409 : data.reason === "job-not-found" || data.reason === "artifact-not-found" ? 404 : 400,
+      status: data.ok ? 200 : data.reason === "approval-required" || data.reason === "invalid-transition" ? 409 : data.reason === "job-not-found" || data.reason === "artifact-not-found" ? 404 : data.reason === "artifact-integrity-failed" ? 422 : 400,
       headers: noCache,
     });
   } catch {
@@ -56,6 +56,9 @@ async function invoke(command: object): Promise<NextResponse> {
 export async function GET(req: NextRequest) {
   if (!enabled(req)) return failure("local-backend-disabled", 503);
   const artifact = req.nextUrl.searchParams.get("artifact");
+  const preview = req.nextUrl.searchParams.get("preview");
+  if (artifact && preview) return failure("ambiguous-request", 400);
+  if (preview) return invoke({ action: "preview", id: preview });
   return invoke(artifact ? { action: "artifact", id: artifact } : { action: "list" });
 }
 export async function POST(req: NextRequest) {
