@@ -17,16 +17,14 @@ import os
 from pathlib import Path
 import re
 import sqlite3
-import stat
 import sys
 from uuid import uuid4
-from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED, BadZipFile
-import zlib
+from zipfile import ZipFile, ZIP_DEFLATED, BadZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "labs"))
 from sqlite_storage import connect_private_db
-from factory.sandbox_snapshot import SnapshotFile, validate_snapshot
+from factory.sandbox_snapshot import SnapshotFile, snapshot_from_zip, validate_snapshot
 DEFAULT_DB = ROOT / ".nexus-local" / "factory.sqlite3"
 ID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 KINDS = {"feature", "bug", "refactor"}
@@ -311,17 +309,12 @@ def verify_artifact(archive_bytes: bytes, expected: dict[str, bytes] | None = No
             infos = archive.infolist()
             if tuple(info.filename for info in infos) != FILES:
                 return False
-            if any(
-                info.orig_filename != info.filename
-                or info.is_dir()
-                or stat.S_IFMT(info.external_attr >> 16) not in (0, stat.S_IFREG)
-                or info.flag_bits & ~0x800  # Only the UTF-8 name flag is supported.
-                or info.compress_type not in (ZIP_STORED, ZIP_DEFLATED)
-                or not 0 < info.file_size <= 12_000
-                for info in infos
-            ):
+            if any(not 0 < info.file_size <= 12_000 for info in infos):
                 return False
-            files = {info.filename: archive.read(info) for info in infos}
+        # Keep Factory's smaller budgets, then use the shared in-memory reader.
+        # ZipFile.read alone can truncate a larger deflate stream to file_size.
+        snapshot = snapshot_from_zip(archive_bytes)
+        files = {entry.path: entry.content for entry in snapshot.files}
         if expected is not None and files != expected:
             return False
         manifest = json.loads(files["manifest.json"].decode("utf-8"), object_pairs_hook=unique_json_object)
@@ -337,7 +330,7 @@ def verify_artifact(archive_bytes: bytes, expected: dict[str, bytes] | None = No
         qa = json.loads(files["qa-results.json"].decode("utf-8"), object_pairs_hook=unique_json_object)
         return qa.get("passed") is True and qa.get("mode") == "static-validation"
     except (BadZipFile, OSError, ValueError, UnicodeDecodeError, TypeError, KeyError, AttributeError,
-            RuntimeError, NotImplementedError, zlib.error):
+            RuntimeError, NotImplementedError, EOFError):
         return False
 
 

@@ -4,11 +4,13 @@ from io import BytesIO
 import json
 from pathlib import Path
 import stat
+import struct
 import tempfile
 import unittest
 import warnings
 from unittest.mock import patch
 from zipfile import ZipFile, ZipInfo, ZIP_BZIP2, ZIP_DEFLATED
+import zlib
 
 from backend import connect, execute, FILES, sha256, verify_artifact
 from factory.sandbox_snapshot import SnapshotFile, validate_snapshot
@@ -215,6 +217,49 @@ class FactoryBackendTests(unittest.TestCase):
             payload_offset = info.header_offset + 30 + len(info.filename.encode()) + len(info.extra)
         raw[payload_offset] = 0xff
         self.assertFalse(verify_artifact(bytes(raw)))
+
+    def test_download_rejects_hidden_deflate_output_beyond_declared_source(self):
+        job, entries = self.built_zip()
+        expected = dict(entries)
+        prefix = expected["index.html"]
+        hidden = b"INERT-HIDDEN-TRAILER" * 20
+        raw = bytearray(self.repack([
+            (name, content + hidden if name == "index.html" else content)
+            for name, content in entries
+        ]))
+        central = raw.index(b"PK\x01\x02")
+        # Lie consistently in both headers: standard ZipFile.read accepts the
+        # expected prefix/CRC while ignoring the extra actual deflate output.
+        for offset in (22, central + 24):
+            struct.pack_into("<L", raw, offset, len(prefix))
+        for offset in (14, central + 16):
+            struct.pack_into("<L", raw, offset, zlib.crc32(prefix))
+        with ZipFile(BytesIO(raw)) as archive:
+            self.assertEqual(archive.read("index.html"), prefix)
+        self.assertFalse(verify_artifact(bytes(raw)))
+        self.assertFalse(verify_artifact(bytes(raw), expected))
+        with connect(self.db) as db:
+            db.execute("UPDATE factory_jobs SET artifact=? WHERE id=?", (bytes(raw), job["id"]))
+        self.assertEqual(execute({"action": "artifact", "id": job["id"]}, self.db)["reason"],
+                         "artifact-integrity-failed")
+        persisted = execute({"action": "list"}, self.db)["jobs"][0]
+        self.assertEqual(persisted["status"], "built")
+        self.assertTrue(persisted["qa"]["passed"])
+        self.assertEqual(persisted["execution"]["status"], "not_run")
+
+    def test_archive_envelope_must_be_plain_and_match_its_members(self):
+        _, entries = self.built_zip()
+        raw = self.repack(entries)
+        variants = [b"INERT-PREFIX" + raw, raw + b"INERT-TRAILER"]
+        wrong_count = bytearray(raw)
+        struct.pack_into("<HH", wrong_count, len(wrong_count) - 14, 1, 1)
+        variants.append(bytes(wrong_count))
+        for malformed in variants:
+            with self.subTest(length=len(malformed)):
+                self.assertFalse(verify_artifact(malformed, dict(entries)))
+        # Both codecs used by legitimate small artifacts remain supported.
+        self.assertTrue(verify_artifact(self.repack(entries, compression=0), dict(entries)))
+        self.assertTrue(verify_artifact(raw, dict(entries)))
 
     def test_manifest_duplicate_keys_and_invalid_schema_are_rejected(self):
         _, entries = self.built_zip()
