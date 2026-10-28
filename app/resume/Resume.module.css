@@ -24,7 +24,7 @@
 .stat strong{font-size:36px;line-height:1;color:var(--red)}
 .stat strong small{font-size:16px}
 .stat span{font-size:11px;color:#d5c5ca}
-.cta{background:var(--red);color:#fff!important;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:13px;padding:14px 16px;text-align:center;font-size:12px;font-weight:800}
+.cta{background:var(--red);color:#120a0d!important;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:13px;padding:14px 16px;text-align:center;font-size:12px;font-weight:800}
 .email,.location{font-size:11px;color:#d9c8cf;margin:0}
 .email{overflow-wrap:anywhere}.email a{color:#ffb5c0;text-decoration:none}
 .location{margin:0 0 15px}
