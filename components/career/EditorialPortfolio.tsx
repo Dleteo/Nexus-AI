@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {useState} from "react";
+import {useRef,useState} from "react";
 import {certifications, totalTrainingHours} from "../../data/certifications";
 import {professionalProfile} from "../../data/profile";
 import {siteLanguages, cvPath, portfolioPath, type SiteLanguage} from "../../data/site-languages";
@@ -52,6 +52,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
   const cardHref=(card:(typeof cards)[number])=> "lab" in card ? labHref(card.lab) : card.href+"?lang="+language;
   const studyHref=(card:(typeof cards)[number])=>"/projects/"+("lab" in card ? (card.lab==="factory"?"nexus-software-factory":"nexus-"+card.lab) : "nexus-ai")+"?lang="+language;
   const [menu,setMenu]=useState(false);
+  const mobileMenuButton=useRef<HTMLButtonElement|null>(null);
   const nav=[
     {label:t("INICIO","HOME","START","ACCUEIL","INÍCIO"),href:"#inicio"},
     {label:t("PROYECTOS","PROJECTS","PROJEKTE","PROJETS","PROJETOS"),href:"#proyectos"},
@@ -69,18 +70,18 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
   const skills=["HTML / CSS","JavaScript","TypeScript","React","Next.js","Python","Supabase","Git / GitHub","Automated tests","Responsive UI","PostgreSQL / RLS","Accessibility"];
   const langs=siteLanguages.map(l=>({code:l.code,name:l.nativeName}));
   return <div className={s.page} id="inicio" lang={language}>
-    <a className={s.skip} href="#proyectos">{t("Ir al contenido","Skip to content","Zum Inhalt","Aller au contenu","Ir ao conteúdo")}</a>
+    <a className={s.skip} href="#main-content">{t("Ir al contenido","Skip to content","Zum Inhalt","Aller au contenu","Ir ao conteúdo")}</a>
     <header className={s.header}>
       <Link className={s.brand} href={portfolioPath(language)} aria-label="Nexus Portfolio"><span className={s.logo}>N</span><span>NEXUS<small>DEVELOPER PORTFOLIO</small></span></Link>
       <nav className={s.desktopNav} aria-label={t("Navegación principal","Primary navigation","Hauptnavigation","Navigation principale","Navegação principal")}>{nav.map(n=><a key={n.href} href={n.href}>{n.label}</a>)}</nav>
       <div className={s.headerRight}>
         <details className={s.languages}><summary aria-label={t("Seleccionar idioma","Select language","Sprache wählen","Choisir la langue","Selecionar idioma")}>{language.toUpperCase()} <span aria-hidden="true">⌄</span></summary><div className={s.languageOptions}>{langs.map(l=><Link href={portfolioPath(l.code)} key={l.code} hrefLang={l.code} aria-current={l.code===language?"page":undefined}>{l.name}</Link>)}</div></details>
         <Link href={cvPath(language)} className={s.cv}>{t("Ver CV","View CV","Lebenslauf","Voir CV","Ver CV")} <span aria-hidden="true">↗</span></Link>
-        <button className={s.menuToggle} type="button" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-label={t("Menú","Menu","Menü","Menu","Menu")}>{menu?"✕":"☰"}</button>
+        <button ref={mobileMenuButton} className={s.menuToggle} type="button" aria-controls="mobile-portfolio-nav" onClick={()=>setMenu(previous=>!previous)} aria-expanded={menu} aria-label={t("Menú","Menu","Menü","Menu","Menu")}>{menu?"✕":"☰"}</button>
       </div>
     </header>
-    {menu&&<nav className={s.mobileNav} aria-label="Mobile portfolio navigation">{nav.map(n=><a href={n.href} onClick={()=>setMenu(false)} key={n.href}>{n.label}</a>)}</nav>}
-    <main>
+    {menu&&<nav id="mobile-portfolio-nav" className={s.mobileNav} aria-label="Mobile portfolio navigation" onKeyDown={event=>{if(event.key==="Escape"){setMenu(false);mobileMenuButton.current?.focus();}}}>{nav.map(n=><a href={n.href} onClick={()=>setMenu(false)} key={n.href}>{n.label}</a>)}</nav>}
+    <main id="main-content" tabIndex={-1}>
       <section className={s.hero} aria-labelledby="hero-title">
         <div className={s.heroBackdrop} aria-hidden="true">PORTFOLIO</div>
         <div className={s.heroPortrait} role="img" aria-label={t("Fotografía del desarrollador","Developer portrait","Porträt des Entwicklers","Portrait du développeur","Retrato do desenvolvedor")}/>
