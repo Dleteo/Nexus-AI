@@ -80,26 +80,18 @@ jobs:
       - name: Test local SQLite backend and concurrent checkout
         run: python -m unittest discover -s labs/commerce -p "test_*.py" -v
 
-      - name: Integration-test optional localhost SQLite commerce API
-        run: |
-          set -e
-          demo_dir=$(mktemp -d)
-          NEXUS_LABS_SQLITE=1 NEXUS_COMMERCE_DB="$demo_dir/commerce.sqlite3" npm run dev -- --hostname 127.0.0.1 --port 3108 > /tmp/nexus-commerce-dev.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf "$demo_dir"' EXIT
-          node scripts/commerce_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-commerce-dev.log; exit 1; }
-
       - name: Test Studio SQLite revisions and concurrent editing
         run: python -m unittest discover -s labs/studio -p "test_*.py" -v
 
-      - name: Integration-test Studio revision API on localhost
+      - name: Integration-test both local SQLite APIs with one Next.js server
         run: |
           set -e
           demo_dir=$(mktemp -d)
-          NEXUS_LABS_STUDIO_SQLITE=1 NEXUS_STUDIO_DB="$demo_dir/studio.sqlite3" npm run dev -- --hostname 127.0.0.1 --port 3109 > /tmp/nexus-studio-dev.log 2>&1 &
+          NEXUS_LABS_SQLITE=1 NEXUS_LABS_STUDIO_SQLITE=1 NEXUS_COMMERCE_DB="$demo_dir/commerce.sqlite3" NEXUS_STUDIO_DB="$demo_dir/studio.sqlite3" npm run dev -- --hostname 127.0.0.1 --port 3108 > /tmp/nexus-labs-dev.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true; rm -rf "$demo_dir"' EXIT
-          node scripts/studio_http_qa.mjs http://127.0.0.1:3109 || { cat /tmp/nexus-studio-dev.log; exit 1; }
+          node scripts/commerce_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+          node scripts/studio_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
 
       - name: Build production app
         run: npm run build
