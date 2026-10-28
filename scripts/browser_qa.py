@@ -522,6 +522,31 @@ def audit_case_study_visual_consistency(browser):
                 page.screenshot(path=str(ARTIFACTS / f"case-{slug}-{width}.png"), full_page=True)
         context.close()
 
+def audit_standalone_labs(browser):
+    """Every engineering project has its own destination and live controls."""
+    for width in (375, 1440):
+        context = browser.new_context(viewport={"width":width,"height":900})
+        page = context.new_page()
+        for lab, headline, action in [
+            ("commerce","Nexus Commerce","Add to cart"),
+            ("studio","Nexus Studio","Export HTML"),
+            ("monitor","Nexus Monitor","Run health check"),
+            ("factory","Nexus Software Factory","Create reviewable plan"),
+        ]:
+            page.goto(BASE+"/labs/"+lab,wait_until="networkidle")
+            expect(page.locator('main[data-standalone="true"][data-lab="'+lab+'"]').count()==1,
+                   "Independent project page missing for "+lab)
+            expect(page.get_by_role("heading",name=headline,level=1).is_visible(),
+                   "Project header missing for "+lab)
+            expect(page.get_by_role("button",name=action).count()>0,
+                   "Real product operation missing for "+lab)
+            expect(page.locator(".lab-visual").count()==1,
+                   "Project-specific functional visual composition missing for "+lab)
+            expect(not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),
+                   "Horizontal overflow for "+lab)
+            page.screenshot(path=str(ARTIFACTS/f"standalone-{lab}-{width}.png"),full_page=True)
+        context.close()
+
 def main():
     binary = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
     expect(binary is not None, "Chrome/Chromium not installed on runner")
@@ -536,6 +561,7 @@ def main():
             audit_labs_keyboard_and_localization(browser)
             audit_contact_guide_multilingual(browser)
             audit_case_study_visual_consistency(browser)
+            audit_standalone_labs(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
