@@ -21,3 +21,22 @@
 .nexus-lab-shell[data-lab="factory"] .nexus-lab-intro{border-left:4px solid var(--lab-accent)!important}
 @media(max-width:700px){.nexus-lab-shell{padding-inline:14px}.nexus-lab-shell [data-lab-navigation]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nexus-lab-shell [data-lab-navigation] button{padding:12px}.nexus-lab-intro{padding:16px!important}}
 @media(prefers-reduced-motion:reduce){.nexus-lab-shell,.nexus-lab-shell [data-lab-navigation] button{transition:none}}
+
+/* Product-specific compositions use real controls beneath these banners. */
+.lab-product-banner{position:relative;isolation:isolate;overflow:hidden;min-height:190px;padding:clamp(20px,3vw,32px);border-radius:20px;border:1px solid var(--lab-border);background:linear-gradient(120deg,var(--lab-accent-soft),var(--lab-surface));display:flex;flex-direction:column;justify-content:center;gap:8px}
+.lab-product-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,color-mix(in srgb,var(--lab-accent),transparent 87%));pointer-events:none}
+.lab-product-banner-kicker{color:var(--lab-accent);font-size:11px;letter-spacing:.23em;font-weight:800}
+.lab-product-banner strong{position:relative;z-index:1;color:white;font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(31px,4vw,50px);letter-spacing:.01em}
+.lab-product-banner p{position:relative;z-index:1;max-width:48ch;font-size:13px;line-height:1.7;color:var(--lab-ink)}
+.lab-product-banner-art{position:absolute;right:4%;top:50%;transform:translateY(-50%);font-size:clamp(75px,14vw,160px);line-height:1;color:var(--lab-accent);opacity:.20;pointer-events:none}
+.commerce-storefront article{border-color:#235b4e;background:linear-gradient(160deg,#15352e,#14231f)}
+.commerce-storefront article h3{color:#effff8}
+.commerce-storefront article button:not(:disabled){border-color:#337b67}
+.studio-designer aside{border-color:#5e4779;background:#20192b}
+.studio-designer aside button[aria-pressed="true"]{border-color:#c5a6ff}
+.studio-designer textarea,.studio-designer input{accent-color:#c5a6ff}
+.monitor-console section{border-color:#32647e;background:linear-gradient(145deg,#162c3a,#141f2b)}
+.monitor-console [role="img"]{border-bottom:1px solid #32647e}
+.factory-pipeline section{border-color:#775035;background:linear-gradient(145deg,#30241b,#211b18)}
+.factory-pipeline [role="status"]{border-color:#926039}
+@media(max-width:600px){.lab-product-banner{min-height:160px}.lab-product-banner-art{opacity:.11}.lab-product-banner p{max-width:38ch}}
