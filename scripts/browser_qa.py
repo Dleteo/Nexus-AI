@@ -126,6 +126,48 @@ def audit_featured_case_studies(browser):
     context.close()
     print("PASS five documented projects and four lab evidence links", flush=True)
 
+def audit_labs_keyboard_and_localization(browser):
+    """Four accessible lab selections and five-language guided walkthroughs."""
+    context=browser.new_context(viewport={"width":1280,"height":900})
+    page=context.new_page()
+    pages=[
+        ("es", "/labs", "Recorrido de la demostración"),
+        ("en", "/en/labs", "Demo walkthrough"),
+        ("de", "/de/labs", "Demo-Ablauf"),
+        ("fr", "/fr/labs", "Parcours de démonstration"),
+        ("pt", "/pt/labs", "Roteiro de demonstração"),
+    ]
+    for language, path, title in pages:
+        page.goto(BASE+path+"?lab=commerce",wait_until="networkidle")
+        guide=page.get_by_role("region",name=title)
+        expect(guide.is_visible(),f"Missing translated lab guidance: {language}")
+        expect(guide.locator("ol > li").count()==3,f"Wrong number of walkthrough steps: {language}")
+        expect(page.get_by_role("button",name="Nexus Commerce").get_attribute("aria-pressed")=="true",
+               f"Active lab must be announced: {language}")
+        expect(page.get_by_role("region",name="Active engineering lab").count()==1,
+               f"Active lab panel missing: {language}")
+    page.goto(BASE+"/labs?lab=commerce",wait_until="networkidle")
+    commerce=page.get_by_role("button",name="Nexus Commerce")
+    commerce.focus()
+    page.keyboard.press("ArrowRight")
+    studio=page.get_by_role("button",name="Nexus Studio")
+    expect(studio.get_attribute("aria-pressed")=="true","ArrowRight should select Studio")
+    expect(studio.evaluate("(el) => document.activeElement === el"),
+           "Arrow navigation should move keyboard focus")
+    expect("lab=studio" in page.url,"Keyboard lab navigation must update shareable URL")
+    page.keyboard.press("End")
+    expect(page.get_by_role("button",name="Nexus Software Factory").get_attribute("aria-pressed")=="true",
+           "End should select last lab")
+    page.keyboard.press("Home")
+    expect(commerce.get_attribute("aria-pressed")=="true","Home should select first lab")
+    for lab in ["commerce","studio","monitor","factory"]:
+        page.get_by_role("button",name={"commerce":"Nexus Commerce","studio":"Nexus Studio",
+            "monitor":"Nexus Monitor","factory":"Nexus Software Factory"}[lab]).click()
+        expect(page.get_by_role("region",name="Recorrido de la demostración").locator("ol > li").count()==3,
+               f"Demo guide must follow selected module: {lab}")
+    context.close()
+    print("PASS keyboard-friendly lab nav, guided demos in all five languages",flush=True)
+
 def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
@@ -162,11 +204,22 @@ def audit(browser, width, label):
     contact.get_by_role("textbox", name="Mensaje").fill("Me interesa tu portfolio")
     href = contact.get_by_role("link", name="Abrir mi aplicación de correo").get_attribute("href") or ""
     expect(href.startswith("mailto:") and "qa%40example.org" in href, "Mail must be prepared locally")
+    skip_link = page.get_by_role("link", name="Ir al contenido")
+    expect(skip_link.get_attribute("href") == "#main-content", "Skip link must target the main content")
+    expect(page.locator("main#main-content").count() == 1, "Main content landmark missing")
     if width <= 760:
         menu = page.get_by_role("button", name="Menú")
         expect(menu.is_visible(), "Mobile menu must be visible")
         menu.click()
         expect(page.get_by_role("navigation", name="Mobile portfolio navigation").is_visible(), "Mobile menu failed")
+        expect(menu.get_attribute("aria-expanded") == "true", "Menu expanded state must be announced")
+        expect(menu.get_attribute("aria-controls") == "mobile-portfolio-nav", "Menu button must identify its panel")
+        page.get_by_role("navigation", name="Mobile portfolio navigation").get_by_role("link", name="HABILIDADES").focus()
+        page.keyboard.press("Escape")
+        expect(page.get_by_role("navigation", name="Mobile portfolio navigation").count() == 0, "Escape should close mobile menu")
+        expect(menu.get_attribute("aria-expanded") == "false", "Escape must update expanded state")
+        expect(menu.evaluate("(element) => document.activeElement === element"), "Escape should restore menu focus")
+        menu.click()
         page.get_by_role("navigation", name="Mobile portfolio navigation").get_by_role("link", name="PROYECTOS").click()
     else:
         expect(page.get_by_role("navigation", name="Navegación principal").is_visible(), "Desktop nav missing")
@@ -231,6 +284,13 @@ def audit(browser, width, label):
            "The verified email must be visible and clickable")
     expect(page.locator('[class*="topCards"]').count() == 1,
            "Editorial resume must use the same card layout")
+    if width <= 650:
+        font_size = page.locator('[class*="summary"]').first.evaluate(
+            "(el) => parseFloat(getComputedStyle(el).fontSize)")
+        expect(font_size >= 12, f"Resume summary must remain readable on mobile: {font_size}px")
+        summary_height = controls.get_by_label("Cambiar idioma").evaluate(
+            "(el) => el.getBoundingClientRect().height")
+        expect(summary_height >= 44, "CV language selector target must be at least 44px high")
     for lang, heading in [("en", "CAREER GOAL"), ("de", "BERUFSZIEL"), ("fr", "OBJECTIF PROFESSIONNEL"), ("pt", "OBJETIVO PROFISSIONAL")]:
         page.goto(BASE + "/resume?lang=" + lang, wait_until="networkidle")
         expect(page.get_by_role("heading", name=heading).count() == 1,
@@ -377,6 +437,7 @@ def main():
             audit(browser, 1440, "desktop")
             audit_factory_execution_disclosure(browser)
             audit_featured_case_studies(browser)
+            audit_labs_keyboard_and_localization(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
