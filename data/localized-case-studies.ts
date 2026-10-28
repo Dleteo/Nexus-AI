@@ -1,3 +1,4 @@
+import {engineeringCaseTranslations} from "./engineering-case-translations";
 import type {SiteLanguage} from "./site-languages";
 import type {CaseStudy} from "./case-studies";
 type Fields=Pick<CaseStudy,"lead"|"role"|"status"|"problem"|"approach"|"lessons"|"limitations"|"next">;
@@ -29,7 +30,8 @@ pt:{
 }};
 export function translatedCaseStudy(base:CaseStudy,locale:SiteLanguage):CaseStudy{
  if(locale==="es")return base;
- return {...base,...localized[locale][base.slug]};
+ const translated = localized[locale][base.slug] ?? engineeringCaseTranslations[locale][base.slug as keyof typeof engineeringCaseTranslations[typeof locale]];
+ return translated ? {...base,...translated} : base;
 }
 export const caseLabels:Record<SiteLanguage,{back:string;project:string;role:string;status:string;problem:string;approach:string;evidence:string;lessons:string;limits:string;next:string;code:string;demo:string;assistant:string;original:string}>={
 es:{back:"Portafolio",project:"Proyectos",role:"Participación",status:"Estado real",problem:"El problema",approach:"Decisiones e implementación",evidence:"Evidencia en el código",lessons:"Lo que aprendí",limits:"Límites y trabajo pendiente",next:"Próximo paso",code:"Código en GitHub",demo:"Ver demo",assistant:"Abrir asistente",original:"Ver fuente"},
