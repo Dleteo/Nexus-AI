@@ -69,7 +69,8 @@ def _path_key(path: str) -> str:
         raise SnapshotValidationError("invalid-path")
     for part in parts:
         key = part.casefold()
-        if key.split(".")[0] in _RESERVED:
+        # Win32 also recognizes devices with spaces before the extension.
+        if key.split(".")[0].rstrip(" ") in _RESERVED:
             raise SnapshotValidationError("reserved-path")
         if key in _PRIVATE_NAMES or key == ".env" or key.startswith(".env.") or key.endswith(
             (".pem", ".key", ".p12", ".pfx", ".jks", ".keystore")

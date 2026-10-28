@@ -69,6 +69,20 @@ class SnapshotTests(unittest.TestCase):
             self.reject_path(path)
         self.assertEqual(validate_snapshot([SnapshotFile("café.txt", b"")]).total_bytes, 0)
 
+    def test_windows_device_aliases_with_spaces_are_rejected_in_files_and_parents(self):
+        for device in ("CON", "nul", "Aux", "PRN", "COM1", "com9", "LPT1", "lpt9"):
+            for path in (device + " .txt", "src/" + device + "   .log",
+                         "src/" + device + " .dir/child.txt"):
+                with self.subTest(path=path):
+                    with self.assertRaisesRegex(SnapshotValidationError, "^reserved-path$"):
+                        validate_snapshot([SnapshotFile(path, b"inert")])
+                    for compression in (ZIP_STORED, ZIP_DEFLATED):
+                        with self.assertRaisesRegex(SnapshotValidationError, "^reserved-path$"):
+                            snapshot_from_zip(make_zip([(path, b"inert")], compression))
+        # Ordinary spaces remain exact input data, without silent renaming.
+        safe = SnapshotFile("docs/con artist.txt", b"inert")
+        self.assertEqual(validate_snapshot([safe]).files, (safe,))
+
     def test_known_private_paths_are_rejected_but_content_is_not_secret_scanned(self):
         for path in (".git/config", "x/.git", ".env", "x/.env.production", ".ssh/id_ed25519",
                      "nested/credentials.json", "SERVICE-ACCOUNT.JSON", "x/.npmrc", "certificate.pem",
