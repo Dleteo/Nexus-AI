@@ -57,6 +57,48 @@ def audit_factory_execution_disclosure(browser):
     finally:
         context.close()
 
+def audit_featured_case_studies(browser):
+    """Each of the five featured projects must have a reachable case study in five languages."""
+    context = browser.new_context(viewport={"width": 1280, "height": 900})
+    page = context.new_page()
+    projects = [
+        ("nexus-ai", "Nexus AI"),
+        ("nexus-commerce", "Nexus Commerce"),
+        ("nexus-studio", "Nexus Studio"),
+        ("nexus-monitor", "Nexus Monitor"),
+        ("nexus-software-factory", "Nexus Software Factory"),
+    ]
+    labels = {"es": "Ver caso de estudio", "en": "Read case study",
+              "de": "Fallstudie lesen", "fr": "Voir l’étude de cas",
+              "pt": "Ver estudo de caso"}
+    for language, button_label in labels.items():
+        home = "/" if language == "es" else "/" + language
+        page.goto(BASE + home, wait_until="networkidle")
+        study_links = page.get_by_role("link", name=button_label, exact=False)
+        expect(study_links.count() == 5, f"Expected five case-study links for {language}")
+        for slug, title in projects:
+            url = f"/projects/{slug}?lang={language}"
+            expect(page.locator('a[href="' + url + '"]').count() >= 1,
+                   f"Missing featured case study link: {language} {slug}")
+            page.goto(BASE + url, wait_until="domcontentloaded")
+            page.get_by_role("heading", name=title, exact=True).wait_for(state="visible", timeout=15000)
+            expect(page.get_by_role("link", name="GitHub source" if language=="en" else
+                                    "Código en GitHub" if language=="es" else
+                                    "GitHub-Code" if language=="de" else
+                                    "Code GitHub" if language=="fr" else "Código no GitHub").count()==1,
+                   f"Missing code provenance: {language} {slug}")
+            expect(page.locator("section").count() >= 4, f"Case study incomplete: {slug}")
+            page.goto(BASE + home, wait_until="domcontentloaded")
+        print(f"PASS five case studies in {language}", flush=True)
+    for lab, slug in [("commerce","nexus-commerce"),("studio","nexus-studio"),
+                      ("monitor","nexus-monitor"),("factory","nexus-software-factory")]:
+        page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
+        page.get_by_role("link", name="Leer arquitectura y pruebas").wait_for(state="visible", timeout=10000)
+        expect(page.locator('a[href="/projects/' + slug + '?lang=es"]').count() == 1,
+               f"Lab must link to matching case study: {lab}")
+    context.close()
+    print("PASS five documented projects and four lab evidence links", flush=True)
+
 def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
@@ -250,6 +292,7 @@ def main():
             audit(browser, 768, "tablet")
             audit(browser, 1440, "desktop")
             audit_factory_execution_disclosure(browser)
+            audit_featured_case_studies(browser)
         finally:
             browser.close()
     print("All browser QA checks passed.", flush=True)
