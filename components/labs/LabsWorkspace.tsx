@@ -109,7 +109,7 @@ export default function LabsWorkspace({language="es"}:{language?:SiteLanguage}) 
     finally{setSqliteBusy(false);}
   }
   function applyStudioResponse(data:StudioResponse,loadBlocks:boolean){
-    if(!data.ok||!Number.isSafeInteger(data.revision)||!Array.isArray(data.blocks)||!Array.isArray(data.revisions)){
+    if(!data.ok||typeof data.revision!=="number"||!Number.isSafeInteger(data.revision)||!Array.isArray(data.blocks)||!Array.isArray(data.revisions)){
       throw new Error("invalid-studio-response");
     }
     setStudioRevision(data.revision as number);
