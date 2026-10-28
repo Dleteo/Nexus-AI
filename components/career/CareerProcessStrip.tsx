@@ -1,4 +1,4 @@
-import {certifications, totalTrainingHours} from "../../data/certifications";
+import {certifications} from "../../data/certifications";
 import type {SiteLanguage} from "../../data/site-languages";
 import styles from "./CareerHome.module.css";
 
