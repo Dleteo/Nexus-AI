@@ -18,6 +18,8 @@ Plan: [issue #47](https://github.com/Dleteo/Nexus-AI/issues/47). Trabajo sobre l
 
 Las cuatro rutas conservan HTTP 503 en producción, incluso con las banderas locales activas. Las respuestas no exponen stderr, rutas de disco ni credenciales. Los errores de validación no modifican los registros. No se extrae ningún ZIP ni se ejecutan sus archivos.
 
+**Revisión posterior del ZIP:** se reprodujo un BLOB que declaraba 445 bytes pero descomprimía 845. `ZipFile.read` devolvía sólo el prefijo declarado, de modo que CRC/manifiesto y comparación contra el contenido esperado podían pasar ignorando los bytes ocultos. La descarga ahora reutiliza `snapshot_from_zip`, con descompresión real acotada, EOF, ausencia de datos sobrantes y CRC. Se mantienen los límites Factory de 120 KB/12 KB y la allowlist ordenada; se rechazan comentarios/extras/ZIP64 y prefijos/trailers sin modificar el generador ni borrar historial. Otra regresión bloquea aliases reservados de Windows con espacios antes de la extensión, tanto en snapshots directos como ZIP. Esto refuerza la validación de datos; P1 continúa sin runtime verificado.
+
 ## Uso local y compatibilidad
 
 `npm run dev` ahora escucha por defecto en `127.0.0.1`. No sobrescribirlo con `0.0.0.0`, publicar puertos, crear túneles ni poner este servidor detrás de un proxy. **Host/Origin no autentican al peer de red.** Un cliente local puede construir esos headers; otro proceso del mismo usuario está fuera de esta frontera de confianza. No hay cuentas ni autorización multiusuario en estos backends.

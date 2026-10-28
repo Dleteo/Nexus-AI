@@ -53,10 +53,20 @@ Los nombres se rechazan si no son canónicos; no se renombran silenciosamente.
 Límites aplicados a **datos de entrada**: 100 archivos, 1 MiB por archivo y
 8 MiB total; ZIP hasta 9 MiB, ratio máximo 200 y directorio central acotado
 antes de cargarlo. Sólo ZIP clásico de un disco, stored/deflate, sin comentarios,
-extras, descriptores ni ZIP64. Son restricciones deliberadas del nuevo importador
-de snapshots; no sustituyen ni migran el verificador de artefactos de Factory.
+extras, descriptores ni ZIP64. Son restricciones deliberadas del lector en memoria.
+El verificador de artefactos de Factory también lo reutiliza, conservando su
+allowlist ordenada de cinco archivos y presupuestos menores de 120 KB/12 KB;
+no hay migración ni cambio del generador.
 La validación verifica también coherencia de headers/tamaños/CRC y número de
 miembros. Los límites de datos no prueban cuotas del futuro contenedor.
+
+La descarga comprueba la salida real de deflate, fin de stream y ausencia de
+datos sobrantes; no se limita a `ZipFile.read`, que puede truncar al tamaño
+declarado y ocultar bytes adicionales. Hay regresión con manifiesto/CRC del
+prefijo intactos y descarga rechazada sin borrar el job. Los nombres de
+dispositivo Windows con espacios antes de extensión (`CON .txt`, `NUL .x`,
+etc.) también se rechazan, sin renombrar inputs. Estos tests procesan datos
+inertes; no acreditan un runtime Windows ni Linux.
 
 El resultado es una tupla de `SnapshotFile(path, content)` inmutables con SHA-256
 determinista. El framing v1 es dominio `nexus-factory-snapshot:v1` seguido de NUL

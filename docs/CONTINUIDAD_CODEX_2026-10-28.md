@@ -13,7 +13,17 @@ Documento vivo de esta sesión, solicitado por el propietario para poder continu
 | P2 y P3 | No iniciadas | Sólo después de P1: diff exacto/segunda aprobación y proveedor local opcional; nunca automatizar GitHub ni habilitar modelos por defecto |
 | Cuatro Labs | Se conservan Commerce, Studio, Monitor y Factory, con demos y backends locales opcionales | Profesionalización P4 pendiente; sin pagos, multiusuario público ni servicios nuevos |
 
-Continuación actual: revisar el verificador de ZIP que descarga Factory para reutilizar la descompresión estricta ya implementada en snapshots. Se ha reproducido un caso de datos comprimidos ocultos tras el tamaño declarado; **corrección y evidencia final todavía en curso**. No ejecutar el contenido para probarlo.
+Continuación actual terminada en código: el verificador de descarga reutiliza el lector estricto de snapshots. Rechaza un ZIP que declaraba 445 bytes pero descomprimía 845, incluso cuando el CRC/manifiesto y la comparación con archivos originales parecían correctos. También bloquea nombres reservados de Windows con espacios antes de la extensión, como `CON .txt`, tanto en archivos como directorios y ZIP. No se ejecutó ni extrajo contenido.
+
+| Commit más reciente | Qué hizo y por qué |
+|---|---|
+| `df383fd` | Poner este resumen «hecho / falta» al principio y actualizar los enlaces/instrucciones de continuidad |
+| `a9e694e` | Cerrar el bypass de ZIP con datos ocultos reutilizando el decoder acotado existente, sin duplicar el código |
+| `0a36d62` | Rechazar aliases de dispositivos Windows que el control anterior no reconocía |
+
+Pruebas de esta continuación: **30 tests Factory** (16 backend + 14 snapshot), runner confiable, lint y TypeScript verdes; recorrido HTTP real propuesta → preview → aprobación → ZIP y suite adversaria de las cuatro APIs verdes. Lint conserva la advertencia preexistente. Se conserva historial, manifest, límites Factory 120 KB/12 KB y estado `not_run`; los ZIP legítimos stored/deflate siguen funcionando. Comentarios, extras, ZIP64, prefijos/trailers y tamaños inconsistentes se rechazan, sin migrar ni borrar artefactos. CI del commit final de documentación: comprobar Actions y el SHA registrado en la descripción del PR/respuesta final, sin reutilizar #466.
+
+**Próximo paso real para P1:** disponer de un entorno Linux de ensayo dedicado que permita verificar rootless, cgroups delegados y la suite de aislamiento descrita. Este entorno sigue sin acreditarlo. No sustituir esa evidencia por más mocks, permisos de Docker rootful, ejecución en el host ni una bandera. No instalar/configurar infraestructura o proveedores sin autorización; P2/P3 permanecen bloqueadas. La validación de nombres Windows no demuestra aislamiento ni cancelación en Windows.
 
 No interpretar los tests de parsing o la QA estática como tests de código generado. Ejecución sigue desactivada, sin merge/despliegue, coste obligatorio $0 y código bajo control del propietario. El detalle histórico y los comandos están más abajo.
 

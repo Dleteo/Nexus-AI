@@ -31,6 +31,8 @@ Host validation does not establish that the network peer is local. Bind Next.js 
 
 ZIP download requires the exact ordered filename allowlist, regular files, supported stored/deflate compression, bounded compressed and uncompressed sizes, valid CRCs and an unambiguous SHA-256 manifest. Symlinks, special files, duplicate members and traversal paths are rejected. The backend also reproduces the fixed template from the stored job and compares every file before download, so rewriting a file **and** its manifest does not pass this check. This comparison is not a signature and cannot protect against an attacker who controls the process or the job database itself.
 
+The downloader reuses the bounded in-memory snapshot decoder to verify actual deflate output, end-of-stream and absence of hidden/trailing compressed data, rather than trusting a ZIP's declared file size. Only plain single-disk ZIPs are supported: no comments, extra fields, ZIP64, prefixes or trailers. Factory's smaller 120 KB archive / 12 KB per-file limits and fixed filename order still apply. Existing jobs and their history are preserved; unsupported or modified archives fail validation rather than being rewritten.
+
 **Legacy ZIP policy:** old artifacts without `manifest.json` are deliberately rejected with `artifact-integrity-failed` (HTTP 422). No silent upgrade, extraction or execution occurs; the existing job and its audit history remain intact. Create a new proposal, review it and approve a fresh build to obtain a current ZIP. Template changes may likewise require a freshly reviewed build instead of accepting an obsolete artifact.
 
 ## Tests
