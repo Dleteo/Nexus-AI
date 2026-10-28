@@ -24,5 +24,10 @@ assert.match(injection,/# Interview preparation —/);
 assert.match(injection,/&lt;script&gt;/);
 assert.match(injection,/&lt;img/);
 assert.doesNotMatch(injection,/\n## fake success/);
+for (const [language, expected] of [["es","## Problema"],["en","## Problem"],["de","## Technische Entscheidungen"],["fr","## Décisions techniques"],["pt","## Decisões técnicas"]]) {
+  const localized=buildInterviewPrepMarkdown(example,labels,[false,false,false,false],language);
+  assert.ok(localized.includes(expected),language);
+}
+assert.throws(()=>buildInterviewPrepMarkdown(example,labels,[false,false,false,false],"invalid"),/invalid-interview-language/);
 assert.throws(()=>buildInterviewPrepMarkdown(example,labels,[true,true]),/invalid-interview-data/);
 console.log("PASS interview prep export: accurate, escaped, manually reviewed, not fake test evidence");
