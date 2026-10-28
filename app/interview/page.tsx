@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { professionalProfile } from "../../data/profile";
 import { caseStudies } from "../../data/case-studies";
+import ProjectArchitectureCompare from "../../components/career/ProjectArchitectureCompare";
 
 export const metadata: Metadata = {
  title: "Preparación de entrevista junior | Nexus AI",
@@ -40,6 +41,7 @@ export default function InterviewPage() {
    </section>
    <section className="mt-14"><h2 className="text-2xl font-semibold">Preguntas para practicar</h2><div className="mt-5 space-y-3">{questions.map((item,index)=><details key={item.question} className="group rounded-xl border border-slate-700 bg-[#201821] p-5"><summary className="cursor-pointer list-item pl-1 text-base font-semibold text-slate-100"><span className="mr-3 text-[#f4a3b6]">{String(index+1).padStart(2,"0")}.</span>{item.question}</summary><p className="mt-4 text-sm leading-7 text-slate-300">{item.answer}</p></details>)}</div></section>
    <section className="mt-14"><h2 className="text-2xl font-semibold">Cinco proyectos para explicar ante entrevistadores</h2><p className="mt-3 text-sm leading-7 text-slate-300">Abre cada caso de estudio y prepara una demostración de su flujo, una decisión de arquitectura, una prueba concreta y una limitación real.</p><div className="mt-5 grid gap-4 sm:grid-cols-2">{caseStudies.filter(x=>["nexus-ai","nexus-commerce","nexus-studio","nexus-monitor","nexus-software-factory"].includes(x.slug)).map((study,index)=><article key={study.slug} className="rounded-xl border border-[#773849] bg-[#211821] p-5"><p className="text-xs font-bold tracking-widest text-[#efa4b6]">0{index+1} / CASO TÉCNICO</p><h3 className="mt-2 text-lg font-semibold">{study.title}</h3><p className="mt-2 text-sm leading-6 text-slate-300">{study.lead}</p><p className="mt-3 text-xs leading-5 text-slate-400"><strong className="text-[#efa4b6]">Límite:</strong> {study.limitations[0]}</p><div className="mt-5 flex flex-wrap gap-3"><Link className="rounded-lg bg-[#ed8797] px-3 py-2 text-xs font-bold text-[#150e13]" href={"/projects/"+study.slug}>Ver caso de estudio</Link>{study.demo&&<Link className="rounded-lg border border-[#bc677c] px-3 py-2 text-xs font-semibold text-[#f8b9c9]" href={study.demo}>Abrir demo</Link>}</div></article>)}</div><p className="mt-5 text-sm text-slate-400">Los ejercicios previos (Task Tracker y Hangman) también están documentados, pero estos cinco concentran la demostración principal.</p></section>
+   <ProjectArchitectureCompare studies={caseStudies.filter(x=>["nexus-ai","nexus-commerce","nexus-studio","nexus-monitor","nexus-software-factory"].includes(x.slug))}/>
    <section className="mt-14 rounded-xl border border-slate-700 p-6"><h2 className="text-xl font-semibold">Antes de una entrevista</h2><p className="mt-3 text-sm leading-7 text-slate-300">Comprueba que tus enlaces abren, que puedes explicar cada tecnología listada y que no muestras datos privados. Si una demo requiere autenticación o no está disponible, usa el código, las pruebas y capturas auténticas. No memorices una historia que no puedas defender.</p></section>
   </div>
  </main>;
