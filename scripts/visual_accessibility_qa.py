@@ -74,11 +74,14 @@ def audit(browser):
         skip = page.get_by_role("link",name="Ir al contenido")
         check(skip.evaluate("(el)=>document.activeElement===el"),
               "First keyboard tab should reach Skip to content")
-        check(skip.evaluate("""(el)=>{
+        skip_style=skip.evaluate("""(el)=>{
           const s=getComputedStyle(el);
-          return s.outlineStyle!=="none" && parseFloat(s.outlineWidth)>=2 &&
-                 el.getBoundingClientRect().top>=0;
-        }"""), "Skip link must have visible outline inside the viewport")
+          return {position:s.position,outlineStyle:s.outlineStyle,
+            outlineWidth:parseFloat(s.outlineWidth),top:el.getBoundingClientRect().top};
+        }""")
+        check(skip_style["outlineStyle"]!="none" and skip_style["outlineWidth"]>=2 and
+              skip_style["top"]>=0 and skip_style["position"]=="fixed",
+              f"Skip link must show a fixed visible keyboard indicator: {skip_style}")
         card=page.locator('[class*="projectCard"]').first
         duration=card.evaluate("""(el)=>Math.max(...getComputedStyle(el)
           .transitionDuration.split(",").map(v=>parseFloat(v)*
