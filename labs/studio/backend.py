@@ -13,6 +13,8 @@ import sqlite3
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "labs"))
+from sqlite_storage import connect_private_db
 DEFAULT_DB = ROOT / ".nexus-local" / "studio.sqlite3"
 INITIAL = [
     {"id": "hero-1", "type": "hero", "text": "Build something remarkable."},
@@ -42,8 +44,7 @@ def validate_blocks(blocks: object) -> bool:
 
 
 def connect(path: Path) -> sqlite3.Connection:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(str(path), timeout=5, isolation_level=None)
+    db = connect_private_db(path)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA busy_timeout=5000")
     db.executescript("""

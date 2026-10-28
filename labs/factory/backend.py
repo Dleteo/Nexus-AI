@@ -17,11 +17,15 @@ import os
 from pathlib import Path
 import re
 import sqlite3
+import stat
 import sys
 from uuid import uuid4
-from zipfile import ZipFile, ZIP_DEFLATED, BadZipFile
+from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED, BadZipFile
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "labs"))
+from sqlite_storage import connect_private_db
 DEFAULT_DB = ROOT / ".nexus-local" / "factory.sqlite3"
 ID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 KINDS = {"feature", "bug", "refactor"}
@@ -42,8 +46,7 @@ def utcnow() -> str:
 
 
 def connect(path: Path) -> sqlite3.Connection:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(str(path), timeout=5, isolation_level=None)
+    db = connect_private_db(path)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA busy_timeout=5000")
     db.execute("PRAGMA foreign_keys=ON")
@@ -270,7 +273,25 @@ def manifest_for(files: dict[str, bytes]) -> dict:
     }
 
 
-def verify_artifact(archive_bytes: bytes) -> bool:
+def artifact_files(request: str, kind: str) -> tuple[dict[str, bytes], dict]:
+    """Reproduce exactly the fixed template, static QA and manifest in memory."""
+    files = generate(request, kind)
+    qa = check_artifacts(files, request)
+    files["qa-results.json"] = json.dumps(qa, indent=2).encode("utf-8")
+    files["manifest.json"] = json.dumps(manifest_for(files), indent=2).encode("utf-8")
+    return files, qa
+
+
+def unique_json_object(pairs: list[tuple[str, object]]) -> dict:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate-json-key")
+        result[key] = value
+    return result
+
+
+def verify_artifact(archive_bytes: bytes, expected: dict[str, bytes] | None = None) -> bool:
     """Reject modified or inconsistent ZIPs before returning them to the browser."""
     if not isinstance(archive_bytes, bytes) or len(archive_bytes) > 120_000:
         return False
@@ -279,11 +300,21 @@ def verify_artifact(archive_bytes: bytes) -> bool:
             infos = archive.infolist()
             if tuple(info.filename for info in infos) != FILES:
                 return False
-            if any(info.is_dir() or info.file_size <= 0 or info.file_size > 12_000 for info in infos):
+            if any(
+                info.orig_filename != info.filename
+                or info.is_dir()
+                or stat.S_IFMT(info.external_attr >> 16) not in (0, stat.S_IFREG)
+                or info.flag_bits & ~0x800  # Only the UTF-8 name flag is supported.
+                or info.compress_type not in (ZIP_STORED, ZIP_DEFLATED)
+                or not 0 < info.file_size <= 12_000
+                for info in infos
+            ):
                 return False
             files = {info.filename: archive.read(info) for info in infos}
-        manifest = json.loads(files["manifest.json"].decode("utf-8"))
-        if manifest.get("schemaVersion") != 1 or manifest.get("algorithm") != "sha256":
+        if expected is not None and files != expected:
+            return False
+        manifest = json.loads(files["manifest.json"].decode("utf-8"), object_pairs_hook=unique_json_object)
+        if type(manifest.get("schemaVersion")) is not int or manifest["schemaVersion"] != 1 or manifest.get("algorithm") != "sha256":
             return False
         if set(manifest.get("files", {})) != set(FILES[:-1]):
             return False
@@ -292,9 +323,10 @@ def verify_artifact(archive_bytes: bytes) -> bool:
             for name in FILES[:-1]
         ):
             return False
-        qa = json.loads(files["qa-results.json"].decode("utf-8"))
+        qa = json.loads(files["qa-results.json"].decode("utf-8"), object_pairs_hook=unique_json_object)
         return qa.get("passed") is True and qa.get("mode") == "static-validation"
-    except (BadZipFile, OSError, ValueError, UnicodeDecodeError, TypeError, KeyError, AttributeError):
+    except (BadZipFile, OSError, ValueError, UnicodeDecodeError, TypeError, KeyError, AttributeError,
+            RuntimeError, NotImplementedError, zlib.error):
         return False
 
 
@@ -307,13 +339,10 @@ def build(db: sqlite3.Connection, job_id: object) -> dict:
         if row["status"] != "approved":
             db.execute("ROLLBACK")
             return {"ok": False, "reason": "approval-required"}
-        files = generate(row["request"], row["kind"])
-        qa = check_artifacts(files, row["request"])
+        files, qa = artifact_files(row["request"], row["kind"])
         if not qa["passed"]:
             db.execute("ROLLBACK")
             return {"ok": False, "reason": "qa-failed"}
-        files["qa-results.json"] = json.dumps(qa, indent=2).encode("utf-8")
-        files["manifest.json"] = json.dumps(manifest_for(files), indent=2).encode("utf-8")
         buffer = BytesIO()
         with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
             for name in FILES:
@@ -340,7 +369,8 @@ def artifact(db: sqlite3.Connection, job_id: object) -> dict:
     row = lookup(db, job_id)
     if row is None or row["status"] != "built" or row["artifact"] is None:
         return {"ok": False, "reason": "artifact-not-found"}
-    if not verify_artifact(row["artifact"]):
+    expected, _ = artifact_files(row["request"], row["kind"])
+    if not verify_artifact(row["artifact"], expected):
         return {"ok": False, "reason": "artifact-integrity-failed"}
     return {"ok": True, "filename": "nexus-factory-" + row["id"][:8] + ".zip",
             "base64": base64.b64encode(row["artifact"]).decode("ascii")}

@@ -15,14 +15,15 @@ import sys
 from time import perf_counter
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "labs"))
+from sqlite_storage import connect_private_db
 DEFAULT_DB = ROOT / ".nexus-local" / "monitor.sqlite3"
 MAX_HISTORY = 300
 SLOW_MS = 500
 
 
 def connect(path: Path) -> sqlite3.Connection:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(str(path), isolation_level=None, timeout=5)
+    db = connect_private_db(path)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA busy_timeout=5000")
     db.executescript("""

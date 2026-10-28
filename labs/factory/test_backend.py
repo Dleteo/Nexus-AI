@@ -3,9 +3,11 @@ from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 import json
 from pathlib import Path
+import stat
 import tempfile
 import unittest
-from zipfile import ZipFile
+import warnings
+from zipfile import ZipFile, ZipInfo, ZIP_BZIP2, ZIP_DEFLATED
 
 from backend import connect, execute, FILES, sha256, verify_artifact
 
@@ -119,6 +121,83 @@ class FactoryBackendTests(unittest.TestCase):
         self.assertEqual(persisted["status"], "proposed")
         self.assertEqual([event["stage"] for event in persisted["events"]], ["requirements"])
         self.assertFalse(persisted["downloadReady"])
+
+    def built_zip(self):
+        job = self.make_job()
+        execute({"action": "approve", "id": job["id"], "confirmed": True}, self.db)
+        self.assertTrue(execute({"action": "build", "id": job["id"]}, self.db)["ok"])
+        with connect(self.db) as db:
+            raw = db.execute("SELECT artifact FROM factory_jobs WHERE id=?", (job["id"],)).fetchone()[0]
+        with ZipFile(BytesIO(raw)) as archive:
+            return job, [(info.filename, archive.read(info)) for info in archive.infolist()]
+
+    def repack(self, entries, compression=ZIP_DEFLATED):
+        out = BytesIO()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)  # Deliberate duplicate member below.
+            with ZipFile(out, "w", compression) as archive:
+                for name, data in entries:
+                    archive.writestr(name, data)
+        return out.getvalue()
+
+    def test_zip_paths_duplicates_and_legacy_archives_are_rejected(self):
+        job, entries = self.built_zip()
+        for name in ("../index.html", "/index.html", "C:\\index.html", "folder/../index.html"):
+            with self.subTest(path=name):
+                self.assertFalse(verify_artifact(self.repack([(name, entries[0][1]), *entries[1:]])))
+        self.assertFalse(verify_artifact(self.repack([*entries, entries[0]])))
+        legacy = self.repack(entries[:-1])
+        self.assertFalse(verify_artifact(legacy))
+        with connect(self.db) as db:
+            db.execute("UPDATE factory_jobs SET artifact=? WHERE id=?", (legacy, job["id"]))
+        self.assertEqual(execute({"action": "artifact", "id": job["id"]}, self.db)["reason"],
+                         "artifact-integrity-failed")
+        self.assertEqual(execute({"action": "list"}, self.db)["jobs"][0]["status"], "built")
+
+    def test_zip_symlinks_special_files_and_unsupported_compression_are_rejected(self):
+        _, entries = self.built_zip()
+        for file_type in (stat.S_IFLNK, stat.S_IFIFO, stat.S_IFCHR):
+            with self.subTest(file_type=file_type):
+                info = ZipInfo("index.html")
+                info.create_system = 3
+                info.external_attr = (file_type | 0o600) << 16
+                self.assertFalse(verify_artifact(self.repack([(info, entries[0][1]), *entries[1:]])))
+        self.assertFalse(verify_artifact(self.repack(entries, ZIP_BZIP2)))
+
+    def test_zip_limits_and_corrupt_compressed_data_are_rejected(self):
+        _, entries = self.built_zip()
+        self.assertFalse(verify_artifact(self.repack([("index.html", b"a" * 12_001), *entries[1:]])))
+        self.assertFalse(verify_artifact(b"a" * 120_001))
+        self.assertFalse(verify_artifact(b"not-a-zip"))
+        raw = bytearray(self.repack(entries))
+        with ZipFile(BytesIO(raw)) as archive:
+            info = archive.infolist()[0]
+            payload_offset = info.header_offset + 30 + len(info.filename.encode()) + len(info.extra)
+        raw[payload_offset] = 0xff
+        self.assertFalse(verify_artifact(bytes(raw)))
+
+    def test_manifest_duplicate_keys_and_invalid_schema_are_rejected(self):
+        _, entries = self.built_zip()
+        manifest = json.loads(entries[-1][1])
+        manifest["schemaVersion"] = True
+        self.assertFalse(verify_artifact(self.repack([*entries[:-1], ("manifest.json", json.dumps(manifest))])))
+        duplicate = entries[-1][1].replace(b'"schemaVersion": 1', b'"schemaVersion": 2, "schemaVersion": 1')
+        self.assertFalse(verify_artifact(self.repack([*entries[:-1], ("manifest.json", duplicate)])))
+
+    def test_download_rejects_rewritten_content_even_with_matching_manifest(self):
+        job, entries = self.built_zip()
+        files = dict(entries)
+        files["index.html"] = b"<script>not the approved fixed template</script>"
+        manifest = json.loads(files["manifest.json"])
+        manifest["files"]["index.html"] = {"sha256": sha256(files["index.html"]),
+                                              "size": len(files["index.html"])}
+        files["manifest.json"] = json.dumps(manifest).encode()
+        rewritten = self.repack(files.items())
+        self.assertTrue(verify_artifact(rewritten))  # Self-consistency alone is not authenticity.
+        with connect(self.db) as db:
+            db.execute("UPDATE factory_jobs SET artifact=? WHERE id=?", (rewritten, job["id"]))
+        self.assertEqual(execute({"action": "artifact", "id": job["id"]}, self.db)["reason"],
+                         "artifact-integrity-failed")
 
     def test_concurrent_build_has_exactly_one_winner(self):
         job = self.make_job()

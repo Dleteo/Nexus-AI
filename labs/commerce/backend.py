@@ -18,12 +18,13 @@ PRODUCTS = (
     ("mouse", "Precision Mouse", "Peripherals", 3900, 16),
 )
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "labs"))
+from sqlite_storage import connect_private_db
 DEFAULT_DB = ROOT / ".nexus-local" / "commerce.sqlite3"
 
 
 def connect(path: Path) -> sqlite3.Connection:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(str(path), timeout=5, isolation_level=None)
+    db = connect_private_db(path)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys=ON")
     db.execute("PRAGMA busy_timeout=5000")

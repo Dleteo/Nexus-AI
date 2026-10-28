@@ -21,9 +21,15 @@ Install Python 3, Node.js and the repository's NPM dependencies. In `.env.local`
 NEXUS_LABS_FACTORY=1
 ```
 
-Run `npm run dev`, open `http://localhost:3000/labs?lab=factory`, then choose **Use local Factory**. SQLite data lives under `.nexus-local/factory.sqlite3`, ignored by Git. Set `NEXUS_FACTORY_DB` to select another local file. The public/browser-only rule-based planning demo remains available without Python.
+Run `npm run dev -- --hostname 127.0.0.1`, open `http://127.0.0.1:3000/labs?lab=factory`, then choose **Use local Factory**. SQLite data lives under `.nexus-local/factory.sqlite3`, ignored by Git. Set `NEXUS_FACTORY_DB` to select another local file. The public/browser-only rule-based planning demo remains available without Python.
 
 **Security:** `/api/labs/factory` is disabled in production and rejects non-loopback Host headers. The only allowed output files are fixed, with no path traversal. POST requires JSON and rejects foreign origins. The generated ZIP is never executed and is stored in a local SQLite BLOB, not in the repository. **Do not make this unauthenticated dev endpoint public.**
+
+Host validation does not establish that the network peer is local. Bind Next.js to `127.0.0.1`; do not expose it through a public listener, port forward or reverse proxy.
+
+ZIP download requires the exact ordered filename allowlist, regular files, supported stored/deflate compression, bounded compressed and uncompressed sizes, valid CRCs and an unambiguous SHA-256 manifest. Symlinks, special files, duplicate members and traversal paths are rejected. The backend also reproduces the fixed template from the stored job and compares every file before download, so rewriting a file **and** its manifest does not pass this check. This comparison is not a signature and cannot protect against an attacker who controls the process or the job database itself.
+
+**Legacy ZIP policy:** old artifacts without `manifest.json` are deliberately rejected with `artifact-integrity-failed` (HTTP 422). No silent upgrade, extraction or execution occurs; the existing job and its audit history remain intact. Create a new proposal, review it and approve a fresh build to obtain a current ZIP. Template changes may likewise require a freshly reviewed build instead of accepting an obsolete artifact.
 
 ## Tests
 
