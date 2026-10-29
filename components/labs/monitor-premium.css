@@ -63,7 +63,7 @@
  background:#112a3b;border-color:#42657b;color:#9bc7dc;
 }
 .nexus-lab-shell[data-lab="monitor"] .monitor-console{display:flex;flex-direction:column;gap:16px}
-.monitor-status-dashboard{
+.nexus-lab-shell[data-lab="monitor"] .monitor-status-dashboard{
  --monitor-good:#68dec0;--monitor-bad:#ff8799;--monitor-idle:#e7b87a;
  border:1px solid #39677d;border-radius:17px;overflow:hidden;
  background:radial-gradient(ellipse at 94% 0%,#1b617d36,transparent 45%),#10202b;
