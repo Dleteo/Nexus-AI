@@ -361,3 +361,201 @@
   .commerce .shopProductPhoto img{transition:transform .3s ease}
   .commerce:hover .shopProductPhoto img{transform:scale(1.045)}
 }
+
+
+/* Nexus Studio / Creative IDE — a native CSS/DOM rendering of the real product.
+   No generic rectangles or fake functionality. Scope to Studio to preserve Commerce,
+   Monitor, Factory and Workspace project identities. */
+.studio{
+  color:#e9d8ff;
+  background:
+    radial-gradient(ellipse 69% 70% at 77% 8%,#8e48c94a,transparent 75%),
+    radial-gradient(ellipse at 12% 90%,#51336a36,transparent 70%),
+    linear-gradient(143deg,#1d172a,#110e1b 63%,#1c1428);
+}
+.studio::before{
+  position:absolute;content:"";pointer-events:none;z-index:-1;
+  top:-110px;right:-100px;width:340px;height:340px;
+  border:1px solid #a570dc40;border-radius:50%;
+  box-shadow:0 0 0 48px #b782f413,0 0 0 96px #ba9af30b;
+}
+.studio .coverTop{color:#d8c4ec;opacity:1}
+.studio .studioWindow{
+  display:flex;flex-direction:column;isolation:isolate;
+  min-height:226px;flex:1;min-width:0;overflow:hidden;
+  border:1px solid #8667a4;border-radius:13px;
+  color:#efe9f7;background:#171321;
+  box-shadow:0 27px 55px #0008,0 0 28px -20px #d3a9ff,inset 0 1px #d4b0f333;
+}
+.studio .studioChrome{
+  display:flex;align-items:center;justify-content:space-between;gap:7px;
+  flex-shrink:0;padding:9px 12px;
+  border-bottom:1px solid #514067;
+  background:linear-gradient(120deg,#30233f,#1d1928);
+}
+.studio .studioChromeIdentity{display:flex;align-items:center;gap:7px;min-width:0}
+.studio .studioChromeSymbol{
+  display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;
+  border:1px solid #af85d1;border-radius:8px;
+  background:#52376a;color:#f0ccff;font-size:20px;
+  box-shadow:0 0 16px -8px #daa8fd;
+}
+.studio .studioChromeIdentity strong{font:850 9px/1.3 Arial,sans-serif;letter-spacing:.11em;color:#fcf1ff;white-space:nowrap}
+.studio .studioChromeIdentity strong span{color:#9e81b2}
+.studio .studioChromeIdentity small{display:none;color:#ac93c3;font:600 7px monospace;letter-spacing:.04em}
+.studio .studioChromeControls{
+  display:flex;align-items:center;gap:2px;
+  padding:3px;border:1px solid #594873;border-radius:6px;background:#1d1829;color:#ba9ed2;
+  font-size:12px;
+}
+.studio .studioChromeControls span{min-width:19px;text-align:center}
+.studio .studioChromeControls span:first-child{color:#efd5ff;background:#51346b;border-radius:4px}
+.studio .studioChromeAction{
+  display:block;padding:7px 8px;border-radius:6px;
+  background:#ad81d0;color:#170d22;
+  font:850 7px/1.3 Arial,sans-serif;white-space:nowrap;letter-spacing:.03em;
+}
+.studio .studioEditorShell{
+  display:grid;grid-template-columns:minmax(58px,19%) minmax(0,1fr) minmax(65px,19%);
+  gap:0;min-width:0;min-height:189px;flex:1;
+}
+.studio .studioLayerPanel{
+  display:flex;flex-direction:column;gap:7px;min-width:0;
+  background:#211a2d;padding:10px 7px;border-right:1px solid #514064;
+}
+.studio .studioPanelHeading{
+  display:flex;justify-content:space-between;align-items:center;gap:4px;
+  min-width:0;padding-bottom:9px;border-bottom:1px solid #483957;
+  font:800 7px/1.3 monospace;letter-spacing:.07em;color:#cbb4e3;
+}
+.studio .studioPanelHeading b{font-size:11px;font-weight:500;color:#ddbbfb}
+.studio .studioLayer,.studio .studioLayerActive{
+  display:flex;align-items:center;gap:4px;min-width:0;
+  padding:8px 4px;border:1px solid #453655;border-radius:5px;
+  font:750 7px/1.3 monospace;color:#baa8ca;white-space:nowrap;
+}
+.studio .studioLayerActive{border-color:#b88bdf;background:#4e3268;color:#f6dfff}
+.studio .studioLayer>span,.studio .studioLayerActive>span{font-size:12px;color:#d3b4f0}
+.studio .studioLayer i,.studio .studioLayerActive i{font-size:7px;margin-left:auto;font-style:normal;color:#8865a2}
+.studio .studioLayersFoot{margin-top:auto;padding-top:8px;border-top:1px solid #483957;color:#957fab;font:700 7px/1.2 monospace}
+.studio .studioLayersFoot span{color:#c494ee}
+.studio .studioCanvasArea{
+  display:flex;flex-direction:column;min-width:0;padding:9px 10px 6px;
+  background:radial-gradient(#8a6ba741 1px,transparent 1px),#2a2135;
+  background-size:13px 13px;
+}
+.studio .studioCanvasBar,.studio .studioCanvasStatus{
+  display:flex;justify-content:space-between;align-items:center;gap:4px;
+  font:700 7px/1.35 monospace;letter-spacing:.04em;color:#c0a8d5;
+}
+.studio .studioCanvasBar{padding:1px 0 8px}
+.studio .studioCanvasBar b{color:#9c85b5;font-weight:500}
+.studio .studioCanvasPaper{
+  position:relative;display:flex;flex-direction:column;flex:1;min-height:122px;min-width:0;
+  overflow:hidden;border:1px solid #c3adcb;border-radius:5px;
+  background:#f8f2fc;color:#291f33;box-shadow:0 9px 22px #120e2055;
+}
+.studio .studioPaperRibbon{
+  display:flex;justify-content:space-between;gap:4px;
+  padding:7px 9px;border-bottom:1px solid #ded0ea;
+  font:800 6px/1.3 monospace;letter-spacing:.06em;color:#765792;
+}
+.studio .studioPaperBody{
+  display:flex;align-items:flex-start;justify-content:center;flex-direction:column;
+  flex:1;min-width:0;gap:6px;padding:10px clamp(7px,2vw,20px);
+}
+.studio .studioPaperEyebrow{font:800 6px/1.4 monospace;letter-spacing:.16em;color:#9b6fae}
+.studio .studioPaperHeadline{
+  font:800 clamp(15px,2.1vw,29px)/1.03 Arial,sans-serif;
+  letter-spacing:-.065em;color:#352341;overflow-wrap:anywhere;
+}
+.studio .studioPaperDescription{font-size:8px;line-height:1.5;color:#776786}
+.studio .studioPaperButton{
+  display:flex;align-items:center;gap:7px;margin-top:3px;
+  border-radius:5px;padding:6px 8px;
+  background:#704b98;color:#fff;box-shadow:0 6px 12px #6844862b;
+  font:750 7px/1.4 Arial,sans-serif;
+}
+.studio .studioPaperButton span{font-size:10px}
+.studio .studioSelectionOutline{
+  position:absolute;inset:20% 6% 12%;
+  border:1px solid #a06cdb;pointer-events:none;
+  box-shadow:0 0 0 2px #b279f422;
+}
+.studio .studioSelectionOutline>span{
+  position:absolute;left:-1px;top:-13px;padding:2px 5px;
+  background:#895bb3;color:white;font:700 5px/1 monospace;
+}
+.studio .studioSelectionOutline i{
+  position:absolute;width:5px;height:5px;border:1px solid #895bb3;background:#fff;
+}
+.studio .studioSelectionOutline i:nth-child(2){top:-3px;left:-3px}
+.studio .studioSelectionOutline i:nth-child(3){top:-3px;right:-3px}
+.studio .studioSelectionOutline i:nth-child(4){bottom:-3px;right:-3px}
+.studio .studioSelectionOutline i:nth-child(5){bottom:-3px;left:-3px}
+.studio .studioCanvasStatus{padding-top:7px;color:#9c88ad;font-size:6px}
+.studio .studioPropertyPanel{
+  display:flex;flex-direction:column;gap:10px;min-width:0;
+  padding:10px 7px;background:#21192b;border-left:1px solid #514064;
+}
+.studio .studioPropertyLabel{font:800 7px/1.3 monospace;color:#aa92be;letter-spacing:.06em}
+.studio .studioSwatches{display:flex;gap:5px}
+.studio .studioSwatches i{
+  height:15px;width:15px;border:1px solid #bea1d6;border-radius:4px;
+  background:#9e73c6;box-shadow:0 0 8px #ac7ddd33;
+}
+.studio .studioSwatches i:nth-child(2){background:#352243}
+.studio .studioSwatches i:nth-child(3){background:#f7e9ff}
+.studio .studioPropertyBars{display:flex;flex-direction:column;gap:5px}
+.studio .studioPropertyBars i{display:block;height:5px;width:85%;border-radius:2px;background:#614977}
+.studio .studioPropertyBars i:nth-child(2){width:50%;background:#9e76c1}
+.studio .studioPropertyBars i:nth-child(3){width:70%}
+.studio .studioPropertyAlignment{display:flex;gap:5px}
+.studio .studioPropertyAlignment span{
+  border:1px solid #644b7b;border-radius:4px;padding:4px 6px;
+  color:#c6a4df;font-size:13px;
+}
+.studio .studioPropertyAlignment span:first-child{background:#573574;border-color:#ae82d5}
+.studio .studioWindowFoot{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  flex-shrink:0;padding:8px 11px;border-top:1px solid #4a3b60;
+  background:#181321;color:#967eaa;font:700 6px/1.4 monospace;letter-spacing:.04em;
+}
+.studio .studioWindowFoot span:first-child{color:#d1b3ec}
+.studio .studioWindowFoot i{
+  display:inline-block;width:5px;height:5px;border-radius:50%;
+  margin-right:5px;background:#b78ce1;box-shadow:0 0 10px #bd91fc;
+}
+.studio.spacious .studioWindow{min-height:305px}
+.studio.spacious .studioEditorShell{min-height:258px;grid-template-columns:minmax(83px,19%) minmax(0,1fr) minmax(80px,19%)}
+.studio.spacious .studioPaperHeadline{font-size:clamp(24px,2.5vw,37px)}
+.studio.spacious .studioPaperBody{gap:9px;padding:17px 23px}
+.studio.spacious .studioPaperDescription{font-size:11px}
+.studio.spacious .studioCanvasPaper{min-height:195px}
+.studio.spacious .studioChromeIdentity small{display:block}
+.studio.spacious .studioPropertyLabel{font-size:8px}
+@media(max-width:700px){
+ .studio .studioEditorShell{grid-template-columns:minmax(50px,18%) minmax(0,1fr) minmax(48px,17%)}
+ .studio .studioChromeControls{display:none}
+ .studio .studioCanvasArea{padding:8px 6px}
+ .studio .studioPaperBody{padding:7px}
+ .studio .studioPropertyPanel{padding:8px 4px;gap:7px}
+ .studio .studioPanelHeading{font-size:6px;letter-spacing:0}
+ .studio .studioLayerPanel{padding:8px 4px}
+ .studio .studioLayer,.studio .studioLayerActive{font-size:6px;padding:6px 2px}
+ .studio .studioLayer>span,.studio .studioLayerActive>span{display:none}
+ .studio .studioLayer i,.studio .studioLayerActive i{display:none}
+ .studio .studioPaperHeadline{font-size:clamp(13px,3vw,22px)}
+ .studio .studioPropertyAlignment span{padding:3px;font-size:10px}
+ .studio.spacious .studioEditorShell{grid-template-columns:minmax(62px,18%) minmax(0,1fr) minmax(58px,18%)}
+ .studio.spacious .studioPaperBody{padding:10px}
+}
+@media(max-width:390px){
+ .studio .studioChromeAction{font-size:6px;padding:6px}
+ .studio .studioChromeIdentity strong{font-size:8px}
+ .studio .studioPropertyLabel{font-size:6px}
+ .studio .studioLayerPanel{gap:4px}
+ .studio .studioPropertyPanel{gap:7px}
+ .studio .studioCanvasBar,.studio .studioCanvasStatus{font-size:5px}
+ .studio .studioSelectionOutline>span{display:none}
+}
