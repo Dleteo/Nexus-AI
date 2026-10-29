@@ -627,8 +627,8 @@ def audit(browser, width, label):
            "Workflow role tabs must update their selection")
     expect(factory_spec.locator(".factory-intake-actions button").is_enabled(),
            "Every valid request should offer a downloadable human-reviewed brief")
-    factory_ops=page.get_by_role("region",name="Factory workflow status")
-    expect(factory_ops.is_visible(), "Software Factory operations board missing")
+    factory_ops=page.locator(".factory-operations-board")
+    expect(factory_ops.count()==1 and factory_ops.is_visible(), "Nexus Factory operations board missing")
     expect(factory_ops.locator(".factory-operations-stage").count()==4,
            "Factory workflow must show planning, approval, packaging and static QA")
     expect(factory_ops.get_attribute("data-factory-mode")=="browser",
