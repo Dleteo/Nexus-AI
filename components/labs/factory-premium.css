@@ -388,3 +388,197 @@
 .nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-execution-notice{border-radius:10px}
 .nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-workbench>.lab-panel{border-radius:13px}
 .nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-job-board{border-radius:10px}
+
+
+/* Nexus Factory 2.0 / specification desk and inspectable skills router. */
+.nexus-lab-shell[data-lab="factory"] .factory-intake{
+ position:relative;overflow:hidden;
+ border:1px solid #8b6b4c;border-radius:17px;
+ background:linear-gradient(145deg,#232934,#161f2b);
+ box-shadow:0 24px 64px -47px #000;
+ color:#f8eee1;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake::before{
+ position:absolute;right:-90px;top:-160px;content:"";
+ width:360px;height:360px;border:1px solid #e7ad6c27;
+ border-radius:50%;box-shadow:0 0 0 48px #f2ae6710,0 0 0 88px #f2ae6708;
+ pointer-events:none;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-head{
+ position:relative;display:flex;justify-content:space-between;
+ flex-wrap:wrap;gap:17px;align-items:center;
+ padding:clamp(22px,3vw,37px);
+ border-bottom:1px solid #655341;
+ background:
+ radial-gradient(ellipse at 90% 0%,#db954a30,transparent 70%),
+ linear-gradient(135deg,#313039,#1b2633);
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-head>div:first-child{flex:1;min-width:min(100%,260px)}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-eyebrow{
+ color:#ffcd92;font:800 10px/1.5 ui-monospace,Consolas,monospace;
+ letter-spacing:.1em;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-head h3{
+ margin:12px 0;color:#fff5e7;
+ font:790 clamp(25px,3.25vw,40px)/1.1 var(--font-geist-sans),Arial,sans-serif;
+ letter-spacing:-.048em;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-head p{
+ color:#d0bfae;font-size:12px;line-height:1.8;max-width:700px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-assurances{
+ display:flex;flex-direction:column;gap:8px;align-items:flex-start;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-assurances span{
+ display:flex;align-items:center;gap:6px;white-space:nowrap;
+ padding:8px 12px;border:1px solid #79664f;border-radius:6px;
+ background:#443829;color:#ffdab1;
+ font:750 10px/1.4 ui-monospace,Consolas,monospace;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-assurances span:nth-child(2){border-color:#566978;background:#283543;color:#c5dfed}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-assurances span:nth-child(3){border-color:#6a755d;background:#303a2f;color:#cde7c2}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-body{padding:clamp(15px,2.5vw,29px)}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary{
+ display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+ margin-bottom:18px;
+ color:#c6c5c2;font:800 10px/1.45 ui-monospace,Consolas,monospace;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary>span{
+ display:inline-flex;align-items:center;gap:7px;
+ min-height:36px;padding:8px 11px;
+ border:1px solid #536070;border-radius:7px;background:#26303b;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary b{color:#fff0d3}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary .factory-intake-ready{
+ border-color:#5f856b;background:#2d4136;color:#d3f0dc;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-ready i{
+ display:block;width:8px;height:8px;flex:none;border-radius:50%;background:#9cdaae;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary b[data-risk="elevated"]{color:#ffc3a1}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary b[data-risk="moderate"]{color:#ffda98}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-summary b[data-risk="standard"]{color:#c4e9cc}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-grid{
+ display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:14px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-grid>section{
+ min-width:0;border:1px solid #61544b;border-radius:11px;
+ padding:clamp(15px,2vw,22px);
+ background:#1a2430;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-grid h4{
+ color:#ffddaf;font:820 13px/1.5 var(--font-geist-sans),Arial,sans-serif;
+ margin-bottom:14px;letter-spacing:.01em;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs button{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+ min-height:74px;min-width:0;padding:10px 5px;
+ border:1px solid #565462;border-radius:7px;
+ color:#d6c7b9;background:#2a303c;
+ font:780 9px/1.3 var(--font-geist-sans),Arial,sans-serif;
+ text-align:center;overflow-wrap:anywhere;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs button>span{
+ color:#e4ae72;font:800 19px/1 ui-monospace,Consolas,monospace;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs button[aria-pressed="true"]{
+ background:linear-gradient(140deg,#62452d,#44352e);
+ border-color:#e3af75;color:#fff6e8;
+ box-shadow:inset 0 2px #ffd1a0;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-description{
+ margin-top:12px;padding:17px;
+ border:1px solid #705c45;border-radius:8px;
+ background:linear-gradient(130deg,#3b3533,#272c36);
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-description small{
+ color:#ffca8a;font:800 9px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.07em;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-description strong{
+ display:block;margin:7px 0;color:#fff3e6;font-size:18px;letter-spacing:-.03em;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-role-description p{
+ font-size:12px;color:#d5c7b8;line-height:1.75;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-list{
+ display:flex;flex-direction:column;gap:9px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-list>div{
+ display:flex;gap:10px;align-items:flex-start;padding:12px;
+ border:1px solid #4a5662;background:#252f3c;border-radius:8px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-mark{
+ display:grid;place-items:center;flex:none;
+ width:22px;height:22px;border:1px solid #61977a;border-radius:5px;
+ color:#c7f3d7;background:#2e5140;font-size:11px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-list strong{
+ display:block;color:#f9ede0;font-size:11px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-list p{
+ margin:5px 0;color:#c4c5c5;font-size:11px;line-height:1.6;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-skill-list small{
+ color:#a9cee3;font:750 9px/1.4 ui-monospace,Consolas,monospace;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-risk{
+ margin-top:11px;border:1px solid #a16d52;border-radius:8px;
+ padding:12px;background:#553a30;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-risk strong{color:#ffcfb1;font-size:11px}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-risk ul{
+ padding-left:18px;list-style:disc;color:#f5d8c8;font-size:11px;line-height:1.9;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-details{
+ margin-top:13px;border:1px solid #625649;border-radius:9px;
+ background:#232c37;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-details summary{
+ display:flex;justify-content:space-between;align-items:center;gap:10px;
+ min-height:47px;padding:12px 15px;cursor:pointer;
+ color:#fce0ba;font-size:12px;font-weight:800;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-details summary>span{
+ color:#ffd7a6;font:800 10px monospace;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-details ul{
+ margin:0;padding:0 17px 16px 35px;list-style:disc;
+ color:#d6c9b9;font-size:11px;line-height:1.95;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-actions{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+ margin-top:14px;color:#c7b9a9;font-size:11px;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-actions button{
+ display:flex;align-items:center;gap:13px;justify-content:space-between;
+ min-height:45px;padding:10px 16px;
+ background:linear-gradient(112deg,#ffe0ac,#e7a762);
+ color:#302418;border:1px solid #fbd49f;border-radius:7px;
+ font-size:12px;font-weight:850;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-actions button:hover{background:#ffebc8}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-empty{
+ display:flex;align-items:center;gap:16px;
+ padding:23px clamp(19px,3vw,35px);
+ color:#c9c4bb;font-size:12px;line-height:1.6;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake-empty>span{
+ font-size:28px;color:#dfa972;
+}
+.nexus-lab-shell[data-lab="factory"] .factory-intake button:focus-visible{
+ outline:2px solid #ffdbac;outline-offset:3px;
+}
+@media(max-width:1000px){
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-head{padding:19px}
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-body{padding:13px}
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-grid>section{padding:13px}
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-role-tabs button{min-height:66px}
+ .nexus-lab-shell[data-lab="factory"] .factory-intake-actions button{width:100%}
+}
