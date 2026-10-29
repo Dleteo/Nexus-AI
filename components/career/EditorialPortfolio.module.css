@@ -562,3 +562,57 @@
 @media(max-width:660px){
   .projectCard[data-project="studio"] .projectPicture{height:295px}
 }
+
+
+/* Studio portfolio feature — polished creative tooling instead of flat gray UI. */
+.projectCard[data-project="studio"]{
+  --project-accent:#84dad1;
+  --project-line:#4d747a;
+  border:1px solid #49737c;
+  border-radius:17px;
+  background:#10191e;
+  box-shadow:0 30px 72px -50px #000,0 0 28px -22px #5cb8b0;
+}
+.projectCard[data-project="studio"] .projectPicture{
+  background:
+    radial-gradient(ellipse at 77% 15%,#3a9b9840,transparent 60%),
+    #18252b;
+  height:clamp(305px,31vw,420px);
+}
+.projectCard[data-project="studio"] .projectCopy{
+  background:
+    radial-gradient(ellipse at 100% 4%,#2b797329,transparent 69%),
+    linear-gradient(146deg,#1b282d,#111c22);
+  border-top:1px solid #43676e;
+}
+.projectCard[data-project="studio"] .cardTop b{color:#94e0d6}
+.projectCard[data-project="studio"] .cardTop span{color:#b8d0d3}
+.projectCard[data-project="studio"] .projectTitle h3 a{
+  color:#f0f9f8;letter-spacing:-.045em;
+}
+.projectCard[data-project="studio"] .projectTitle h3 a:hover{color:#a9ece5}
+.projectCard[data-project="studio"] .projectCopy>p{
+  color:#c8d7d9;line-height:1.85;
+}
+.projectCard[data-project="studio"] .tags span{
+  border:1px solid #43676e;
+  border-radius:6px;
+  background:#22373e;color:#d9e9e9;
+}
+.projectCard[data-project="studio"] .studyLink{
+  color:#143035;
+  background:linear-gradient(110deg,#bff0e6,#89d6d0);
+  border:1px solid #c0f0e8;
+  border-radius:7px;
+  box-shadow:0 14px 30px -23px #8dded4;
+}
+.projectCard[data-project="studio"] .studyLink:hover{
+  background:#d7faf2;
+}
+.projectCard[data-project="studio"] .demoLink{color:#a9e4df}
+.projectCard[data-project="studio"]:hover{
+  box-shadow:0 39px 85px -49px #000,0 0 34px -19px #73cac1;
+}
+@media(max-width:660px){
+  .projectCard[data-project="studio"] .projectPicture{height:315px}
+}
