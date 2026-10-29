@@ -8,8 +8,9 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
  const t=(es:string,en:string,de:string,fr:string,pt:string)=>words(language,es,en,de,fr,pt);
  const [open,setOpen]=useState(false),[mascot,setMascot]=useState(true),[mode,setMode]=useState<'guide'|'ai'>('guide');
  const [signedIn,setSignedIn]=useState<boolean|null>(null),[draft,setDraft]=useState(''),[messages,setMessages]=useState<{role:string;text:string}[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const identity=useRef<string|null>(null);
  const actor=useRef<HTMLDivElement>(null),launcher=useRef<HTMLButtonElement>(null),input=useRef<HTMLInputElement>(null),thread=useRef<string|null>(null),pending=useRef(false),abort=useRef<AbortController|null>(null),log=useRef<HTMLDivElement>(null);
- useEffect(()=>{if(!open)return;input.current?.focus();const controller=new AbortController();fetch('/api/auth/session',{cache:'no-store',signal:controller.signal}).then(r=>r.json()).then(d=>setSignedIn(!!d.user)).catch(()=>{});return()=>controller.abort();},[open]);
+ useEffect(()=>{if(!open)return;input.current?.focus();const controller=new AbortController();fetch('/api/auth/session',{cache:'no-store',signal:controller.signal}).then(r=>r.json()).then(d=>{const next=typeof d.user?.id==="string"?d.user.id:null;if(identity.current!==null&&identity.current!==next){abort.current?.abort();thread.current=null;setMessages([]);setDraft("");}identity.current=next;setSignedIn(!!next);}).catch(()=>{});return()=>controller.abort();},[open]);
  useEffect(()=>()=>abort.current?.abort(),[]);
  useEffect(()=>{log.current?.scrollTo({top:log.current.scrollHeight});},[messages,busy]);
  useEffect(()=>{

@@ -55,6 +55,11 @@ with sync_playwright() as p:
  panel.get_by_role('button',name='Enviar pregunta flotante').click()
  panel.get_by_text('Respuesta simulada para comprobar el flujo, sin inferencia real.',exact=True).wait_for()
  assert len(calls)==2 and all(payload['scope']=='portfolio' for _,payload in calls)
+ panel.get_by_role('button',name='Cerrar chat',exact=True).click()
+ page.route('**/api/auth/session',lambda route:route.fulfill(json={'user':None}))
+ page.get_by_role('button',name='Abrir asistente Nexus',exact=True).click()
+ panel.get_by_role('link',name='Iniciar sesión para usar IA',exact=False).wait_for()
+ assert panel.get_by_text('Respuesta simulada para comprobar el flujo, sin inferencia real.',exact=True).count()==0
  ctx.close()
  # Reduced motion keeps the decorative baby stationary.
  ctx=browser.new_context(reduced_motion='reduce');page=ctx.new_page();page.goto(BASE+'/')
