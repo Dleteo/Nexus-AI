@@ -32,7 +32,7 @@ export default function ProjectCover({project,language,spacious=false}:{project:
     </div>}
     {project==="commerce"&&<div className={s.shopWindow}>
       <div className={s.shopHeader}><b>NEXUS / SHOP</b><span>{t.cart} <span>→</span></span></div>
-      <div className={s.shopHeading}>{t.catalog}<span>↘</span></div>
+      <div className={s.shopHeading}>{t.catalog}<span>→</span></div>
       <div className={s.goods}><div><div className={s.keyboard}/><i/></div><div><div className={s.headphones}/><i/></div><div><div className={s.screen}/><i/></div></div>
       <div className={s.shopFooter}><span>{t.inventory}</span><span>→</span><span>{t.order}</span></div>
     </div>}
