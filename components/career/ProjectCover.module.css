@@ -806,3 +806,64 @@
  .studio .studioPaperArtwork{width:42%}
  .studio .studioPaperBody{width:67%;max-width:67%}
 }
+
+/* Monitor card: honest zero-data observability UI rather than a fake traffic graph. */
+.monitor.cover{background:radial-gradient(ellipse at 90% 6%,#377da43d,transparent 58%),linear-gradient(137deg,#122b3c,#07141e 80%);color:#e4f6ff}
+.monitor .coverTop{color:#a8d4e8;opacity:1}
+.monitor .monitorWindow{padding:0;display:flex;flex-direction:column;flex:1;min-width:0;min-height:275px;border:1px solid #4b859e;border-radius:12px;background:#0c1c28;overflow:hidden;box-shadow:0 25px 55px #0007,inset 0 1px #9bdbff25}
+.monitor .monitorChrome{display:flex;align-items:center;gap:8px;min-height:43px;padding:9px 12px;border-bottom:1px solid #315970;background:linear-gradient(110deg,#214254,#132a3a)}
+.monitor .monitorBrandIcon{display:grid;place-items:center;flex:none;width:26px;height:26px;border:1px solid #69b7d3;border-radius:7px;background:#22536b;color:#c2f2ff;font-size:22px}
+.monitor .monitorBrand{display:flex;flex:1;flex-direction:column;min-width:0;gap:3px}
+.monitor .monitorBrand strong{color:#ecfaff;font:850 9px/1.1 Arial,sans-serif;letter-spacing:.09em;white-space:nowrap}
+.monitor .monitorBrand strong span{color:#84bacb}
+.monitor .monitorBrand small{color:#8fbed2;font:700 6px/1 monospace;letter-spacing:.07em}
+.monitor .monitorPreviewTag{padding:6px;border:1px solid #9a7d52;border-radius:5px;background:#4b35231c;color:#f1c991;font:750 7px/1.2 monospace;white-space:nowrap}
+.monitor .monitorConsole{display:flex;flex:1;min-width:0}
+.monitor .monitorSidebar{display:flex;flex:none;flex-direction:column;gap:13px;align-items:center;width:39px;padding:12px 6px;border-right:1px solid #2e5064;background:#0c1b29;color:#6b99b1;font-size:15px}
+.monitor .monitorSidebar span{width:26px;height:25px;display:grid;place-items:center}
+.monitor .monitorSidebar .monitorSidebarActive{border:1px solid #5c99b9;border-radius:6px;background:#234d64;color:#d6f7ff}
+.monitor .monitorContent{display:flex;flex-direction:column;flex:1;min-width:0;gap:9px;padding:12px}
+.monitor .monitorHeader{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:0}
+.monitor .monitorHeader>div{display:flex;flex-direction:column;gap:3px}
+.monitor .monitorSectionKicker{font:700 7px/1.3 monospace;letter-spacing:.08em;color:#8eb7cc}
+.monitor .monitorHeader b{font:800 clamp(15px,1.8vw,23px)/1.15 Arial,sans-serif;color:#f0faff;letter-spacing:-.04em}
+.monitor .monitorUnmeasured{display:inline-flex;align-items:center;gap:5px;max-width:45%;padding:5px 6px;border:1px solid #967b51;border-radius:5px;color:#f0cd98;background:#6a502620;font:750 7px/1.3 monospace}
+.monitor .monitorUnmeasured i{display:block;width:6px;height:6px;flex:none;border-radius:50%;background:#deb47d}
+.monitor .monitorMetricCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.monitor .monitorMetricCards>div{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:70px;padding:8px;border:1px solid #345f74;border-radius:7px;background:linear-gradient(125deg,#1a394c,#112837)}
+.monitor .monitorMetricCards>div span{font:750 7px/1.3 monospace;color:#a5c9dd}
+.monitor .monitorMetricCards>div strong{font:800 22px/1 Arial,sans-serif;letter-spacing:-.045em;color:#eaf9ff}
+.monitor .monitorMetricCards>div:nth-child(2) strong{color:#8ae6c7}
+.monitor .monitorMetricCards>div:nth-child(3) strong{color:#a9ddf9}
+.monitor .monitorMetricCards>div small{font:650 6px/1.3 monospace;color:#88b0c4}
+.monitor .monitorGraphPane{display:flex;flex-direction:column;flex:1;min-height:95px;padding:9px;border:1px solid #375f72;border-radius:7px;background:#0b2231}
+.monitor .monitorGraphHead,.monitor .monitorGraphFoot{display:flex;justify-content:space-between;gap:7px;align-items:center;font:750 7px/1.3 monospace;letter-spacing:.03em;color:#b0d4e3}
+.monitor .monitorGraphHead small{font:650 6px monospace;color:#83afc2}
+.monitor .monitorGraphGrid{display:grid;place-items:center;position:relative;flex:1;min-height:40px;margin:7px 0;background:repeating-linear-gradient(0deg,transparent 0 17px,#4a759041 18px)}
+.monitor .monitorZeroLabel{position:relative;z-index:2;font:700 8px/1.3 monospace;color:#98c0d0;text-align:center;padding:5px;background:#0b2231db}
+.monitor .monitorBaseline{position:absolute;bottom:0;left:0;right:0;border-top:1px dashed #4d839c}
+.monitor .monitorGraphFoot{font-size:6px;color:#85afc2}
+.monitor .monitorFooter{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:7px;border-top:1px solid #285166;color:#91b9cb;font:700 7px/1.3 monospace}
+.monitor .monitorFooter>span:first-child{color:#9de2d4}
+.monitor .monitorFooter i{display:inline-block;width:5px;height:5px;margin-right:4px;border-radius:50%;background:#76d1b9}
+.monitor.spacious .monitorWindow{min-height:325px}
+.monitor.spacious .monitorConsole{min-height:265px}
+.monitor.spacious .monitorContent{padding:15px;gap:11px}
+.monitor.spacious .monitorMetricCards>div{padding:10px;min-height:84px}
+.monitor.spacious .monitorGraphPane{min-height:110px}
+@media(max-width:700px){
+ .monitor .monitorSidebar{width:28px;padding:9px 3px;gap:8px}
+ .monitor .monitorSidebar span{width:22px;height:24px;font-size:12px}
+ .monitor .monitorContent{padding:8px;gap:7px}
+ .monitor .monitorMetricCards{gap:5px}
+ .monitor .monitorMetricCards>div{padding:6px;min-height:60px}
+ .monitor .monitorMetricCards>div strong{font-size:19px}
+ .monitor .monitorHeader b{font-size:15px}
+ .monitor .monitorUnmeasured{font-size:6px}
+ .monitor.spacious .monitorContent{padding:10px}
+}
+@media(max-width:390px){
+ .monitor .monitorBrand small{display:none}
+ .monitor .monitorPreviewTag{font-size:6px;padding:4px}
+ .monitor .monitorGraphHead small{display:none}
+}
