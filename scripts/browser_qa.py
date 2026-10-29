@@ -291,6 +291,14 @@ def audit(browser, width, label):
            "Monitor preview must not invent synthetic chart readings")
     expect(monitor_portfolio_card.locator('[class*="monitorBrandIcon"]').inner_text().strip() == "✚",
            "Clinical monitor preview must show its hospital-style mark")
+    factory_portfolio_card = page.locator('article[data-project="factory"]')
+    expect(factory_portfolio_card.count()==1,"Featured Software Factory card missing")
+    expect(factory_portfolio_card.locator('[class*="factoryWindow"]').count()==1,
+           "Factory must use a full operations IDE preview")
+    expect(factory_portfolio_card.locator('[class*="factoryPipelinePanel"] [class*="pipeline"] > div').count()==4,
+           "Factory preview must show four accurate production stations")
+    expect(factory_portfolio_card.locator('[class*="factoryArtifactTree"]').count()==1,
+           "Factory cover must include the real static output file tree")
     studio_portfolio_card = page.locator('article[data-project="studio"]')
     expect(studio_portfolio_card.count()==1,"Featured Studio card missing")
     expect(studio_portfolio_card.locator('[class*="studioEditorShell"]').count()==1,
@@ -606,6 +614,14 @@ def audit(browser, width, label):
     manual_window.get_by_label("Select sample window").select_option("5")
     expect(manual_window.get_by_text("Samples in window").is_visible(), "Sample window summary missing")
     page.get_by_role("button", name="Nexus Software Factory").click()
+    factory_ops=page.get_by_role("region",name="Factory workflow status")
+    expect(factory_ops.is_visible(), "Software Factory operations board missing")
+    expect(factory_ops.locator(".factory-operations-stage").count()==4,
+           "Factory workflow must show planning, approval, packaging and static QA")
+    expect(factory_ops.get_attribute("data-factory-mode")=="browser",
+           "Browser planning mode must not falsely present persisted builds")
+    expect(factory_ops.locator(".factory-operations-lock").is_visible(),
+           "Execution isolation safety boundary must stay visible")
     page.get_by_role("button", name="Use local Factory").click()
     page.get_by_text("Local Factory unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Create reviewable plan").is_visible(), "Browser planning mode should remain usable")
@@ -632,7 +648,7 @@ def audit_case_study_visual_consistency(browser):
         "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
         "nexus-studio": ("studio", "rgb(23, 23, 27)"),
         "nexus-monitor": ("monitor", "rgb(237, 247, 242)"),
-        "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
+        "nexus-software-factory": ("factory", "rgb(16, 23, 32)"),
     }
     for width in (375, 1440):
         context = browser.new_context(viewport={"width": width, "height": 900})
@@ -651,6 +667,14 @@ def audit_case_study_visual_consistency(browser):
             expect(background == expected_background, "Project theme missing on " + slug)
             overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
             expect(not overflow, "Horizontal overflow on " + slug)
+            if slug == "nexus-software-factory":
+                expect(page.locator('[class*="factoryWorkbenchPreview"]').count()==1,
+                       "Software Factory case study must show the premium release-control workbench")
+                expect(page.locator('[class*="factoryArtifactTree"]').count()==1,
+                       "Factory case study should show static files for source inspection")
+                expect(page.locator('a[href*="/labs/factory"]').count()>0,
+                       "Factory case study must retain the functional planner link")
+                page.screenshot(path=str(ARTIFACTS / f"case-nexus-software-factory-{width}.png"),full_page=True)
             if slug == "nexus-studio":
                 expect(page.locator('[class*="studioEditorShell"]').count()==1,
                        "Studio case study must show a complete layers/canvas/inspector editor")
