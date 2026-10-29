@@ -17,7 +17,7 @@ const featuredCaseStudies=[
   {slug:"nexus-commerce",name:"Nexus Commerce"},
   {slug:"nexus-studio",name:"Nexus Studio"},
   {slug:"nexus-monitor",name:"Nexus Monitor"},
-  {slug:"nexus-software-factory",name:"Nexus Software Factory"},
+  {slug:"nexus-factory",name:"Nexus Software Factory"},
 ] as const;
 
 type Topic="projects"|"skills"|"social"|"email"|"technical"|"unknown";
