@@ -594,7 +594,7 @@ def audit_case_study_visual_consistency(browser):
         "hangman": ("legacy", "rgb(8, 6, 8)"),
         "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
         "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
-        "nexus-studio": ("studio", "rgb(17, 21, 24)"),
+        "nexus-studio": ("studio", "rgb(16, 23, 27)"),
         "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
         "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
     }
