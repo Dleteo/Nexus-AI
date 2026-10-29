@@ -37,11 +37,11 @@ const labels = {
     pt:["STUDIO / TELA","Crie. Edite. Exporte.","Blocos do editor real.","Blocos","Prévia","PROPRIEDADES","Abrir editor"]
   },
   monitor:{
-    es:["OBSERVABILIDAD / MANUAL","Métricas sin ficción.","La gráfica representa únicamente comprobaciones realizadas.","Comprobaciones","Correctas","Latencia p95","Ejecutar comprobación"],
-    en:["OBSERVABILITY / MANUAL","Metrics, not fiction.","The chart shows only checks you have run.","Checks","Successful","p95 latency","Run health check"],
-    de:["MONITORING / MANUELL","Messwerte, keine Fiktion.","Die Grafik zeigt nur ausgeführte Prüfungen.","Prüfungen","Erfolgreich","p95-Latenz","Prüfung starten"],
-    fr:["OBSERVABILITÉ / MANUEL","Des mesures réelles.","Le graphique affiche uniquement les contrôles lancés.","Contrôles","Réussis","Latence p95","Lancer un contrôle"],
-    pt:["OBSERVABILIDADE / MANUAL","Métricas reais.","O gráfico mostra apenas verificações executadas.","Verificações","Bem-sucedidas","Latência p95","Executar verificação"]
+    es:["OBSERVABILIDAD / PRUEBAS MANUALES","Cada respuesta cuenta.","Visualiza el estado del servicio y las comprobaciones que ejecutaste.","Comprobaciones","Correctas","Latencia p95","Ejecutar comprobación"],
+    en:["OBSERVABILITY / MANUAL CHECKS","Every response matters.","Inspect service health and the checks you actually ran.","Checks","Successful","p95 latency","Run health check"],
+    de:["MONITORING / MANUELL","Jede Antwort zählt.","Dienststatus und tatsächlich ausgeführte Prüfungen im Blick.","Prüfungen","Erfolgreich","p95-Latenz","Prüfung starten"],
+    fr:["OBSERVABILITÉ / CONTRÔLES MANUELS","Chaque réponse compte.","Consultez les mesures des contrôles réellement effectués.","Contrôles","Réussis","Latence p95","Lancer un contrôle"],
+    pt:["OBSERVABILIDADE / VERIFICAÇÕES MANUAIS","Cada resposta importa.","Veja o estado do serviço e as verificações executadas.","Verificações","Bem-sucedidas","Latência p95","Executar verificação"]
   },
   factory:{
     es:["INGENIERÍA / FLUJO REVISADO","Del plan a la revisión.","Propuestas y aprobaciones humanas; ejecución desactivada.","Propuestos","Aprobados","Paquetes creados","Abrir flujo"],
