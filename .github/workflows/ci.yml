@@ -78,6 +78,7 @@ jobs:
         run: |
           node scripts/labs_unit_qa.mjs
           node scripts/studio_design_qa.mjs
+          node scripts/nexus_factory_qa.mjs
 
       - name: Test local evidence exports and interview preparation
         run: |
