@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import type { SiteLanguage } from "../../data/site-languages";
 import type { LabId } from "./LabsWorkspace";
+import CommerceProductPhoto from "./CommerceProductPhoto";
 
 type Product = {id:string;name:string;category:string;price:number;stock:number};
 type EditorBlock = {id:string;type:"hero"|"text"|"button";text:string};
@@ -69,8 +70,8 @@ export default function LabProductOverview({lab,language,inventory,cartUnits,car
     </Title>
     {lab==="commerce"&&<div className="lab-overview-screen lab-screen-commerce" aria-label="Local storefront preview">
       <div className="lab-screen-top"><strong>NEXUS / SHOP</strong><span>{cartUnits} BAG</span></div>
-      <div className="lab-screen-products">{inventory.slice(0,3).map((product,index)=><div className="lab-screen-product" key={product.id}>
-        <div className="lab-screen-product-photo" aria-hidden="true">{["⌨","◉","▣"][index]||"◈"}</div>
+      <div className="lab-screen-products">{inventory.slice(0,3).map((product)=><div className="lab-screen-product" key={product.id}>
+        <CommerceProductPhoto id={product.id} compact/>
         <small>{product.category}</small><b>{product.name}</b><span>{money(product.price)}</span>
       </div>)}</div>
       <div className="lab-screen-bottom"><span>{inventory.length} ITEMS</span><strong>{money(cartTotal)} · BAG</strong></div>
