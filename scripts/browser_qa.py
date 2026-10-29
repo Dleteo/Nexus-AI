@@ -264,6 +264,15 @@ def audit(browser, width, label):
     expect(original_width >= 1024, "Portrait source must retain its original resolution")
 
     expect(page.locator('[class*="projectCard"]').count() == 5, "Expected Nexus AI and four engineering lab featured cards")
+    commerce_portfolio_card = page.locator('article[data-project="commerce"]')
+    expect(commerce_portfolio_card.count() == 1, "Featured Commerce card missing")
+    expect(commerce_portfolio_card.locator('[class*="shopProductPhoto"] img').count() == 3,
+           "Commerce card must present three real product photographs")
+    expect(commerce_portfolio_card.locator('[class*="shopEditorial"]').count() == 1,
+           "Commerce card must show its own premium editorial display")
+    card_background = commerce_portfolio_card.evaluate("(el) => getComputedStyle(el).backgroundColor")
+    expect(card_background != "rgb(16, 27, 22)", "Commerce card must not retain the old green identity")
+
     project_cards = page.locator('article[data-project]')
     expect(project_cards.count() == 5, "Every featured project needs an individual presentation")
     workspace_card = page.locator('article[data-project="workspace"]')
@@ -446,6 +455,12 @@ def audit(browser, width, label):
         else:
             expect(photo.get_by_role("img").count() == 1,
                    "Offline commerce photo must display its accessible fallback: " + product_id)
+    cover_theme = page.locator("main.nexus-lab-shell").evaluate(
+        "(el) => getComputedStyle(el).getPropertyValue('--lab-accent').trim()")
+    expect(cover_theme == "#e2b18a",
+           "Commerce must use copper rather than the old green theme")
+    expect(page.locator(".commerce-collection-heading").count() == 1,
+           "Retail collection needs an editorial heading")
     expect(page.locator(".lab-screen-products [data-product-photo]").count() == 3,
            "Storefront preview must use real product image component")
     page.get_by_role("searchbox", name="Search products").fill("Keyboard")
@@ -539,7 +554,7 @@ def audit_case_study_visual_consistency(browser):
         "task-tracker": ("legacy", "rgb(8, 6, 8)"),
         "hangman": ("legacy", "rgb(8, 6, 8)"),
         "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
-        "nexus-commerce": ("commerce", "rgb(16, 37, 31)"),
+        "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
         "nexus-studio": ("studio", "rgb(32, 26, 43)"),
         "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
         "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
@@ -561,6 +576,9 @@ def audit_case_study_visual_consistency(browser):
             expect(background == expected_background, "Project theme missing on " + slug)
             overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
             expect(not overflow, "Horizontal overflow on " + slug)
+            if slug == "nexus-commerce":
+                expect(page.locator('[class*="shopProductPhoto"] img').count() == 3,
+                       "Commerce case study must reuse the premium editorial storefront")
             if slug == "nexus-ai":
                 expect(page.locator(".nexus-showcase-window").count() == 1,
                        "Nexus AI must present the obsidian/gold assistant UI preview")
