@@ -150,9 +150,9 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       <div className={s.studioWindowFoot}><span><i/> LOCAL / EDITOR</span><span>RESPONSIVE · 3 THEMES · STATIC HTML</span></div>
     </div>}
     {project==="monitor"&&<div className={s.monitorWindow}>
-      <div className={s.monitorChrome}><span className={s.monitorBrandIcon} aria-hidden="true">⌁</span><div className={s.monitorBrand}><strong>NEXUS <span>/</span> MONITOR</strong><small>SERVICE OBSERVABILITY</small></div><span className={s.monitorPreviewTag}>{monitorCoverLabels[language].preview}</span></div>
+      <div className={s.monitorChrome}><span className={s.monitorBrandIcon} aria-hidden="true">✚</span><div className={s.monitorBrand}><strong>NEXUS <span>/</span> MONITOR</strong><small>CLINICAL SYSTEMS / API HEALTH</small></div><span className={s.monitorPreviewTag}>{monitorCoverLabels[language].preview}</span></div>
       <div className={s.monitorConsole}>
-        <div className={s.monitorSidebar} aria-hidden="true"><span className={s.monitorSidebarActive}>▦</span><span>⌁</span><span>◉</span><span>⚙</span></div>
+        <div className={s.monitorSidebar} aria-hidden="true"><span className={s.monitorSidebarActive}>✚</span><span>▦</span><span>⌁</span><span>⚙</span></div>
         <div className={s.monitorContent}>
           <div className={s.monitorHeader}><div><span className={s.monitorSectionKicker}>OVERVIEW / 01</span><b>{monitorCoverLabels[language].health}</b></div><span className={s.monitorUnmeasured}><i/>{t.empty}</span></div>
           <div className={s.monitorMetricCards}>
