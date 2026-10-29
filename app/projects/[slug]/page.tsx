@@ -12,7 +12,7 @@ import s from "./project.module.css";
 
 const projectKinds: Record<string,ProjectKind> = {
   "nexus-ai":"workspace", "nexus-commerce":"commerce", "nexus-studio":"studio",
-  "nexus-monitor":"monitor", "nexus-software-factory":"factory",
+  "nexus-monitor":"monitor", "nexus-factory":"factory", "nexus-software-factory":"factory",
 };
 const pageCopy = {
   es:{language:"Idioma del proyecto",breadcrumb:"Ruta de navegación",learning:"PROYECTO DE APRENDIZAJE",study:"CASO DE ESTUDIO",cv:"VER CV",skip:"Ir al caso de estudio",back:"Volver a los proyectos",sketch:"Esquema de interfaz · abre la demo para usar el proyecto",demo:"Explorar este proyecto"},
