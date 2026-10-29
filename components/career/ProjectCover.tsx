@@ -42,6 +42,13 @@ const shopCoverProducts = [
   {id:"headset",label:"AUDIO",price:"$59",photo:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&h=380&q=78"},
   {id:"monitor",label:"DISPLAY",price:"$249",photo:"https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=500&h=380&q=78"},
 ] as const;
+const studioCoverCopy:Record<SiteLanguage,{layers:string,inspector:string,preview:string,heading:string,description:string,button:string,theme:string,spacing:string,alignment:string,export:string}> = {
+  es:{layers:"CAPAS",inspector:"INSPECTOR",preview:"VISTA PREVIA",heading:"Diseña lo que sigue.",description:"Un espacio para tus mejores ideas.",button:"Explorar diseño",theme:"TEMA",spacing:"ESPACIADO",alignment:"ALINEACIÓN",export:"EXPORTAR HTML"},
+  en:{layers:"LAYERS",inspector:"INSPECTOR",preview:"LIVE PREVIEW",heading:"Design what's next.",description:"A space for your best ideas.",button:"Explore design",theme:"THEME",spacing:"SPACING",alignment:"ALIGNMENT",export:"EXPORT HTML"},
+  de:{layers:"EBENEN",inspector:"INSPEKTOR",preview:"VORSCHAU",heading:"Gestalte die Zukunft.",description:"Ein Raum für deine Ideen.",button:"Design entdecken",theme:"THEMA",spacing:"ABSTAND",alignment:"AUSRICHTUNG",export:"HTML EXPORT"},
+  fr:{layers:"CALQUES",inspector:"INSPECTEUR",preview:"APERÇU",heading:"Créez la suite.",description:"Un espace pour vos idées.",button:"Explorer",theme:"THÈME",spacing:"ESPACEMENT",alignment:"ALIGNEMENT",export:"EXPORT HTML"},
+  pt:{layers:"CAMADAS",inspector:"INSPETOR",preview:"PRÉVIA",heading:"Crie o próximo.",description:"Um espaço para suas ideias.",button:"Explorar design",theme:"TEMA",spacing:"ESPAÇAMENTO",alignment:"ALINHAMENTO",export:"EXPORTAR HTML"},
+};
 /** A decorative product sketch, never a screenshot or a source of live metrics. */
 export default function ProjectCover({project,language,spacious=false}:{project:ProjectKind;language:SiteLanguage;spacious?:boolean}) {
   const t=copy[language];
@@ -94,8 +101,44 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       <div className={s.shopFooter}><span>{shopEditorial[language].note}</span><span>{shopEditorial[language].view} ↗</span></div>
     </div>}
     {project==="studio"&&<div className={s.studioWindow}>
-      <div className={s.editorBar}><span>◩ &nbsp; ＋ &nbsp; ↶</span><span>{t.export} →</span></div>
-      <div className={s.editorBody}><div className={s.layers}><small>{t.blocks}</small><i/><i/><i/></div><div className={s.artboard}><span>✦</span><strong>{t.canvas}<span>.</span></strong><i/><i/><div>{t.edit} →</div></div><div className={s.properties}><i/><i/><i/></div></div>
+      <div className={s.studioChrome}>
+        <div className={s.studioChromeIdentity}><span className={s.studioChromeSymbol} aria-hidden="true">✦</span><strong>NEXUS <span>/</span> STUDIO</strong><small>CREATIVE WORKSPACE</small></div>
+        <div className={s.studioChromeControls} aria-hidden="true"><span>▣</span><span>▤</span><span>▯</span></div>
+        <span className={s.studioChromeAction}>{studioCoverCopy[language].export} ↗</span>
+      </div>
+      <div className={s.studioEditorShell}>
+        <aside className={s.studioLayerPanel}>
+          <div className={s.studioPanelHeading}><span>{studioCoverCopy[language].layers}</span><b aria-hidden="true">＋</b></div>
+          <div className={s.studioLayerActive}><span aria-hidden="true">▤</span> HERO <i>◉</i></div>
+          <div className={s.studioLayer}><span aria-hidden="true">☷</span> TEXT <i>◉</i></div>
+          <div className={s.studioLayer}><span aria-hidden="true">▣</span> BUTTON <i>◉</i></div>
+          <div className={s.studioLayersFoot}><span aria-hidden="true">✧</span> 03 / LAYERS</div>
+        </aside>
+        <div className={s.studioCanvasArea}>
+          <div className={s.studioCanvasBar}><span>{studioCoverCopy[language].preview}</span><span>100% <b>⌄</b></span></div>
+          <div className={s.studioCanvasPaper}>
+            <div className={s.studioPaperRibbon}><span>✳ THE DESIGN EDITION</span><span aria-hidden="true">↗</span></div>
+            <div className={s.studioPaperBody}>
+              <div className={s.studioPaperEyebrow}>CREATIVE / 001</div>
+              <div className={s.studioPaperHeadline}>{studioCoverCopy[language].heading}</div>
+              <div className={s.studioPaperDescription}>{studioCoverCopy[language].description}</div>
+              <div className={s.studioPaperButton}>{studioCoverCopy[language].button} <span aria-hidden="true">↗</span></div>
+            </div>
+            <div className={s.studioSelectionOutline}><span>HERO / SELECTED</span><i/><i/><i/><i/></div>
+          </div>
+          <div className={s.studioCanvasStatus}>DESIGN CANVAS <span>DESKTOP · 1440</span></div>
+        </div>
+        <aside className={s.studioPropertyPanel}>
+          <div className={s.studioPanelHeading}><span>{studioCoverCopy[language].inspector}</span><b aria-hidden="true">⚙</b></div>
+          <div className={s.studioPropertyLabel}>{studioCoverCopy[language].theme}</div>
+          <div className={s.studioSwatches}><i/><i/><i/></div>
+          <div className={s.studioPropertyLabel}>{studioCoverCopy[language].spacing}</div>
+          <div className={s.studioPropertyBars}><i/><i/><i/></div>
+          <div className={s.studioPropertyLabel}>{studioCoverCopy[language].alignment}</div>
+          <div className={s.studioPropertyAlignment}><span>☷</span><span>≡</span></div>
+        </aside>
+      </div>
+      <div className={s.studioWindowFoot}><span><i/> LOCAL / EDITOR</span><span>RESPONSIVE · 3 THEMES · STATIC HTML</span></div>
     </div>}
     {project==="monitor"&&<div className={s.monitorWindow}>
       <div className={s.monitorHeader}><b>API / HEALTH</b><span>{t.manual}</span></div>
