@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "./nexus-assistant-preview.css";
 import type {SiteLanguage} from "../../data/site-languages";
 
 const content = {
