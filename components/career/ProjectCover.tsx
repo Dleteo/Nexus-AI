@@ -170,10 +170,34 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       </div>
     </div>}
     {project==="factory"&&<div className={s.factoryWindow}>
-      <div className={s.factoryHeader}><span>⌘ NEXUS / FACTORY</span><b>→</b></div>
-      <div className={s.pipeline}><div><small>01</small><strong>{t.plan}</strong></div><span>→</span><div><small>02</small><strong>{t.review}</strong></div><span>→</span><div><small>03</small><strong>{t.package}</strong></div></div>
-      <div className={s.codeFiles}><span>index.html</span><span>styles.css</span><span>README.md</span></div>
-      <div className={s.factoryFooter}><span>▣ {t.disabled}</span><span>NOT_RUN</span></div>
+      <div className={s.factoryHeader}>
+        <span className={s.factoryHeaderIdentity}><span className={s.factoryHeaderSymbol} aria-hidden="true">◈</span><span><strong>NEXUS / SOFTWARE FACTORY</strong><small>BUILD OPERATIONS · LOCAL WORKFLOW</small></span></span>
+        <span className={s.factoryHeaderState}><i aria-hidden="true"/> REVIEW REQUIRED</span>
+      </div>
+      <div className={s.factoryWorkbenchPreview}>
+        <div className={s.factoryPipelinePanel}>
+          <div className={s.factoryPanelCaption}><span>WORKFLOW / 001</span><span>4 STATIONS</span></div>
+          <div className={s.factoryPanelTitle}>Ship with confidence<span aria-hidden="true">.</span></div>
+          <div className={s.pipeline}>
+            <div><small>01 / INTAKE</small><strong>{t.plan}</strong><i aria-hidden="true">⌑</i></div>
+            <div><small>02 / GATE</small><strong>{t.review}</strong><i aria-hidden="true">◇</i></div>
+            <div><small>03 / BUILD</small><strong>{t.package}</strong><i aria-hidden="true">▣</i></div>
+            <div><small>04 / CHECK</small><strong>STATIC QA</strong><i aria-hidden="true">✓</i></div>
+          </div>
+          <div className={s.factoryGate}><span aria-hidden="true">◧</span> HUMAN APPROVAL GATE <strong>REQUIRED</strong></div>
+        </div>
+        <aside className={s.factoryArtifactPanel}>
+          <div className={s.factoryPanelCaption}><span>ARTIFACT EXPLORER</span><span>▣</span></div>
+          <div className={s.factoryArtifactTree}>
+            <span className={s.factoryArtifactFolder}>⌄ &nbsp; ▣ starter-page/</span>
+            <span>⌑ &nbsp; index.html</span>
+            <span>⌑ &nbsp; styles.css</span>
+            <span>⌑ &nbsp; README.md</span>
+          </div>
+          <div className={s.factoryTerminal}><span>$ nexus factory inspect</span><strong>execution.enabled = false</strong><small>status: not_run</small></div>
+        </aside>
+      </div>
+      <div className={s.factoryFooter}><span><i aria-hidden="true"/> TEMPLATE-BOUND / REVIEWABLE</span><span>◧ {t.disabled}</span></div>
     </div>}
   </div>;
 }
