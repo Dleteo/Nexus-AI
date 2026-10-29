@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import InterviewReviewChecklist from "../../../components/career/InterviewReviewChecklist";
 import ArchitectureChallenge from "../../../components/career/ArchitectureChallenge";
 import ProjectCover, { type ProjectKind } from "../../../components/career/ProjectCover";
+import NexusAssistantPreview from "../../../components/career/NexusAssistantPreview";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy } from "../../../data/case-studies";
@@ -19,6 +20,14 @@ const pageCopy = {
   de:{language:"Sprache der Fallstudie",breadcrumb:"Brotkrumennavigation",learning:"LERNPROJEKT",study:"FALLSTUDIE",cv:"LEBENSLAUF",skip:"Zur Fallstudie",back:"Zurück zu den Projekten",sketch:"Oberflächenskizze · Projekt über die Demo öffnen",demo:"Dieses Projekt erkunden"},
   fr:{language:"Langue de l’étude de cas",breadcrumb:"Fil d’Ariane",learning:"PROJET D’APPRENTISSAGE",study:"ÉTUDE DE CAS",cv:"VOIR CV",skip:"Aller à l’étude de cas",back:"Retour aux projets",sketch:"Esquisse d’interface · ouvrez la démo pour utiliser le projet",demo:"Explorer ce projet"},
   pt:{language:"Idioma do estudo de caso",breadcrumb:"Navegação estrutural",learning:"PROJETO DE APRENDIZAGEM",study:"ESTUDO DE CASO",cv:"VER CV",skip:"Ir ao estudo de caso",back:"Voltar aos projetos",sketch:"Esboço de interface · abra a demo para usar o projeto",demo:"Explorar este projeto"},
+} as const;
+
+const nexusPresentation = {
+  es:{edition:"EDICIÓN / OBSIDIANA",idea:"DISEÑADO PARA EXPLORAR",intro:"Una arquitectura, dos espacios de asistencia y una idea: convertir curiosidad técnica en trabajo demostrable.",a:"DOS ESPACIOS",at:"Portfolio y Technical con responsabilidades distintas.",b:"SEGURIDAD COMO BASE",bt:"Sesiones protegidas y acceso a datos separado por usuario.",c:"INGENIERÍA VERIFICABLE",ct:"Código, pruebas y límites documentados."},
+  en:{edition:"OBSIDIAN / EDITION",idea:"BUILT FOR EXPLORATION",intro:"One architecture, two assistance workspaces and one goal: turn technical curiosity into demonstrable work.",a:"TWO WORKSPACES",at:"Portfolio and Technical with separate responsibilities.",b:"SECURITY BY DESIGN",bt:"Protected sessions and user-scoped data access.",c:"VERIFIABLE ENGINEERING",ct:"Documented code, tests and limitations."},
+  de:{edition:"OBSIDIAN / EDITION",idea:"ZUM ENTDECKEN ENTWICKELT",intro:"Eine Architektur, zwei Assistenzbereiche und das Ziel, technische Ideen nachvollziehbar umzusetzen.",a:"ZWEI BEREICHE",at:"Portfolio und Technical mit getrennten Aufgaben.",b:"SICHERHEIT VON ANFANG AN",bt:"Geschützte Sitzungen und nutzergebundene Daten.",c:"ÜBERPRÜFBARE TECHNIK",ct:"Dokumentierter Code, Tests und Grenzen."},
+  fr:{edition:"ÉDITION / OBSIDIENNE",idea:"CONÇU POUR EXPLORER",intro:"Une architecture et deux espaces d'assistance pour transformer la curiosité technique en travail vérifiable.",a:"DEUX ESPACES",at:"Portfolio et Technical avec des rôles distincts.",b:"SÉCURITÉ INTÉGRÉE",bt:"Sessions protégées et données séparées par utilisateur.",c:"INGÉNIERIE VÉRIFIABLE",ct:"Code, tests et limites documentés."},
+  pt:{edition:"EDIÇÃO / OBSIDIANA",idea:"FEITO PARA EXPLORAR",intro:"Uma arquitetura, dois espaços de assistência e uma meta: transformar curiosidade técnica em trabalho verificável.",a:"DOIS ESPAÇOS",at:"Portfolio e Technical com funções distintas.",b:"SEGURANÇA DESDE A BASE",bt:"Sessões protegidas e dados isolados por usuário.",c:"ENGENHARIA VERIFICÁVEL",ct:"Código, testes e limites documentados."},
 } as const;
 
 export function generateStaticParams() { return caseStudies.map(({slug}) => ({slug})); }
@@ -44,6 +53,8 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
   const kind=projectKinds[slug];
   const demo=project.demo?.startsWith("/labs")&&locale!=="es"?"/"+locale+project.demo:project.demo;
   const isLearning=["task-tracker","hangman","nexus-foundation"].includes(slug);
+  const nexusEdition=slug==="nexus-ai";
+  const nexusText=nexusPresentation[locale];
 
   return <main lang={locale} data-project-kind={kind||"legacy"} className={`${s.page} ${kind?s[kind]:s.legacy}`}>
     <a className={s.skip} href="#case-content">{copy.skip}</a>
@@ -60,6 +71,7 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
       </div>
       <section className={s.hero} aria-labelledby="case-title">
         <div className={s.heroText}>
+          {nexusEdition&&<p className={s.nexusEdition}><span aria-hidden="true">✧</span> {nexusText.edition} <span aria-hidden="true">—</span> NEXUS / 01</p>}
           <p className={s.eyebrow}>{isLearning?copy.learning:copy.study} <span aria-hidden="true">/</span> {project.tech.slice(0,2).join(" · ")}</p>
           <h1 id="case-title">{project.title}</h1>
           <p className={s.lead}>{project.lead}</p>
@@ -68,8 +80,14 @@ export default async function CaseStudyPage({params,searchParams}: {params:Promi
             {project.repository&&<a href={project.repository} target="_blank" rel="noopener noreferrer" className={s.secondary}>{label.code} →</a>}
           </div>
         </div>
-        {kind&&<figure className={s.heroVisual}><ProjectCover project={kind} language={locale} spacious/><figcaption>{copy.sketch}</figcaption></figure>}
+        {kind&&<figure className={s.heroVisual}>{nexusEdition?<NexusAssistantPreview language={locale}/>:<ProjectCover project={kind} language={locale} spacious/>}<figcaption>{copy.sketch}</figcaption></figure>}
       </section>
+      {nexusEdition&&<section className={s.nexusHighlights} aria-label={nexusText.idea}>
+        <div className={s.nexusHighlightsIntro}><span>{nexusText.idea}</span><p>{nexusText.intro}</p></div>
+        <div className={s.nexusHighlight}><span aria-hidden="true">◈</span><div><strong>{nexusText.a}</strong><p>{nexusText.at}</p></div></div>
+        <div className={s.nexusHighlight}><span aria-hidden="true">⌘</span><div><strong>{nexusText.b}</strong><p>{nexusText.bt}</p></div></div>
+        <div className={s.nexusHighlight}><span aria-hidden="true">✧</span><div><strong>{nexusText.c}</strong><p>{nexusText.ct}</p></div></div>
+      </section>}
       <div className={s.tech}>{project.tech.map(tech=><span key={tech}>{tech}</span>)}</div>
       <dl className={s.facts}>
         <div><dt>{label.role}</dt><dd>{project.role}</dd></div>
