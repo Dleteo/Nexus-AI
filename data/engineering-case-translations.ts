@@ -38,7 +38,7 @@ export const engineeringCaseTranslations:Record<Locale,Record<LabSlug,Fields>> =
       limitations:["Manual checks only; no daemon, notifications or verified SLO.","Only a fixed local service can be tested.","Bounded samples are not equivalent to total uptime."],
       next:"Design opt-in local scheduling and an allowlist, without claiming an SLO before measuring it."
     },
-    "nexus-software-factory":{
+    "nexus-factory":{
       lead:"A local review-gated flow that generates a fixed HTML/CSS starter and delivers a checked ZIP.",
       role:"AI-assisted implementation, but the current workflow is deterministic and does not invoke an AI model.",
       status:"Controlled MVP; executing generated code remains disabled for safety.",
@@ -80,7 +80,7 @@ export const engineeringCaseTranslations:Record<Locale,Record<LabSlug,Fields>> =
       limitations:["Keine Hintergrundüberwachung oder Benachrichtigungen.","Nur der bekannte lokale Endpunkt wird getestet.","Stichproben entsprechen keiner SLA-Verfügbarkeit."],
       next:"Optionale lokale Zeitplanung mit sicherer Zielliste konzipieren."
     },
-    "nexus-software-factory":{
+    "nexus-factory":{
       lead:"Lokaler Freigabeprozess, der eine feste HTML/CSS-Vorlage samt geprüftem ZIP erzeugt.",
       role:"KI-gestützte Entwicklung; der aktuelle Ablauf nutzt kein KI-Modell.",
       status:"Kontrolliertes MVP; Ausführung generierten Codes deaktiviert.",
@@ -122,7 +122,7 @@ export const engineeringCaseTranslations:Record<Locale,Record<LabSlug,Fields>> =
       limitations:["Tests manuels uniquement, sans service continu ni notifications.","Une seule cible locale fixe.","Les échantillons ne constituent pas un SLA."],
       next:"Concevoir une planification locale facultative avec liste de destinations autorisées."
     },
-    "nexus-software-factory":{
+    "nexus-factory":{
       lead:"Pipeline local avec validation humaine, génération d'un modèle HTML/CSS fixe et ZIP vérifié.",
       role:"Implémentation assistée par IA, mais l'application actuelle n'invoque aucun modèle.",
       status:"MVP contrôlé ; exécution de code généré désactivée.",
@@ -164,7 +164,7 @@ export const engineeringCaseTranslations:Record<Locale,Record<LabSlug,Fields>> =
       limitations:["Verificações apenas manuais; sem serviço contínuo ou notificações.","Somente um endpoint local fixo.","Amostras não equivalem a um SLA."],
       next:"Projetar verificações locais opcionais e uma lista segura de destinos."
     },
-    "nexus-software-factory":{
+    "nexus-factory":{
       lead:"Fluxo local com aprovação humana que gera um modelo HTML/CSS fixo e um ZIP verificado.",
       role:"Implementação com auxílio de IA, mas o fluxo atual não chama nenhum modelo.",
       status:"MVP controlado; execução de código gerado desabilitada.",
