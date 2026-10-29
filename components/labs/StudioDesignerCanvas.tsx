@@ -1,6 +1,6 @@
 "use client";
 
-import type {CSSProperties} from "react";
+import {useState, type CSSProperties} from "react";
 import {STUDIO_THEMES} from "../../lib/labs-studio-design.mjs";
 
 export type StudioDesign = {
@@ -19,12 +19,16 @@ type Props = {
   viewport:StudioViewport;
   onViewportChange:(next:StudioViewport)=>void;
   disabled?:boolean;
+  exportMarkup:string;
 };
 
 const viewports:StudioViewport[]=["desktop","tablet","mobile"];
 const spaces:StudioDesign["density"][]=["compact","balanced","spacious"];
 
-export default function StudioDesignerCanvas({blocks,selected,onSelect,design,onDesignChange,viewport,onViewportChange,disabled=false}:Props){
+export default function StudioDesignerCanvas({blocks,selected,onSelect,design,onDesignChange,viewport,onViewportChange,exportMarkup,disabled=false}:Props){
+  const [previewMode,setPreviewMode]=useState<"canvas"|"code">("canvas");
+  const [copied,setCopied]=useState(false);
+  async function copyHtml(){try{await navigator.clipboard.writeText(exportMarkup);setCopied(true);}catch{setCopied(false);}}
   const theme=STUDIO_THEMES[design.theme] ?? STUDIO_THEMES.atelier;
   const change=(patch:Partial<StudioDesign>)=>onDesignChange({...design,...patch});
   const style={
@@ -43,8 +47,8 @@ export default function StudioDesignerCanvas({blocks,selected,onSelect,design,on
     </header>
     <div className="studio-design-layout">
       <div className="studio-canvas-stage">
-        <div className="studio-stage-ruler"><span>CANVAS / {viewport.toUpperCase()}</span><span>{blocks.length} BLOCKS · SELECT TO EDIT</span></div>
-        <div className={"studio-canvas-frame studio-viewport-"+viewport+" studio-density-"+design.density} data-studio-viewport={viewport} style={style}>
+        <div className="studio-stage-ruler"><span>{previewMode==="canvas"?"DESIGN CANVAS / "+viewport.toUpperCase():"EXPORT SOURCE / HTML"}</span><span>{blocks.length} BLOCKS · LOCAL DOCUMENT</span></div><div className="studio-stage-tabs" role="group" aria-label="Studio preview mode"><button type="button" onClick={()=>setPreviewMode("canvas")} aria-pressed={previewMode==="canvas"}>◈ Design</button><button type="button" onClick={()=>{setPreviewMode("code");setCopied(false);}} aria-pressed={previewMode==="code"}>〈/〉 HTML</button>{previewMode==="code"&&<button type="button" onClick={()=>void copyHtml()} className="studio-copy-code">{copied?"Copied HTML":"Copy HTML"}</button>}</div>
+        {previewMode==="canvas"?<div className={"studio-canvas-frame studio-viewport-"+viewport+" studio-density-"+design.density} data-studio-viewport={viewport} style={style}>
           <div className="studio-canvas-page" data-studio-theme={design.theme} data-studio-alignment={design.alignment}>
             <span className="studio-canvas-overline">YOUR PAGE / LIVE PREVIEW</span>
             {blocks.map((block,index)=><button
@@ -59,6 +63,7 @@ export default function StudioDesignerCanvas({blocks,selected,onSelect,design,on
             {blocks.length===0&&<p className="studio-canvas-empty">Your page is empty. Add a block in the Layers panel.</p>}
           </div>
         </div>
+        :<div className="studio-code-window" role="region" aria-label="Generated HTML source"><div className="studio-code-title"><span>◈ /index.html</span><span>READ ONLY · SAFE EXPORT</span></div><pre><code>{exportMarkup}</code></pre></div>}
         <footer className="studio-stage-footer"><span>VISUAL PREVIEW · NO SCRIPTS EXECUTED</span><span>100% · {viewport.toUpperCase()}</span></footer>
       </div>
       <aside className="studio-design-inspector" aria-label="Studio design inspector">
