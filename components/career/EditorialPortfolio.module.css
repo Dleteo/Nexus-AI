@@ -526,3 +526,39 @@
 @media(max-width:660px){
   .projectCard[data-project="studio"] .projectPicture{height:295px}
 }
+
+
+/* Featured Studio card follows the actual desktop app's graphite design. */
+.projectCard[data-project="studio"]{
+  --project-accent:#91b1c2;
+  --project-line:#4d5c65;
+  border:1px solid #53636c;
+  background:#171d21;
+  box-shadow:0 28px 62px -52px #000;
+}
+.projectCard[data-project="studio"] .projectPicture{
+  background:#252e34;
+  height:clamp(285px,30vw,390px);
+}
+.projectCard[data-project="studio"] .projectCopy{
+  border-top:1px solid #414d55;
+  background:#1b2227;
+}
+.projectCard[data-project="studio"] .cardTop b{color:#9fc3d7}
+.projectCard[data-project="studio"] .cardTop span{color:#abbac5}
+.projectCard[data-project="studio"] .projectTitle h3 a{color:#f0f4f6}
+.projectCard[data-project="studio"] .projectTitle h3 a:hover{color:#bdd7e5}
+.projectCard[data-project="studio"] .projectCopy>p{color:#becbd3}
+.projectCard[data-project="studio"] .tags span{
+  color:#cfdae2;border-color:#4a5b68;background:#26323b;
+}
+.projectCard[data-project="studio"] .studyLink{
+  border:1px solid #a6c4d4;border-radius:5px;
+  background:#bbd0db;color:#1a2a33;box-shadow:none;
+}
+.projectCard[data-project="studio"] .studyLink:hover{background:#d5e5ec}
+.projectCard[data-project="studio"] .demoLink{color:#c6dce6}
+.projectCard[data-project="studio"]:hover{box-shadow:0 33px 76px -51px #000,0 0 17px -14px #8fa9b8}
+@media(max-width:660px){
+  .projectCard[data-project="studio"] .projectPicture{height:295px}
+}
