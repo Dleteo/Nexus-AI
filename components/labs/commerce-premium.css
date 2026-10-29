@@ -270,3 +270,24 @@
   .nexus-lab-shell[data-lab="commerce"] .commerce-product-card{transition:none}
   .nexus-lab-shell[data-lab="commerce"] .commerce-product-card:hover{transform:none}
 }
+
+/* Explicitly neutralize legacy green selectors that targeted the first catalog
+   child and product price, including the dedicated-page theme rules. */
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog>div.commerce-collection-heading{
+  padding:0 0 23px;
+  border:0;
+  border-bottom:1px solid #d7c4b5;
+  border-radius:0;
+  background:transparent;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog>div.commerce-search-controls{
+  border:1px solid #ded0c3;
+  background:#eae0d6;
+  border-radius:11px;
+}
+.nexus-lab-shell[data-standalone="true"][data-lab="commerce"] .commerce-catalog .commerce-product-card p.commerce-product-price{
+  color:#9a543b;
+}
+@media(max-width:660px){
+  .nexus-lab-shell[data-lab="commerce"] .commerce-catalog>div.commerce-collection-heading{padding-bottom:14px}
+}
