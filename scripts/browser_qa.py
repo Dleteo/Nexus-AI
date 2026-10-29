@@ -118,7 +118,7 @@ def audit_featured_case_studies(browser):
             if slug != "nexus-ai":
                 lab_id = "factory" if slug == "nexus-software-factory" else slug.removeprefix("nexus-")
                 localized_path = ("/labs" if language == "es" else "/" + language + "/labs")
-                demo_href = localized_path + "?lab=" + lab_id
+                demo_href = localized_path + "/" + lab_id
                 expect(page.locator('a[href="' + demo_href + '"]').count() == 1,
                        f"Case-study demo must retain locale {language}: {slug}")
             page.goto(BASE + home, wait_until="domcontentloaded")
@@ -400,12 +400,11 @@ def audit(browser, width, label):
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
         page.get_by_role("heading", name=title).wait_for(state="visible", timeout=10000)
     # Each engineering product has a distinct visual surface and accessible navigation.
-    for lab, identity in (("commerce", "Digital storefront"), ("studio", "Design workspace"),
-                          ("monitor", "Service observability"), ("factory", "Engineering pipeline")):
+    for lab in ("commerce", "studio", "monitor", "factory"):
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
         shell = page.locator("main.nexus-lab-shell")
         expect(shell.get_attribute("data-lab") == lab, "Wrong active product identity: " + lab)
-        expect(page.get_by_text(identity, exact=True).is_visible(), "Missing product-specific workspace: " + lab)
+        expect(page.locator(".lab-product-overview-" + lab).count() == 1, "Missing real product overview: " + lab)
         expect(page.locator(".lab-product-overview").count() == 1, "Missing unique product overview: " + lab)
         expect(not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"),
                "Horizontal overflow in " + lab)
