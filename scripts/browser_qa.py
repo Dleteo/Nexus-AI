@@ -614,6 +614,19 @@ def audit(browser, width, label):
     manual_window.get_by_label("Select sample window").select_option("5")
     expect(manual_window.get_by_text("Samples in window").is_visible(), "Sample window summary missing")
     page.get_by_role("button", name="Nexus Factory").click()
+    factory_spec = page.get_by_role("region", name="Nexus Factory specification workspace")
+    expect(factory_spec.is_visible(), "Nexus Factory intake cockpit must be visible")
+    page.locator("#factory-request").fill("Build an accessible responsive dashboard with authentication")
+    expect(factory_spec.locator(".factory-intake-risk").is_visible(),
+           "Sensitive requests must display review risks before approval")
+    expect(factory_spec.locator(".factory-intake-skill-list > div").count()>=4,
+           "Evidence-based skills should be recommended, not simulated as executed")
+    second_role=factory_spec.locator(".factory-intake-role-tabs button").nth(1)
+    second_role.click()
+    expect(second_role.get_attribute("aria-pressed")=="true",
+           "Workflow role tabs must update their selection")
+    expect(factory_spec.get_by_role("button", name="Download specification .md").is_enabled(),
+           "Every valid request should offer a downloadable human-reviewed brief")
     factory_ops=page.get_by_role("region",name="Factory workflow status")
     expect(factory_ops.is_visible(), "Software Factory operations board missing")
     expect(factory_ops.locator(".factory-operations-stage").count()==4,
@@ -712,6 +725,9 @@ def audit_case_study_visual_consistency(browser):
                 expect(page.get_by_text("PROYECTO DE APRENDIZAJE").is_visible(), "Learning project should be clearly labeled")
             if slug in ("task-tracker", "nexus-ai"):
                 page.screenshot(path=str(ARTIFACTS / f"case-{slug}-{width}.png"), full_page=True)
+        page.goto(BASE + "/projects/nexus-software-factory?lang=es", wait_until="networkidle")
+        expect(page.get_by_role("heading", name="Nexus Factory", level=1).is_visible(),
+               "Old Factory case-study links must still resolve to renamed Nexus Factory")
         context.close()
 
 def audit_standalone_labs(browser):
