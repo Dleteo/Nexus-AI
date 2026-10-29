@@ -481,3 +481,40 @@
 }
 .projectCard[data-project="commerce"] .studyLink:hover{background:#f5d5bb}
 .projectCard[data-project="commerce"] .demoLink{color:#f1cead}
+
+
+/* Nexus Studio / featured creative editor — coordinated with the real design IDE. */
+.projectCard[data-project="studio"]{
+  --project-accent:#caa4f4;
+  --project-line:#70518f;
+  border:1px solid #795a9a;
+  background:radial-gradient(ellipse at 5% 0%,#6a45914b,transparent 65%),#16111f;
+  box-shadow:0 30px 80px -57px #000,0 0 30px -22px #a977d5;
+}
+.projectCard[data-project="studio"] .projectPicture{
+  background:radial-gradient(ellipse at 77% 10%,#8252b544,transparent 71%),#20162b;
+}
+.projectCard[data-project="studio"] .projectCopy{
+  border-top:1px solid #4e3762;
+  background:radial-gradient(ellipse at 93% 5%,#9a6bb122,transparent 63%),#191321;
+}
+.projectCard[data-project="studio"] .cardTop b{color:#ddb8ff}
+.projectCard[data-project="studio"] .cardTop span{color:#d1b9e4}
+.projectCard[data-project="studio"] .projectTitle h3 a{color:#f3e9ff;letter-spacing:-.035em}
+.projectCard[data-project="studio"] .projectTitle h3 a:hover{color:#dcbdff}
+.projectCard[data-project="studio"] .projectCopy>p{color:#d6c6e4}
+.projectCard[data-project="studio"] .tags span{
+  border-color:#6d5182;
+  background:#2b2137;
+  color:#e9d3ff;
+}
+.projectCard[data-project="studio"] .studyLink{
+  color:#22152f;
+  border:1px solid #d4b1ff;
+  background:linear-gradient(110deg,#d9b9ff,#ac82dc);
+  border-radius:7px;
+  box-shadow:0 10px 30px -21px #c597ff;
+}
+.projectCard[data-project="studio"] .studyLink:hover{background:#edd8ff}
+.projectCard[data-project="studio"] .demoLink{color:#ddbdff}
+.projectCard[data-project="studio"]:hover{box-shadow:0 36px 85px -52px #000,0 0 33px -18px #ab79df}
