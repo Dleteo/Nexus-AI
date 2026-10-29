@@ -530,3 +530,7 @@
  .nexus-lab-shell[data-lab="studio"] .studio-canvas-frame,
  .nexus-lab-shell[data-lab="studio"] .studio-canvas-block{transition:none}
 }
+
+/* CTA contrast is theme-specific and identical to the generated HTML. */
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-button>span{color:#231f22}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-page[data-studio-theme="editorial"] .studio-canvas-button>span{color:#fff}
