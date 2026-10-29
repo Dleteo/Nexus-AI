@@ -787,3 +787,103 @@
 .monitor .footer{border-color:#3c6278}
 @media(max-width:900px){.monitor .hero{grid-template-columns:minmax(0,1fr);min-height:0}}
 @media(max-width:600px){.monitor .hero{padding:19px 14px;border-radius:12px}.monitor .hero h1{font-size:clamp(42px,11vw,65px)}}
+
+/* Nexus Monitor / hospital-inspired clinical software case study.
+   Bright porcelain shell, surgical mint accents, dark telemetry illustration. */
+.monitor{
+ --case-bg:#edf7f2;--case-surface:#fff;--case-raised:#e4f4eb;
+ --case-text:#173c32;--case-muted:#587f70;
+ --case-accent:#087c68;--case-line:#badbcd;
+ background:
+ radial-gradient(ellipse at 94% 2%,#b8e6d368,transparent 62%),
+ #edf7f2;
+}
+.monitor .header{
+ border-color:#c0ddcf;background:#f8fffbeb;
+ backdrop-filter:blur(14px);
+}
+.monitor .brand{color:#204c3e}
+.monitor .brand>span:first-child{
+ background:linear-gradient(140deg,#128c74,#055b53);
+ border:1px solid #188d75;border-radius:10px;
+ box-shadow:0 9px 23px -18px #186f59;color:#f0fffa;
+}
+.monitor .brand b{color:#0b7562}
+.monitor .headerLinks .cv{
+ background:#dff3e8;border:1px solid #a3d4bf;color:#176b55;border-radius:7px;
+}
+.monitor .headerLinks .cv:hover{background:#c4eadc}
+.monitor .languages>a{color:#557d6e}
+.monitor .languages>a[aria-current="page"]{
+ color:#085b4e;border-color:#64b99b;background:#dcf3e7;
+}
+.monitor .hero{
+ min-height:480px;padding:clamp(24px,3.6vw,50px);
+ border:1px solid #b5decb;border-radius:20px;
+ background:
+ radial-gradient(ellipse at 89% 5%,#afe3d17d,transparent 61%),
+ linear-gradient(130deg,#fff,#f1faf4 74%);
+ box-shadow:0 32px 69px -48px #5b907977,inset 0 1px #fff;
+}
+.monitor .eyebrow{
+ color:#087a64;
+ font-weight:850;letter-spacing:.16em;
+}
+.monitor .hero h1{
+ font:850 clamp(50px,5.6vw,91px)/1.03 var(--font-geist-sans),Arial,sans-serif;
+ letter-spacing:-.063em;color:#144638;
+}
+.monitor .lead{color:#4f7365;font-size:clamp(14px,1.2vw,18px);line-height:1.7}
+.monitor .heroVisual{
+ overflow:visible;border:0;background:transparent;box-shadow:none;
+}
+.monitor .heroVisual>div{
+ border:1px solid #b1d4c5;border-radius:15px;
+ box-shadow:0 30px 66px -37px #396f5a7a;
+}
+.monitor .heroVisual figcaption{border:0;color:#678777}
+.monitor .primary{
+ border:1px solid #087c67;border-radius:8px;
+ background:linear-gradient(115deg,#139478,#05685c);
+ color:#fff;box-shadow:0 16px 32px -24px #1a8c74;
+}
+.monitor .primary:hover{background:#075e51;filter:none}
+.monitor .secondary{
+ border:1px solid #8dcdb2;background:#e7f7ec;
+ color:#0a7157;border-radius:8px;
+}
+.monitor .secondary:hover{border-color:#0f9171;background:#d5f0e1}
+.monitor .tech>span{
+ color:#215c49;background:#e3f3eb;
+ border:1px solid #bedfcb;border-radius:7px;
+}
+.monitor .facts{
+ border:1px solid #bcdcca;background:#fff;
+ border-radius:14px;box-shadow:0 14px 34px -30px #43766278;
+}
+.monitor .facts dt,.monitor .sectionNumber,.monitor .decisions>li>span{color:#137861}
+.monitor .facts dd,.monitor .section p,.monitor .list{color:#547568}
+.monitor .section{border-color:#c7dfd4}
+.monitor .section h2{
+ color:#174b3c;letter-spacing:-.035em;
+}
+.monitor .decisions>li{border-color:#d0e4d9}
+.monitor .evidence>a{
+ border:1px solid #c5e0d2;
+ background:linear-gradient(140deg,#fff,#f4fbf5);
+ border-radius:12px;box-shadow:0 14px 31px -31px #397b5b85;
+}
+.monitor .evidence>a:hover{border-color:#7bc4a5;transform:translateY(-2px)}
+.monitor .evidence strong{color:#1a513e}
+.monitor .evidence p{color:#648073}
+.monitor .practice>section{
+ border:1px solid #bddcc8;background:#fff;border-radius:12px;
+}
+.monitor .footer{border-color:#b7d8c6;color:#618270}
+@media(max-width:900px){
+ .monitor .hero{min-height:0;grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+ .monitor .hero{padding:22px 14px;border-radius:14px}
+ .monitor .hero h1{font-size:clamp(45px,11vw,66px)}
+}
