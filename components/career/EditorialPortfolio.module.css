@@ -366,3 +366,24 @@
   }
   .heroAvailability{right:2.7%;bottom:12px}
 }
+
+
+/* Handwritten greeting: write in, hold, erase backwards, repeat.
+   The container retains its height and existing left alignment. */
+.handwrittenInk{
+  display:inline-block;
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  vertical-align:bottom;
+  animation:nexusGreetingWriteErase 6.5s steps(20,end) infinite;
+  will-change:clip-path;
+}
+@keyframes nexusGreetingWriteErase{
+  0%,7%{clip-path:inset(0 100% 0 0)}
+  38%,65%{clip-path:inset(0 0 0 0)}
+  96%,100%{clip-path:inset(0 100% 0 0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .handwrittenInk{animation:none;clip-path:none;will-change:auto}
+}
