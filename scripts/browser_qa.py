@@ -422,6 +422,22 @@ def audit(browser, width, label):
     page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Los cuatro laboratorios", level=1).is_visible(), "Engineering labs missing")
     expect(page.get_by_role("button", name="Add to cart").count() == 4, "Commerce catalog missing")
+    # Catalog and hero preview must use curated photographic sources (or graceful offline fallback).
+    for product_id in ("keyboard", "headset", "monitor", "mouse"):
+        photo = page.locator('.commerce-catalog [data-product-photo="' + product_id + '"]')
+        expect(photo.count() == 1, "Commerce photo container missing: " + product_id)
+        remote = photo.locator("img")
+        if remote.count():
+            url = remote.first.get_attribute("src") or ""
+            expect(url.startswith("https://images.unsplash.com/photo-"),
+                   "Commerce photo must use a curated fixed source: " + product_id)
+            expect(bool(remote.first.get_attribute("alt")),
+                   "Commerce product photograph needs descriptive alt text: " + product_id)
+        else:
+            expect(photo.get_by_role("img").count() == 1,
+                   "Offline commerce photo must display its accessible fallback: " + product_id)
+    expect(page.locator(".lab-screen-products [data-product-photo]").count() == 3,
+           "Storefront preview must use real product image component")
     page.get_by_role("searchbox", name="Search products").fill("Keyboard")
     expect(page.get_by_role("button", name="Add to cart").count() == 1, "Catalog search did not filter")
     page.get_by_role("searchbox", name="Search products").clear()
