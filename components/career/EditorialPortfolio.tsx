@@ -87,7 +87,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
         <div className={s.heroBackdrop} aria-hidden="true">PORTFOLIO</div>
         <div className={s.heroPortrait} role="img" aria-label={t("Fotografía del desarrollador","Developer portrait","Porträt des Entwicklers","Portrait du développeur","Retrato do desenvolvedor")}/>
         <div className={s.heroLeft}>
-          <p className={s.handwritten}>{t("Hola, soy","Hello, I'm","Hallo, ich bin","Bonjour, je suis","Olá, sou")}</p>
+          <p className={s.handwritten}><span className={s.handwrittenInk}>{t("Hola, soy","Hello, I'm","Hallo, ich bin","Bonjour, je suis","Olá, sou")}</span></p>
           <h1 id="hero-title"><span>JOSHUA</span><span>VALLEJO</span><span className={s.red}>SANCHEZ</span></h1>
           <p className={s.role}>{t("DESARROLLADOR WEB JUNIOR","JUNIOR WEB DEVELOPER","JUNIOR WEBENTWICKLER","DÉVELOPPEUR WEB JUNIOR","DESENVOLVEDOR WEB JÚNIOR")}</p>
           <p className={s.heroDescription}>{t("Desarrollo interfaces, aplicaciones con datos y proyectos de IA. Documento el código, las pruebas y lo que todavía estoy aprendiendo.","I build interfaces, data-driven applications and AI projects. I document the code, tests and what I am still learning.","Ich entwickle Oberflächen, datenbasierte Apps und KI-Projekte. Ich dokumentiere Code, Tests und Lernfortschritt.","Je développe des interfaces, des applications de données et des projets d’IA. Je documente le code, les tests et mes apprentissages.","Desenvolvo interfaces, aplicativos de dados e projetos de IA. Documento código, testes e o que ainda estou aprendendo.")}</p>
