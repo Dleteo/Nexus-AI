@@ -40,6 +40,9 @@ jobs:
       - name: Audit all dependencies
         run: npm audit --audit-level=high
 
+      - name: Check Nexus Software Factory workflow and source inventory
+        run: npm run factory:test && npm run factory:sources
+
       - name: Run ESLint
         run: npm run lint
 

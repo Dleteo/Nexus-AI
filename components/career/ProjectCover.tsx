@@ -171,13 +171,13 @@ export default function ProjectCover({project,language,spacious=false}:{project:
     </div>}
     {project==="factory"&&<div className={s.factoryWindow}>
       <div className={s.factoryHeader}>
-        <span className={s.factoryHeaderIdentity}><span className={s.factoryHeaderSymbol} aria-hidden="true">◈</span><span><strong>NEXUS / FACTORY</strong><small>BUILD OPERATIONS · LOCAL WORKFLOW</small></span></span>
+        <span className={s.factoryHeaderIdentity}><span className={s.factoryHeaderSymbol} aria-hidden="true">◈</span><span><strong>NEXUS / SOFTWARE FACTORY</strong><small>MEMORY · BUILD · QA · REVIEW</small></span></span>
         <span className={s.factoryHeaderState}><i aria-hidden="true"/> REVIEW REQUIRED</span>
       </div>
       <div className={s.factoryWorkbenchPreview}>
         <div className={s.factoryPipelinePanel}>
-          <div className={s.factoryPanelCaption}><span>WORKFLOW / 001</span><span>4 STATIONS</span></div>
-          <div className={s.factoryPanelTitle}>Ship with confidence<span aria-hidden="true">.</span></div>
+          <div className={s.factoryPanelCaption}><span>WORKFLOW / 001</span><span>HUMAN CHECKPOINTS</span></div>
+          <div className={s.factoryPanelTitle}>Plan. Review. Deliver.<span aria-hidden="true">.</span></div>
           <div className={s.pipeline}>
             <div><small>01 / INTAKE</small><strong>{t.plan}</strong><i aria-hidden="true">⌑</i></div>
             <div><small>02 / GATE</small><strong>{t.review}</strong><i aria-hidden="true">◇</i></div>
@@ -189,7 +189,7 @@ export default function ProjectCover({project,language,spacious=false}:{project:
         <aside className={s.factoryArtifactPanel}>
           <div className={s.factoryPanelCaption}><span>ARTIFACT EXPLORER</span><span>▣</span></div>
           <div className={s.factoryArtifactTree}>
-            <span className={s.factoryArtifactFolder}>⌄ &nbsp; ▣ starter-page/</span>
+            <span className={s.factoryArtifactFolder}>⌄ &nbsp; ▣ reviewed-delivery/</span>
             <span>⌑ &nbsp; index.html</span>
             <span>⌑ &nbsp; styles.css</span>
             <span>⌑ &nbsp; README.md</span>

@@ -6,7 +6,7 @@ const names: Record<LabId,string> = {
   commerce:"Nexus Commerce",
   studio:"Nexus Studio",
   monitor:"Nexus Monitor",
-  factory:"Nexus Factory",
+  factory:"Nexus Software Factory",
 };
 const isLab = (value:string):value is LabId => Object.hasOwn(names,value);
 export function generateStaticParams(){return Object.keys(names).map(lab=>({lab}));}

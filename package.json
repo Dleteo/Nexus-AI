@@ -6,7 +6,9 @@
     "dev": "next dev --webpack --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "factory:test": "node scripts/nexus_software_factory_qa.mjs",
+    "factory:sources": "node tools/nexus-factory/verify-sources.mjs"
   },
   "dependencies": {
     "next": "16.4.1",

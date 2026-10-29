@@ -112,7 +112,7 @@ export const engineeringCaseStudies: CaseStudy[] = [
   },
   {
     slug:"nexus-factory",
-    title:"Nexus Factory",
+    title:"Nexus Software Factory",
     eyebrow:"05 / FACTORY OPERATIONS · SPEC-FIRST",
     lead:"Centro de producción con clasificación determinista, especificaciones descargables, roles de revisión, aprobación humana y entrega segura de paquetes estáticos.",
     role:"Prototipo de automatización asistido por IA durante el desarrollo; su ejecución actual es determinista y no invoca modelos.",
@@ -121,14 +121,15 @@ export const engineeringCaseStudies: CaseStudy[] = [
     problem:"Unificar las buenas prácticas de las fábricas de software, tableros de QA y arneses para agentes en una herramienta propia, gratuita y verificable, sin confundir planificación con agentes autónomos.",
     approach:[
       "Diseñé una estación de intake y especificación con clasificación reproducible, riesgos, cinco roles y procedimientos recomendados para cada solicitud.",
-      "Documenté controles de calidad, memoria de decisiones y revisión humana, adaptados de las fuentes estudiadas sin instalar agentes o herramientas externas.",
+      "Integré una cola persistente en navegador con memoria y definición exportables, aprobación SHA-256 del snapshot exacto, devolución a planificación y revisión humana final.",
+      "Conservé los paquetes originales rsc-harness y super-board bajo MIT, con inventario verificable; sus agentes e instaladores no se activan desde la web.",
       "Separé propuesta, vista previa de fuentes, aprobación explícita, generación y QA estática en etapas auditables.",
       "Generé únicamente archivos de una plantilla fija; su contenido se escapa, se revisa y se empaqueta con manifiesto e integridad verificable.",
       "Añadí límites de archivos y validaciones de snapshots y ZIPs que no extraen ni ejecutan datos suministrados.",
       "Dejé la ejecución marcada como not_run hasta contar con aislamiento real verificable, sin lanzar procesos de código generado.",
     ],
     evidence:[
-      {label:"Arquitectura Nexus Factory",detail:"Decisiones, procedencia de ideas, límites y mapa del flujo.",url:root+"docs/NEXUS_FACTORY_ARCHITECTURE.md"},
+      {label:"Arquitectura Nexus Software Factory",detail:"Decisiones, procedencia de ideas, límites y mapa del flujo.",url:root+"docs/NEXUS_FACTORY_ARCHITECTURE.md"},
       {label:"Motor determinista",detail:"Triage, roles, riesgos, procedimientos y especificación exportable.",url:root+"lib/nexus-factory-engine.mjs"},
       {label:"Pipeline de Factory",detail:"Aprobación, generación fija y verificaciones.",url:root+"labs/factory/backend.py"},
       {label:"Snapshots seguros",detail:"Validación de rutas, límites y ZIP sin ejecución.",url:root+"labs/factory/sandbox_snapshot.py"},
@@ -147,6 +148,6 @@ export const engineeringCaseStudies: CaseStudy[] = [
     ],
     repository:repo,
     demo:"/labs/factory",
-    next:"Implementar una cola de trabajo persistente con trazabilidad por etapas y evaluación de ejecución aislada únicamente tras pruebas de seguridad verificables.",
+    next:"Verificar aislamiento de ejecución antes de habilitar agentes o comandos; la cola, memoria y revisión ya funcionan localmente.",
   },
 ];

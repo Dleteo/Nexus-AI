@@ -1,5 +1,7 @@
 # Traspaso para Codex — Nexus AI
 
+> **Nexus Software Factory (29/10/2026):** nuevo tablero local con memoria, aprobación del snapshot, revisión final y ZIP portable. Paquetes de referencia MIT incluidos sin ejecución automática. Ver `docs/NEXUS_FACTORY_ARCHITECTURE.md`. El backend SQLite y el bloqueo de ejecución P1 se conservan. Validación y entrega documentadas al finalizar; no atribuir CI previa a estos cambios.
+
 > **Diseño del 29/10/2026:** portada canónica, retrato de mayor resolución con fondo transparente y cinco proyectos con presentación e identidad propias. Las demos individuales tienen navegación compacta y conservan sus controles. Ver [DISENO_CINCO_PROYECTOS_2026-10-29.md](DISENO_CINCO_PROYECTOS_2026-10-29.md) para alcance y validación. El PR #46 continúa abierto; esta entrega no publica ni habilita ejecución de Factory. Consultar la CI del HEAD actual.
 
 > **Actualización del 28/10/2026:** los cinco proyectos destacados (Workspace, Commerce, Studio, Monitor y Factory) ya cuentan con casos de estudio accesibles desde el portafolio, en cinco idiomas, y una guía de entrevista centrada en esos proyectos. Ver [AVANCE_CINCO_PROYECTOS_2026-10-28.md](AVANCE_CINCO_PROYECTOS_2026-10-28.md). Son mejoras de evidencia y UX; no habilitan ejecución P1 ni IA autónoma. Consultar CI del HEAD actual.

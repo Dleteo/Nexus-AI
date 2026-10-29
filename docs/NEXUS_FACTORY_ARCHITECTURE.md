@@ -1,4 +1,56 @@
-# Nexus Factory — design and safety contract
+# Nexus Software Factory
+
+## Alcance implementado
+
+Nexus Software Factory conserva la identidad y las rutas del proyecto mostrado en el portafolio (`/labs/factory`, `/es/labs/factory` y sus otras cuatro traducciones). Integra un nuevo tablero de entregas con el clasificador existente y conserva el pipeline SQLite opcional. Los demás proyectos no se modifican.
+
+El tablero guarda hasta 80 tareas en localStorage, permite búsqueda, copia JSON e importación validada. La importación combina tareas por ID y preserva la versión ya existente. Se guarda antes de actualizar la interfaz: una cuota agotada se comunica como fallo, sin afirmar que la tarea se guardó.
+
+Flujo: planificación → aprobación del contenido exacto → plantilla + QA estática → revisión humana → entrega. Se puede cancelar una tarea o devolverla desde revisión a planificación. La devolución invalida la aprobación anterior. No hay avance arbitrario por arrastrar tarjetas.
+
+La aprobación registra SHA-256 sobre JSON canónico de pares ruta/contenido ordenados. Build y exportación vuelven a calcularlo: un cambio en título, solicitud o archivos invalida la aprobación. Esto es integridad dentro de una aplicación local, no autenticación de una persona ni firma digital. Quien controla el navegador puede modificar su almacenamiento.
+
+La entrega contiene diez archivos: HTML, CSS, `factory.definition.json`, especificación en `02-DOCS/spec.json`, memoria en `02-DOCS/memory.md`, `board.json`, README, QA, revisión y manifiesto. El ZIP usa UTF-8, CRC-32 y entradas almacenadas sin dependencias adicionales. La revisión final exige una nota de al menos diez caracteres; registra una decisión humana, no prueba una revisión de código independiente.
+
+El objetivo de la tarea se presenta como contenido escapado en una plantilla fija. No se implementa automáticamente una funcionalidad, corrección o refactorización descrita en lenguaje natural. Estos tipos clasifican la solicitud. El análisis estático sólo comprueba estructura, rutas, ausencia de scripts, CSS local, documentos y tamaño. `execution=not_run` permanece explícito.
+
+## Combinación de las tres referencias
+
+- **Warp Factories**: coordinación, etapas, puntos de control y definición portable. Fuente de diseño: https://docs.warp.dev/factories y https://docs.warp.dev/factories/how-factories-work. No se copió el producto propietario ni se habilitó una conexión con Warp.
+- **rsc-harness 3.6.0**: continuidad mediante memoria, especificación y selección de procedimientos. Código original del ZIP suministrado, con LICENSE MIT, en `tools/nexus-factory/upstream/rsc-harness`.
+- **super-board 3.1.2**: responsabilidades separadas Build / QA / Review y devolución de hallazgos al flujo. Código original del ZIP, con LICENSE MIT, en `tools/nexus-factory/upstream/super-board`.
+
+Los paquetes completos son material de referencia y distribución; sus instrucciones internas no sustituyen la solicitud del propietario y sus instaladores, hooks y agentes no se ejecutan automáticamente. No se afirma compatibilidad de ejecución integrada entre sus hosts. El flujo propio adapta sus prácticas y genera documentos portables. El inventario SHA-256 permite comprobar que los archivos distribuidos coinciden con los ZIP recibidos; no acredita la seguridad de ese código.
+
+## Qué se conserva
+
+El backend Python/SQLite, sus snapshots validados, manifiestos, endpoint localhost y bloqueo de producción permanecen intactos. Su historial es independiente del nuevo tablero del navegador; no se simula sincronización entre ambos. El clasificador previo sigue disponible para analizar solicitudes y exportar especificaciones. Ningún dato existente se migra ni se borra.
+
+No hay inferencia, ejecución de código generado, integración GitHub, PR, merge, despliegue, pago o servicio nuevo. El sandbox P1 sigue sin acreditarse; no se sustituyen las comprobaciones de aislamiento por el tablero o los controles estáticos. Los criterios pendientes siguen en `docs/FACTORY_SANDBOX_P1.md`.
+
+## Mapa y verificación
+
+- `components/factory/FactoryDeliveryDesk.tsx`: tablero y controles en cinco idiomas.
+- `components/factory/delivery.module.css`: identidad industrial dorada y responsive.
+- `lib/factory/core.ts`: estados, validación, memoria, aprobación y exportación.
+- `lib/factory/zip.ts`: ZIP portable con rutas acotadas.
+- `scripts/nexus_software_factory_qa.mjs`: pruebas de transiciones, alteración de contenido, devolución, cancelación, historial, hashes y ZIP leído por Python.
+- `tools/nexus-factory/verify-sources.mjs`: inventario de los dos ZIP originales.
+
+```sh
+npm run factory:test
+npm run factory:sources
+npm run lint
+npx tsc --noEmit
+npm run build
+```
+
+Los tres últimos verifican el proyecto; los dos primeros verifican el nuevo flujo y las fuentes. Ninguna de estas pruebas demuestra inferencia ni aislamiento de ejecución.
+
+
+## Antecedente del clasificador conservado
+
+# Referencia anterior: Nexus Factory — design and safety contract
 
 Status: original, local-first software-factory prototype in the Nexus AI portfolio. No cloud agent orchestration or general-purpose generated-code execution.
 

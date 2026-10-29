@@ -27,7 +27,7 @@ assert.ok(refactor.acceptance.some(x=>/Preserve externally/.test(x)));
 const unsupported=analyzeFactoryRequest("Review the public documentation for requirements","unknown");
 assert.equal(unsupported.kind,"feature","Unsupported kinds use the constrained default");
 const markdown=factoryBriefMarkdown(analyzeFactoryRequest("Review <script>alert(1)</script> in a sample page","feature"));
-assert.ok(markdown.startsWith("# Nexus Factory"));
+assert.ok(markdown.startsWith("# Nexus Software Factory"));
 assert.ok(!markdown.includes("<script>"),"Export does not emit raw HTML tags from user input");
 assert.ok(markdown.includes("No AI agent ran"),"Explicit runtime honesty is mandatory");
 assert.ok(markdown.includes("A person must approve the spec"),"Human handoff cannot be skipped");
