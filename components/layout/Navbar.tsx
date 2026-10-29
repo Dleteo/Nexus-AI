@@ -7,9 +7,9 @@ import { usePathname, useRouter } from "next/navigation";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/#features", label: "Features" },
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/portfolio", label: "My portfolio" },
+  { href: "/#proyectos", label: "Projects" },
+  { href: "/#habilidades", label: "Skills" },
+  { href: "/#trayectoria", label: "Experience" },
 ];
 
 export default function Navbar() {

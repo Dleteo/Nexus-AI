@@ -11,7 +11,7 @@
 .role{font-family:var(--font-editorial-condensed),sans-serif;letter-spacing:.12em;font-size:15px;font-weight:800;text-transform:uppercase}
 .summary{max-width:380px;font-size:12px;line-height:1.65;color:#d6c9cc;margin:12px 0 0}
 .heroPhoto{min-width:0;position:relative;align-self:stretch;min-height:350px;background:radial-gradient(ellipse at 50% 42%,#661727,#1c1017 75%);border-top:4px solid var(--red);box-shadow:0 0 0 1px #79313d,0 0 60px #e8133830;overflow:hidden}
-.heroPhoto::before{content:"";position:absolute;inset:0;background-image:url("/portfolio/portrait-color-reconstruction.webp"),url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");background-size:cover,cover;background-position:center 22%;background-repeat:no-repeat;filter:contrast(1.05)}
+.heroPhoto::before{content:"";position:absolute;inset:0;background-image:url("/portfolio/joshua-cutout.png"),url("https://raw.githubusercontent.com/Dleteo/portfolio-/main/assets/images/Mitad2.png.png");background-size:cover,cover;background-position:center 22%;background-repeat:no-repeat;filter:contrast(1.05)}
 .heroPhoto::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#100a0d 0%,transparent 35%)}
 .heroLinks{position:absolute;bottom:12px;left:9px;right:9px;z-index:2;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 .heroLinks a{background:#070809d9;color:#fff;border:1px solid #6a464d;padding:9px 12px;font-size:11px}
@@ -104,7 +104,7 @@
 
 
 /* Use the same installed portrait asset for the CV, across all locales. */
-.heroPhoto::before{background-image:url("/portfolio/portrait-color-reconstruction.webp");filter:none;background-size:cover;background-position:50% 32%}
+.heroPhoto::before{background-image:url("/portfolio/joshua-cutout.png");filter:none;background-size:auto 100%;background-position:50% 50%}
 
 
 /* Readable, keyboard-accessible screen CV. Print/PDF layout stays unchanged. */

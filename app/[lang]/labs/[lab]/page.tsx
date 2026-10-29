@@ -6,5 +6,5 @@ export function generateStaticParams(){return ["en","es","de","fr","pt"].flatMap
 export default async function LocalizedStandaloneLab({params}:{params:Promise<{lang:string;lab:string}>}){
  const {lang,lab}=await params;
  if(!isSiteLanguage(lang)||!labs.some(value=>value===lab))notFound();
- return <LabsWorkspace language={lang} initialLab={lab as LabId} standalone/>;
+ return <LabsWorkspace key={lang+"-"+lab} language={lang} initialLab={lab as LabId} standalone/>;
 }

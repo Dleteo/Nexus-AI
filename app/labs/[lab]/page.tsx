@@ -17,5 +17,5 @@ export async function generateMetadata({params}:{params:Promise<{lab:string}>}):
 export default async function StandaloneLab({params}:{params:Promise<{lab:string}>}){
   const {lab}=await params;
   if(!isLab(lab))notFound();
-  return <LabsWorkspace initialLab={lab} standalone/>;
+  return <LabsWorkspace key={lab} initialLab={lab} standalone/>;
 }

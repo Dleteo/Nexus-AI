@@ -1,5 +1,7 @@
 # Traspaso para Codex — Nexus AI
 
+> **Diseño del 29/10/2026:** portada canónica, retrato de mayor resolución con fondo transparente y cinco proyectos con presentación e identidad propias. Las demos individuales tienen navegación compacta y conservan sus controles. Ver [DISENO_CINCO_PROYECTOS_2026-10-29.md](DISENO_CINCO_PROYECTOS_2026-10-29.md) para alcance y validación. El PR #46 continúa abierto; esta entrega no publica ni habilita ejecución de Factory. Consultar la CI del HEAD actual.
+
 > **Actualización del 28/10/2026:** los cinco proyectos destacados (Workspace, Commerce, Studio, Monitor y Factory) ya cuentan con casos de estudio accesibles desde el portafolio, en cinco idiomas, y una guía de entrevista centrada en esos proyectos. Ver [AVANCE_CINCO_PROYECTOS_2026-10-28.md](AVANCE_CINCO_PROYECTOS_2026-10-28.md). Son mejoras de evidencia y UX; no habilitan ejecución P1 ni IA autónoma. Consultar CI del HEAD actual.
 
 **Fecha de referencia:** 28 de octubre de 2026.

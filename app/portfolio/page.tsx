@@ -1,24 +1,12 @@
-import type { Metadata } from "next";
-import Footer from "../../components/layout/Footer";
-import Navbar from "../../components/layout/Navbar";
-import Portfolio from "../../components/sections/Portfolio";
-import Certifications from "../../components/sections/Certifications";
+import { redirect } from "next/navigation";
+import { isSiteLanguage, portfolioPath } from "../../data/site-languages";
 
-export const metadata: Metadata = {
-  title: "Developer Portfolio | Nexus AI",
-  description:
-    "Meet the developer behind Nexus AI. Explore the project case study, technical work and learning certificates in one dedicated portfolio.",
-};
-
-export default function PortfolioPage() {
-  return (
-    <>
-      <Navbar />
-      <main className="min-h-screen">
-        <Portfolio />
-        <Certifications />
-      </main>
-      <Footer />
-    </>
-  );
+// Keep existing bookmarks working while presenting one current portfolio.
+export default async function PortfolioPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string | string[] }>;
+}) {
+  const { lang } = await searchParams;
+  redirect(portfolioPath(typeof lang === "string" && isSiteLanguage(lang) ? lang : "es"));
 }

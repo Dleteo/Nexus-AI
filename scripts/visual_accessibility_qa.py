@@ -19,7 +19,7 @@ def check(condition, reason):
 
 # Browser computed colors, opaque buttons only.
 def button_contrast(locator):
-    return locator.evaluate("""(element) => {
+    return locator.evaluate(r"""(element) => {
       function relativeLuminance(rgb) {
         const values = rgb.match(/[\d.]+/g);
         if (!values || values.length < 3) throw new Error("No RGB color");

@@ -53,7 +53,7 @@ const labels = {
 
 function Title({lab,language,children}:{lab:LabId;language:SiteLanguage;children:ReactNode}){
   const label=labels[lab][language];
-  return <div className="lab-overview-intro"><span className="lab-overview-kicker">{label[0]}</span><h3>{label[1]}</h3><p>{label[2]}</p>{children}<a className="lab-overview-cta" href={"#"+lab+"-controls"}>{label[6]} <span aria-hidden="true">↘</span></a></div>;
+  return <div className="lab-overview-intro"><span className="lab-overview-kicker">{label[0]}</span><h2>{label[1]}</h2><p>{label[2]}</p>{children}<a className="lab-overview-cta" href={"#"+lab+"-controls"}>{label[6]} <span aria-hidden="true">↘</span></a></div>;
 }
 
 export default function LabProductOverview({lab,language,inventory,cartUnits,cartTotal,orderCount,blocks,checks,p95,pipeline}:Props){

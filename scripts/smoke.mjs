@@ -38,6 +38,16 @@ async function checkPublicPage(path, markers) {
   console.log("PASS public page " + path);
 }
 
+async function checkPortfolioRedirect(path, expectedPath) {
+  const response = await request(path, { redirect: "manual" });
+  assert.equal(response.status, 307, path + " must redirect to the current portfolio");
+  const destination = new URL(response.headers.get("location") ?? "", origin);
+  assert.equal(destination.origin, new URL(origin).origin, "Portfolio redirect must remain on this site");
+  assert.equal(destination.pathname, expectedPath, path + " must preserve a supported language");
+  assert.equal(destination.search, "", "Legacy portfolio query must not leak into the canonical URL");
+  console.log("PASS canonical portfolio redirect " + path);
+}
+
 async function checkSignedOutRedirect(path) {
   const response = await request(path, { redirect: "manual" });
   assert.ok([302, 303, 307, 308].includes(response.status), path + " must redirect unsigned-in visitors");
@@ -62,7 +72,18 @@ await checkPublicPage("/en", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER"]);
 await checkPublicPage("/de", ["PORTFOLIO","AUSGEWÄHLTE PROJEKTE"]);
 await checkPublicPage("/fr", ["PORTFOLIO","PROJETS À LA UNE"]);
 await checkPublicPage("/pt", ["PORTFOLIO","PROJETOS EM DESTAQUE"]);
-await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
+for (const [path, destination] of [
+  ["/portfolio", "/"],
+  ["/portfolio?lang=es", "/"],
+  ["/portfolio?lang=en", "/en"],
+  ["/portfolio?lang=de", "/de"],
+  ["/portfolio?lang=fr", "/fr"],
+  ["/portfolio?lang=pt", "/pt"],
+  ["/portfolio?lang=unknown", "/"],
+  ["/portfolio?lang=en&lang=de", "/"],
+]) {
+  await checkPortfolioRedirect(path, destination);
+}
 await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "PROYECTOS SELECCIONADOS", "Nexus AI", "COMPETENCIAS TÉCNICAS"]);
 await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
 await checkPublicPage("/projects/nexus-ai", ["Nexus AI", "El problema", "Decisiones e implementación", "Evidencia en el código"]);

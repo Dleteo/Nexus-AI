@@ -1,51 +1,89 @@
 import type { Metadata } from "next";
 import InterviewReviewChecklist from "../../../components/career/InterviewReviewChecklist";
 import ArchitectureChallenge from "../../../components/career/ArchitectureChallenge";
+import ProjectCover, { type ProjectKind } from "../../../components/career/ProjectCover";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy } from "../../../data/case-studies";
 import { translatedCaseStudy,caseLabels } from "../../../data/localized-case-studies";
 import { isSiteLanguage,siteLanguages,type SiteLanguage,portfolioPath,cvPath } from "../../../data/site-languages";
+import s from "./project.module.css";
+
+const projectKinds: Record<string,ProjectKind> = {
+  "nexus-ai":"workspace", "nexus-commerce":"commerce", "nexus-studio":"studio",
+  "nexus-monitor":"monitor", "nexus-software-factory":"factory",
+};
+const pageCopy = {
+  es:{language:"Idioma del proyecto",breadcrumb:"Ruta de navegación",learning:"PROYECTO DE APRENDIZAJE",study:"CASO DE ESTUDIO",cv:"VER CV",skip:"Ir al caso de estudio",back:"Volver a los proyectos",sketch:"Esquema de interfaz · abre la demo para usar el proyecto",demo:"Explorar este proyecto"},
+  en:{language:"Case study language",breadcrumb:"Breadcrumb",learning:"LEARNING PROJECT",study:"CASE STUDY",cv:"VIEW CV",skip:"Skip to case study",back:"Back to projects",sketch:"Interface sketch · open the demo to use the project",demo:"Explore this project"},
+  de:{language:"Sprache der Fallstudie",breadcrumb:"Brotkrumennavigation",learning:"LERNPROJEKT",study:"FALLSTUDIE",cv:"LEBENSLAUF",skip:"Zur Fallstudie",back:"Zurück zu den Projekten",sketch:"Oberflächenskizze · Projekt über die Demo öffnen",demo:"Dieses Projekt erkunden"},
+  fr:{language:"Langue de l’étude de cas",breadcrumb:"Fil d’Ariane",learning:"PROJET D’APPRENTISSAGE",study:"ÉTUDE DE CAS",cv:"VOIR CV",skip:"Aller à l’étude de cas",back:"Retour aux projets",sketch:"Esquisse d’interface · ouvrez la démo pour utiliser le projet",demo:"Explorer ce projet"},
+  pt:{language:"Idioma do estudo de caso",breadcrumb:"Navegação estrutural",learning:"PROJETO DE APRENDIZAGEM",study:"ESTUDO DE CASO",cv:"VER CV",skip:"Ir ao estudo de caso",back:"Voltar aos projetos",sketch:"Esboço de interface · abra a demo para usar o projeto",demo:"Explorar este projeto"},
+} as const;
 
 export function generateStaticParams() { return caseStudies.map(({slug}) => ({slug})); }
 export async function generateMetadata({params,searchParams}: {params: Promise<{slug:string}>;searchParams:Promise<{lang?:string}>}): Promise<Metadata> {
- const {slug}=await params; const {lang}=await searchParams;const locale:SiteLanguage=lang&&isSiteLanguage(lang)?lang:"es";const base=getCaseStudy(slug);const project=base?translatedCaseStudy(base,locale):undefined;
- return {title: project ? project.title+" | Nexus AI" : "Proyecto no encontrado", description:project?.lead};
+  const {slug}=await params;
+  const {lang}=await searchParams;
+  const locale:SiteLanguage=lang&&isSiteLanguage(lang)?lang:"es";
+  const base=getCaseStudy(slug);
+  const project=base?translatedCaseStudy(base,locale):undefined;
+  return {title:project?project.title+" | Nexus AI":"Proyecto no encontrado",description:project?.lead};
 }
+
 export default async function CaseStudyPage({params,searchParams}: {params:Promise<{slug:string}>;searchParams:Promise<{lang?:string}>}) {
- const {slug}=await params;const {lang}=await searchParams;const locale:SiteLanguage=lang&&isSiteLanguage(lang)?lang:"es";const base=getCaseStudy(slug);if(!base)notFound();const project=translatedCaseStudy(base,locale);const label=caseLabels[locale];const back=portfolioPath(locale);
- const section="mt-12 border-t border-[#512330] pt-8";
- const isLearning=["task-tracker","hangman","nexus-foundation"].includes(slug);
- return <main lang={locale} className="min-h-screen min-w-0 overflow-x-clip bg-[#080608] text-[#f5f1f1]">
-  <header className="sticky top-0 z-40 border-b border-[#71212e] bg-[#090709]/95 px-5 backdrop-blur-md sm:px-9">
-   <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-3 py-2">
-    <Link href={back} className="inline-flex items-center gap-3 font-black tracking-[.08em] text-white focus-visible:outline-2 focus-visible:outline-[#f1283c]"><span aria-hidden="true" className="grid h-9 w-9 place-items-center border-2 border-[#f1283c] text-xl text-[#ff5b70]">N</span><span>NEXUS <span className="text-[#ff6375]">AI</span></span></Link>
-    <div className="flex flex-wrap items-center gap-3 text-xs font-semibold sm:gap-5"><Link href={back+"#proyectos"} className="text-[#f4a3b6] hover:text-white">{label.back}</Link><Link href={cvPath(locale)} className="rounded-md border border-[#f1283c] px-4 py-2.5 text-[#ff8291] transition-colors hover:bg-[#32111b]">{locale==="es"?"VER CV":locale==="en"?"VIEW CV":locale==="de"?"LEBENSLAUF":locale==="fr"?"VOIR CV":"VER CV"}</Link></div>
-   </div>
-  </header>
-  <div className="px-5 py-9 sm:px-9 sm:py-14">
-  <div className="mx-auto min-w-0 max-w-4xl">
-   <nav aria-label={({es:"Ruta de navegación",en:"Breadcrumb",de:"Brotkrumennavigation",fr:"Fil d’Ariane",pt:"Navegação estrutural"} as const)[locale]} className="mb-9 flex flex-wrap items-center gap-3 text-sm text-[#f4a3b6]">
-    <Link className="hover:underline" href={back}>{label.back}</Link><span className="text-slate-500">/</span><Link className="hover:underline" href={back+"#proyectos"}>{label.project}</Link><span className="text-slate-500">/</span><span className="text-slate-200">{project.title}</span>
-   </nav>
-   <div className="mb-7 flex flex-wrap gap-2" role="group" aria-label={({es:"Idioma del proyecto",en:"Case study language",de:"Sprache der Fallstudie",fr:"Langue de l’étude de cas",pt:"Idioma do estudo de caso"} as const)[locale]}>{siteLanguages.map(item=><Link key={item.code} href={"/projects/"+slug+"?lang="+item.code} lang={item.code} aria-current={locale===item.code?"page":undefined} className={locale===item.code?"inline-flex min-h-11 items-center rounded-lg border border-[#eb819b] bg-[#4b2531] px-3 py-2 text-xs text-white":"inline-flex min-h-11 items-center rounded-lg border border-[#76515a] px-3 py-2 text-xs text-slate-200 transition-colors hover:border-[#eb819b] hover:text-white"}>{item.nativeName}</Link>)}</div>
-   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#f4a3b6]">{isLearning ? ({es:"PROYECTO DE APRENDIZAJE",en:"LEARNING PROJECT",de:"LERNPROJEKT",fr:"PROJET D’APPRENTISSAGE",pt:"PROJETO DE APRENDIZAGEM"} as const)[locale] : "NEXUS / CASE STUDY"} · {project.tech.slice(0,3).join(" · ")}</p>
-   <h1 className="mt-5 break-words font-[family-name:var(--font-editorial-condensed)] text-5xl font-extrabold tracking-tight sm:text-7xl">{project.title}</h1>
-   <p className="mt-6 max-w-3xl text-xl leading-relaxed text-slate-300">{project.lead}</p>
-   <div className="mt-8 flex flex-wrap gap-2">{project.tech.map(x=><span key={x} className="rounded-lg border border-[#58303a] bg-[#1d1218] px-3 py-2 text-xs text-[#f3bccb]">{x}</span>)}</div>
-   <dl className="mt-12 grid gap-5 border-y border-slate-700/60 py-7 sm:grid-cols-2">
-    <div><dt className="text-xs uppercase tracking-widest text-[#f4a3b6]">{label.role}</dt><dd className="mt-2 text-sm leading-6 text-slate-200">{project.role}</dd></div>
-    <div><dt className="text-xs uppercase tracking-widest text-[#f4a3b6]">{label.status}</dt><dd className="mt-2 text-sm leading-6 text-slate-200">{project.status}</dd></div>
-   </dl>
-   <section className={section}><h2 className="text-2xl font-semibold">{label.problem}</h2><p className="mt-4 leading-8 text-slate-300">{project.problem}</p></section>
-   <section className={section}><h2 className="text-2xl font-semibold">{label.approach}</h2><ol className="mt-5 space-y-5">{project.approach.map((x,i)=><li key={x} className="flex gap-5 text-slate-300 leading-7"><span className="font-mono text-[#f4a3b6]">{String(i+1).padStart(2,"0")}</span>{x}</li>)}</ol></section>
-   {project.evidence.length>0&&<section className={section}><h2 className="text-2xl font-semibold">{label.evidence}</h2><div className="mt-5 grid gap-3">{project.evidence.map(x=><a key={x.url} href={x.url} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-[#58303a] bg-[#1d1218] p-5 transition-colors hover:border-[#e56b85] focus-visible:outline-2 focus-visible:outline-[#eb819b]"><strong className="text-[#f3bccb]">{x.label} ↗</strong><p className="mt-2 break-words text-sm leading-6 text-slate-300">{x.detail}</p></a>)}</div></section>}
-   <section className={section}><h2 className="text-2xl font-semibold">{label.lessons}</h2><ul className="mt-5 list-disc space-y-3 pl-5 leading-7 text-slate-300">{project.lessons.map(x=><li key={x}>{x}</li>)}</ul></section>
-   <section className={section}><h2 className="text-2xl font-semibold">{label.limits}</h2><ul className="mt-5 list-disc space-y-3 pl-5 leading-7 text-slate-300">{project.limitations.map(x=><li key={x}>{x}</li>)}</ul><p className="mt-5 text-[#f3bccb]"><strong>{label.next}:</strong> {project.next}</p></section>
-   <ArchitectureChallenge slug={project.slug} language={locale}/>
-   <InterviewReviewChecklist study={project} language={locale}/>
-   <div className="mt-12 flex flex-wrap gap-4">{project.repository&&<a href={project.repository} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#ed8797] px-5 py-3 font-semibold text-[#180c11]">{label.code} ↗</a>}{project.demo&&(project.demo.startsWith("/")?<Link href={project.demo.startsWith("/labs")&&locale!=="es"?"/"+locale+project.demo:project.demo} className="rounded-lg border border-slate-600 px-5 py-3">{project.slug==="nexus-ai"?label.assistant:label.demo} →</Link>:<a href={project.demo} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-5 py-3">{label.demo} ↗</a>)}<Link href={back+"#proyectos"} className="rounded-lg border border-slate-600 px-5 py-3">{label.project}</Link></div>
-  </div>
-  </div>
- </main>;
+  const {slug}=await params;
+  const {lang}=await searchParams;
+  const locale:SiteLanguage=lang&&isSiteLanguage(lang)?lang:"es";
+  const base=getCaseStudy(slug);
+  if(!base)notFound();
+  const project=translatedCaseStudy(base,locale);
+  const label=caseLabels[locale];
+  const copy=pageCopy[locale];
+  const back=portfolioPath(locale);
+  const kind=projectKinds[slug];
+  const demo=project.demo?.startsWith("/labs")&&locale!=="es"?"/"+locale+project.demo:project.demo;
+  const isLearning=["task-tracker","hangman","nexus-foundation"].includes(slug);
+
+  return <main lang={locale} data-project-kind={kind||"legacy"} className={`${s.page} ${kind?s[kind]:s.legacy}`}>
+    <a className={s.skip} href="#case-content">{copy.skip}</a>
+    <header className={s.header}>
+      <div className={s.headerInner}>
+        <Link href={back} className={s.brand} aria-label="NEXUS AI"><span aria-hidden="true">N</span><span>NEXUS <b>AI</b></span></Link>
+        <div className={s.headerLinks}><Link href={back+"#proyectos"}>← {label.back}</Link><Link href={cvPath(locale)} className={s.cv}>{copy.cv} →</Link></div>
+      </div>
+    </header>
+    <div id="case-content" className={s.content} tabIndex={-1}>
+      <div className={s.contextRow}>
+        <nav aria-label={copy.breadcrumb} className={s.breadcrumb}><Link href={back}>{label.back}</Link><span aria-hidden="true">/</span><Link href={back+"#proyectos"}>{label.project}</Link><span aria-hidden="true">/</span><span>{project.title}</span></nav>
+        <div className={s.languages} role="group" aria-label={copy.language}>{siteLanguages.map(item=><Link key={item.code} href={"/projects/"+slug+"?lang="+item.code} lang={item.code} aria-current={locale===item.code?"page":undefined}>{item.nativeName}</Link>)}</div>
+      </div>
+      <section className={s.hero} aria-labelledby="case-title">
+        <div className={s.heroText}>
+          <p className={s.eyebrow}>{isLearning?copy.learning:copy.study} <span aria-hidden="true">/</span> {project.tech.slice(0,2).join(" · ")}</p>
+          <h1 id="case-title">{project.title}</h1>
+          <p className={s.lead}>{project.lead}</p>
+          <div className={s.actions}>
+            {demo&&(demo.startsWith("/")?<Link href={demo} className={s.primary}>{project.slug==="nexus-ai"?label.assistant:label.demo} <span aria-hidden="true">→</span></Link>:<a href={demo} target="_blank" rel="noopener noreferrer" className={s.primary}>{label.demo} →</a>)}
+            {project.repository&&<a href={project.repository} target="_blank" rel="noopener noreferrer" className={s.secondary}>{label.code} →</a>}
+          </div>
+        </div>
+        {kind&&<figure className={s.heroVisual}><ProjectCover project={kind} language={locale} spacious/><figcaption>{copy.sketch}</figcaption></figure>}
+      </section>
+      <div className={s.tech}>{project.tech.map(tech=><span key={tech}>{tech}</span>)}</div>
+      <dl className={s.facts}>
+        <div><dt>{label.role}</dt><dd>{project.role}</dd></div>
+        <div><dt>{label.status}</dt><dd>{project.status}</dd></div>
+      </dl>
+      <div className={s.reading}>
+        <section className={s.section}><span className={s.sectionNumber} aria-hidden="true">01 /</span><div><h2>{label.problem}</h2><p>{project.problem}</p></div></section>
+        <section className={s.section}><span className={s.sectionNumber} aria-hidden="true">02 /</span><div><h2>{label.approach}</h2><ol className={s.decisions}>{project.approach.map((item,index)=><li key={item}><span aria-hidden="true">{String(index+1).padStart(2,"0")}</span><p>{item}</p></li>)}</ol></div></section>
+        {project.evidence.length>0&&<section className={s.section}><span className={s.sectionNumber} aria-hidden="true">03 /</span><div><h2>{label.evidence}</h2><div className={s.evidence}>{project.evidence.map(item=><a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer"><strong>{item.label} <span aria-hidden="true">→</span></strong><p>{item.detail}</p></a>)}</div></div></section>}
+        <section className={s.section}><span className={s.sectionNumber} aria-hidden="true">04 /</span><div><h2>{label.lessons}</h2><ul className={s.list}>{project.lessons.map(item=><li key={item}>{item}</li>)}</ul></div></section>
+        <section className={s.section}><span className={s.sectionNumber} aria-hidden="true">05 /</span><div><h2>{label.limits}</h2><ul className={s.list}>{project.limitations.map(item=><li key={item}>{item}</li>)}</ul><p className={s.next}><strong>{label.next}</strong>{project.next}</p></div></section>
+        <div className={s.practice}><ArchitectureChallenge slug={project.slug} language={locale}/><InterviewReviewChecklist study={project} language={locale}/></div>
+      </div>
+      <footer className={s.footer}><Link href={back+"#proyectos"}>← {copy.back}</Link><span>NEXUS / {kind?.toUpperCase()||"PORTFOLIO"}</span></footer>
+    </div>
+  </main>;
 }

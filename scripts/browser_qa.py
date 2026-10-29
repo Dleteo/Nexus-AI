@@ -241,14 +241,32 @@ def audit(browser, width, label):
     expect(page.locator('[class*="heroPortrait"]').count() == 1, "Owned portrait missing")
     portrait = page.locator('[class*="heroPortrait"]')
     applied_mask = portrait.evaluate("(el) => getComputedStyle(el).maskImage")
-    expect("portrait-silhouette-mask.svg" in applied_mask,
-           "Background removal mask is not applied to the portrait")
-    mask_asset = page.request.get(BASE + "/portfolio/portrait-silhouette-mask.svg")
-    expect(mask_asset.status == 200, "Background removal asset could not be loaded")
-    image_asset = page.request.get(BASE + "/portfolio/portrait-color-reconstruction.webp")
-    expect(image_asset.status == 200, "Original portrait image missing")
+    expect(applied_mask == "none",
+           "The transparent portrait must not use the mismatched legacy silhouette mask")
+    portrait_source = portrait.evaluate("(el) => getComputedStyle(el).backgroundImage")
+    expect("joshua-cutout.png" in portrait_source,
+           "Homepage must use the high-resolution transparent portrait")
+    image_asset = page.request.get(BASE + "/portfolio/joshua-cutout.png")
+    expect(image_asset.status == 200, "High-resolution portrait image missing")
+    original_width = page.evaluate("""async () => {
+        const image = new Image();
+        image.src = '/portfolio/joshua-cutout.png';
+        await image.decode();
+        return image.naturalWidth;
+    }""")
+    expect(original_width >= 1024, "Portrait source must retain its original resolution")
 
     expect(page.locator('[class*="projectCard"]').count() == 5, "Expected Nexus AI and four engineering lab featured cards")
+    project_cards = page.locator('article[data-project]')
+    expect(project_cards.count() == 5, "Every featured project needs an individual presentation")
+    previous_bottom = None
+    for project in project_cards.all():
+        bounds = project.bounding_box()
+        expect(bounds is not None, "Project presentation must be visible")
+        if previous_bottom is not None:
+            expect(bounds["y"] >= previous_bottom + 20,
+                   "Projects must have separate rows with readable spacing")
+        previous_bottom = bounds["y"] + bounds["height"]
     expect(page.locator('[class*="proofColumn"]').count() == 3, "Education, skills and process strip missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Homepage horizontal overflow at {width}px: {dimensions}")
@@ -293,42 +311,25 @@ def audit(browser, width, label):
         dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
         expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Localized page overflow at {width}px: {language}")
     page.goto(BASE + "/portfolio", wait_until="networkidle")
-    expect(page.get_by_role("heading", name="Certifications & Training").count() == 1, "Missing portfolio certificates heading")
-    expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).count() == 1, "Missing cybersecurity training")
-    expect(page.get_by_text("94", exact=True).count() >= 1, "Incorrect training hours")
+    expect(page.url == BASE + "/", "Legacy portfolio must redirect to the current Spanish portfolio")
+    featured = page.locator("#proyectos")
+    expect(featured.locator("article").count() == 5, "Canonical portfolio must show five current projects")
+    for project in ["Nexus AI Workspace", "Nexus Commerce", "Nexus Studio", "Nexus Monitor", "Nexus Software Factory"]:
+        expect(featured.get_by_role("heading", name=project, exact=True).count() == 1,
+               "Canonical portfolio missing current project: " + project)
+    expect(page.get_by_role("heading", name="EDUCACIÓN Y FORMACIÓN", exact=False).count() == 1,
+           "Canonical portfolio must retain documented training")
+    expect(page.locator("#certificados").get_by_role("link", name="Ver formación y CV", exact=False).count() == 1,
+           "Canonical portfolio must retain its training and CV link")
+    expect(page.get_by_role("link", name="Ver CV", exact=False).count() >= 1, "Canonical portfolio CV action missing")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
-    expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Portfolio horizontal overflow: {dimensions}")
-    expect(page.get_by_role("heading", name="Interested in my work?").count() == 1, "Missing contact section")
-    expect(page.get_by_role("link", name="View / save my CV").count() == 1, "Missing CV action")
-    expect(page.get_by_role("link", name="GitHub", exact=True).count() >= 1, "Missing GitHub profile")
-    expect(page.locator("#other-projects article").count() == 3, "Expected exactly three curated project cards")
-    for project in ["Task Tracker", "Hangman Game", "Text Encoder / Decoder"]:
-        expect(page.get_by_role("link", name="Open live demo: " + project).count() == 1,
-               "Missing demo link: " + project)
-        expect(page.get_by_role("link", name="View source code: " + project).count() == 1,
-               "Missing repository link: " + project)
-    for project in ["Task Tracker", "Hangman Game", "Text Encoder / Decoder"]:
-        expect(page.get_by_role("link", name="View original project image: " + project).count() == 1,
-               "Project missing authentic image link: " + project)
-    expect(page.get_by_alt_text("Original screenshot of the JavaScript task tracker.").count() == 1,
-           "Missing authentic task tracker screenshot")
-    expect(page.get_by_alt_text("Original castle artwork used in the Hangman Game.").count() == 1,
-           "Missing project artwork")
-    expect(page.get_by_alt_text("Original screenshot of the text encoder and decoder interface.").count() == 1,
-           "Missing authentic encoder screenshot")
-    group = page.get_by_role("group", name="Filter certificates by record type")
-    group.get_by_role("button", name="Attendance certificates").click()
-    expect(group.get_by_role("button", name="Attendance certificates").get_attribute("aria-pressed") == "true",
-           "Training filter did not activate")
-    expect(page.get_by_text("Showing 4 records").is_visible(), "Training records filter count incorrect")
-    expect(page.get_by_text("Hacking Ético — Certificado de Asistencia", exact=True).is_visible(),
-           "Training record filtered out")
-    group.get_by_role("button", name="All records").click()
-    expect(page.get_by_text("Showing 6 records").is_visible(), "All records filter did not restore")
-    expect(page.locator('img[alt="Certificate for Hacking Ético — Certificado de Asistencia"]').count() == 1,
-           "Cybersecurity image missing")
-    page.screenshot(path=str(ARTIFACTS / f"portfolio-{label}.png"), full_page=True)
-    print(f"PASS home and separate portfolio navigation, filters, image and overflow at {width}px", flush=True)
+    expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Canonical portfolio horizontal overflow: {dimensions}")
+    page.screenshot(path=str(ARTIFACTS / f"portfolio-canonical-{label}.png"), full_page=True)
+    page.goto(BASE + "/portfolio?lang=en", wait_until="networkidle")
+    expect(page.url == BASE + "/en", "Legacy portfolio must preserve the selected language")
+    expect(page.get_by_role("heading", name="FEATURED PROJECTS", exact=False).count() == 1,
+           "Localized canonical portfolio missing after redirect")
+    print(f"PASS canonical portfolio redirects, five projects, training and CV at {width}px", flush=True)
     page.goto(BASE + "/resume", wait_until="networkidle")
     expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").is_visible(), "Missing resume heading")
     expect(page.get_by_role("link", name="Descargar CV en español (PDF)").is_visible(), "Missing resume PDF download")
@@ -412,7 +413,7 @@ def audit(browser, width, label):
     page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
     # Four engineering lab demos: navigation and core user paths.
     page.goto(BASE + "/labs?lab=commerce", wait_until="networkidle")
-    expect(page.get_by_role("heading", name="CUATRO PROYECTOS.").is_visible(), "Engineering labs missing")
+    expect(page.get_by_role("heading", name="Los cuatro laboratorios", level=1).is_visible(), "Engineering labs missing")
     expect(page.get_by_role("button", name="Add to cart").count() == 4, "Commerce catalog missing")
     page.get_by_role("searchbox", name="Search products").fill("Keyboard")
     expect(page.get_by_role("button", name="Add to cart").count() == 1, "Catalog search did not filter")
@@ -500,7 +501,16 @@ def audit(browser, width, label):
 
 
 def audit_case_study_visual_consistency(browser):
-    """Prevent the old learning-project theme from drifting away from Nexus editorial."""
+    """Preserve portfolio navigation while giving every featured project its own theme."""
+    themes = {
+        "task-tracker": ("legacy", "rgb(8, 6, 8)"),
+        "hangman": ("legacy", "rgb(8, 6, 8)"),
+        "nexus-ai": ("workspace", "rgb(13, 24, 39)"),
+        "nexus-commerce": ("commerce", "rgb(16, 37, 31)"),
+        "nexus-studio": ("studio", "rgb(32, 26, 43)"),
+        "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
+        "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
+    }
     for width in (375, 1440):
         context = browser.new_context(viewport={"width": width, "height": 900})
         page = context.new_page()
@@ -512,7 +522,10 @@ def audit_case_study_visual_consistency(browser):
             expect(header.get_by_role("link", name="NEXUS AI").is_visible(), "Portfolio branding missing")
             expect(header.get_by_role("link", name="VER CV").is_visible(), "Localized CV navigation missing")
             background = page.locator("main").evaluate("(element) => getComputedStyle(element).backgroundColor")
-            expect(background == "rgb(8, 6, 8)", "Case study has diverged from editorial dark theme")
+            kind, expected_background = themes[slug]
+            expect(page.locator("main").get_attribute("data-project-kind") == kind,
+                   "Wrong project identity on " + slug)
+            expect(background == expected_background, "Project theme missing on " + slug)
             overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
             expect(not overflow, "Horizontal overflow on " + slug)
             if slug == "task-tracker":
@@ -541,9 +554,29 @@ def audit_standalone_labs(browser):
                    "Real product operation missing for "+lab)
             expect(page.locator(".lab-overview-screen").count()==1,
                    "Product-specific live data preview missing for "+lab)
+            expect(page.locator(".lab-dedicated-layout > nav").count()==0,
+                   "An individual project must not retain the shared workspace sidebar")
+            switcher = page.locator("details.lab-project-switcher")
+            expect(switcher.count()==1 and switcher.get_attribute("open") is None,
+                   "Other projects should be in a collapsed selector")
+            switcher.locator("summary").focus()
+            page.keyboard.press("Enter")
+            expect(switcher.get_attribute("open") is not None,
+                   "Project selector must open with the keyboard")
+            expect(switcher.get_by_role("link").count()==4,
+                   "Project selector must retain the four individual destinations")
+            switcher.locator("summary").click()
             expect(not page.evaluate("document.documentElement.scrollWidth>innerWidth+2"),
                    "Horizontal overflow for "+lab)
             page.screenshot(path=str(ARTIFACTS/f"standalone-{lab}-{width}.png"),full_page=True)
+        # Client-side navigation must mount the selected product, not retain the
+        # previous route's initialLab state.
+        page.locator("details.lab-project-switcher summary").click()
+        page.get_by_role("link", name="Nexus Commerce", exact=False).click()
+        page.wait_for_url("**/labs/commerce")
+        page.get_by_role("heading", name="Nexus Commerce", level=1).wait_for(state="visible")
+        expect(page.locator('main[data-lab="commerce"]').count()==1,
+               "Switching project routes must update the active product")
         context.close()
 
 def main():
