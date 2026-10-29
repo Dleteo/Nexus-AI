@@ -528,7 +528,7 @@ def audit_case_study_visual_consistency(browser):
     themes = {
         "task-tracker": ("legacy", "rgb(8, 6, 8)"),
         "hangman": ("legacy", "rgb(8, 6, 8)"),
-        "nexus-ai": ("workspace", "rgb(13, 24, 39)"),
+        "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
         "nexus-commerce": ("commerce", "rgb(16, 37, 31)"),
         "nexus-studio": ("studio", "rgb(32, 26, 43)"),
         "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
@@ -551,6 +551,17 @@ def audit_case_study_visual_consistency(browser):
             expect(background == expected_background, "Project theme missing on " + slug)
             overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
             expect(not overflow, "Horizontal overflow on " + slug)
+            if slug == "nexus-ai":
+                expect(page.locator(".nexus-showcase-window").count() == 1,
+                       "Nexus AI must present the obsidian/gold assistant UI preview")
+                expect(page.get_by_text("NEXUS PORTFOLIO", exact=True).count() > 0,
+                       "Portfolio assistant identity missing from preview")
+                expect(page.get_by_text("NEXUS TECHNICAL", exact=True).count() > 0,
+                       "Technical assistant identity missing from preview")
+                expect(page.locator('a[href="/assistant"]').count() >= 1,
+                       "Nexus AI case study must open the real assistant")
+                expect(page.locator('[class*="nexusHighlights"] > [class*="nexusHighlight"]').count() >= 3,
+                       "Architecture and safety evidence should remain visible")
             if slug == "task-tracker":
                 expect(page.get_by_text("PROYECTO DE APRENDIZAJE").is_visible(), "Learning project should be clearly labeled")
             if slug in ("task-tracker", "nexus-ai"):
