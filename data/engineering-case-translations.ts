@@ -3,7 +3,7 @@ import type {SiteLanguage} from "./site-languages";
 
 type Fields = Pick<CaseStudy,"lead"|"role"|"status"|"problem"|"approach"|"lessons"|"limitations"|"next">;
 type Locale = Exclude<SiteLanguage,"es">;
-type LabSlug = "nexus-commerce"|"nexus-studio"|"nexus-monitor"|"nexus-software-factory";
+type LabSlug = "nexus-commerce"|"nexus-studio"|"nexus-monitor"|"nexus-factory";
 
 /** Complete human-readable case studies; no machine translator or provider call. */
 export const engineeringCaseTranslations:Record<Locale,Record<LabSlug,Fields>> = {
