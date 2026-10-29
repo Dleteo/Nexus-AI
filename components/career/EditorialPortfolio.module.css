@@ -335,11 +335,12 @@
   }
   .heroBackdrop{
     top:8px;
-    font-size:clamp(108px,16vw,260px);
+    font-size:clamp(120px,18vw,300px);
     color:#ed092d;
+    transform:translateX(2%);
   }
   .heroLeft{
-    padding-left:clamp(26px,2.5vw,48px);
+    padding-left:clamp(32px,3.2vw,58px);
     padding-bottom:10px;
     transform:translateY(-6px);
   }
