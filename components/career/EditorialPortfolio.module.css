@@ -797,4 +797,4 @@
    Only recolor existing borders; preserve their widths, layout and surfaces.
    This scoped identity rule takes precedence over individual component themes. */
 .page,
-.page *{border-color:var(--red)!important}
+.page.page *{border-color:var(--red)!important}
