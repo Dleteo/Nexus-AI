@@ -239,13 +239,13 @@
   box-shadow:inset 0 1px #e8bb7545;
   color:#f4d299;
 }
-.spacious .workspace .workspaceWindow{min-height:240px}
-.spacious .workspace .workspaceBody{padding:20px 20px 15px}
-.spacious .workspace .workspaceBody>strong.workspaceTitle{font-size:31px}
-.spacious .workspace .noteCards>.workspaceFeature{min-height:133px;padding:12px}
-.spacious .workspace .workspaceFeatureIcon{width:38px;height:38px;font-size:23px}
-.spacious .workspace .workspaceFeature>strong{font-size:12px}
-.spacious .workspace .workspaceFeature>small{font-size:9px}
+.workspace.spacious .workspaceWindow{min-height:240px}
+.workspace.spacious .workspaceBody{padding:20px 20px 15px}
+.workspace.spacious .workspaceBody>strong.workspaceTitle{font-size:31px}
+.workspace.spacious .noteCards>.workspaceFeature{min-height:133px;padding:12px}
+.workspace.spacious .workspaceFeatureIcon{width:38px;height:38px;font-size:23px}
+.workspace.spacious .workspaceFeature>strong{font-size:12px}
+.workspace.spacious .workspaceFeature>small{font-size:9px}
 @media(max-width:630px){
   .workspace .workspaceBody{padding:13px 10px}
   .workspace .workspaceRail{width:34px;flex-basis:34px;padding-inline:5px}
@@ -257,8 +257,8 @@
   .workspace .workspaceFeature>small{font-size:7px}
   .workspace .workspaceFeatureChip{font-size:5px}
   .workspace .workspaceFeatureDots,.workspace .workspaceFeatureNodes,.workspace .workspaceFeatureBars{gap:2px}
-  .spacious .workspace .workspaceBody{padding:14px 10px}
-  .spacious .workspace .noteCards>.workspaceFeature{padding:8px 5px;min-height:105px}
+  .workspace.spacious .workspaceBody{padding:14px 10px}
+  .workspace.spacious .noteCards>.workspaceFeature{padding:8px 5px;min-height:105px}
 }
 @media(max-width:370px){
   .workspace .workspaceFeatureChip{display:none}
