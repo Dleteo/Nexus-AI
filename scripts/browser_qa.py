@@ -283,6 +283,12 @@ def audit(browser, width, label):
            "Nexus Workspace must show three detailed feature panels, not skeleton rectangles")
     expect(preview.locator('[class*="workspaceFeatureIcon"]').count() == 3,
            "Gold-on-obsidian feature icon tiles missing")
+    studio_portfolio_card = page.locator('article[data-project="studio"]')
+    expect(studio_portfolio_card.count()==1,"Featured Studio card missing")
+    expect(studio_portfolio_card.locator('[class*="studioEditorShell"]').count()==1,
+           "Studio featured card must show its own layers, canvas and inspector")
+    expect(studio_portfolio_card.locator('[class*="studioPropertyPanel"]').count()==1,
+           "Studio featured card must include the design inspector")
     expect(workspace_card.locator('a[href*="/projects/nexus-ai?lang="]').count() >= 1,
            "Portfolio card must retain working Nexus AI case-study link")
     previous_bottom = None
@@ -491,6 +497,13 @@ def audit(browser, width, label):
     page.get_by_role("button", name="Nexus Studio").click()
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "HTML editor export missing")
     expect(page.get_by_role("button", name="Export blocks JSON").is_visible(), "Studio JSON export missing")
+    expect(page.locator(".studio-design-console").count()==1, "Professional Studio editor shell missing")
+    preview_tabs=page.get_by_role("group",name="Studio preview mode")
+    preview_tabs.get_by_role("button",name="〈/〉 HTML").click()
+    expect(page.get_by_role("region",name="Generated HTML source").is_visible(), "Studio source editor tab missing")
+    expect(page.get_by_role("region",name="Generated HTML source").get_by_text("Nexus Studio Export",exact=False).count()>0, "Studio HTML source must be generated from the current blocks")
+    preview_tabs.get_by_role("button",name="◈ Design").click()
+    expect(page.locator(".studio-canvas-page").count()==1,"Studio canvas must return from source preview")
     viewport = page.get_by_role("group", name="Preview viewport")
     expect(viewport.locator("button").count() == 3, "Studio must support desktop, tablet and mobile preview")
     viewport.locator("button").nth(2).click()
@@ -577,7 +590,7 @@ def audit_case_study_visual_consistency(browser):
         "hangman": ("legacy", "rgb(8, 6, 8)"),
         "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
         "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
-        "nexus-studio": ("studio", "rgb(32, 26, 43)"),
+        "nexus-studio": ("studio", "rgb(18, 14, 27)"),
         "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
         "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
     }
@@ -598,6 +611,14 @@ def audit_case_study_visual_consistency(browser):
             expect(background == expected_background, "Project theme missing on " + slug)
             overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 2")
             expect(not overflow, "Horizontal overflow on " + slug)
+            if slug == "nexus-studio":
+                expect(page.locator('[class*="studioEditorShell"]').count()==1,
+                       "Studio case study must show a complete layers/canvas/inspector editor")
+                expect(page.locator('[class*="studioLayerActive"]').count()==1,
+                       "Studio case study must show a selected editor layer")
+                expect(page.locator('a[href*="/labs/studio"]').count()>0,
+                       "Studio case study must retain the functional editor link")
+                page.screenshot(path=str(ARTIFACTS / f"case-nexus-studio-{width}.png"),full_page=True)
             if slug == "nexus-commerce":
                 expect(page.locator('[class*="shopProductPhoto"] img').count() == 3,
                        "Commerce case study must reuse the premium editorial storefront")
