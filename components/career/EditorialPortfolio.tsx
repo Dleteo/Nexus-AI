@@ -40,7 +40,7 @@ const cards=[
     description:["Comprobaciones manuales del endpoint local, latencia e historial de resultados; no es vigilancia continua.","Manual health checks of a local endpoint with latency metrics and history; not continuous monitoring.","Manuelle Zustandsprüfungen eines lokalen Endpunkts mit Latenz und Verlauf; kein Dauer-Monitoring.","Vérification manuelle de l'API locale, latence et historique ; sans surveillance continue.","Verificações manuais da API local, latência e histórico; sem monitoramento contínuo."],
   },
   {
-    number:"05",name:"Nexus Software Factory",type:"WORKFLOW / PROTOTYPE",
+    number:"05",name:"Nexus Factory",type:"WORKFLOW / PROTOTYPE",
     lab:"factory",repo:"https://github.com/Dleteo/Nexus-AI",
     technologies:["Workflow","Review","Markdown"],
     description:["Planificación basada en reglas, revisión humana y exportación de tareas; aún no ejecuta agentes de IA.","Rule-based planning, human review and task export; no autonomous AI agents yet.","Regelbasierte Planung, menschliche Freigabe und Aufgabenexport; noch keine autonomen KI-Agenten.","Planification fondée sur des règles, validation humaine et export de tâches ; sans agents IA autonomes.","Planejamento baseado em regras, revisão humana e exportação de tarefas; ainda sem agentes autônomos."],
@@ -51,7 +51,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>local(language,es,en,de,fr,pt);
   const labHref=(lab:string)=> (language==="es"?"/labs/":"/"+language+"/labs/")+lab;
   const cardHref=(card:(typeof cards)[number])=> "lab" in card ? labHref(card.lab) : card.href+"?lang="+language;
-  const studyHref=(card:(typeof cards)[number])=>"/projects/"+("lab" in card ? (card.lab==="factory"?"nexus-software-factory":"nexus-"+card.lab) : "nexus-ai")+"?lang="+language;
+  const studyHref=(card:(typeof cards)[number])=>"/projects/"+("lab" in card ? (card.lab==="factory"?"nexus-factory":"nexus-"+card.lab) : "nexus-ai")+"?lang="+language;
   const [menu,setMenu]=useState(false);
   const mobileMenuButton=useRef<HTMLButtonElement|null>(null);
   const nav=[
