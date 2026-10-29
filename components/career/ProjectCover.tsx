@@ -49,6 +49,14 @@ const studioCoverCopy:Record<SiteLanguage,{layers:string,inspector:string,previe
   fr:{layers:"CALQUES",inspector:"INSPECTEUR",preview:"APERÇU",heading:"Créez la suite.",description:"Un espace pour vos idées.",button:"Explorer",theme:"THÈME",spacing:"ESPACEMENT",alignment:"ALIGNEMENT",export:"EXPORT HTML"},
   pt:{layers:"CAMADAS",inspector:"INSPETOR",preview:"PRÉVIA",heading:"Crie o próximo.",description:"Um espaço para suas ideias.",button:"Explorar design",theme:"TEMA",spacing:"ESPAÇAMENTO",alignment:"ALINHAMENTO",export:"EXPORTAR HTML"},
 };
+const monitorCoverLabels:Record<SiteLanguage,{health:string,checks:string,success:string,history:string,last:string,samples:string,preview:string}> = {
+  es:{health:"Salud del servicio",checks:"PRUEBAS",success:"ÉXITO",history:"HISTORIAL DE RESPUESTAS",last:"ÚLTIMAS 20 PRUEBAS",samples:"SIN DATOS",preview:"VISTA DEMO / SIN DATOS"},
+  en:{health:"Service health",checks:"CHECKS",success:"SUCCESS",history:"RESPONSE HISTORY",last:"LAST 20 CHECKS",samples:"NO DATA",preview:"DEMO VIEW / NO DATA"},
+  de:{health:"Dienststatus",checks:"PRÜFUNGEN",success:"ERFOLG",history:"ANTWORTVERLAUF",last:"LETZTE 20",samples:"KEINE DATEN",preview:"DEMO / KEINE DATEN"},
+  fr:{health:"État du service",checks:"CONTRÔLES",success:"RÉUSSITE",history:"HISTORIQUE",last:"20 DERNIERS",samples:"AUCUNE DONNÉE",preview:"DÉMO / SANS DONNÉES"},
+  pt:{health:"Saúde do serviço",checks:"TESTES",success:"SUCESSO",history:"HISTÓRICO",last:"ÚLTIMOS 20",samples:"SEM DADOS",preview:"DEMO / SEM DADOS"},
+};
+
 /** A decorative product sketch, never a screenshot or a source of live metrics. */
 export default function ProjectCover({project,language,spacious=false}:{project:ProjectKind;language:SiteLanguage;spacious?:boolean}) {
   const t=copy[language];
@@ -142,18 +150,18 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       <div className={s.studioWindowFoot}><span><i/> LOCAL / EDITOR</span><span>RESPONSIVE · 3 THEMES · STATIC HTML</span></div>
     </div>}
     {project==="monitor"&&<div className={s.monitorWindow}>
-      <div className={s.monitorChrome}><span className={s.monitorBrandIcon} aria-hidden="true">⌁</span><div className={s.monitorBrand}><strong>NEXUS <span>/</span> MONITOR</strong><small>SERVICE OBSERVABILITY</small></div><span className={s.monitorPreviewTag}>PREVIEW / NO DATA</span></div>
+      <div className={s.monitorChrome}><span className={s.monitorBrandIcon} aria-hidden="true">⌁</span><div className={s.monitorBrand}><strong>NEXUS <span>/</span> MONITOR</strong><small>SERVICE OBSERVABILITY</small></div><span className={s.monitorPreviewTag}>{monitorCoverLabels[language].preview}</span></div>
       <div className={s.monitorConsole}>
         <div className={s.monitorSidebar} aria-hidden="true"><span className={s.monitorSidebarActive}>▦</span><span>⌁</span><span>◉</span><span>⚙</span></div>
         <div className={s.monitorContent}>
-          <div className={s.monitorHeader}><div><span className={s.monitorSectionKicker}>OVERVIEW / 01</span><b>Service health</b></div><span className={s.monitorUnmeasured}><i/>{t.empty}</span></div>
+          <div className={s.monitorHeader}><div><span className={s.monitorSectionKicker}>OVERVIEW / 01</span><b>{monitorCoverLabels[language].health}</b></div><span className={s.monitorUnmeasured}><i/>{t.empty}</span></div>
           <div className={s.monitorMetricCards}>
-            <div><span>CHECKS</span><strong>0</strong><small>{t.manual}</small></div>
-            <div><span>SUCCESS</span><strong>—</strong><small>NO SAMPLES</small></div>
-            <div><span>P95 LATENCY</span><strong>—</strong><small>MS / NO DATA</small></div>
+            <div><span>{monitorCoverLabels[language].checks}</span><strong>0</strong><small>{t.manual}</small></div>
+            <div><span>{monitorCoverLabels[language].success}</span><strong>—</strong><small>{monitorCoverLabels[language].samples}</small></div>
+            <div><span>P95 LATENCY</span><strong>—</strong><small>MS / {monitorCoverLabels[language].samples}</small></div>
           </div>
           <div className={s.monitorGraphPane}>
-            <div className={s.monitorGraphHead}><span>RESPONSE HISTORY</span><small>LAST 20 CHECKS</small></div>
+            <div className={s.monitorGraphHead}><span>{monitorCoverLabels[language].history}</span><small>{monitorCoverLabels[language].last}</small></div>
             <div className={s.monitorGraphGrid}><span className={s.monitorZeroLabel}>{t.empty}</span><i className={s.monitorBaseline}/></div>
             <div className={s.monitorGraphFoot}><span>0 MS</span><span>— MS</span></div>
           </div>
