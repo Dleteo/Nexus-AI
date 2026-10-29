@@ -977,3 +977,202 @@
  .monitor .monitorBrand small{display:none}
  .monitor .monitorHeader b{font-size:14px}
 }
+
+
+/* STUDIO / CREATIVE SUITE — warm ink, coral and editorial artboard.
+   The cover depicts the same block editor as the actual functional Studio. */
+.studio.cover{
+ color:#fff4ed;
+ background:
+ radial-gradient(ellipse 57% 60% at 76% 11%,#ff80604a,transparent 75%),
+ radial-gradient(ellipse 50% 58% at 9% 87%,#748bb41e,transparent 80%),
+ linear-gradient(139deg,#30282a,#181a20 65%,#21232a);
+}
+.studio.cover::before{
+ content:"";pointer-events:none;position:absolute;z-index:-1;
+ top:-100px;right:-100px;width:350px;height:350px;
+ border-radius:50%;border:1px solid #ffc1a026;
+ box-shadow:0 0 0 56px #ffaf7910,0 0 0 109px #ffb07c06;
+ display:block;
+}
+.studio.cover .coverTop{color:#f6d2c0}
+.studio .studioWindow{
+ min-height:240px;
+ border:1px solid #a17e72;border-radius:13px;
+ background:#212127;
+ box-shadow:0 25px 52px #000a,0 0 0 1px #fff1e310 inset;
+}
+.studio .studioChrome{
+ min-height:44px;padding:9px 12px;
+ border-bottom:1px solid #5f5050;
+ background:linear-gradient(105deg,#443433,#29272e);
+}
+.studio .studioChromeSymbol{
+ background:#c9644d;color:#fff3e9;
+ border-color:#e78c77;border-radius:8px;
+ box-shadow:0 6px 13px -9px #ffb499;
+}
+.studio .studioChromeIdentity strong{color:#fff4e8}
+.studio .studioChromeIdentity strong span{color:#e49c83}
+.studio .studioChromeIdentity small{color:#cbb0a4}
+.studio .studioChromeControls{
+ background:#242328;color:#c7b3af;border-color:#65534d;
+}
+.studio .studioChromeControls span:first-child{background:#6e4439;color:#ffe2c9}
+.studio .studioChromeAction{
+ color:#38211d;background:linear-gradient(110deg,#ffc9a7,#ffa484);
+ border-radius:6px;
+}
+.studio .studioEditorShell{
+ background:#262428;
+ grid-template-columns:minmax(58px,19%) minmax(0,1fr) minmax(65px,19%);
+}
+.studio .studioLayerPanel,.studio .studioPropertyPanel{
+ background:#29272b;border-color:#55474a;
+}
+.studio .studioPanelHeading{color:#e2c5b6;border-color:#56464a}
+.studio .studioPanelHeading b{color:#ffbc9a}
+.studio .studioLayer,.studio .studioLayerActive{
+ border-color:#57494a;border-radius:5px;
+ color:#ccbcb3;background:transparent;
+}
+.studio .studioLayerActive{
+ color:#fff4eb;background:#634036;border-color:#e7a086;
+ box-shadow:inset 2px 0 #ffa887;
+}
+.studio .studioLayer>span,.studio .studioLayerActive>span{color:#f4b391}
+.studio .studioLayer i,.studio .studioLayerActive i{color:#b09b98}
+.studio .studioLayersFoot{border-color:#56484b;color:#b7a5a1}
+.studio .studioLayersFoot span{color:#f1a98b}
+.studio .studioCanvasArea{
+ background-color:#37343c;
+ background-image:radial-gradient(#736a68 1px,transparent 1px);
+ background-size:15px 15px;padding:10px;
+}
+.studio .studioCanvasBar,.studio .studioCanvasStatus{color:#dccbc5}
+.studio .studioCanvasPaper{
+ isolation:isolate;position:relative;overflow:hidden;
+ background:#fff7ef;border:1px solid #f3d4c5;border-radius:5px;
+ color:#27252a;box-shadow:0 17px 29px #0007;
+ min-height:147px;
+}
+.studio .studioPaperRibbon{
+ position:relative;z-index:5;
+ color:#977b72;border-color:#ecd9cd;
+ background:#fffaf5;
+ padding:8px 10px;
+}
+.studio .studioPaperBody{
+ position:relative;z-index:4;
+ width:62%;max-width:62%;
+ display:flex;align-items:flex-start;flex-direction:column;
+ justify-content:center;gap:7px;
+ padding:12px 5px 12px 17px;
+}
+.studio .studioPaperEyebrow{
+ color:#d36049;letter-spacing:.17em;font-size:7px;
+}
+.studio .studioPaperHeadline{
+ color:#28202a;
+ font:750 clamp(17px,2.4vw,31px)/1.05 Georgia,serif;
+ letter-spacing:-.067em;
+ overflow-wrap:anywhere;
+}
+.studio .studioPaperDescription{
+ color:#806f70;font-size:8px;line-height:1.5;
+}
+.studio .studioPaperButton{
+ color:#fff3e9;background:#dc604e;
+ border:1px solid #d25b49;border-radius:4px;
+ box-shadow:0 7px 17px #bd5a4638;
+ font-weight:800;
+}
+.studio .studioPaperArtwork{
+ position:absolute;z-index:2;top:22px;bottom:0;right:0;
+ width:48%;overflow:hidden;
+ background:
+ radial-gradient(ellipse at 24% 76%,#ffb883b6,transparent 48%),
+ radial-gradient(ellipse at 78% 9%,#ffddd0c5,transparent 50%),
+ linear-gradient(150deg,#edafa4,#e56e63 45%,#983e66 92%);
+}
+.studio .studioArtworkHalo{
+ position:absolute;display:block;
+ top:-21%;left:-42%;width:155%;aspect-ratio:1;
+ border-radius:50%;border:1px solid #fff7df9a;
+ transform:rotate(20deg);
+ box-shadow:0 0 0 25px #ffffff1f,0 0 0 63px #ffffff20,0 0 0 97px #ffffff0d;
+}
+.studio .studioArtworkShape{
+ display:block;position:absolute;
+ right:-14%;top:2%;width:84%;height:80%;
+ transform:rotate(-23deg);
+ border-radius:49% 51% 40% 60% / 43% 31% 69% 57%;
+ background:
+ radial-gradient(circle at 23% 17%,#fff2d4,transparent 33%),
+ linear-gradient(134deg,#ffb86b,#ff705c 47%,#7a3e6d 89%);
+ box-shadow:inset -17px -19px 25px #6d275344,0 20px 31px #52223a5c;
+}
+.studio .studioArtworkOrb{
+ display:block;position:absolute;
+ width:56%;aspect-ratio:1;bottom:-10%;right:40%;
+ background:radial-gradient(circle at 32% 26%,#fafaff,#8fb3ee 34%,#577bd0 64%,#243b79);
+ border-radius:50%;box-shadow:0 14px 19px #50233478;
+}
+.studio .studioArtworkShine{
+ position:absolute;display:block;width:86%;height:40%;
+ top:4%;left:6%;transform:rotate(-31deg);
+ background:radial-gradient(ellipse,#fff0d9bb,transparent 70%);
+}
+.studio .studioArtworkNumber{
+ bottom:9px;right:6px;
+ color:#fff6ee;font:800 6px/1.2 ui-monospace,monospace;
+ text-shadow:0 2px 6px #9a3156;
+}
+.studio .studioSelectionOutline{
+ z-index:6;inset:17% 4% 10%;
+ border:1px solid #ea745f;
+ box-shadow:0 0 0 1px #fff1e8b3;
+}
+.studio .studioSelectionOutline>span{background:#e6664e;color:#fff}
+.studio .studioSelectionOutline i{border-color:#e6664e}
+.studio .studioPropertyLabel{color:#c4b0a5}
+.studio .studioSwatches i{background:#ef6d55;border-color:#efa98e;box-shadow:none}
+.studio .studioSwatches i:nth-child(2){background:#28272c}
+.studio .studioSwatches i:nth-child(3){background:#fff6ef}
+.studio .studioPropertyBars i{background:#79615d}
+.studio .studioPropertyBars i:nth-child(2){background:#ec9980}
+.studio .studioPropertyAlignment span{border-color:#74605a;color:#e7c1ab}
+.studio .studioPropertyAlignment span:first-child{
+ background:#6c4237;border-color:#d18c6f;
+}
+.studio .studioWindowFoot{
+ background:#242228;border-color:#55494b;color:#c4afa5;
+}
+.studio .studioWindowFoot span:first-child{color:#e7baa4}
+.studio .studioWindowFoot i{background:#ffa889;box-shadow:0 0 10px #ff9073}
+.studio.spacious .studioWindow{min-height:335px}
+.studio.spacious .studioCanvasPaper{min-height:205px}
+.studio.spacious .studioPaperBody{padding:20px 8px 22px 25px;gap:10px}
+.studio.spacious .studioPaperHeadline{font-size:clamp(25px,2.8vw,39px)}
+.studio.spacious .studioPaperDescription{font-size:11px}
+@media(max-width:700px){
+ .studio .studioEditorShell{grid-template-columns:minmax(50px,18%) minmax(0,1fr) minmax(50px,17%)}
+ .studio .studioCanvasArea{padding:7px}
+ .studio .studioPaperBody{padding:10px 2px 10px 8px}
+ .studio .studioPaperHeadline{font-size:clamp(14px,3vw,22px)}
+ .studio .studioPaperArtwork{width:45%}
+ .studio .studioPropertyPanel,.studio .studioLayerPanel{padding:8px 4px}
+ .studio .studioLayer,.studio .studioLayerActive{font-size:6px;padding:6px 2px}
+ .studio .studioLayer>span,.studio .studioLayerActive>span{display:none}
+ .studio .studioLayer i,.studio .studioLayerActive i{display:none}
+ .studio.spacious .studioPaperBody{padding:11px 4px 11px 9px}
+ .studio.spacious .studioPaperHeadline{font-size:clamp(19px,4vw,28px)}
+}
+@media(max-width:390px){
+ .studio .studioPaperArtwork{width:42%}
+ .studio .studioPaperBody{width:65%;max-width:65%}
+ .studio .studioArtworkNumber{display:none}
+ .studio .studioChromeAction{font-size:6px;padding:6px}
+ .studio .studioPanelHeading{font-size:6px}
+ .studio .studioPropertyLabel{font-size:6px}
+}
