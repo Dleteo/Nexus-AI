@@ -171,7 +171,7 @@ export default function ProjectCover({project,language,spacious=false}:{project:
     </div>}
     {project==="factory"&&<div className={s.factoryWindow}>
       <div className={s.factoryHeader}>
-        <span className={s.factoryHeaderIdentity}><span className={s.factoryHeaderSymbol} aria-hidden="true">◈</span><span><strong>NEXUS / SOFTWARE FACTORY</strong><small>BUILD OPERATIONS · LOCAL WORKFLOW</small></span></span>
+        <span className={s.factoryHeaderIdentity}><span className={s.factoryHeaderSymbol} aria-hidden="true">◈</span><span><strong>NEXUS / FACTORY</strong><small>BUILD OPERATIONS · LOCAL WORKFLOW</small></span></span>
         <span className={s.factoryHeaderState}><i aria-hidden="true"/> REVIEW REQUIRED</span>
       </div>
       <div className={s.factoryWorkbenchPreview}>
