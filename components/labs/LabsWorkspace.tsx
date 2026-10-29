@@ -40,7 +40,7 @@ const projects: {id:LabId;name:string;category:string}[]=[
   {id:"commerce",name:"Nexus Commerce",category:"FULL STACK CONCEPT"},
   {id:"studio",name:"Nexus Studio",category:"FRONTEND EDITOR"},
   {id:"monitor",name:"Nexus Monitor",category:"SERVICE HEALTH"},
-  {id:"factory",name:"Nexus Software Factory",category:"WORKFLOW ENGINE"},
+  {id:"factory",name:"Nexus Factory",category:"WORKFLOW ENGINE"},
 ];
 const shellCopy = {
   es: {back:"Volver al portafolio",other:"Otros proyectos",guide:"Guía y alcance del proyecto",study:"Arquitectura y pruebas",demo:"Demostración interactiva",all:"Los cuatro laboratorios",intro:"Explora cada proyecto en su propio espacio.",scope:"Prototipo local"},
