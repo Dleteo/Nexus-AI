@@ -1,0 +1,95 @@
+/* Obsidian + gold product preview. This is a non-live visual illustration of
+   the assistant interface; the linked /assistant route is the working app. */
+.nexus-showcase-window {
+  --gold: #d8b678;
+  --gold-light: #f4dfb6;
+  --soft: #bfb6a5;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #705636;
+  border-radius: 16px;
+  background: #0c0b0a;
+  color: #ece7dc;
+  box-shadow: 0 36px 90px -43px #000, 0 0 65px -39px #bd9258aa, inset 0 1px #e9ca8b30;
+}
+.nexus-showcase-window::before {
+  content: "";
+  position: absolute;
+  inset: 30px -28% auto;
+  height: 270px;
+  background: radial-gradient(ellipse,#bd8e3b18,transparent 65%);
+  z-index: -1;
+  pointer-events: none;
+}
+.nexus-showcase-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-bottom: 1px solid #3c3124;
+  background: linear-gradient(100deg,#14110f,#18140f 66%,#100f0e);
+  font: 9px/1.5 var(--font-geist-mono),monospace;
+  letter-spacing: .14em;
+  color: #cbb88e;
+}
+.nexus-showcase-topbar b{color:#816a48}
+.nexus-showcase-window-controls{display:flex;gap:5px;align-items:center}
+.nexus-showcase-window-controls i{height:6px;width:6px;background:#70583c;border-radius:50%}
+.nexus-showcase-window-controls i:first-child{background:#d7b475}
+.nexus-showcase-version{color:#8a806f}
+.nexus-showcase-layout{display:grid;grid-template-columns:minmax(122px,31%) minmax(0,1fr);min-height:355px}
+.nexus-showcase-sidebar{
+  display:flex;flex-direction:column;min-width:0;
+  border-right:1px solid #382d22;
+  padding:18px 11px 12px;
+  background:linear-gradient(160deg,#171411,#0d0d0d);
+}
+.nexus-showcase-brand{display:flex;align-items:center;gap:8px;color:#f8f0de;font-size:10px;font-weight:850;letter-spacing:.1em}
+.nexus-showcase-brand b{color:#e4bf7e}
+.nexus-showcase-brand small{display:block;margin-top:5px;color:#a49a88;font-size:6px;letter-spacing:.11em;line-height:1.5}
+.nexus-showcase-monogram{display:grid;place-items:center;flex:none;height:33px;width:33px;border:1px solid #c69d5a;border-radius:9px;background:linear-gradient(145deg,#292217,#14120e);color:#d9b879;font-size:21px}
+.nexus-showcase-menu-label{margin:31px 3px 10px;color:#aa9474;font:7px/1.5 var(--font-geist-mono),monospace;letter-spacing:.08em}
+.nexus-showcase-workspace{display:flex;align-items:flex-start;gap:8px;min-width:0;margin-top:7px;padding:10px 8px;border:1px solid transparent;border-radius:9px;color:#e4dccc;background:#171510}
+.nexus-showcase-workspace-selected{border-color:#75603d;background:linear-gradient(110deg,#33281a,#1b1813)}
+.nexus-showcase-workspace>span{color:#dfbb77;font-size:17px;line-height:1.1}
+.nexus-showcase-workspace>div{min-width:0}
+.nexus-showcase-workspace b{display:block;overflow-wrap:anywhere;font:8px/1.5 var(--font-geist-mono),monospace;letter-spacing:.04em}
+.nexus-showcase-workspace small{display:block;margin-top:5px;font-size:8px;line-height:1.5;color:#b2a58f}
+.nexus-showcase-sidebar-bottom{margin-top:auto;padding-top:19px;border-top:1px solid #3c3124;color:#bbaa8f;font-size:8px;letter-spacing:.03em}
+.nexus-showcase-sidebar-bottom span{color:#dfbd79}
+.nexus-showcase-canvas{display:flex;flex-direction:column;min-width:0;padding:0 16px 16px;background:radial-gradient(ellipse at 50% 37%,#33231388,transparent 64%),#0c0c0d}
+.nexus-showcase-canvas-top{display:flex;align-items:center;gap:7px;min-height:46px;border-bottom:1px solid #3c3124;color:#ab9b83;font:8px var(--font-geist-mono),monospace;letter-spacing:.08em}
+.nexus-showcase-pulse{width:6px;height:6px;border-radius:50%;background:#d9b776;box-shadow:0 0 12px #d9b77680}
+.nexus-showcase-glyph{margin-left:auto;color:#d9b776;font-size:17px}
+.nexus-showcase-center{display:flex;align-items:center;flex-direction:column;justify-content:center;flex:1;gap:9px;text-align:center;padding:19px 2px}
+.nexus-showcase-orbit{position:relative;display:grid;place-items:center;width:72px;height:72px;margin:0 auto 5px;border:1px solid #b88b454f;border-radius:50%;background:radial-gradient(circle,#3b2a17 2%,#19140d 54%,#0a0b0c 75%);box-shadow:0 0 45px -16px #d7a85899}
+.nexus-showcase-orbit i{position:absolute;inset:8px;border:1px solid #7a5a334f;border-radius:50%}
+.nexus-showcase-orbit i+i{inset:-6px;border-style:dashed;border-color:#926d354b}
+.nexus-showcase-orbit span{color:#f1d6a0;font-size:34px;text-shadow:0 0 25px #ddaf61a0}
+.nexus-showcase-overline{color:#c7a574;font:8px/1.6 var(--font-geist-mono),monospace;letter-spacing:.12em}
+.nexus-showcase-center h2{margin:0;color:#f9eee0;font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(18px,2vw,27px);font-weight:750;line-height:1.17}
+.nexus-showcase-center p{max-width:275px;margin:0;color:#ad9f90;font-size:9px;line-height:1.7}
+.nexus-showcase-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:5px}
+.nexus-showcase-suggestions span{display:flex;gap:9px;padding:7px 8px;border:1px solid #52402c;border-radius:7px;background:#211a13;color:#d6c6af;font-size:8px}
+.nexus-showcase-suggestions i{font-style:normal;color:#d8af6c}
+.nexus-showcase-compose{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px;border:1px solid #5e4a31;border-radius:8px;background:#1e1913;color:#b4aa9c;font-size:9px}
+.nexus-showcase-compose span:last-child{display:grid;place-items:center;flex-shrink:0;height:24px;width:24px;border-radius:6px;background:#cda25e;color:#17110b;font-weight:900}
+.nexus-showcase-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:47px;padding:10px 16px;border-top:1px solid #4b3a24;background:#12100d;font-size:9px;color:#aca08e}
+.nexus-showcase-footer a{color:#e6c58a;font-weight:750;white-space:nowrap}
+.nexus-showcase-footer a:hover{text-decoration:underline;text-underline-offset:4px}
+@media(max-width:600px){
+  .nexus-showcase-layout{grid-template-columns:minmax(0,1fr);min-height:320px}
+  .nexus-showcase-sidebar{display:none}
+  .nexus-showcase-canvas{padding:0 14px 14px}
+  .nexus-showcase-canvas-top{min-height:39px}
+  .nexus-showcase-footer{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:no-preference){
+  .nexus-showcase-orbit i+i{animation:nexusOrbit 32s linear infinite}
+  .nexus-showcase-orbit span{animation:nexusEmblemGlow 4s ease-in-out infinite}
+}
+@keyframes nexusOrbit{to{transform:rotate(360deg)}}
+@keyframes nexusEmblemGlow{50%{text-shadow:0 0 33px #dfb875;transform:scale(1.06)}}
