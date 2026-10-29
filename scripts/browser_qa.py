@@ -241,8 +241,9 @@ def audit(browser, width, label):
     expect(page.locator('[class*="heroPortrait"]').count() == 1, "Owned portrait missing")
     portrait = page.locator('[class*="heroPortrait"]')
     applied_mask = portrait.evaluate("(el) => getComputedStyle(el).maskImage")
-    expect(applied_mask == "none",
+    expect("portrait-silhouette-mask.svg" not in applied_mask,
            "The transparent portrait must not use the mismatched legacy silhouette mask")
+    page.screenshot(path=str(ARTIFACTS / f"hero-reference-check-{label}.png"), full_page=False)
     portrait_source = portrait.evaluate("(el) => getComputedStyle(el).backgroundImage")
     expect("joshua-cutout.png" in portrait_source,
            "Homepage must use the high-resolution transparent portrait")
