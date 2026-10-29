@@ -28,6 +28,7 @@ const spaces:StudioDesign["density"][]=["compact","balanced","spacious"];
 export default function StudioDesignerCanvas({blocks,selected,onSelect,design,onDesignChange,viewport,onViewportChange,exportMarkup,disabled=false}:Props){
   const [previewMode,setPreviewMode]=useState<"canvas"|"code">("canvas");
   const [copied,setCopied]=useState(false);
+  const [showGrid,setShowGrid]=useState(true);
   async function copyHtml(){try{await navigator.clipboard.writeText(exportMarkup);setCopied(true);}catch{setCopied(false);}}
   const theme=STUDIO_THEMES[design.theme] ?? STUDIO_THEMES.atelier;
   const change=(patch:Partial<StudioDesign>)=>onDesignChange({...design,...patch});
@@ -47,11 +48,11 @@ export default function StudioDesignerCanvas({blocks,selected,onSelect,design,on
     </header>
     <div className="studio-document-strip"><span className="studio-document-tab"><span aria-hidden="true">▦</span> index.html <i aria-hidden="true"/> </span><span className="studio-document-context">DOCUMENT / DESIGN SYSTEM <span aria-hidden="true">•</span> UNSAVED PREVIEW</span></div>
     <div className="studio-design-layout">
-      <div className="studio-canvas-stage">
-        <div className="studio-stage-ruler"><span>{previewMode==="canvas"?"DESIGN CANVAS / "+viewport.toUpperCase():"EXPORT SOURCE / HTML"}</span><span>{blocks.length} BLOCKS · LOCAL DOCUMENT</span></div><div className="studio-stage-tabs" role="group" aria-label="Studio preview mode"><button type="button" onClick={()=>setPreviewMode("canvas")} aria-pressed={previewMode==="canvas"}>◈ Design</button><button type="button" onClick={()=>{setPreviewMode("code");setCopied(false);}} aria-pressed={previewMode==="code"}>〈/〉 HTML</button>{previewMode==="code"&&<button type="button" onClick={()=>void copyHtml()} className="studio-copy-code">{copied?"Copied HTML":"Copy HTML"}</button>}</div>
+      <div className={"studio-canvas-stage"+(showGrid?"":" studio-canvas-no-grid")}>
+        <div className="studio-stage-ruler"><span>{previewMode==="canvas"?"DESIGN CANVAS / "+viewport.toUpperCase():"EXPORT SOURCE / HTML"}</span><span>{blocks.length} BLOCKS · LOCAL DOCUMENT</span></div><div className="studio-stage-tabs" role="group" aria-label="Studio preview mode"><button type="button" onClick={()=>setPreviewMode("canvas")} aria-pressed={previewMode==="canvas"}>◈ Design</button><button type="button" onClick={()=>{setPreviewMode("code");setCopied(false);}} aria-pressed={previewMode==="code"}>〈/〉 HTML</button><button type="button" className="studio-toggle-grid" aria-pressed={showGrid} onClick={()=>setShowGrid(v=>!v)} aria-label="Toggle canvas grid">⊞ Grid</button>{previewMode==="code"&&<button type="button" onClick={()=>void copyHtml()} className="studio-copy-code">{copied?"Copied HTML":"Copy HTML"}</button>}</div>
         {previewMode==="canvas"?<div className={"studio-canvas-frame studio-viewport-"+viewport+" studio-density-"+design.density} data-studio-viewport={viewport}>
           <div className="studio-canvas-page" data-studio-theme={design.theme} data-studio-alignment={design.alignment}>
-            <span className="studio-canvas-overline"><span aria-hidden="true">◈</span> YOUR PAGE / LIVE PREVIEW</span>
+            <span className="studio-canvas-overline"><span aria-hidden="true">✳</span> NEXUS / DESIGN NOTES <span className="studio-canvas-edition">ISSUE Nº 01</span></span>
             {blocks.map((block,index)=><button
               key={block.id}
               type="button"
