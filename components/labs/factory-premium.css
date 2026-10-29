@@ -382,3 +382,9 @@
 @media(prefers-reduced-motion:reduce){
  .nexus-lab-shell[data-lab="factory"] .factory-workbench button{transition:none}
 }
+
+/* Dedicated Factory route takes precedence over legacy square prototype panels. */
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-operations-board{border-radius:16px}
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-execution-notice{border-radius:10px}
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-workbench>.lab-panel{border-radius:13px}
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .factory-pipeline .factory-job-board{border-radius:10px}
