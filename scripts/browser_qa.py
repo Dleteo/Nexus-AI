@@ -283,6 +283,12 @@ def audit(browser, width, label):
            "Nexus Workspace must show three detailed feature panels, not skeleton rectangles")
     expect(preview.locator('[class*="workspaceFeatureIcon"]').count() == 3,
            "Gold-on-obsidian feature icon tiles missing")
+    monitor_portfolio_card = page.locator('article[data-project="monitor"]')
+    expect(monitor_portfolio_card.count()==1,"Featured Monitor card missing")
+    expect(monitor_portfolio_card.locator('[class*="monitorMetricCards"] > div').count()==3,
+           "Monitor preview must show checks, success and latency metric tiles")
+    expect(monitor_portfolio_card.locator('[class*="monitorGraphGrid"]').count()==1,
+           "Monitor preview must not invent synthetic chart readings")
     studio_portfolio_card = page.locator('article[data-project="studio"]')
     expect(studio_portfolio_card.count()==1,"Featured Studio card missing")
     expect(studio_portfolio_card.locator('[class*="studioEditorShell"]').count()==1,
@@ -557,11 +563,20 @@ def audit(browser, width, label):
            "Imported Studio document must be undoable")
 
     page.get_by_role("button", name="Nexus Monitor").click()
+    dashboard = page.get_by_role("region", name="Monitor sample status dashboard")
+    expect(dashboard.is_visible(), "Clear service health dashboard missing")
+    expect(dashboard.locator(".monitor-metric").count()==3, "Monitor should show understandable actual-data KPIs")
+    expect(dashboard.get_by_role("button", name="Check service now").is_visible(),
+           "Dashboard must offer an actionable manual check")
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Monitor SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Run health check").is_visible(), "Browser monitor should work without local SQLite")
     page.get_by_role("button", name="Run health check").click()
     page.get_by_text("HEALTHY", exact=True).first.wait_for(state="visible", timeout=10000)
+    expect(dashboard.get_attribute("data-monitor-status") == "ok",
+           "Latest real successful check should turn dashboard status to passed")
+    expect(dashboard.locator(".monitor-graph-bars > span").count()>=1,
+           "Dashboard must chart actual recorded measurements after a manual check")
     expect(page.get_by_text("p95 successful latency:", exact=False).is_visible(), "Monitor p95 missing")
     expect(page.get_by_role("button", name="Export manual samples CSV").is_enabled(), "Monitor CSV export missing")
     expect(page.get_by_role("region", name="Manual incident analysis").is_visible(), "Manual incident analysis missing")
@@ -625,6 +640,13 @@ def audit_case_study_visual_consistency(browser):
                 expect(page.locator('a[href*="/labs/studio"]').count()>0,
                        "Studio case study must retain the functional editor link")
                 page.screenshot(path=str(ARTIFACTS / f"case-nexus-studio-{width}.png"),full_page=True)
+            if slug == "nexus-monitor":
+                expect(page.locator('[class*="monitorMetricCards"] > div').count()==3,
+                       "Monitor case study should show readable observability KPIs")
+                expect(page.locator('[class*="monitorPreviewTag"]').count()==1,
+                       "Monitor promotional preview must disclose that no measurements were taken")
+                expect(page.locator('a[href*="/labs/monitor"]').count()>0,
+                       "Monitor case study must retain the functional diagnostics link")
             if slug == "nexus-commerce":
                 expect(page.locator('[class*="shopProductPhoto"] img').count() == 3,
                        "Commerce case study must reuse the premium editorial storefront")
