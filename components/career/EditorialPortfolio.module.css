@@ -616,3 +616,40 @@
 @media(max-width:660px){
   .projectCard[data-project="studio"] .projectPicture{height:315px}
 }
+
+/* Nexus Monitor featured product card — observability, not a placeholder graph. */
+.projectCard[data-project="monitor"]{
+ --project-accent:#85d6ed;--project-line:#48778c;
+ border:1px solid #46788e;border-radius:16px;
+ background:#0a1721;
+ box-shadow:0 28px 75px -54px #000,0 0 25px -20px #529bbc;
+}
+.projectCard[data-project="monitor"] .projectPicture{
+ min-height:315px;height:clamp(315px,31vw,420px);
+ background:radial-gradient(ellipse at 90% 0%,#2d779c37,transparent 70%),#112633;
+}
+.projectCard[data-project="monitor"] .projectCopy{
+ border-top:1px solid #31536b;
+ background:radial-gradient(ellipse at 92% 0%,#2f88a51e,transparent 67%),#0e1e29;
+}
+.projectCard[data-project="monitor"] .cardTop b{color:#a7e9f6}
+.projectCard[data-project="monitor"] .cardTop span{color:#b6d0dc}
+.projectCard[data-project="monitor"] .projectTitle h3 a{color:#effaff;letter-spacing:-.04em}
+.projectCard[data-project="monitor"] .projectTitle h3 a:hover{color:#b1edfb}
+.projectCard[data-project="monitor"] .projectCopy>p{color:#c0d7e3;line-height:1.83}
+.projectCard[data-project="monitor"] .tags span{
+ background:#193443;color:#c9e5ee;border:1px solid #45697c;border-radius:6px;
+}
+.projectCard[data-project="monitor"] .studyLink{
+ color:#102f3f;border:1px solid #b1edfc;border-radius:7px;
+ background:linear-gradient(112deg,#c7f0fa,#83d2e7);
+ box-shadow:0 15px 29px -23px #79cce9;
+}
+.projectCard[data-project="monitor"] .studyLink:hover{background:#dcfaff}
+.projectCard[data-project="monitor"] .demoLink{color:#b3e8f4}
+.projectCard[data-project="monitor"]:hover{
+ box-shadow:0 33px 82px -53px #000,0 0 30px -19px #75c6e4;
+}
+@media(max-width:660px){
+ .projectCard[data-project="monitor"] .projectPicture{height:315px}
+}
