@@ -1030,7 +1030,7 @@
  --case-accent:#ffc58b;--case-line:#695646;
  background:
  radial-gradient(ellipse 63% 43% at 94% 0%,#b4793d2c,transparent 77%),
- linear-gradient(#17212b,#101720 36%);
+ linear-gradient(#17212b,#101720 36%),#101720;
 }
 .factory .header{
  background:rgba(16,23,32,.96);border-color:#5d4f40;
