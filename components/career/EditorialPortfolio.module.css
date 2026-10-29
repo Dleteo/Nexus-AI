@@ -107,6 +107,8 @@
   aspect-ratio:3/2;
   bottom:0;
   background:url("/portfolio/joshua-cutout.png") center bottom / contain no-repeat;
+  /* Keep the cutout slightly left of its previous position without changing layout. */
+  transform:translateX(-clamp(14px,2.5vw,34px));
   filter:drop-shadow(0 0 12px rgba(241,40,60,.52))
     drop-shadow(0 0 30px rgba(210,14,44,.32));
   opacity:1;
