@@ -110,7 +110,7 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     </div>
     {conversation?.topic==="projects"&&<nav aria-label={t("Casos de estudio destacados","Featured case studies","Fallstudien der Hauptprojekte","Études de cas principales","Estudos de caso em destaque")} className="mt-3 grid gap-2 sm:grid-cols-2">
       {featuredCaseStudies.map(study=><Link key={study.slug} href={"/projects/"+study.slug+"?lang="+language}
-        className="rounded-lg border border-[#854253] bg-[#1e151b] px-3 py-2 text-xs font-semibold text-[#ffd2dc] hover:border-[#f39bb0] focus-visible:outline-2 focus-visible:outline-[#f39bb0]">{study.name} ↗</Link>)}
+        className="rounded-lg border border-[#3c393c] bg-[#141315] px-3 py-2 text-xs font-semibold text-[#ece9ec] hover:border-[#f1283c] focus-visible:outline-2 focus-visible:outline-[#f1283c]">{study.name} ↗</Link>)}
     </nav>}
     <div className={styles.portfolioContactChoices}>
       <button type="button" onClick={()=>answer("projects",t("Proyectos","Projects","Projekte","Projets","Projetos"))}>{t("Proyectos","Projects","Projekte","Projets","Projetos")}</button>
