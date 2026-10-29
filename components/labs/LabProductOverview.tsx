@@ -44,11 +44,11 @@ const labels = {
     pt:["OBSERVABILIDADE / VERIFICAÇÕES MANUAIS","Cada resposta importa.","Veja o estado do serviço e as verificações executadas.","Verificações","Bem-sucedidas","Latência p95","Executar verificação"]
   },
   factory:{
-    es:["INGENIERÍA / FLUJO REVISADO","Del plan a la revisión.","Propuestas y aprobaciones humanas; ejecución desactivada.","Propuestos","Aprobados","Paquetes creados","Abrir flujo"],
-    en:["ENGINEERING / REVIEW PIPELINE","From plan to review.","Human approvals and static packaging; execution disabled.","Proposed","Approved","Packages built","Open workflow"],
-    de:["ENGINEERING / FREIGABEPROZESS","Von der Planung zur Prüfung.","Manuelle Freigabe; Ausführung deaktiviert.","Vorgeschlagen","Freigegeben","Pakete","Workflow öffnen"],
-    fr:["INGÉNIERIE / VALIDATION","Du plan à la revue.","Validation humaine ; exécution désactivée.","Proposés","Approuvés","Paquets créés","Ouvrir le flux"],
-    pt:["ENGENHARIA / REVISÃO","Do plano à revisão.","Aprovação humana; execução desativada.","Propostos","Aprovados","Pacotes criados","Abrir fluxo"]
+    es:["NEXUS / CENTRO DE PRODUCCIÓN","Convierte ideas en entregables.","Planifica, aprueba y revisa paquetes estáticos con evidencia; sin ejecución de código.","Propuestos","Aprobados","Paquetes creados","Abrir flujo"],
+    en:["NEXUS / PRODUCTION CONTROL","Turn ideas into deliverables.","Plan, approve and review static packages with evidence; code execution remains disabled.","Proposed","Approved","Packages built","Open workflow"],
+    de:["NEXUS / PRODUKTIONSZENTRALE","Von der Idee zum Paket.","Planung, Freigabe und Prüfung statischer Pakete; Codeausführung bleibt deaktiviert.","Vorgeschlagen","Freigegeben","Pakete","Workflow öffnen"],
+    fr:["NEXUS / CENTRE DE PRODUCTION","De l’idée au livrable.","Planifier, valider et vérifier des paquets statiques ; aucune exécution de code.","Proposés","Approuvés","Paquets créés","Ouvrir le flux"],
+    pt:["NEXUS / CONTROLE DE PRODUÇÃO","Da ideia ao pacote final.","Planeje, aprove e revise pacotes estáticos; a execução de código permanece desativada.","Propostos","Aprovados","Pacotes criados","Abrir fluxo"]
   }
 } as const;
 
