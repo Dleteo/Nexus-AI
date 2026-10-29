@@ -80,3 +80,125 @@
 @media(max-width:750px){.studio-design-layout{grid-template-columns:minmax(0,1fr)}.studio-design-inspector{border-left:0;border-top:1px solid #4b3a5c}.studio-design-inspector section{padding:14px}.studio-theme-options{max-width:325px}.studio-design-toolbar{padding:12px}.studio-toolbar-state{display:none}.studio-canvas-stage{padding:12px}}
 @media(max-width:450px){.studio-viewport-controls button{padding:7px;font-size:10px}.studio-viewport-controls button span{display:none}.studio-stage-ruler,.studio-stage-footer{font-size:8px}.studio-canvas-page{min-height:280px;padding:17px}.studio-introduction-mark{width:56px;height:56px;font-size:35px}}
 @media(prefers-reduced-motion:reduce){.studio-canvas-frame{transition:none}}
+
+
+/* In-app Studio polish: the canvas remains the hero, the source tab is genuine
+   exported markup, and every visible action has a working handler. */
+.nexus-lab-shell[data-lab="studio"] .studio-introduction{
+  min-height:180px;
+  position:relative;isolation:isolate;overflow:hidden;
+  border-radius:22px;
+  border:1px solid #8864ae;
+  background:
+    radial-gradient(ellipse 42% 100% at 93% 10%,#ae74e954,transparent 75%),
+    radial-gradient(ellipse 68% 85% at 3% 100%,#5c408855,transparent 75%),
+    linear-gradient(124deg,#2d203d,#15111c);
+  box-shadow:inset 0 1px #d2abef33,0 24px 66px -46px #000;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction::after{
+  position:absolute;content:"";z-index:-1;pointer-events:none;
+  width:230px;height:230px;right:9%;top:-100px;
+  border:1px solid #ca99fc54;border-radius:50%;
+  box-shadow:0 0 0 34px #ac80d920,0 0 0 72px #ac80d913;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-kicker{
+  color:#ddb4ff;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction h2{
+  font-size:clamp(38px,5vw,65px);
+  line-height:.98;
+  font-weight:850;
+  text-shadow:0 12px 35px #a46bd42b;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction p{
+  max-width:62ch;color:#e1d1ec;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{
+  width:92px;height:92px;font-size:57px;
+  border-radius:24px;border-color:#ba8ee7;
+  background:radial-gradient(circle at 35% 25%,#9864c5,#3c2459 65%,#261733);
+  box-shadow:0 0 50px -15px #c68ff4,inset 0 1px #e6c6ff63;
+}
+.studio-introduction-features{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:16px;
+}
+.studio-introduction-features span{
+  display:inline-flex;align-items:center;min-height:29px;gap:8px;
+  padding:5px 10px;border-radius:6px;border:1px solid #8965a7;
+  background:#3d2b525b;color:#e2c7fa;
+  font:800 10px/1.5 monospace;letter-spacing:.03em;
+}
+.studio-introduction-features span b{color:#f7e8ff;font-size:11px}
+.nexus-lab-shell[data-lab="studio"] .studio-design-console{
+  border-color:#9069b6;
+  box-shadow:0 33px 80px -51px #000,0 0 30px -23px #c489f5;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-toolbar{
+  background:linear-gradient(110deg,#30213f,#181423 83%);
+  border-color:#665080;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-block:focus-visible{
+  outline:2px solid #d9b0ff;outline-offset:3px;
+}
+.studio-stage-tabs{
+  display:flex;align-items:center;gap:4px;
+  margin-bottom:10px;padding:5px;
+  border:1px solid #57436c;border-radius:9px;
+  background:#1e1829;
+}
+.studio-stage-tabs button{
+  min-height:34px;display:inline-flex;align-items:center;justify-content:center;
+  gap:7px;padding:7px 12px;border:1px solid transparent;
+  border-radius:7px;color:#c9b1dd;font-size:11px;font-weight:800;
+}
+.studio-stage-tabs button[aria-pressed="true"]{
+  border-color:#a37aca;
+  background:#503768;color:#fff2ff;
+}
+.studio-stage-tabs .studio-copy-code{
+  margin-left:auto;
+  border-color:#9569be;
+  background:#372549;
+  color:#efd7ff;
+}
+.studio-stage-tabs .studio-copy-code:hover{background:#56346f}
+.studio-code-window{
+  width:100%;min-height:365px;max-height:620px;
+  overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid #775995;border-radius:9px;
+  box-shadow:0 15px 40px #0008;
+  background:#120f1b;
+}
+.studio-code-title{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:13px 16px;border-bottom:1px solid #4b3a64;
+  color:#dcbeef;font:800 10px/1.5 monospace;
+  background:#251a32;
+}
+.studio-code-title span:last-child{color:#a38bb5;font-size:9px}
+.studio-code-window pre{
+  flex:1;min-height:0;overflow:auto;
+  white-space:pre;tab-size:2;
+  padding:22px 17px;
+  color:#e4d9ea;
+  font:12px/1.85 ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+.studio-code-window code{white-space:pre}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection{
+  border:1px solid #684d82;border-radius:8px;background:#30223d;
+  padding:12px;
+}
+@media(max-width:750px){
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction{padding:21px}
+  .studio-introduction-features span{font-size:9px}
+}
+@media(max-width:500px){
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction h2{font-size:clamp(33px,9vw,49px)}
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{width:55px;height:55px;font-size:34px}
+  .studio-stage-tabs button{padding:6px 9px;font-size:10px}
+  .studio-code-title{padding:11px}
+  .studio-code-window pre{padding:15px 10px;font-size:10px}
+}
