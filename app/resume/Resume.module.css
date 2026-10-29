@@ -137,3 +137,16 @@
     transition-duration:0.01ms!important
   }
 }
+
+/* Evidence ratings share the portfolio's data and retain text alternatives. */
+.ratedSkills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.ratedSkill{border:1px solid var(--red);padding:10px;break-inside:avoid;min-width:0}
+.ratedSkill>strong{display:block;font-size:11px;margin-bottom:8px}
+.ratingRow{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:9px;color:#d6c9cc}
+.ratingRow>span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}
+.ratingDots{display:flex;gap:3px;flex-shrink:0}
+.ratingDots i{width:6px;height:6px;border:1px solid #84777b;border-radius:50%}
+.ratingDots i[data-filled=true]{background:var(--red);border-color:var(--red)}
+.ratingRow small{font-size:9px;white-space:nowrap}
+@media(max-width:650px){.ratedSkills{grid-template-columns:1fr}.ratedSkill>strong{font-size:13px}.ratingRow{font-size:12px}.ratingDots i{width:8px;height:8px}}
+@media print{.ratedSkills{grid-template-columns:repeat(2,minmax(0,1fr))}.ratedSkill{padding:6px}.ratingRow{color:#272029}.ratedSkill>strong{color:#272029}}

@@ -18,3 +18,12 @@ export const skillEvidence = [
  {id:'storage',name:'Browser storage',projects:4,evidence:'Cart · editor · probes · work queue'},
  {id:'ai',name:'AI-assisted development',projects:5,evidence:'Planning · review · documented limits'},
 ] as const;
+
+// Shared wording keeps the online CV and its downloadable PDFs consistent.
+export const skillRatingCopy = {
+ es:{usage:"Uso en proyectos",knowledge:"Conocimiento estimado",note:"Uso: presencia en 5 proyectos. Conocimiento provisional: 1/5 = familiarización; 2/5 = práctica guiada con IA. No es una evaluación independiente."},
+ en:{usage:"Project usage",knowledge:"Estimated knowledge",note:"Usage: presence across 5 projects. Provisional knowledge: 1/5 = introductory exposure; 2/5 = AI-guided practice. Not an independent assessment."},
+ de:{usage:"Projektnutzung",knowledge:"Geschätzte Kenntnisse",note:"Nutzung: Präsenz in 5 Projekten. Vorläufige Kenntnisse: 1/5 = Einstieg; 2/5 = KI-gestützte Praxis. Keine unabhängige Bewertung."},
+ fr:{usage:"Usage en projets",knowledge:"Connaissances estimées",note:"Usage : présence dans 5 projets. Connaissances provisoires : 1/5 = découverte ; 2/5 = pratique guidée par IA. Pas une évaluation indépendante."},
+ pt:{usage:"Uso em projetos",knowledge:"Conhecimento estimado",note:"Uso: presença em 5 projetos. Conhecimento provisório: 1/5 = familiarização; 2/5 = prática guiada por IA. Não é avaliação independente."},
+} as const;

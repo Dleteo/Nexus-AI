@@ -3,6 +3,8 @@ import { professionalProfile } from "../../../../data/profile";
 import { resumeCopy, type ResumeLang } from "../../../../data/resume-copy";
 import { isSiteLanguage } from "../../../../data/site-languages";
 
+import { skillEvidence, proficiency, skillRatingCopy } from "../../../../data/professional-development";
+
 export const runtime = "nodejs";
 
 function latin(value: string): string {
@@ -43,7 +45,29 @@ function makePdf(lang:ResumeLang):Uint8Array {
  section(d.headings.projects);
  for(const item of d.projects){body(item.name+" | "+item.stack,88);body(item.summary);body(item.url.replace("https://github.com/","github.com/"),92);}
  section(d.headings.skills);
- for(const item of d.skillGroups)body(item.title+": "+item.items);
+ const ratings=skillRatingCopy[lang];
+ // Two compact columns keep all twelve ratings legible on the one-page CV.
+ body(ratings.usage+" / "+ratings.knowledge);
+ for(let row=0;row<6;row++){
+  const baseline=y;
+  for(let col=0;col<2;col++){
+   const skill=skillEvidence[row+col*6];
+   const x=42+col*266;
+   pages[pages.length-1].push("0.12 0.10 0.13 rg BT /F1 7 Tf 1 0 0 1 "+x+" "+baseline+" Tm "+pdfLiteral(skill.name)+" Tj ET");
+   [skill.projects,proficiency[skill.id]??0].forEach((value,meter)=>{
+    const start=x+134+meter*60;
+    // Bezier circles work in PDF without depending on a symbol font.
+    for(let dot=0;dot<5;dot++){
+     const cx=start+dot*6,cy=baseline+2,r=1.8,k=r*0.55228475;
+     const circle=`${cx+r} ${cy} m ${cx+r} ${cy+k} ${cx+k} ${cy+r} ${cx} ${cy+r} c ${cx-k} ${cy+r} ${cx-r} ${cy+k} ${cx-r} ${cy} c ${cx-r} ${cy-k} ${cx-k} ${cy-r} ${cx} ${cy-r} c ${cx+k} ${cy-r} ${cx+r} ${cy-k} ${cx+r} ${cy} c`;
+     pages[pages.length-1].push("0.84 0.07 0.16 RG 0.84 0.07 0.16 rg 0.5 w "+circle+(dot<value?" f":" S"));
+    }
+    pages[pages.length-1].push("0.12 0.10 0.13 rg BT /F1 6 Tf 1 0 0 1 "+(start+31)+" "+baseline+" Tm "+pdfLiteral(value+"/5")+" Tj ET");
+   });
+  }
+  y-=13;
+ }
+ body(ratings.note,111);
  section(d.headings.experience);body(d.experience);
  section(d.headings.training+" | "+totalTrainingHours+" h");
  body(d.trainingNote);

@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.request import urlopen
 import os
 import time
+import re
 from urllib.error import URLError
 from pypdf import PdfReader
 
@@ -44,5 +45,9 @@ for lang, expected in headings.items():
     assert "Nexus AI" in text, f"{lang}: missing featured project"
     assert "94" in text, f"{lang}: missing documented training hours"
     assert "Hangman Game" in text, f"{lang}: missing project"
+    for skill in ("HTML / CSS", "JavaScript", "TypeScript", "React / Next.js", "Python", "Git / GitHub", "Supabase", "SQL / SQLite", "Automated testing", "Accessibility", "Browser storage", "AI-assisted development"):
+        assert skill in text, f"{lang}: missing rated skill {skill}"
+    assert len(re.findall(r"[1-5]/5", text)) >= 24, f"{lang}: missing usage/knowledge scores"
+    assert "1/5" in text and "2/5" in text, f"{lang}: missing provisional scale explanation"
     assert "\ufffd" not in text, f"{lang}: replacement characters indicate damaged encoding"
     print(f"PASS PDF {lang}: {len(reader.pages)} pages, localized content and references", flush=True)

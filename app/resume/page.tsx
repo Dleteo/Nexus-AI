@@ -4,6 +4,7 @@ import {certifications,totalTrainingHours} from "../../data/certifications";
 import {professionalProfile as profile} from "../../data/profile";
 import {resumeCopy,type ResumeLang} from "../../data/resume-copy";
 import {siteLanguages,isSiteLanguage,cvDownloadPath,cvDownloadLabels,portfolioPath} from "../../data/site-languages";
+import {skillEvidence,proficiency,skillRatingCopy} from "../../data/professional-development";
 import styles from "./Resume.module.css";
 
 export const metadata:Metadata={
@@ -11,12 +12,13 @@ export const metadata:Metadata={
   description:"Currículum profesional de desarrollador web junior: proyectos verificables, formación documentada y contacto.",
 };
 
-const availableSkills=["HTML5","CSS3","JavaScript","TypeScript","React","Next.js","Python","Supabase","Git / GitHub","PostgreSQL / RLS","Responsive UI","Testing"];
+
 
 export default async function ResumePage({searchParams}:{searchParams:Promise<{lang?:string}>}){
   const {lang}=await searchParams;
   const language:ResumeLang=lang&&isSiteLanguage(lang)?lang:"es";
   const copy=resumeCopy[language];
+  const ratings=skillRatingCopy[language];
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>({es,en,de,fr,pt})[language];
   const sortedTraining=[...certifications].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
   return <main className={styles.resumePage} lang={language}>
@@ -89,7 +91,15 @@ export default async function ResumePage({searchParams}:{searchParams:Promise<{l
           {copy.projects.map((item,i)=><a className={styles.projectItem} href={item.url} key={item.name} target="_blank" rel="noopener noreferrer"><span className={styles.projectNumber}>{String(i+1).padStart(2,"0")}</span><span><strong>{item.name}</strong><small>{item.stack} · {item.summary}</small></span><span className={styles.arrow}>↗</span></a>)}
         </section>
         <section className={styles.block} aria-labelledby="skills-heading"><h2 className={styles.blockHeading} id="skills-heading"><span>✧</span>{copy.headings.skills}</h2>
-          <div className={styles.skillGrid}>{availableSkills.map(x=><span key={x}>{x}</span>)}</div>
+          <div className={styles.ratedSkills}>{skillEvidence.map(skill=><div className={styles.ratedSkill} key={skill.id}>
+            <strong>{skill.name}</strong>
+            {([{label:ratings.usage,value:skill.projects},{label:ratings.knowledge,value:proficiency[skill.id]??0}]).map(rating=><div className={styles.ratingRow} key={rating.label}>
+              <span>{rating.label}</span><span className={styles.ratingDots} aria-label={`${rating.label}: ${rating.value}/5`}>
+                {Array.from({length:5},(_,i)=><i key={i} aria-hidden="true" data-filled={i<rating.value}/>)}
+              </span><small aria-hidden="true">{rating.value}/5</small>
+            </div>)}
+          </div>)}</div>
+          <p className={styles.note}>{ratings.note}</p>
           {copy.skillGroups.map(group=><p key={group.title} className={styles.subtle}><strong>{group.title}:</strong> {group.items}</p>)}
         </section>
       </div>
