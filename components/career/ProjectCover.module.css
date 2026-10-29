@@ -1367,3 +1367,15 @@
  .factory.spacious .pipeline>div{min-height:81px;padding:9px 4px}
  .factory.spacious .pipeline strong{font-size:7px}
 }
+
+/* On phone screens, prioritize legible review stages over an unreadable file rail. */
+@media(max-width:470px){
+ .factory .factoryWorkbenchPreview{grid-template-columns:minmax(0,1fr)}
+ .factory .factoryArtifactPanel{display:none}
+ .factory .factoryPipelinePanel{border-right:0}
+ .factory .pipeline>div{min-height:79px;padding:9px 6px}
+ .factory .pipeline strong{font-size:8px}
+ .factory .pipeline small{font-size:6px}
+ .factory .factoryPanelTitle{font-size:clamp(20px,5.8vw,27px)}
+ .factory.spacious .pipeline strong{font-size:9px}
+}
