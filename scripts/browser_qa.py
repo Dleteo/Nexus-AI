@@ -66,7 +66,7 @@ def audit_featured_case_studies(browser):
         ("nexus-commerce", "Nexus Commerce"),
         ("nexus-studio", "Nexus Studio"),
         ("nexus-monitor", "Nexus Monitor"),
-        ("nexus-factory", "Nexus Factory"),
+        ("nexus-factory", "Nexus Software Factory"),
     ]
     labels = {"es": "Ver caso de estudio", "en": "Read case study",
               "de": "Fallstudie lesen", "fr": "Voir l’étude de cas",
@@ -215,13 +215,13 @@ def audit_labs_keyboard_and_localization(browser):
            "Arrow navigation should move keyboard focus")
     expect("lab=studio" in page.url,"Keyboard lab navigation must update shareable URL")
     page.keyboard.press("End")
-    expect(lab_navigation.get_by_role("button",name="Nexus Factory").get_attribute("aria-pressed")=="true",
+    expect(lab_navigation.get_by_role("button",name="Nexus Software Factory").get_attribute("aria-pressed")=="true",
            "End should select last lab")
     page.keyboard.press("Home")
     expect(commerce.get_attribute("aria-pressed")=="true","Home should select first lab")
     for lab in ["commerce","studio","monitor","factory"]:
         lab_navigation.get_by_role("button",name={"commerce":"Nexus Commerce","studio":"Nexus Studio",
-            "monitor":"Nexus Monitor","factory":"Nexus Factory"}[lab]).click()
+            "monitor":"Nexus Monitor","factory":"Nexus Software Factory"}[lab]).click()
         expect(page.get_by_role("region",name="Recorrido de la demostración").locator("ol > li").count()==3,
                f"Demo guide must follow selected module: {lab}")
     context.close()
@@ -366,7 +366,7 @@ def audit(browser, width, label):
     expect(page.url == BASE + "/", "Legacy portfolio must redirect to the current Spanish portfolio")
     featured = page.locator("#proyectos")
     expect(featured.locator("article").count() == 5, "Canonical portfolio must show five current projects")
-    for project in ["Nexus AI Workspace", "Nexus Commerce", "Nexus Studio", "Nexus Monitor", "Nexus Factory"]:
+    for project in ["Nexus AI Workspace", "Nexus Commerce", "Nexus Studio", "Nexus Monitor", "Nexus Software Factory"]:
         expect(featured.get_by_role("heading", name=project, exact=True).count() == 1,
                "Canonical portfolio missing current project: " + project)
     expect(page.get_by_role("heading", name="EDUCACIÓN Y FORMACIÓN", exact=False).count() == 1,
@@ -449,7 +449,7 @@ def audit(browser, width, label):
     expect(page.get_by_role("button", name="Create account").is_visible(), "Registration button missing")
     page.screenshot(path=str(ARTIFACTS / f"register-{label}.png"), full_page=True)
     # Deep-link from the featured portfolio into each engineering lab.
-    for lab, title in [("commerce","Nexus Commerce"),("studio","Nexus Studio"),("monitor","Nexus Monitor"),("factory","Nexus Factory")]:
+    for lab, title in [("commerce","Nexus Commerce"),("studio","Nexus Studio"),("monitor","Nexus Monitor"),("factory","Nexus Software Factory")]:
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
         page.get_by_role("heading", name=title).wait_for(state="visible", timeout=10000)
     # Each engineering product has a distinct visual surface and accessible navigation.
@@ -613,9 +613,9 @@ def audit(browser, width, label):
     expect(manual_window.is_visible(), "Monitor sample window missing")
     manual_window.get_by_label("Select sample window").select_option("5")
     expect(manual_window.get_by_text("Samples in window").is_visible(), "Sample window summary missing")
-    page.get_by_role("button", name="Nexus Factory").click()
-    factory_spec = page.get_by_role("region", name="Nexus Factory specification workspace")
-    expect(factory_spec.is_visible(), "Nexus Factory intake cockpit must be visible")
+    page.get_by_role("button", name="Nexus Software Factory").click()
+    factory_spec = page.get_by_role("region", name="Nexus Software Factory specification workspace")
+    expect(factory_spec.is_visible(), "Nexus Software Factory intake cockpit must be visible")
     page.locator("#factory-request").fill("Build an accessible responsive dashboard with authentication")
     expect(factory_spec.locator(".factory-intake-risk").is_visible(),
            "Sensitive requests must display review risks before approval")
@@ -726,8 +726,8 @@ def audit_case_study_visual_consistency(browser):
             if slug in ("task-tracker", "nexus-ai"):
                 page.screenshot(path=str(ARTIFACTS / f"case-{slug}-{width}.png"), full_page=True)
         page.goto(BASE + "/projects/nexus-software-factory?lang=es", wait_until="networkidle")
-        expect(page.get_by_role("heading", name="Nexus Factory", level=1).is_visible(),
-               "Old Factory case-study links must still resolve to renamed Nexus Factory")
+        expect(page.get_by_role("heading", name="Nexus Software Factory", level=1).is_visible(),
+               "Old Factory case-study links must still resolve to renamed Nexus Software Factory")
         context.close()
 
 def audit_standalone_labs(browser):
@@ -739,7 +739,7 @@ def audit_standalone_labs(browser):
             ("commerce","Nexus Commerce","Add to cart"),
             ("studio","Nexus Studio","Export HTML"),
             ("monitor","Nexus Monitor","Run health check"),
-            ("factory","Nexus Factory","Create reviewable plan"),
+            ("factory","Nexus Software Factory","Create reviewable plan"),
         ]:
             page.goto(BASE+"/labs/"+lab,wait_until="networkidle")
             expect(page.locator('main[data-standalone="true"][data-lab="'+lab+'"]').count()==1,
