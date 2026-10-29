@@ -298,3 +298,83 @@
   .workspace .primary,.workspace .secondary,.workspace .evidence>a{transition:none}
   .workspace .primary:hover,.workspace .secondary:hover,.workspace .evidence>a:hover{transform:none}
 }
+
+
+/* Nexus Commerce case study adopts the same graphite/copper retail system as
+   the featured portfolio card and the actual functional Commerce Lab. */
+.commerce{
+  --case-bg:#17161a;
+  --case-surface:#292329;
+  --case-raised:#342b2c;
+  --case-text:#fff2e4;
+  --case-muted:#ddc9ba;
+  --case-accent:#e4b28c;
+  --case-line:#795d4b;
+  background:
+    radial-gradient(ellipse 65% 38% at 90% 3%,#af79532b,transparent 81%),
+    radial-gradient(ellipse 45% 35% at 5% 64%,#8f62421c,transparent 86%),
+    #17161a;
+}
+.commerce .header{
+  background:#18161aee;
+  backdrop-filter:blur(12px);
+  border-color:#86654d;
+}
+.commerce .brand>span:first-child{
+  border-color:#cb9877;
+  background:linear-gradient(130deg,#4a332f,#211d22);
+  color:#f3cba6;
+  border-radius:8px;
+}
+.commerce .headerLinks .cv{
+  background:#322527;border-color:#957258;color:#f8dcc4;
+}
+.commerce .hero{
+  border:1px solid #86634f;border-radius:19px;
+  padding:clamp(20px,3.1vw,48px);
+  background:radial-gradient(ellipse at 90% 0%,#b0815d36,transparent 72%),#282329;
+  gap:clamp(22px,3.3vw,52px);
+}
+.commerce .eyebrow{color:#e6b992}
+.commerce .hero h1{
+  font-family:Georgia,serif;
+  font-size:clamp(48px,5vw,86px);
+  line-height:1.06;
+  font-weight:500;
+  color:#f8e9d7;
+  letter-spacing:-.065em;
+}
+.commerce .lead{color:#e2d0bf}
+.commerce .heroVisual{
+  border:1px solid #966d56;
+  border-radius:14px;
+  overflow:hidden;
+  background:#201e24;
+  box-shadow:0 25px 70px -45px #000;
+}
+.commerce .heroVisual figcaption{
+  border-color:#60493d;
+  color:#cab5a2;
+  background:#252126;
+}
+.commerce .primary{
+  color:#24191a;
+  background:#e8b994;border-color:#e8b994;
+  border-radius:8px;
+}
+.commerce .primary:hover{filter:none;background:#f5d4b7}
+.commerce .secondary{border-color:#a37b62;color:#f4ddc9;border-radius:8px}
+.commerce .tech>span{color:#f2d5bb;background:#342b2b;border-radius:5px}
+.commerce .evidence>a{
+  background:linear-gradient(145deg,#302627,#231f23);
+  border-color:#7b5b49;border-radius:9px;
+}
+.commerce .evidence>a:hover{border-color:#ebbc98}
+.commerce .practice>section{background:#272126}
+@media(max-width:900px){
+  .commerce .hero{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+  .commerce .hero{padding:18px 14px;border-radius:12px}
+  .commerce .hero h1{font-size:clamp(47px,11vw,65px)}
+}
