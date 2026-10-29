@@ -274,3 +274,56 @@
 @media(max-width:700px){.lab-project-topline{gap:10px;margin-bottom:20px;align-items:flex-start}.lab-portfolio-return{font-size:11px}.lab-project-switcher>summary{font-size:11px;gap:12px;padding:10px}.lab-project-heading{align-items:flex-start;gap:13px}.lab-project-mark{flex-basis:49px;width:49px;height:49px;font-size:29px;border-radius:10px}.lab-project-kicker{font-size:8px;letter-spacing:.1em}.lab-project-description{font-size:12px;line-height:1.6}.lab-project-scope{display:none}.nexus-lab-shell[data-standalone="true"] .commerce-catalog{padding:12px}.nexus-lab-shell[data-standalone="true"] .studio-editor-layout>div{padding:12px}.lab-project-guide{margin-bottom:18px}}
 
 .studio-block-actions>.lab-button{flex:1 0 auto;padding-inline:10px;white-space:nowrap}
+
+
+/* Commerce product photos: actual photography, not emoji/card mockups. */
+.commerce-product-photo{
+  position:relative;
+  isolation:isolate;
+  display:block;
+  width:100%;
+  aspect-ratio:8/5;
+  overflow:hidden;
+  border:1px solid #34715d;
+  border-radius:12px;
+  background:linear-gradient(135deg,#204d3e,#0d241d);
+  margin-bottom:9px;
+}
+.commerce-product-photo::after{
+  content:"";
+  position:absolute;
+  inset:45% 0 0;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(transparent,#08171058);
+}
+.commerce-product-photo img{
+  object-fit:cover;
+  object-position:center;
+  transition:transform .3s ease;
+}
+.commerce-storefront article:hover .commerce-product-photo img{transform:scale(1.045)}
+.commerce-product-photo-fallback{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#a0f1c9;
+  font-size:clamp(24px,4vw,58px);
+}
+.commerce-photo-caption{
+  margin:0 0 12px;
+  font-size:10px;
+  color:#9abbaa;
+}
+.lab-screen-product .commerce-product-photo-compact{
+  width:100%;
+  aspect-ratio:1;
+  border-radius:8px;
+  margin:0;
+}
+.lab-screen-product .commerce-product-photo-compact img{object-fit:cover}
+@media(prefers-reduced-motion:reduce){
+  .commerce-product-photo img{transition:none}
+  .commerce-storefront article:hover .commerce-product-photo img{transform:none}
+}
