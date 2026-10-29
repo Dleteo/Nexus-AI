@@ -7,10 +7,10 @@ import type {CaseStudy} from "../../data/case-studies";
 /** Local comparison of the five documented architectures, no generated claims. */
 export default function ProjectArchitectureCompare({studies}:{studies:CaseStudy[]}){
   const [left,setLeft]=useState("nexus-ai");
-  const [right,setRight]=useState("nexus-software-factory");
+  const [right,setRight]=useState("nexus-factory");
   const first=studies.find(x=>x.slug===left);
   const second=studies.find(x=>x.slug===right);
-  const options=studies.filter(x=>["nexus-ai","nexus-commerce","nexus-studio","nexus-monitor","nexus-software-factory"].includes(x.slug));
+  const options=studies.filter(x=>["nexus-ai","nexus-commerce","nexus-studio","nexus-monitor","nexus-factory"].includes(x.slug));
   if(!first||!second)return null;
   return <section aria-labelledby="compare-project-title" className="mt-14 rounded-2xl border border-[#844457] bg-[#1b161c] p-5 sm:p-8">
     <h2 id="compare-project-title" className="text-2xl font-bold">Compara las cinco arquitecturas</h2>
