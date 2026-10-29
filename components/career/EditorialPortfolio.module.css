@@ -798,3 +798,8 @@
    This scoped identity rule takes precedence over individual component themes. */
 .page,
 .page.page *{border-color:var(--red)!important}
+
+/* Contact links pair recognisable icons with readable text. */
+.socials a,.directContact>a{display:inline-flex;align-items:center;gap:9px}
+.socials svg,.directContact svg,.contactCTA svg{flex-shrink:0;width:20px;height:20px}
+.contactCTA{display:inline-flex;align-items:center;gap:10px}
