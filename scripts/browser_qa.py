@@ -319,7 +319,7 @@ def audit(browser, width, label):
             expect(bounds["y"] >= previous_bottom + 20,
                    "Projects must have separate rows with readable spacing")
         previous_bottom = bounds["y"] + bounds["height"]
-    expect(page.locator('[class*="proofColumn"]').count() == 3, "Education, skills and process strip missing")
+    expect(all(page.locator("#"+section).count()==1 for section in ["certificados","habilidades","trayectoria"]), "Certificate, skill and process sections must remain individually reachable")
     dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
     expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Homepage horizontal overflow at {width}px: {dimensions}")
     contact = page.get_by_role("region", name="Asistente de contacto")
@@ -369,7 +369,7 @@ def audit(browser, width, label):
     for project in ["Nexus AI Workspace", "Nexus Commerce", "Nexus Studio", "Nexus Monitor", "Nexus Software Factory"]:
         expect(featured.get_by_role("heading", name=project, exact=True).count() == 1,
                "Canonical portfolio missing current project: " + project)
-    expect(page.get_by_role("heading", name="EDUCACIÓN Y FORMACIÓN", exact=False).count() == 1,
+    expect(page.locator("#certificados").get_by_text("Formación documentada", exact=True).count() == 1,
            "Canonical portfolio must retain documented training")
     expect(page.locator("#certificados").get_by_role("link", name="Ver formación y CV", exact=False).count() == 1,
            "Canonical portfolio must retain its training and CV link")

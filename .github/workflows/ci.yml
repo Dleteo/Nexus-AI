@@ -160,6 +160,7 @@ jobs:
           npm run start -- --port 3102 > /tmp/nexus-browser.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_evidence_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/project_languages_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/factory_delivery_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/browser_qa.py || { cat /tmp/nexus-browser.log; exit 1; }
