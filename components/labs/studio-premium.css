@@ -412,3 +412,304 @@
  .nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{display:none}
  .nexus-lab-shell[data-lab="studio"] .lab-project-mark{width:42px;height:42px;flex-basis:42px;font-size:24px}
 }
+
+
+/* STUDIO / DESIGN SYSTEM v2 — distinctive creative software, no purple.
+   Teal focus + tiny apricot notes. Document surface stays faithful to export. */
+.nexus-lab-shell[data-lab="studio"]{
+  --lab-accent:#9ae3db;
+  --lab-accent-soft:#18383d;
+  --lab-border:#42646a;
+  --lab-surface:#182329;
+  --lab-ink:#e5f3f3;
+  background:
+    radial-gradient(ellipse 56% 24% at 87% -8%,#2c888326,transparent 85%),
+    #0f1519;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-header{
+  border-color:#30444c;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-heading h1{
+  color:#f6fbfa;letter-spacing:-.065em;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-mark{
+  background:linear-gradient(150deg,#275459,#172a30);
+  border-color:#48868a;
+  color:#a4f0e7;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-kicker{color:#96d2d0}
+.nexus-lab-shell[data-lab="studio"] .lab-project-scope{
+  color:#b1dad6;background:#21363a;border-color:#4c7478;
+}
+.nexus-lab-shell[data-lab="studio"] .nexus-lab-workspace{
+  border:1px solid #30434c;
+  background:linear-gradient(145deg,#182127,#111a20);
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction{
+  min-height:160px;
+  background:
+    radial-gradient(ellipse 37% 115% at 100% 42%,#5ccbb83e,transparent 82%),
+    radial-gradient(ellipse 36% 75% at 65% 110%,#eebd7b17,transparent 85%),
+    linear-gradient(107deg,#1b2e33,#1b252b 70%,#223136);
+  border:1px solid #43676e;
+  border-radius:13px;
+  padding:clamp(19px,3vw,30px);
+  box-shadow:inset 0 1px #b9fff218,0 16px 34px -28px #000;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction::before{
+  content:"";position:absolute;right:10%;top:16px;bottom:14px;
+  width:1px;background:linear-gradient(transparent,#9ee8cf35,transparent);
+  pointer-events:none;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-kicker{
+  display:inline-flex;align-items:center;gap:9px;
+  color:#88dbd6;font-size:10px;letter-spacing:.14em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-kicker::before{
+  content:"";width:7px;height:7px;border-radius:2px;
+  background:#8fd7cf;box-shadow:0 0 12px #7cdbd66e;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction h2{
+  font-family:var(--font-geist-sans),Arial,sans-serif;
+  font-size:clamp(36px,4vw,55px);
+  line-height:1.03;letter-spacing:-.06em;
+  color:#f4fbfa;font-weight:820;
+  max-width:800px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction p{
+  font-size:13px;max-width:75ch;color:#c1d1d4;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{
+  display:grid;
+  width:78px;height:78px;
+  color:#d9faf2;background:
+    radial-gradient(circle at 35% 25%,#5ba69d,#23464c 68%,#18292e);
+  border:1px solid #77b8b1;
+  border-radius:18px;
+  font-size:50px;
+  box-shadow:0 0 34px -16px #79d8d1;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features{margin-top:17px}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features span{
+  color:#c3dcdb;background:#183137c9;
+  border-color:#40696d;padding-inline:10px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features span b{color:#edbe89}
+.nexus-lab-shell[data-lab="studio"] .studio-mode-bar{
+  border-color:#3e5961;
+  background:linear-gradient(105deg,#1d2c32,#19252c);
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside{
+  background:linear-gradient(175deg,#202d33,#161f25);
+  border-color:#39525b;border-radius:11px;
+  box-shadow:inset 0 1px #e6ffff0a;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside>h3{
+  font-size:17px;font-weight:780;color:#f3fbfb;
+  border-color:#415b61;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-help{color:#b5cacd}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside button[aria-pressed="true"]{
+  background:#21474b;border:1px solid #64a5a8;
+  color:#e6fbf9;box-shadow:inset 3px 0 #8be4d6;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside button:hover:not(:disabled){
+  border-color:#78b4b8;background:#244046;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-add-tools button{
+  min-height:42px;background:#263740;border-color:#42646d;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside .lab-button-primary{
+  background:linear-gradient(112deg,#bbebdf,#8bc5c4);
+  border-color:#b6eee2;color:#102f33;
+  font-weight:820;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside .lab-button-primary:hover:not(:disabled){
+  background:#cef5eb;color:#0d292f;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-console{
+  border:1px solid #4a737c;border-radius:12px;
+  background:#111a20;
+  box-shadow:0 27px 58px -43px #000,0 0 0 1px #a7eee70d inset;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-toolbar{
+  min-height:67px;
+  background:linear-gradient(110deg,#223339,#1c2a30);
+  border-color:#38525b;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-logo{
+  border-color:#65a6a6;
+  color:#d5fffa;
+  background:linear-gradient(140deg,#397b7c,#22464d);
+  font-size:22px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-identity strong{
+  font-size:12px;letter-spacing:.11em;color:#f5fcfa;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-identity small{
+  color:#9fc5c7;letter-spacing:.055em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-state{
+  display:inline-flex;align-items:center;gap:8px;
+  color:#a8c8c8;letter-spacing:.09em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-state i{
+  width:6px;height:6px;display:inline-block;
+  border-radius:50%;background:#73cfbb;
+  box-shadow:0 0 10px #73cfbb75;
+}
+.studio-document-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:40px;padding:0 16px;
+  border-bottom:1px solid #334951;
+  background:#18252b;color:#93abb5;
+}
+.studio-document-tab{
+  position:relative;display:flex;align-items:center;gap:8px;
+  align-self:stretch;padding:0 14px;
+  font:700 11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  border-right:1px solid #364b53;
+  border-left:1px solid #364b53;
+  background:#24343b;color:#e5f3f5;
+}
+.studio-document-tab::after{
+  content:"";position:absolute;bottom:-1px;left:0;right:0;
+  height:2px;background:#6fd0c8;
+}
+.studio-document-tab>span{color:#8bd2ca}
+.studio-document-tab i{
+  width:5px;height:5px;border-radius:50%;background:#efbc86;
+  display:inline-block;
+}
+.studio-document-context{
+  font:800 9px/1.5 monospace;letter-spacing:.055em;
+  color:#93adb8;
+}
+.studio-document-context span{padding-inline:5px;color:#628790}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls{
+  border-color:#486570;background:#16252b;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls button[aria-pressed="true"]{
+  border-color:#6db6b3;background:#24515a;color:#e8fffc;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs{
+  border-color:#475f68;background:#17262d;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs button[aria-pressed="true"]{
+  color:#e4fbf8;background:#29535a;border-color:#6eaaa9;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs .studio-copy-code{
+  border-color:#659ba1;background:#2a5359;color:#f0fffc;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-stage{
+  background-color:#25343b;
+  background-image:radial-gradient(#67818b63 1px,transparent 1px);
+  background-size:18px 18px;
+  padding:17px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-ruler{
+  color:#b8cbd0;font-size:10px;padding-bottom:14px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-footer{color:#97b1b9}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-frame{
+  border-radius:7px;
+  border:1px solid #bdd6dc;
+  box-shadow:0 30px 52px #0711188e,0 0 0 5px #ffffff0a;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-page{
+  min-height:410px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-overline{
+  display:flex;align-items:center;gap:8px;
+  letter-spacing:.15em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-overline>span{
+  font-size:14px;color:#348da0;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-block{
+  border-radius:6px;
+  transition:border-color .15s ease,background-color .15s ease,box-shadow .15s ease;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-block[aria-pressed="true"]{
+  outline:0;
+  border:1px solid var(--studio-highlight);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--studio-highlight),transparent 60%);
+}
+.nexus-lab-shell[data-lab="studio"] .studio-selection-handle{
+  font-size:9px;border-radius:0 5px 0 5px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector{
+  background:linear-gradient(180deg,#223038,#1a272e);
+  border-color:#3b525a;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-title{
+  min-height:60px;border-color:#435962;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-title strong{
+  font-size:11px;color:#f1faf9;
+}
+.studio-inspector-palette{
+  display:flex;position:relative;gap:6px;align-items:flex-end;
+  margin:14px 13px 0;
+  padding:12px;
+  border:1px solid #48626b;
+  background:linear-gradient(140deg,#33464e,#202e35);
+  border-radius:9px;
+  min-height:83px;
+}
+.studio-inspector-palette>span:not(.studio-palette-label){
+  position:relative;flex:1;max-width:34%;height:55px;
+  border:1px solid #ffffff39;border-radius:5px;
+  box-shadow:0 5px 9px #0003;
+}
+.studio-inspector-palette .studio-palette-surface{background:var(--studio-paper)}
+.studio-inspector-palette .studio-palette-accent{
+  background:var(--studio-highlight);
+  height:37px;
+}
+.studio-inspector-palette .studio-palette-canvas{
+  background:var(--studio-page);
+  height:43px;
+}
+.studio-palette-label{
+  position:absolute;top:3px;right:9px;
+  color:#a8c4ca;font:700 7px/1 monospace;letter-spacing:.07em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector section{
+  border-color:#3f5660;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-button[aria-pressed="true"],
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-toggle button[aria-pressed="true"],
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-spacing button[aria-pressed="true"]{
+  color:#f2fffd;background:#2a555b;border-color:#72b4af;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection{
+  border-color:#527078;background:linear-gradient(145deg,#293f44,#23343b);
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection>span{color:#9de3d7}
+.nexus-lab-shell[data-lab="studio"] .studio-code-window{
+  border-color:#6b919e;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-code-title{
+  background:#22353f;border-color:#476571;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-mode-bar button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-palette:focus-within,
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs button:focus-visible{
+  outline:2px solid #9be0d6;outline-offset:2px;
+}
+@media(max-width:750px){
+  .nexus-lab-shell[data-lab="studio"] .studio-document-context{display:none}
+  .nexus-lab-shell[data-lab="studio"] .studio-canvas-stage{padding:11px}
+  .nexus-lab-shell[data-lab="studio"] .studio-canvas-page{min-height:300px}
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction{padding:19px}
+}
+@media(max-width:450px){
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction h2{font-size:34px}
+  .nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{display:none}
+  .nexus-lab-shell[data-lab="studio"] .studio-toolbar-state{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .nexus-lab-shell[data-lab="studio"] .studio-canvas-block{transition:none}
+}
