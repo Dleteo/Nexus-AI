@@ -124,6 +124,7 @@ export default function ProjectCover({project,language,spacious=false}:{project:
               <div className={s.studioPaperDescription}>{studioCoverCopy[language].description}</div>
               <div className={s.studioPaperButton}>{studioCoverCopy[language].button} <span aria-hidden="true">↗</span></div>
             </div>
+            <div className={s.studioPaperArtwork} aria-hidden="true"><span className={s.studioArtworkHalo}/><span className={s.studioArtworkShape}/><span className={s.studioArtworkOrb}/><span className={s.studioArtworkShine}/><span className={s.studioArtworkNumber}>Nº 01 / DIGITAL CRAFT</span></div>
             <div className={s.studioSelectionOutline}><span>HERO / SELECTED</span><i/><i/><i/><i/></div>
           </div>
           <div className={s.studioCanvasStatus}>DESIGN CANVAS <span>DESKTOP · 1440</span></div>
