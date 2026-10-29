@@ -625,7 +625,7 @@ def audit(browser, width, label):
     second_role.click()
     expect(second_role.get_attribute("aria-pressed")=="true",
            "Workflow role tabs must update their selection")
-    expect(factory_spec.get_by_role("button", name="Download specification .md").is_enabled(),
+    expect(factory_spec.locator(".factory-intake-actions button").is_enabled(),
            "Every valid request should offer a downloadable human-reviewed brief")
     factory_ops=page.get_by_role("region",name="Factory workflow status")
     expect(factory_ops.is_visible(), "Software Factory operations board missing")
