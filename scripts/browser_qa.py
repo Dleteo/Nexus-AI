@@ -531,7 +531,7 @@ def audit(browser, width, label):
     with page.expect_download() as studio_download:
         page.get_by_role("button", name="Export HTML").click()
     exported = studio_download.value.path().read_text(encoding="utf-8")
-    expect("background:#161b20" in exported and "text-align:center" in exported,
+    expect("background:#17191f" in exported and "text-align:center" in exported,
            "Studio HTML must use the selected design preset rather than the old fixed styles")
     viewport.locator("button").first.click()
     expect(page.get_by_role("region", name="Studio static content audit").is_visible(),
@@ -617,7 +617,7 @@ def audit_case_study_visual_consistency(browser):
         "hangman": ("legacy", "rgb(8, 6, 8)"),
         "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
         "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
-        "nexus-studio": ("studio", "rgb(16, 23, 27)"),
+        "nexus-studio": ("studio", "rgb(23, 23, 27)"),
         "nexus-monitor": ("monitor", "rgb(237, 247, 242)"),
         "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
     }
