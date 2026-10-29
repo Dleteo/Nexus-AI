@@ -202,3 +202,213 @@
   .studio-code-title{padding:11px}
   .studio-code-window pre{padding:15px 10px;font-size:10px}
 }
+
+
+/* Nexus Studio / professional desktop software finish.
+   Light document canvas contrasted against neutral chrome and steel-blue focus.
+   Overrides older decorative styling without changing editor functions. */
+.nexus-lab-shell[data-lab="studio"]{
+  --lab-accent:#8daec2;
+  --lab-accent-soft:#293741;
+  --lab-border:#3a444d;
+  --lab-surface:#191f24;
+  --lab-ink:#e8edf1;
+  background:#101417;
+  color:#edf1f4;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-header{border-color:#37414b}
+.nexus-lab-shell[data-lab="studio"] .lab-project-topline{margin-bottom:18px}
+.nexus-lab-shell[data-lab="studio"] .lab-project-mark{
+  flex-basis:50px;width:50px;height:50px;
+  border-radius:11px;border-color:#58646e;
+  color:#f2f5f8;background:#28313a;
+  box-shadow:none;font-size:30px;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-heading h1{
+  font-family:var(--font-geist-sans),Arial,sans-serif;
+  font-size:clamp(31px,3.6vw,49px);
+  font-weight:750;letter-spacing:-.045em;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-kicker{color:#99b1c3}
+.nexus-lab-shell[data-lab="studio"] .lab-project-description{
+  color:#bac5cd;opacity:1;margin-top:8px;
+}
+.nexus-lab-shell[data-lab="studio"] .nexus-lab-workspace{
+  border:1px solid #38434b;border-radius:12px;
+  padding:clamp(10px,1.3vw,19px);
+  background:#181d22;box-shadow:0 22px 52px -36px #000;
+}
+.nexus-lab-shell[data-lab="studio"] .lab-project-guide{
+  border-color:#3e4750;background:#1d2328;border-radius:8px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction{
+  position:relative;overflow:hidden;min-height:0;
+  padding:17px 20px;border:1px solid #434e57;border-radius:9px;
+  background:linear-gradient(110deg,#252c31,#1e2429);
+  box-shadow:none;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction::after{display:none}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-kicker{
+  margin-bottom:7px;color:#8faabd;
+  font-size:9px;letter-spacing:.12em;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction h2{
+  color:#f3f5f7;font-family:var(--font-geist-sans),Arial,sans-serif;
+  font-weight:760;font-size:clamp(24px,2.8vw,34px);
+  letter-spacing:-.045em;line-height:1.16;text-shadow:none;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction p{
+  max-width:78ch;margin-top:7px;color:#bdc7cf;font-size:12px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{
+  width:48px;height:48px;flex-shrink:0;
+  border:1px solid #596875;border-radius:10px;
+  color:#dce7ee;background:#34414c;box-shadow:none;font-size:30px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features{
+  gap:6px;margin-top:12px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features span{
+  min-height:24px;padding:3px 8px;
+  border-color:#43515b;border-radius:4px;
+  background:#293138;color:#c2ced6;font-size:9px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-introduction-features span b{color:#a9c7d9}
+.nexus-lab-shell[data-lab="studio"] .studio-mode-bar,
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside{
+  background:#20262c;border-color:#424c55;box-shadow:none;border-radius:9px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-mode-bar button{
+  border-radius:6px;background:#2e3841;border-color:#56646f;color:#e9edf1;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout{
+  gap:11px;grid-template-columns:minmax(210px,266px) minmax(0,1fr);
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside{
+  padding:17px 13px;gap:11px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside>h3{
+  font-family:var(--font-geist-sans),Arial,sans-serif;
+  font-size:16px;color:#eff4f6;border-color:#3f4b54;padding-bottom:11px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside button{
+  border-radius:6px;border-color:#47545f;color:#e2e9ee;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside button[aria-pressed="true"]{
+  border-color:#80a9c4;background:#304656;color:#eef7ff;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside button:hover:not(:disabled){
+  border-color:#9ab5c6;background:#2b3944;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside textarea,
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside select,
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside input{
+  border-radius:6px;border-color:#596773;background:#151b20;color:#e7edf2;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside .lab-button-primary{
+  border-color:#90afc4;background:#b2c7d4;color:#16222b;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-editor-layout>aside .lab-button-primary:hover:not(:disabled){
+  background:#cee0ea;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-console{
+  background:#171d21;border:1px solid #52606b;border-radius:9px;
+  box-shadow:0 17px 38px -32px #000;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-toolbar{
+  min-height:59px;padding:9px 12px;border-color:#414d56;
+  background:#242b31;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-logo{
+  width:31px;height:31px;border-radius:7px;border-color:#61717e;
+  background:#364651;color:#e4ebf0;box-shadow:none;font-size:18px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-identity strong{color:#f2f5f6;letter-spacing:.08em}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-identity small{color:#b1bdc6}
+.nexus-lab-shell[data-lab="studio"] .studio-toolbar-state{color:#8cabbc}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls,
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs{
+  background:#191f24;border-color:#424f5a;border-radius:7px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls button,
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs button{
+  border-radius:5px;color:#cad3da;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls button[aria-pressed="true"],
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs button[aria-pressed="true"]{
+  background:#344a5a;border-color:#7199b4;color:#f3f8fb;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-tabs .studio-copy-code{
+  border-color:#64859c;background:#2b3e4c;color:#f1f7fb;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-stage{
+  background-color:#20272d;
+  background-image:radial-gradient(#3a454e 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-stage-ruler,
+.nexus-lab-shell[data-lab="studio"] .studio-stage-footer{color:#aab9c5}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-frame{
+  border:1px solid #8a9aa7;border-radius:4px;
+  box-shadow:0 13px 30px #0007;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector{
+  background:#22292f;border-color:#43515c;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-title,
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector section{
+  border-color:#404b55;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-title strong,
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector h3{color:#e9eef2}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-title span,
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector p,
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection>small{color:#aab8c3}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-button,
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-toggle button,
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-spacing button{
+  border-color:#4e5c68;color:#d0d9df;border-radius:6px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-button[aria-pressed="true"],
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-toggle button[aria-pressed="true"],
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-spacing button[aria-pressed="true"]{
+  background:#314757;border-color:#8aadc5;color:#f5f9fc;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-swatch.studio-theme-atelier{background:#e8ecef}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-atelier i{background:#3c7797}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-atelier i+i{background:#ccd7dd}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-swatch.studio-theme-noir{background:#161b20}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-noir i{background:#76b3cf}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-noir i+i{background:#5e7381}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-swatch.studio-theme-editorial{background:#f2efe9}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-editorial i{background:#9b714a}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-editorial i+i{background:#d8c9b9}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection{
+  background:#2b343c;border-color:#4e606d;border-radius:6px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection>span{color:#9fbdd0}
+.nexus-lab-shell[data-lab="studio"] .studio-inspector-selection>strong{color:#e9f0f4}
+.nexus-lab-shell[data-lab="studio"] .studio-code-window{
+  background:#13191e;border-color:#576876;border-radius:6px;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-code-title{
+  color:#d5e5ed;background:#252f37;border-color:#43515a;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-code-title span:last-child{color:#b1c4cf}
+.nexus-lab-shell[data-lab="studio"] .studio-code-window pre{color:#dbe7ef}
+.nexus-lab-shell[data-lab="studio"] .studio-document-review{
+  background:#20272d;border-color:#43505c;
+}
+.nexus-lab-shell[data-lab="studio"] .studio-canvas-block:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-design-inspector button:focus-visible,
+.nexus-lab-shell[data-lab="studio"] .studio-viewport-controls button:focus-visible{
+  outline:2px solid #9abed3;outline-offset:2px;
+}
+@media(max-width:1200px){
+ .nexus-lab-shell[data-lab="studio"] .studio-editor-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:620px){
+ .nexus-lab-shell[data-lab="studio"] .studio-introduction{padding:15px}
+ .nexus-lab-shell[data-lab="studio"] .studio-introduction-mark{display:none}
+ .nexus-lab-shell[data-lab="studio"] .lab-project-mark{width:42px;height:42px;flex-basis:42px;font-size:24px}
+}
