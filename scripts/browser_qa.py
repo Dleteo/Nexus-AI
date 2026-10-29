@@ -289,6 +289,8 @@ def audit(browser, width, label):
            "Studio featured card must show its own layers, canvas and inspector")
     expect(studio_portfolio_card.locator('[class*="studioPropertyPanel"]').count()==1,
            "Studio featured card must include the design inspector")
+    expect(studio_portfolio_card.locator('[class*="studioPaperArtwork"]').count()==1,
+           "Studio artwork should show an editorial design inside the real editor preview")
     expect(workspace_card.locator('a[href*="/projects/nexus-ai?lang="]').count() >= 1,
            "Portfolio card must retain working Nexus AI case-study link")
     previous_bottom = None
@@ -498,6 +500,8 @@ def audit(browser, width, label):
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "HTML editor export missing")
     expect(page.get_by_role("button", name="Export blocks JSON").is_visible(), "Studio JSON export missing")
     expect(page.locator(".studio-design-console").count()==1, "Professional Studio editor shell missing")
+    expect(page.locator(".studio-document-strip").count()==1, "Studio editor must show its document tab")
+    expect(page.get_by_label("Selected theme colors").count()==1, "Studio inspector must display the live design palette")
     preview_tabs=page.get_by_role("group",name="Studio preview mode")
     preview_tabs.get_by_role("button",name="〈/〉 HTML").click()
     expect(page.get_by_role("region",name="Generated HTML source").is_visible(), "Studio source editor tab missing")
@@ -616,6 +620,8 @@ def audit_case_study_visual_consistency(browser):
                        "Studio case study must show a complete layers/canvas/inspector editor")
                 expect(page.locator('[class*="studioLayerActive"]').count()==1,
                        "Studio case study must show a selected editor layer")
+                expect(page.locator('[class*="studioPaperArtwork"]').count()==1,
+                       "Studio case study preview must include the designed page artboard")
                 expect(page.locator('a[href*="/labs/studio"]').count()>0,
                        "Studio case study must retain the functional editor link")
                 page.screenshot(path=str(ARTIFACTS / f"case-nexus-studio-{width}.png"),full_page=True)
