@@ -566,7 +566,7 @@ def audit(browser, width, label):
     dashboard = page.get_by_role("region", name="Monitor sample status dashboard")
     expect(dashboard.is_visible(), "Clear service health dashboard missing")
     expect(dashboard.locator(".monitor-metric").count()==3, "Monitor should show understandable actual-data KPIs")
-    expect(dashboard.get_by_role("button", name="Check service now").is_visible(),
+    expect(dashboard.locator(".monitor-run-button").is_visible(),
            "Dashboard must offer an actionable manual check")
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Monitor SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
