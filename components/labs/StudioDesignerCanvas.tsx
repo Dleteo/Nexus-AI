@@ -37,20 +37,21 @@ export default function StudioDesignerCanvas({blocks,selected,onSelect,design,on
     "--studio-highlight":theme.accent,
     "--studio-paper":theme.surface,
   } as CSSProperties;
-  return <div className="studio-design-console">
+  return <div className="studio-design-console" style={style}>
     <header className="studio-design-toolbar">
-      <div className="studio-toolbar-identity"><span className="studio-toolbar-logo">✦</span><div><strong>NEXUS / STUDIO</strong><small>LIVE VISUAL EDITOR · STATIC HTML</small></div></div>
+      <div className="studio-toolbar-identity"><span className="studio-toolbar-logo">◈</span><div><strong>NEXUS / STUDIO</strong><small>DESIGN WORKSPACE · LOCAL FIRST</small></div></div>
       <div className="studio-viewport-controls" role="group" aria-label="Preview viewport">
         {viewports.map(mode=><button key={mode} type="button" aria-pressed={viewport===mode} onClick={()=>onViewportChange(mode)}>{mode==="desktop"?"▣":mode==="tablet"?"▤":"▯"} <span>{mode}</span></button>)}
       </div>
-      <span className="studio-toolbar-state">● LOCAL DRAFT</span>
+      <span className="studio-toolbar-state"><i aria-hidden="true"/> LOCAL DRAFT</span>
     </header>
+    <div className="studio-document-strip"><span className="studio-document-tab"><span aria-hidden="true">▦</span> index.html <i aria-hidden="true"/> </span><span className="studio-document-context">DOCUMENT / DESIGN SYSTEM <span aria-hidden="true">•</span> UNSAVED PREVIEW</span></div>
     <div className="studio-design-layout">
       <div className="studio-canvas-stage">
         <div className="studio-stage-ruler"><span>{previewMode==="canvas"?"DESIGN CANVAS / "+viewport.toUpperCase():"EXPORT SOURCE / HTML"}</span><span>{blocks.length} BLOCKS · LOCAL DOCUMENT</span></div><div className="studio-stage-tabs" role="group" aria-label="Studio preview mode"><button type="button" onClick={()=>setPreviewMode("canvas")} aria-pressed={previewMode==="canvas"}>◈ Design</button><button type="button" onClick={()=>{setPreviewMode("code");setCopied(false);}} aria-pressed={previewMode==="code"}>〈/〉 HTML</button>{previewMode==="code"&&<button type="button" onClick={()=>void copyHtml()} className="studio-copy-code">{copied?"Copied HTML":"Copy HTML"}</button>}</div>
-        {previewMode==="canvas"?<div className={"studio-canvas-frame studio-viewport-"+viewport+" studio-density-"+design.density} data-studio-viewport={viewport} style={style}>
+        {previewMode==="canvas"?<div className={"studio-canvas-frame studio-viewport-"+viewport+" studio-density-"+design.density} data-studio-viewport={viewport}>
           <div className="studio-canvas-page" data-studio-theme={design.theme} data-studio-alignment={design.alignment}>
-            <span className="studio-canvas-overline">YOUR PAGE / LIVE PREVIEW</span>
+            <span className="studio-canvas-overline"><span aria-hidden="true">◈</span> YOUR PAGE / LIVE PREVIEW</span>
             {blocks.map((block,index)=><button
               key={block.id}
               type="button"
@@ -67,7 +68,8 @@ export default function StudioDesignerCanvas({blocks,selected,onSelect,design,on
         <footer className="studio-stage-footer"><span>VISUAL PREVIEW · NO SCRIPTS EXECUTED</span><span>100% · {viewport.toUpperCase()}</span></footer>
       </div>
       <aside className="studio-design-inspector" aria-label="Studio design inspector">
-        <div className="studio-inspector-title"><strong>INSPECTOR</strong><span>STYLE / 01</span></div>
+        <div className="studio-inspector-title"><strong>DESIGN INSPECTOR</strong><span>STYLE / 01</span></div>
+        <div className="studio-inspector-palette" aria-label="Selected theme colors"><span className="studio-palette-surface"/><span className="studio-palette-accent"/><span className="studio-palette-canvas"/><span className="studio-palette-label">LIVE PALETTE</span></div>
         <section aria-label="Studio themes">
           <h3>Color system</h3>
           <p>Switch the page palette. The export uses the same colors.</p>
