@@ -147,5 +147,5 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 export function getCaseStudy(slug: string): CaseStudy | undefined {
-  return caseStudies.find((study) => study.slug === slug);
+  return caseStudies.find((study) => study.slug === (slug === "nexus-software-factory" ? "nexus-factory" : slug));
 }
