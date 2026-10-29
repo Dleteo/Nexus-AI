@@ -268,7 +268,7 @@ def audit(browser, width, label):
     expect(commerce_portfolio_card.count() == 1, "Featured Commerce card missing")
     expect(commerce_portfolio_card.locator('[class*="shopProductPhoto"] img').count() == 3,
            "Commerce card must present three real product photographs")
-    expect(commerce_portfolio_card.locator('[class*="shopEditorial"]').count() == 1,
+    expect(commerce_portfolio_card.locator('[class*="shopEditorial"] > [class*="shopHeroPhoto"]').count() == 1,
            "Commerce card must show its own premium editorial display")
     card_background = commerce_portfolio_card.evaluate("(el) => getComputedStyle(el).backgroundColor")
     expect(card_background != "rgb(16, 27, 22)", "Commerce card must not retain the old green identity")
