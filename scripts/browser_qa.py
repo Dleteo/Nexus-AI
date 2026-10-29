@@ -239,6 +239,12 @@ def audit(browser, width, label):
            "Footer contact assistant missing")
     expect(page.locator('[class*="heroBackdrop"]').count() == 1, "Oversized portfolio wordmark missing")
     expect(page.locator('[class*="heroPortrait"]').count() == 1, "Owned portrait missing")
+    greeting = page.locator('[class*="handwrittenInk"]')
+    expect(greeting.count() == 1 and greeting.inner_text() == "Hola, soy",
+           "Handwritten introduction text missing")
+    greeting_animation = greeting.evaluate("(el) => getComputedStyle(el).animationName")
+    expect("nexusGreetingWriteErase" in greeting_animation,
+           "Handwritten greeting must erase and reappear in a loop")
     portrait = page.locator('[class*="heroPortrait"]')
     applied_mask = portrait.evaluate("(el) => getComputedStyle(el).maskImage")
     expect("portrait-silhouette-mask.svg" not in applied_mask,
