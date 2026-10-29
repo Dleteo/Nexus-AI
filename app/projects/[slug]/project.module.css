@@ -524,3 +524,113 @@
   .studio .primary,.studio .secondary,.studio .evidence>a{transition:none}
   .studio .primary:hover,.studio .secondary:hover,.studio .evidence>a:hover{transform:none}
 }
+
+
+/* Nexus Studio case study: understated product documentation for a real editor. */
+.studio{
+  --case-bg:#111518;
+  --case-surface:#20272d;
+  --case-raised:#2c353c;
+  --case-text:#edf3f6;
+  --case-muted:#b9c7d0;
+  --case-accent:#a9c7d8;
+  --case-line:#475861;
+  background:#111518;
+}
+.studio .header{
+  background:rgba(17,21,24,.96);
+  border-color:#46535d;
+}
+.studio .brand>span:first-child{
+  border:1px solid #758e9e;border-radius:7px;
+  background:#2b3942;color:#dbe9f0;box-shadow:none;
+}
+.studio .brand b{color:#b8d0dd}
+.studio .headerLinks .cv{
+  border-color:#657f90;background:#25333d;
+  color:#dceaf1;border-radius:5px;
+}
+.studio .languages>a[aria-current="page"]{
+  border-color:#88acbf;background:#2b404c;color:#eaf5f9;
+}
+.studio .hero{
+  border:1px solid #53636e;border-radius:12px;
+  padding:clamp(21px,3vw,43px);
+  background:linear-gradient(120deg,#252e34,#1b2227);
+  box-shadow:0 26px 59px -44px #000;
+  min-height:450px;
+}
+.studio .hero::before,.studio .hero::after{display:none}
+.studio .eyebrow{color:#99b8c9;letter-spacing:.11em}
+.studio .hero h1{
+  max-width:640px;
+  color:#f3f6f8;
+  font-family:var(--font-geist-sans),Arial,sans-serif;
+  font-weight:800;font-size:clamp(48px,5.4vw,85px);
+  letter-spacing:-.055em;line-height:1.01;
+  text-transform:none;text-shadow:none;
+}
+.studio .lead{
+  max-width:530px;margin-top:17px;
+  font-size:clamp(14px,1.1vw,17px);
+  line-height:1.72;color:#c8d4db;
+}
+.studio .primary{
+  border:1px solid #b4d0df;border-radius:6px;
+  color:#172831;background:#bbd4e0;box-shadow:none;
+}
+.studio .primary:hover{
+  filter:none;background:#d5e5ec;transform:translateY(-1px);
+}
+.studio .secondary{
+  border:1px solid #6d8594;
+  border-radius:6px;background:#2c3942;color:#e0ecf1;
+}
+.studio .secondary:hover{border-color:#a9c7d8;transform:translateY(-1px)}
+.studio .heroVisual>div{
+  border:1px solid #667d8a;
+  border-radius:8px;
+  box-shadow:0 23px 45px -32px #000;
+}
+.studio .heroVisual figcaption{color:#a9bac5}
+.studio .tech>span{
+  border-color:#506371;border-radius:5px;
+  background:#29363f;color:#d6e3ea;
+}
+.studio .facts{
+  border:1px solid #43545e;
+  background:#1d252a;border-radius:10px;
+}
+.studio .facts dt,.studio .sectionNumber,.studio .decisions>li>span{
+  color:#a9c4d3;
+}
+.studio .facts dd,.studio .section p,.studio .list{color:#c1d0d9}
+.studio .section{border-color:#35424c}
+.studio .section h2{
+  color:#f0f4f6;
+  font-family:var(--font-geist-sans),Arial,sans-serif;
+  letter-spacing:-.03em;
+}
+.studio .decisions>li{border-color:#3f4f59}
+.studio .evidence>a{
+  border:1px solid #4c606b;border-radius:9px;
+  background:#202a30;
+  box-shadow:none;
+}
+.studio .evidence>a:hover{border-color:#8facbc;transform:translateY(-1px)}
+.studio .evidence strong{color:#e9f2f6}
+.studio .evidence p{color:#bbcad5}
+.studio .practice>section{
+  background:#20282e;border:1px solid #485a65;border-radius:8px;
+}
+.studio .footer{border-color:#475963}
+@media(max-width:900px){
+  .studio .hero{min-height:0;grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+  .studio .hero{padding:19px 13px}
+  .studio .hero h1{font-size:clamp(43px,10vw,62px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .studio .primary:hover,.studio .secondary:hover,.studio .evidence>a:hover{transform:none}
+}
