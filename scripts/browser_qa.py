@@ -299,6 +299,8 @@ def audit(browser, width, label):
            "Studio featured card must include the design inspector")
     expect(studio_portfolio_card.locator('[class*="studioPaperArtwork"]').count()==1,
            "Studio artwork should show an editorial design inside the real editor preview")
+    expect(studio_portfolio_card.locator('[class*="studioArtworkOrb"]').count()==1,
+           "Studio card must feature a crafted editorial artwork within its editor")
     expect(workspace_card.locator('a[href*="/projects/nexus-ai?lang="]').count() >= 1,
            "Portfolio card must retain working Nexus AI case-study link")
     previous_bottom = None
@@ -516,6 +518,15 @@ def audit(browser, width, label):
     expect(page.get_by_role("region",name="Generated HTML source").get_by_text("Nexus Studio Export",exact=False).count()>0, "Studio HTML source must be generated from the current blocks")
     preview_tabs.get_by_role("button",name="◈ Design").click()
     expect(page.locator(".studio-canvas-page").count()==1,"Studio canvas must return from source preview")
+    grid_toggle = page.get_by_role("button", name="Toggle canvas grid")
+    expect(grid_toggle.get_attribute("aria-pressed") == "true",
+           "Studio should start with working layout guides")
+    grid_toggle.click()
+    expect(page.locator(".studio-canvas-no-grid").count() == 1,
+           "Studio grid toggle must actually hide the dotted guides")
+    grid_toggle.click()
+    expect(page.locator(".studio-canvas-no-grid").count() == 0,
+           "Studio grid guides should be restorable")
     viewport = page.get_by_role("group", name="Preview viewport")
     expect(viewport.locator("button").count() == 3, "Studio must support desktop, tablet and mobile preview")
     viewport.locator("button").nth(2).click()
