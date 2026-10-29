@@ -387,3 +387,63 @@
 @media(prefers-reduced-motion:reduce){
   .handwrittenInk{animation:none;clip-path:none;will-change:auto}
 }
+
+
+/* Featured project presentation: premium surfaces, each product retaining its
+   own identity. Nexus AI borrows the assistant's obsidian-and-gold palette. */
+.projectCard{
+  position:relative;
+  isolation:isolate;
+  box-shadow:0 26px 65px -52px #000,0 0 0 1px #ffffff05 inset;
+}
+.projectCard .projectCopy{position:relative}
+.projectCard .projectCopy::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:1px;
+  background:linear-gradient(transparent,var(--project-accent),transparent);
+  opacity:.35;
+  pointer-events:none;
+}
+.projectCard[data-project="workspace"]{
+  --project-accent:#dcb77b;
+  --project-line:#795b3b;
+  border-color:#896943;
+  background:
+    radial-gradient(ellipse 85% 80% at 0% 0%,#6b4b231e,transparent 78%),
+    #0d0d0e;
+  box-shadow:0 30px 90px -57px #000,0 0 26px -18px #c8a164;
+}
+.projectCard[data-project="workspace"] .projectPicture{
+  background:radial-gradient(ellipse at 63% 15%,#65512b33,transparent 60%),#0e1725;
+}
+.projectCard[data-project="workspace"] .projectCopy{
+  background:radial-gradient(ellipse at 90% 0%,#ab7b3517,transparent 67%),#0d0e11;
+}
+.projectCard[data-project="workspace"] .cardTop b{color:#e1bd82}
+.projectCard[data-project="workspace"] .cardTop span{color:#d1c1a7}
+.projectCard[data-project="workspace"] .projectTitle h3 a{color:#fff1d7}
+.projectCard[data-project="workspace"] .projectTitle h3 a:hover{color:#eac38d}
+.projectCard[data-project="workspace"] .projectCopy p{color:#d5cbbc}
+.projectCard[data-project="workspace"] .tags span{
+  color:#e2cfb0;
+  border-color:#644d31;
+  background:#241c13;
+}
+.projectCard[data-project="workspace"] .studyLink{
+  border-color:#c59e66;
+  color:#f0cd91;
+  background:#1b1711;
+}
+.projectCard[data-project="workspace"] .studyLink:hover{background:#362816}
+.projectCard[data-project="workspace"] .demoLink{color:#dec297}
+.projectCard:hover{
+  box-shadow:0 34px 88px -54px #000,0 0 25px -19px var(--project-accent);
+}
+@media(max-width:660px){
+  .projectCard .projectCopy::before{inset:0 0 auto;width:100%;height:1px}
+}
+@media(prefers-reduced-motion:reduce){
+  .projectCard{transition:none}
+}
