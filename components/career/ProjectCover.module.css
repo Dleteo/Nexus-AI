@@ -572,3 +572,94 @@
   .studio.spacious.cover{padding:18px 10px 21px;min-height:390px}
   .studio.spacious .studioWindow{min-height:290px}
 }
+
+
+/* Studio portfolio thumbnail = real product-style desktop editor, not a tinted
+   marketing illustration. Neutral chrome, steel focus and a bright document. */
+.studio.cover{
+  color:#d9e0e5;
+  background:linear-gradient(145deg,#252d33,#151a1e 82%);
+}
+.studio.cover::before{display:none}
+.studio.cover .coverTop{color:#a7b8c4;letter-spacing:.09em}
+.studio .studioWindow{
+  border:1px solid #60707b;
+  border-radius:8px;
+  background:#1b2227;
+  box-shadow:0 18px 39px #0008,inset 0 1px #ffffff1c;
+  color:#e5ebf0;
+}
+.studio .studioChrome{
+  background:#2a343b;
+  border-bottom:1px solid #46545e;
+}
+.studio .studioChromeSymbol{
+  border-color:#6d889a;border-radius:6px;
+  background:#354751;color:#d7e4ec;box-shadow:none;
+}
+.studio .studioChromeIdentity strong{color:#edf3f6}
+.studio .studioChromeIdentity strong span{color:#849ba9}
+.studio .studioChromeIdentity small{color:#b0c0cc}
+.studio .studioChromeControls{
+  background:#1e272d;color:#bdcbd5;border-color:#566775;
+}
+.studio .studioChromeControls span:first-child{
+  background:#3c5363;color:#e8f2f8;
+}
+.studio .studioChromeAction{
+  background:#c0d4df;color:#1d2b34;border-radius:5px;
+}
+.studio .studioLayerPanel,
+.studio .studioPropertyPanel{background:#252e35;border-color:#43515c}
+.studio .studioPanelHeading{color:#d0dce4;border-color:#485761}
+.studio .studioPanelHeading b{color:#a4c2d3}
+.studio .studioLayer,.studio .studioLayerActive{
+  color:#b8c6d0;border-color:#39454e;background:transparent;border-radius:4px;
+}
+.studio .studioLayerActive{
+  border-color:#7eabbf;background:#344b5b;color:#f1f8fb;
+}
+.studio .studioLayer>span,.studio .studioLayerActive>span{color:#a4c7d8}
+.studio .studioLayer i,.studio .studioLayerActive i{color:#839eae}
+.studio .studioLayersFoot{color:#91a7b6;border-color:#46545f}
+.studio .studioLayersFoot span{color:#b5ccdb}
+.studio .studioCanvasArea{
+  background-color:#353e45;
+  background-image:radial-gradient(#54616a 1px,transparent 1px);
+}
+.studio .studioCanvasBar,.studio .studioCanvasStatus{color:#c0cbd3}
+.studio .studioCanvasPaper{
+  background:#ffffff;border-color:#b7c0c6;border-radius:3px;
+  color:#252c31;box-shadow:0 8px 18px #0006;
+}
+.studio .studioPaperRibbon{
+  border-color:#e4e8eb;color:#6c8292;background:#f4f7f8;
+}
+.studio .studioPaperEyebrow{color:#69899d}
+.studio .studioPaperHeadline{color:#253741}
+.studio .studioPaperDescription{color:#637782}
+.studio .studioPaperButton{
+  background:#355c71;color:#fff;box-shadow:0 5px 12px #2e556632;
+}
+.studio .studioSelectionOutline{border-color:#568eb0;box-shadow:0 0 0 1px #9ec3da77}
+.studio .studioSelectionOutline>span{background:#477d9c;color:#fff}
+.studio .studioSelectionOutline i{border-color:#477d9c}
+.studio .studioPropertyLabel{color:#aabeca}
+.studio .studioSwatches i{
+  background:#476f84;border-color:#9bb1c0;box-shadow:none;
+}
+.studio .studioSwatches i:nth-child(2){background:#1c262d}
+.studio .studioSwatches i:nth-child(3){background:#f3f5f6}
+.studio .studioPropertyBars i{background:#50616c}
+.studio .studioPropertyBars i:nth-child(2){background:#8daaba}
+.studio .studioPropertyAlignment span{
+  border-color:#526371;color:#d0dee6;
+}
+.studio .studioPropertyAlignment span:first-child{
+  border-color:#86aabd;background:#3b5363;
+}
+.studio .studioWindowFoot{
+  background:#222a30;border-color:#46535e;color:#9fafba;
+}
+.studio .studioWindowFoot span:first-child{color:#c1d0db}
+.studio .studioWindowFoot i{background:#8bbacb;box-shadow:none}
