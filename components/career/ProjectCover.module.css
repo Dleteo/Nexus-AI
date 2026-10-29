@@ -867,3 +867,113 @@
  .monitor .monitorPreviewTag{font-size:6px;padding:4px}
  .monitor .monitorGraphHead small{display:none}
 }
+
+
+/* NEXUS MONITOR / clinical instrument miniature.
+   White hygienic hardware frames a dark hospital telemetry screen.
+   Zero-state means no checks; no medical or uptime readings are fabricated. */
+.monitor.cover{
+ color:#174a40;
+ background:
+ radial-gradient(ellipse at 87% -4%,#b1e8d57c,transparent 61%),
+ linear-gradient(137deg,#f6fffb,#e5f4ed 76%,#d5e9e1);
+}
+.monitor.cover::before{
+ content:"";position:absolute;inset:0;z-index:-1;
+ width:auto;height:auto;right:0;top:0;
+ border:0;border-radius:0;box-shadow:none;
+ background:linear-gradient(90deg,transparent 0 96%,#a4d9c520 96% 100%),
+ linear-gradient(0deg,transparent 0 96%,#a4d9c520 96% 100%);
+ background-size:35px 35px;
+ opacity:.65;
+}
+.monitor.cover .coverTop{color:#398577}
+.monitor .monitorWindow{
+ background:#f9fffc;color:#174b40;
+ border:1px solid #abd5c7;border-radius:15px;
+ box-shadow:0 25px 42px #397f6855,0 2px 0 #ffffffb5 inset;
+ overflow:hidden;min-height:275px;
+}
+.monitor .monitorChrome{
+ min-height:49px;padding:9px 12px;
+ background:linear-gradient(105deg,#fff,#edf8f2);
+ border-bottom:1px solid #c6e1d7;
+}
+.monitor .monitorBrandIcon{
+ width:29px;height:29px;border-radius:9px;
+ border:1px solid #148b72;background:#09856e;
+ color:#f7fff9;font-size:18px;box-shadow:0 5px 13px #2b998038;
+}
+.monitor .monitorBrand strong{color:#174c41}
+.monitor .monitorBrand strong span{color:#6aa896}
+.monitor .monitorBrand small{color:#648f82;letter-spacing:.045em}
+.monitor .monitorPreviewTag{
+ border:1px solid #e9cba0;border-radius:5px;
+ background:#fff6e7;color:#995f1e;
+}
+.monitor .monitorConsole{background:#f1faf5}
+.monitor .monitorSidebar{
+ border-right:1px solid #d0e6db;background:#e9f6ef;
+ color:#5e9e86;gap:10px;
+}
+.monitor .monitorSidebar .monitorSidebarActive{
+ border-color:#64bca0;background:#d1f1e0;color:#087b64;
+}
+.monitor .monitorContent{gap:9px;padding:11px}
+.monitor .monitorSectionKicker{color:#348c74}
+.monitor .monitorHeader b{
+ color:#184f40;font-weight:850;font-size:clamp(16px,1.6vw,23px);
+}
+.monitor .monitorUnmeasured{
+ color:#9c661b;background:#fff5df;
+ border-color:#edce9e;border-radius:5px;
+}
+.monitor .monitorUnmeasured i{background:#c28b3f}
+.monitor .monitorMetricCards{gap:7px}
+.monitor .monitorMetricCards>div{
+ min-height:71px;border:1px solid #b6d9cc;border-radius:8px;
+ padding:9px;background:linear-gradient(145deg,#fff,#e9f7ef);
+ box-shadow:0 4px 9px -8px #437864;
+}
+.monitor .monitorMetricCards>div:first-child{border-top:3px solid #259a7d}
+.monitor .monitorMetricCards>div:nth-child(2){border-top:3px solid #61b999}
+.monitor .monitorMetricCards>div:nth-child(3){border-top:3px solid #7ab3b2}
+.monitor .monitorMetricCards>div span{color:#648779;font-size:7px}
+.monitor .monitorMetricCards>div strong{color:#185b47}
+.monitor .monitorMetricCards>div:nth-child(2) strong{color:#168c71}
+.monitor .monitorMetricCards>div:nth-child(3) strong{color:#2c8683}
+.monitor .monitorMetricCards>div small{color:#74968a}
+.monitor .monitorGraphPane{
+ position:relative;
+ min-height:105px;border:5px solid #e4f3e9;border-radius:10px;
+ padding:9px;background:#082c2a;
+ box-shadow:inset 0 0 0 1px #1a5147,0 10px 20px -16px #185943;
+}
+.monitor .monitorGraphHead{color:#b8f5d8}
+.monitor .monitorGraphHead small{color:#80bca4}
+.monitor .monitorGraphGrid{
+ background:
+ repeating-linear-gradient(0deg,transparent 0 16px,#368b5a3e 17px),
+ repeating-linear-gradient(90deg,transparent 0 21px,#368b5a20 22px);
+}
+.monitor .monitorZeroLabel{
+ color:#b2e6ce;background:#082c2ae6;
+ border:1px solid #3c8d6952;border-radius:3px;
+}
+.monitor .monitorBaseline{border-top-color:#51a783}
+.monitor .monitorGraphFoot{color:#88ccb0}
+.monitor .monitorFooter{color:#488b74;border-top:1px solid #c3e1d5}
+.monitor .monitorFooter>span:first-child{color:#17866c}
+.monitor .monitorFooter i{background:#2cb78e}
+.monitor.spacious .monitorWindow{min-height:325px}
+@media(max-width:700px){
+ .monitor .monitorChrome{min-height:43px;padding:7px}
+ .monitor .monitorContent{padding:8px}
+ .monitor .monitorMetricCards>div{padding:6px;min-height:62px}
+ .monitor .monitorGraphPane{border-width:3px;padding:6px}
+ .monitor .monitorGraphGrid{min-height:40px}
+}
+@media(max-width:390px){
+ .monitor .monitorBrand small{display:none}
+ .monitor .monitorHeader b{font-size:14px}
+}
