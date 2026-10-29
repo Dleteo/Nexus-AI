@@ -431,8 +431,12 @@ def audit(browser, width, label):
         page.goto(BASE + "/labs?lab=" + lab, wait_until="networkidle")
         shell = page.locator("main.nexus-lab-shell")
         expect(shell.get_attribute("data-lab") == lab, "Wrong active product identity: " + lab)
-        expect(page.locator(".lab-product-overview-" + lab).count() == 1, "Missing real product overview: " + lab)
-        expect(page.locator(".lab-product-overview").count() == 1, "Missing unique product overview: " + lab)
+        if lab == "studio":
+            expect(page.locator(".studio-design-console").count() == 1, "Studio visual editor missing")
+            expect(page.locator(".studio-design-inspector").count() == 1, "Studio inspector missing")
+        else:
+            expect(page.locator(".lab-product-overview-" + lab).count() == 1, "Missing real product overview: " + lab)
+            expect(page.locator(".lab-product-overview").count() == 1, "Missing unique product overview: " + lab)
         expect(not page.evaluate("document.documentElement.scrollWidth > innerWidth + 2"),
                "Horizontal overflow in " + lab)
     # Return to Commerce for the existing functional flows.
@@ -487,6 +491,24 @@ def audit(browser, width, label):
     page.get_by_role("button", name="Nexus Studio").click()
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "HTML editor export missing")
     expect(page.get_by_role("button", name="Export blocks JSON").is_visible(), "Studio JSON export missing")
+    viewport = page.get_by_role("group", name="Preview viewport")
+    expect(viewport.locator("button").count() == 3, "Studio must support desktop, tablet and mobile preview")
+    viewport.locator("button").nth(2).click()
+    expect(page.locator('[data-studio-viewport="mobile"]').count() == 1,
+           "Studio mobile viewport not applied")
+    inspector = page.get_by_label("Studio design inspector")
+    inspector.get_by_role("button", name="Noir").click()
+    expect(page.locator('[data-studio-theme="noir"]').count() == 1,
+           "Studio theme change should update live canvas")
+    inspector.get_by_role("button", name="≡ center").click()
+    expect(page.locator('[data-studio-alignment="center"]').count() == 1,
+           "Studio canvas alignment must update")
+    with page.expect_download() as studio_download:
+        page.get_by_role("button", name="Export HTML").click()
+    exported = studio_download.value.path().read_text(encoding="utf-8")
+    expect("background:#201a2a" in exported and "text-align:center" in exported,
+           "Studio HTML must use the selected design preset rather than the old fixed styles")
+    viewport.locator("button").first.click()
     expect(page.get_by_role("region", name="Studio static content audit").is_visible(),
            "Studio limited content audit missing")
     page.get_by_role("button", name="Use local SQLite").click()
@@ -614,8 +636,12 @@ def audit_standalone_labs(browser):
                    "Project header missing for "+lab)
             expect(page.get_by_role("button",name=action).count()>0,
                    "Real product operation missing for "+lab)
-            expect(page.locator(".lab-overview-screen").count()==1,
-                   "Product-specific live data preview missing for "+lab)
+            if lab == "studio":
+                expect(page.locator(".studio-canvas-page").count()==1,
+                       "Studio must present a live design canvas")
+            else:
+                expect(page.locator(".lab-overview-screen").count()==1,
+                       "Product-specific live data preview missing for "+lab)
             expect(page.locator(".lab-dedicated-layout > nav").count()==0,
                    "An individual project must not retain the shared workspace sidebar")
             switcher = page.locator("details.lab-project-switcher")
