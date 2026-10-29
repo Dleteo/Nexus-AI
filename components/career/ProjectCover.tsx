@@ -1,4 +1,5 @@
 import type { SiteLanguage } from "../../data/site-languages";
+import Image from "next/image";
 import s from "./ProjectCover.module.css";
 
 export type ProjectKind = "workspace" | "commerce" | "studio" | "monitor" | "factory";
@@ -29,6 +30,18 @@ const workspaceDetails:Record<SiteLanguage,{
   pt:{intro:"ESPAÇO DE TRABALHO",first:"Nexus Portfolio",firstDesc:"Projetos e CV",second:"Workspace",secondDesc:"Organizar ideias",third:"Nexus Technical",thirdDesc:"Perguntas e código",status:"PORTFÓLIO",projects:"PROJETOS",technical:"ASSISTÊNCIA"},
 };
 
+const shopEditorial:Record<SiteLanguage,{edition:string,headline:string,accent:string,sub:string,collection:string,view:string,note:string}> = {
+  es:{edition:"THE EDIT / 2026",headline:"Objetos que",accent:"inspiran.",sub:"Tecnología esencial, diseño excepcional.",collection:"SELECCIÓN DESTACADA",view:"EXPLORAR COLECCIÓN",note:"FOTOGRAFÍAS ILUSTRATIVAS · TIENDA DEMO"},
+  en:{edition:"THE EDIT / 2026",headline:"Made for",accent:"everyday.",sub:"Essential technology. Exceptional design.",collection:"THE CURATED EDIT",view:"EXPLORE COLLECTION",note:"ILLUSTRATIVE PHOTOS · DEMO STORE"},
+  de:{edition:"THE EDIT / 2026",headline:"Für jeden",accent:"Tag.",sub:"Technik trifft auf besonderes Design.",collection:"UNSERE AUSWAHL",view:"KOLLEKTION ANSEHEN",note:"SYMBOLFOTOS · DEMO-SHOP"},
+  fr:{edition:"THE EDIT / 2026",headline:"Le design au",accent:"quotidien.",sub:"Technologie essentielle et style affirmé.",collection:"NOTRE SÉLECTION",view:"EXPLORER LA COLLECTION",note:"PHOTOS D'ILLUSTRATION · DÉMO"},
+  pt:{edition:"THE EDIT / 2026",headline:"Design para",accent:"o dia a dia.",sub:"Tecnologia essencial, estilo excepcional.",collection:"SELEÇÃO ESPECIAL",view:"EXPLORAR COLEÇÃO",note:"FOTOS ILUSTRATIVAS · LOJA DEMO"},
+};
+const shopCoverProducts = [
+  {id:"keyboard",label:"KEYBOARD",price:"$79",photo:"https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&h=380&q=78"},
+  {id:"headset",label:"AUDIO",price:"$59",photo:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&h=380&q=78"},
+  {id:"monitor",label:"DISPLAY",price:"$249",photo:"https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=500&h=380&q=78"},
+] as const;
 /** A decorative product sketch, never a screenshot or a source of live metrics. */
 export default function ProjectCover({project,language,spacious=false}:{project:ProjectKind;language:SiteLanguage;spacious?:boolean}) {
   const t=copy[language];
@@ -60,10 +73,25 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       </div>
     </div>}
     {project==="commerce"&&<div className={s.shopWindow}>
-      <div className={s.shopHeader}><b>NEXUS / SHOP</b><span>{t.cart} <span>→</span></span></div>
-      <div className={s.shopHeading}>{t.catalog}<span>→</span></div>
-      <div className={s.goods}><div><div className={s.keyboard}/><i/></div><div><div className={s.headphones}/><i/></div><div><div className={s.screen}/><i/></div></div>
-      <div className={s.shopFooter}><span>{t.inventory}</span><span>→</span><span>{t.order}</span></div>
+      <div className={s.shopHeader}>
+        <span className={s.shopMonogram}>N</span>
+        <span className={s.shopBrand}>NEXUS / COMMERCE<small>THE ESSENTIALS COLLECTION</small></span>
+        <span className={s.shopBag} aria-hidden="true">◫ <b>00</b></span>
+      </div>
+      <div className={s.shopEditorial}>
+        <div className={s.shopEditorialCopy}>
+          <span className={s.shopEyebrow}>{shopEditorial[language].edition}</span>
+          <strong>{shopEditorial[language].headline} <em>{shopEditorial[language].accent}</em></strong>
+          <small>{shopEditorial[language].sub}</small>
+        </div>
+        <div className={s.shopHeroPhoto}><Image unoptimized fill sizes="(max-width: 660px) 42vw, 230px" alt="" src={shopCoverProducts[0].photo}/></div>
+      </div>
+      <div className={s.shopCollectionHeading}><span>{shopEditorial[language].collection}</span><span>01 — 03</span></div>
+      <div className={s.goods}>{shopCoverProducts.map((item)=><div className={s.shopProduct} key={item.id}>
+        <div className={s.shopProductPhoto}><Image unoptimized fill sizes="(max-width: 660px) 28vw, 160px" alt="" src={item.photo}/></div>
+        <div className={s.shopProductMeta}><b>{item.label}</b><span>{item.price}</span></div>
+      </div>)}</div>
+      <div className={s.shopFooter}><span>{shopEditorial[language].note}</span><span>{shopEditorial[language].view} ↗</span></div>
     </div>}
     {project==="studio"&&<div className={s.studioWindow}>
       <div className={s.editorBar}><span>◩ &nbsp; ＋ &nbsp; ↶</span><span>{t.export} →</span></div>
