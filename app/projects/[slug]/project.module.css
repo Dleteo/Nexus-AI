@@ -634,3 +634,81 @@
 @media(prefers-reduced-motion:reduce){
   .studio .primary:hover,.studio .secondary:hover,.studio .evidence>a:hover{transform:none}
 }
+
+
+/* Studio case study / professional visual-product narrative with expressive accent. */
+.studio{
+  --case-bg:#10171b;
+  --case-surface:#1b282d;
+  --case-raised:#24353b;
+  --case-text:#f2f9f8;
+  --case-muted:#bcd2d4;
+  --case-accent:#9addd7;
+  --case-line:#45686d;
+  background:
+    radial-gradient(ellipse 58% 38% at 95% 2%,#368e8733,transparent 82%),
+    #10171b;
+}
+.studio .header{
+  border-color:#395e64;background:rgba(15,23,27,.95);
+}
+.studio .brand>span:first-child{
+  color:#c1fff7;
+  border-color:#498f8a;
+  background:linear-gradient(135deg,#2a6463,#17343b);
+  border-radius:8px;
+}
+.studio .brand b,.studio .eyebrow{color:#99e4dc}
+.studio .languages>a[aria-current="page"]{
+  border-color:#65aea9;
+  color:#dcfaf5;
+  background:#224449;
+}
+.studio .hero{
+  border:1px solid #48747b;
+  border-radius:18px;
+  background:
+    radial-gradient(ellipse 62% 65% at 92% 31%,#41a9a238,transparent 82%),
+    radial-gradient(ellipse at 5% 90%,#dba87b13,transparent 77%),
+    linear-gradient(135deg,#1d3035,#121e24);
+  padding:clamp(23px,3.5vw,51px);
+  box-shadow:inset 0 1px #ddffff13,0 28px 72px -46px #000;
+}
+.studio .hero h1{
+  color:#f2faf9;
+  letter-spacing:-.062em;
+  font-size:clamp(50px,6vw,96px);
+}
+.studio .lead{color:#c9dddd}
+.studio .primary{
+  color:#142e32;
+  background:linear-gradient(110deg,#bdf2e8,#85d3cc);
+  border-color:#c9f5ee;
+  box-shadow:0 14px 29px -21px #72d6ce;
+}
+.studio .primary:hover{background:#e1fff7}
+.studio .secondary{
+  border-color:#72a6a8;
+  background:#203c43;color:#e9fffa;
+}
+.studio .secondary:hover{border-color:#a4dfd8}
+.studio .heroVisual>div{
+  border:1px solid #65999c;border-radius:11px;
+  box-shadow:0 33px 70px -42px #000,0 0 31px -26px #84eee1;
+}
+.studio .heroVisual figcaption{color:#b4cbd0}
+.studio .tech>span{
+  color:#daefed;background:#254046;border:1px solid #457175;
+}
+.studio .facts{
+  border-color:#496b70;
+  background:linear-gradient(120deg,#1d3034,#17242a);
+}
+.studio .facts dt{color:#91d4ca}
+.studio .sectionNumber,.studio .decisions>li>span{color:#80d3cb}
+.studio .evidence>a{
+  border-color:#467076;
+  background:linear-gradient(144deg,#1f3439,#152127);
+}
+.studio .evidence>a:hover{border-color:#a2e0d9}
+.studio .practice>section{border-color:#446e72;background:#192a30}
