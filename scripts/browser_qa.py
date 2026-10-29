@@ -266,6 +266,16 @@ def audit(browser, width, label):
     expect(page.locator('[class*="projectCard"]').count() == 5, "Expected Nexus AI and four engineering lab featured cards")
     project_cards = page.locator('article[data-project]')
     expect(project_cards.count() == 5, "Every featured project needs an individual presentation")
+    workspace_card = page.locator('article[data-project="workspace"]')
+    expect(workspace_card.count() == 1, "Nexus AI featured application card missing")
+    preview = workspace_card.locator('[class*="workspaceWindow"]')
+    expect(preview.count() == 1, "Premium Nexus dashboard preview missing")
+    expect(preview.locator('[class*="noteCards"] > [class*="workspaceFeature"]').count() == 3,
+           "Nexus Workspace must show three detailed feature panels, not skeleton rectangles")
+    expect(preview.locator('[class*="workspaceFeatureIcon"]').count() == 3,
+           "Gold-on-obsidian feature icon tiles missing")
+    expect(workspace_card.locator('a[href*="/projects/nexus-ai?lang="]').count() >= 1,
+           "Portfolio card must retain working Nexus AI case-study link")
     previous_bottom = None
     for project in project_cards.all():
         bounds = project.bounding_box()
