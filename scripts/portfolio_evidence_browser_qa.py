@@ -19,10 +19,7 @@ with sync_playwright() as p:
  modal=page.get_by_role('dialog',name='Documento del certificado');assert modal.is_visible()
  assert modal.locator('img').get_attribute('alt')
  page.keyboard.press('Escape');assert not modal.is_visible()
- actor=page.locator('svg[viewBox="0 0 90 112"]').locator('..')
- original=actor.evaluate('(e)=>getComputedStyle(e).transform')
- page.mouse.move(600,250)
- page.wait_for_function("(old)=>getComputedStyle(document.querySelector('[data-portfolio-mascot]')).transform!==old",arg=original)
+ assert page.locator('[data-portfolio-mascot]').count()==0
  assert page.locator('#habilidades').get_by_role('heading',level=3).count()==12
  assert page.locator('#trayectoria ol>li').count()==6
  launch=page.get_by_role('button',name='Abrir asistente Nexus',exact=True);launch.click()
@@ -32,8 +29,7 @@ with sync_playwright() as p:
  assert '94 horas' in panel.get_by_role('log').inner_text()
  panel.get_by_role('button',name='IA',exact=True).click()
  panel.get_by_role('link',name='Iniciar sesión para usar IA',exact=False).wait_for()
- panel.get_by_role('button',name='Mascota',exact=True).click()
- assert page.locator('svg[viewBox="0 0 90 112"]').count()==0
+ assert panel.get_by_role('button',name='Mascota',exact=True).count()==0
  page.keyboard.press('Escape');assert not panel.is_visible()
  for width in [320,375,768,1440]:
   page.set_viewport_size({'width':width,'height':1000})
@@ -61,10 +57,5 @@ with sync_playwright() as p:
  panel.get_by_role('link',name='Iniciar sesión para usar IA',exact=False).wait_for()
  assert panel.get_by_text('Respuesta simulada para comprobar el flujo, sin inferencia real.',exact=True).count()==0
  ctx.close()
- # Reduced motion keeps the decorative baby stationary.
- ctx=browser.new_context(reduced_motion='reduce');page=ctx.new_page();page.goto(BASE+'/')
- actor=page.locator('svg[viewBox="0 0 90 112"]').locator('..')
- before=actor.evaluate('(e)=>getComputedStyle(e).transform');page.mouse.move(600,300);page.wait_for_timeout(150)
- assert actor.evaluate('(e)=>getComputedStyle(e).transform')==before
- ctx.close();browser.close()
-print('PASS six visible certificates, filters, dialog, honest time and ratings, six process steps, floating guide, login gate, mocked authenticated AI, reduced motion and responsive layouts')
+ browser.close()
+print('PASS six visible certificates, filters, dialog, honest time and ratings, six process steps, floating guide, login gate, mocked authenticated AI, no mascot and responsive layouts')
