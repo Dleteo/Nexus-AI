@@ -1,0 +1,272 @@
+
+/* NEXUS COMMERCE / THE ESSENTIALS COLLECTION
+   A standalone graphite, ivory and copper retail system.
+   No green tokens, no invented orders, no changes to commerce logic. */
+.nexus-lab-shell[data-lab="commerce"]{
+  --lab-accent:#e2b18a;
+  --lab-accent-soft:#302420;
+  --lab-border:#6d5149;
+  --lab-surface:#231e21;
+  --lab-ink:#e6d7c8;
+  color:#f6efe8;
+  background:
+    radial-gradient(ellipse 75% 500px at 87% 0%,#8d5f4435,transparent),
+    radial-gradient(ellipse 50% 420px at 3% 58%,#835c4620,transparent),
+    #141316;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-header{border-color:#665047}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-mark{
+  border:1px solid #937059;
+  border-radius:10px;
+  color:#f4d8b7;
+  background:linear-gradient(145deg,#4e392f,#241f23);
+  box-shadow:0 0 40px -17px #d9a06c;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-heading h1{
+  color:#f7eee6;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(39px,5.3vw,67px);
+  letter-spacing:-.055em;
+  line-height:1.06;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-kicker{color:#e6b58e}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-description{color:#d6c5b9}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-scope{
+  border-color:#74594b;background:#2e2524;color:#e6cbb7
+}
+.nexus-lab-shell[data-lab="commerce"] .nexus-lab-workspace{
+  background:linear-gradient(160deg,#1e1b1f,#141316 70%);
+  border-color:#5c4741;
+  box-shadow:0 36px 100px -65px #000;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-project-guide{border-color:#604b42}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce{
+  min-height:355px;
+  border:1px solid #8f6857;
+  border-radius:20px;
+  background:
+    radial-gradient(ellipse 70% 95% at 96% 0%,#d4a27c30,transparent 69%),
+    linear-gradient(125deg,#31292b,#1a1a20 68%,#272022);
+  box-shadow:inset 0 1px #e3c4ab36,0 25px 70px -48px #000;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-kicker{
+  color:#eab991;letter-spacing:.18em;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-intro h3{
+  color:#fff0df;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(39px,4vw,67px);
+  font-weight:500;letter-spacing:-.065em;line-height:1.08;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-intro p{color:#e0d0c3}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-stats{
+  gap:19px;border-top:1px solid #7a5a4c50;margin-top:6px;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-stats b{color:#f6ddc0}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-stats span{color:#bfb0a7}
+.nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce .lab-overview-cta{
+  border-color:#e4b68d;
+  background:linear-gradient(120deg,#efc5a0,#c88a66);
+  color:#24171a!important;
+  border-radius:8px;
+  font-weight:850;
+  box-shadow:0 18px 39px -24px #efb480;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce{
+  background:#f8f2e9;
+  border:1px solid #cfac96;
+  color:#2f2426;
+  border-radius:12px;
+  box-shadow:0 24px 65px #09070891;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-top{
+  background:#efe5d9;color:#4c3631;
+  border-color:#dcc9bb;
+  letter-spacing:.13em;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-top span{color:#9a6249}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-products{
+  gap:10px;padding:16px;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-product{
+  color:#291e1e;font-weight:650;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-product small{color:#785a4b}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-product span{
+  color:#934f34;font-weight:800;
+}
+.nexus-lab-shell[data-lab="commerce"] .lab-screen-commerce .lab-screen-bottom{
+  border-color:#dac6b6;background:#efe5d9;color:#785141;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-mode-bar{
+  border:1px solid #76584b;
+  background:linear-gradient(100deg,#372923,#251f20);
+  border-radius:13px;
+  color:#f5e5d7;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-mode-bar p.text-stone-400{color:#d0bdb0}
+.nexus-lab-shell[data-lab="commerce"] .commerce-mode-bar button{
+  border-color:#97715b;
+  background:#261e20;
+  color:#f2dfd0;
+  min-height:44px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-layout{gap:20px;align-items:start}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog{
+  color:#30272b;
+  background:#f5eee6;
+  border:1px solid #d7bca9;
+  padding:clamp(16px,2.7vw,32px);
+  border-radius:16px;
+  box-shadow:0 28px 70px -53px #000;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:13px;
+  margin-bottom:25px;
+  padding-bottom:23px;
+  border-bottom:1px solid #d7c4b5;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading>div{min-width:0}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading>div>span{
+  display:block;margin-bottom:10px;color:#9c634b;
+  font:800 10px/1.5 monospace;letter-spacing:.16em;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading h2{
+  font:500 clamp(30px,3.5vw,46px)/1.05 Georgia,serif;
+  letter-spacing:-.055em;color:#292124;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading h2 span{color:#b57655}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading p{
+  margin-top:9px;color:#765f56;font-size:13px;line-height:1.55;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-collection-index{
+  padding:9px;border:1px solid #cdb8ab;border-radius:5px;
+  color:#8e6a5b;font:700 10px monospace;white-space:nowrap;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-search-controls{
+  border:1px solid #ded0c3;
+  background:#eae0d6;
+  border-radius:11px;padding:14px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-search-controls label{
+  color:#59463d;font-size:12px;font-weight:700;letter-spacing:.015em;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-search-controls :is(input,select){
+  background:#fffaf5;color:#2d2220;border:1px solid #c9ac98;
+  border-radius:7px;min-height:45px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-search-controls input::placeholder{color:#867366}
+.nexus-lab-shell[data-lab="commerce"] .commerce-search-controls :is(input,select):focus-visible{
+  outline:3px solid #b57a58;outline-offset:1px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog [role="status"]{color:#765e52}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card{
+  display:flex;flex-direction:column;min-height:315px;
+  background:#fffaf4;
+  border:1px solid #d4bda9;
+  border-radius:13px;
+  padding:13px;
+  color:#302428;
+  box-shadow:0 16px 30px -31px #3e2821;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card:hover{
+  transform:translateY(-3px);
+  border-color:#b47c5d;
+  box-shadow:0 21px 42px -31px #482b21;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-card h3{
+  color:#2d2225;font-family:Georgia,serif;
+  font-size:clamp(21px,2.2vw,29px);font-weight:650;letter-spacing:-.045em;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-card p.text-stone-400{color:#866956}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-card .commerce-photo-caption{
+  color:#836f5e;font-size:9px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-price{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;
+  margin-top:10px;color:#9a543b;font-size:22px;font-weight:800;letter-spacing:-.03em;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-price span{
+  color:#776456;font-size:11px;font-weight:550;letter-spacing:0;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card .lab-button-primary{
+  border:1px solid #28212a;background:#28212a;color:#fff7ed;
+  border-radius:8px;min-height:46px;letter-spacing:.02em;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card .lab-button-primary:hover:not(:disabled){
+  background:#8e543d;border-color:#8e543d;color:white;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card .lab-button-primary:disabled{opacity:.5}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-photo{
+  border:1px solid #d2bca9;
+  border-radius:9px;
+  background:linear-gradient(135deg,#d8c4af,#f2e7db);
+  aspect-ratio:8/5;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-photo::after{
+  background:linear-gradient(transparent,#34272431);
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-product-photo-fallback{color:#7d4a35}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart{
+  position:sticky;top:18px;
+  padding:22px;
+  border:1px solid #99725a;
+  border-radius:14px;
+  background:linear-gradient(145deg,#363036,#252227);
+  box-shadow:0 30px 60px -40px #000;
+  color:#f6eee5;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart h3{
+  padding-bottom:17px;margin-bottom:4px;
+  font:500 28px/1.15 Georgia,serif;
+  border-color:#73564b;color:#fae7d4;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .commerce-cart-item{
+  border-color:#665048;
+  padding-block:11px;color:#f1e5d9;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .commerce-product-photo-compact{
+  border-color:#896f5f;aspect-ratio:1;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart-item button{
+  border-color:#8a6a5d;background:#46383a;color:#f7e8d8;
+  min-width:38px;min-height:40px;border-radius:8px;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart [aria-label="Cart price breakdown"]{
+  background:#211d21;
+  border:1px solid #655048;
+  border-radius:10px;
+  color:#f1e5d8;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .text-stone-400{color:#cbbdb4}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .text-stone-500{color:#c0ad9e}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .lab-button-primary{
+  min-height:47px;border:1px solid #e4b58f;border-radius:8px;
+  color:#261b1d;background:linear-gradient(105deg,#f3cba9,#dca07d);
+  font-weight:800;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart .lab-button-primary:hover:not(:disabled){background:#f8d7bc}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart button:not(.lab-button-primary){
+  border-color:#705b52;color:#f4e4d7;
+}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart button:disabled{opacity:.45}
+.nexus-lab-shell[data-lab="commerce"] .commerce-cart [aria-label="Local order history"] p{
+  background:#3c3030;color:#e7d0bd;
+}
+@media(max-width:1200px){
+  .nexus-lab-shell[data-lab="commerce"] .commerce-cart{position:relative;top:auto}
+}
+@media(max-width:660px){
+  .nexus-lab-shell[data-lab="commerce"] .lab-product-overview-commerce{border-radius:13px}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-catalog{padding:12px;border-radius:12px}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-catalog .commerce-product-card{min-height:285px}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-mode-bar{padding:12px}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-cart{padding:16px}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-collection-heading{margin-bottom:16px;padding-bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .nexus-lab-shell[data-lab="commerce"] .commerce-product-card{transition:none}
+  .nexus-lab-shell[data-lab="commerce"] .commerce-product-card:hover{transform:none}
+}
