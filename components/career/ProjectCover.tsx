@@ -142,9 +142,24 @@ export default function ProjectCover({project,language,spacious=false}:{project:
       <div className={s.studioWindowFoot}><span><i/> LOCAL / EDITOR</span><span>RESPONSIVE · 3 THEMES · STATIC HTML</span></div>
     </div>}
     {project==="monitor"&&<div className={s.monitorWindow}>
-      <div className={s.monitorHeader}><b>API / HEALTH</b><span>{t.manual}</span></div>
-      <div className={s.chart}><span>{t.empty}</span><i/></div>
-      <div className={s.monitorFooter}><span>GET /api/labs/health</span><span>{t.latency} —</span></div>
+      <div className={s.monitorChrome}><span className={s.monitorBrandIcon} aria-hidden="true">⌁</span><div className={s.monitorBrand}><strong>NEXUS <span>/</span> MONITOR</strong><small>SERVICE OBSERVABILITY</small></div><span className={s.monitorPreviewTag}>PREVIEW / NO DATA</span></div>
+      <div className={s.monitorConsole}>
+        <div className={s.monitorSidebar} aria-hidden="true"><span className={s.monitorSidebarActive}>▦</span><span>⌁</span><span>◉</span><span>⚙</span></div>
+        <div className={s.monitorContent}>
+          <div className={s.monitorHeader}><div><span className={s.monitorSectionKicker}>OVERVIEW / 01</span><b>Service health</b></div><span className={s.monitorUnmeasured}><i/>{t.empty}</span></div>
+          <div className={s.monitorMetricCards}>
+            <div><span>CHECKS</span><strong>0</strong><small>{t.manual}</small></div>
+            <div><span>SUCCESS</span><strong>—</strong><small>NO SAMPLES</small></div>
+            <div><span>P95 LATENCY</span><strong>—</strong><small>MS / NO DATA</small></div>
+          </div>
+          <div className={s.monitorGraphPane}>
+            <div className={s.monitorGraphHead}><span>RESPONSE HISTORY</span><small>LAST 20 CHECKS</small></div>
+            <div className={s.monitorGraphGrid}><span className={s.monitorZeroLabel}>{t.empty}</span><i className={s.monitorBaseline}/></div>
+            <div className={s.monitorGraphFoot}><span>0 MS</span><span>— MS</span></div>
+          </div>
+          <div className={s.monitorFooter}><span><i/> MANUAL PROBES ONLY</span><span>GET /api/labs/health</span></div>
+        </div>
+      </div>
     </div>}
     {project==="factory"&&<div className={s.factoryWindow}>
       <div className={s.factoryHeader}><span>⌘ NEXUS / FACTORY</span><b>→</b></div>
