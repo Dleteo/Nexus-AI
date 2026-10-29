@@ -713,3 +713,8 @@
 @media(prefers-reduced-motion:reduce){
  .nexus-lab-shell[data-lab="studio"] .studio-canvas-block{transition:none}
 }
+
+/* Theme thumbnail colors mirror the actual safe, static HTML export. */
+.nexus-lab-shell[data-lab="studio"] .studio-theme-swatch.studio-theme-atelier{background:#e9f0f0}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-atelier i{background:#217780}
+.nexus-lab-shell[data-lab="studio"] .studio-theme-atelier i+i{background:#bfd7d6}
