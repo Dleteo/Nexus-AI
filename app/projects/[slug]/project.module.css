@@ -1021,3 +1021,126 @@
  .studio .primary,.studio .secondary,.studio .evidence>a{transition:none}
  .studio .primary:hover,.studio .secondary:hover,.studio .evidence>a:hover{transform:none}
 }
+
+/* Factory case study: technical release command, trustworthy engineering
+   artifacts and accessible amber contrasts. Other studies remain untouched. */
+.factory{
+ --case-bg:#101720;--case-surface:#212733;--case-raised:#303442;
+ --case-text:#fff5e8;--case-muted:#d1c3b2;
+ --case-accent:#ffc58b;--case-line:#695646;
+ background:
+ radial-gradient(ellipse 63% 43% at 94% 0%,#b4793d2c,transparent 77%),
+ linear-gradient(#17212b,#101720 36%);
+}
+.factory .header{
+ background:rgba(16,23,32,.96);border-color:#5d4f40;
+ backdrop-filter:blur(14px);
+}
+.factory .brand>span:first-child{
+ color:#ffe5b8;background:linear-gradient(145deg,#895c39,#3a3940);
+ border:1px solid #d7a468;border-radius:9px;
+ box-shadow:0 13px 22px -18px #e4a767;
+}
+.factory .brand b,.factory .eyebrow{color:#ffd19a}
+.factory .headerLinks .cv{
+ border:1px solid #80694f;border-radius:7px;
+ background:#312b2a;color:#ffdfba;
+}
+.factory .headerLinks .cv:hover{background:#4c392d}
+.factory .languages>a[aria-current="page"]{
+ border:1px solid #c19660;background:#4d3c2e;color:#fff0d5;
+}
+.factory .hero{
+ isolation:isolate;position:relative;min-height:560px;
+ gap:clamp(23px,3vw,52px);
+ padding:clamp(25px,3.9vw,54px);
+ border:1px solid #846a4a;border-radius:19px;
+ background:
+ radial-gradient(ellipse 60% 75% at 91% 23%,#c08c4c35,transparent 77%),
+ radial-gradient(ellipse at 1% 100%,#4d758334,transparent 73%),
+ linear-gradient(140deg,#2a2d35,#141d2a);
+ box-shadow:0 31px 78px -49px #000,inset 0 1px #fff3dc18;
+}
+.factory .hero::before{
+ content:"";position:absolute;z-index:-1;inset:0;
+ pointer-events:none;opacity:.24;
+ background-image:
+ linear-gradient(#d5af7c22 1px,transparent 1px),
+ linear-gradient(90deg,#d5af7c22 1px,transparent 1px);
+ background-size:41px 41px;
+ mask-image:linear-gradient(90deg,transparent 20%,#000 100%);
+}
+.factory .hero::after{
+ content:"";pointer-events:none;position:absolute;z-index:-1;
+ width:410px;height:410px;top:-160px;right:-100px;
+ border:1px solid #ffc17b35;border-radius:50%;
+ box-shadow:0 0 0 47px #f9b86a0a,0 0 0 98px #f9b86a08;
+}
+.factory .hero h1{
+ max-width:610px;
+ color:#fff6e9;
+ font:820 clamp(50px,5.7vw,93px)/.99 var(--font-geist-sans),Arial,sans-serif;
+ letter-spacing:-.067em;text-transform:none;text-shadow:none;
+}
+.factory .lead{
+ max-width:540px;color:#d6c4ad;
+ font-size:clamp(14px,1.2vw,18px);line-height:1.78;
+}
+.factory .primary,.factory .secondary{
+ min-height:49px;border-radius:8px;
+ transition:background-color .15s ease,border-color .15s ease,transform .15s ease;
+}
+.factory .primary{
+ background:linear-gradient(113deg,#ffe0a6,#eeb074);
+ border:1px solid #ffdfaa;color:#332416;
+ box-shadow:0 16px 34px -24px #ffbe75;
+}
+.factory .primary:hover{background:#ffe8be;filter:none;transform:translateY(-2px)}
+.factory .secondary{
+ border:1px solid #9c7c57;background:#40352d;color:#ffe1bc;
+}
+.factory .secondary:hover{border-color:#deb482;transform:translateY(-2px)}
+.factory .heroVisual{overflow:visible;border:0;background:transparent;box-shadow:none}
+.factory .heroVisual>div{
+ border:1px solid #a17b4e;border-radius:14px;
+ box-shadow:0 32px 79px -44px #000,0 0 28px -23px #ffc488;
+}
+.factory .heroVisual figcaption{border:0;text-align:right;color:#baaa91;font-size:11px}
+.factory .tech>span{
+ color:#ffe1b6;background:#342e2b;
+ border:1px solid #7b654b;border-radius:6px;
+}
+.factory .facts{
+ border:1px solid #675642;border-radius:12px;
+ background:linear-gradient(145deg,#282b31,#1b212d);
+}
+.factory .facts dt,.factory .sectionNumber,.factory .decisions>li>span{color:#ffc18a}
+.factory .facts dd,.factory .section p,.factory .list{color:#d4c7b6}
+.factory .section{border-color:#4f4b46}
+.factory .section h2{
+ font-family:var(--font-geist-sans),Arial,sans-serif;
+ color:#fff4e5;letter-spacing:-.035em;
+}
+.factory .decisions>li{border-color:#554e44}
+.factory .evidence>a{
+ border:1px solid #695746;border-radius:10px;
+ background:linear-gradient(147deg,#2a2b31,#1b232d);
+ box-shadow:0 17px 41px -32px #000;
+}
+.factory .evidence>a:hover{border-color:#d2a774;transform:translateY(-2px)}
+.factory .evidence strong{color:#fff2e0}
+.factory .evidence p{color:#d2c3af}
+.factory .practice>section{
+ background:#262a31;border:1px solid #695744;border-radius:10px;
+}
+.factory .footer{border-color:#554b40}
+@media(max-width:900px){.factory .hero{grid-template-columns:minmax(0,1fr);min-height:0}}
+@media(max-width:600px){
+ .factory .hero{padding:21px 14px;border-radius:13px}
+ .factory .hero h1{font-size:clamp(45px,10.5vw,70px)}
+ .factory .heroVisual figcaption{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+ .factory .primary,.factory .secondary,.factory .evidence>a{transition:none}
+ .factory .primary:hover,.factory .secondary:hover,.factory .evidence>a:hover{transform:none}
+}
