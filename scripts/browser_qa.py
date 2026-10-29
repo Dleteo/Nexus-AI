@@ -289,6 +289,8 @@ def audit(browser, width, label):
            "Monitor preview must show checks, success and latency metric tiles")
     expect(monitor_portfolio_card.locator('[class*="monitorGraphGrid"]').count()==1,
            "Monitor preview must not invent synthetic chart readings")
+    expect(monitor_portfolio_card.locator('[class*="monitorBrandIcon"]').inner_text().strip() == "✚",
+           "Clinical monitor preview must show its hospital-style mark")
     studio_portfolio_card = page.locator('article[data-project="studio"]')
     expect(studio_portfolio_card.count()==1,"Featured Studio card missing")
     expect(studio_portfolio_card.locator('[class*="studioEditorShell"]').count()==1,
@@ -566,6 +568,12 @@ def audit(browser, width, label):
     dashboard = page.get_by_role("region", name="Monitor sample status dashboard")
     expect(dashboard.is_visible(), "Clear service health dashboard missing")
     expect(dashboard.locator(".monitor-metric").count()==3, "Monitor should show understandable actual-data KPIs")
+    expect(dashboard.locator(".monitor-clinical-rail").is_visible(),
+           "Clinical dashboard should distinguish decorative hospital-style telemetry")
+    expect(dashboard.locator(".monitor-clinical-wave[aria-hidden=true]").count()==1,
+           "Decorative ECG motif must be hidden from screen readers")
+    expect(dashboard.locator(".monitor-clinical-copy").count()==1,
+           "Hospital-style banner must explicitly disclose no patient vital-sign monitoring")
     expect(dashboard.locator(".monitor-run-button").is_visible(),
            "Dashboard must offer an actionable manual check")
     page.get_by_role("button", name="Use local SQLite").click()
@@ -610,7 +618,7 @@ def audit_case_study_visual_consistency(browser):
         "nexus-ai": ("workspace", "rgb(9, 9, 9)"),
         "nexus-commerce": ("commerce", "rgb(23, 22, 26)"),
         "nexus-studio": ("studio", "rgb(16, 23, 27)"),
-        "nexus-monitor": ("monitor", "rgb(7, 27, 36)"),
+        "nexus-monitor": ("monitor", "rgb(237, 247, 242)"),
         "nexus-software-factory": ("factory", "rgb(32, 30, 25)"),
     }
     for width in (375, 1440):
@@ -645,6 +653,8 @@ def audit_case_study_visual_consistency(browser):
                        "Monitor case study should show readable observability KPIs")
                 expect(page.locator('[class*="monitorPreviewTag"]').count()==1,
                        "Monitor promotional preview must disclose that no measurements were taken")
+                expect(page.locator('[class*="monitorBrandIcon"]').inner_text().strip()=="✚",
+                       "Case study must feature clinical equipment iconography")
                 expect(page.locator('a[href*="/labs/monitor"]').count()>0,
                        "Monitor case study must retain the functional diagnostics link")
             if slug == "nexus-commerce":
