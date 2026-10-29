@@ -8,7 +8,7 @@ assert.deepEqual(normalizeStudioDesign({theme:"noir",alignment:"center",density:
 
 for(const theme of ["atelier","noir","editorial"]){
  const css=studioDesignCss({theme,alignment:"left",density:"balanced"});
- assert.match(css,/main\{width:min/);
+ assert.match(css,/main\{position:relative/);
  assert.ok(!css.includes("undefined"));
 }
 
@@ -19,7 +19,7 @@ const blocks=[
 ];
 const exported=renderDesignedStudioHtml(blocks,{theme:"noir",alignment:"center",density:"spacious"},renderPageHtml);
 assert.ok(exported.startsWith("<!doctype html>"));
-assert.ok(exported.includes("background:#161b20"));
+assert.ok(exported.includes("background:#17191f"));
 assert.ok(exported.includes("text-align:center"));
 assert.ok(exported.includes("margin:43px 0"));
 assert.ok(exported.includes("&lt;hello&gt;"));
@@ -31,6 +31,6 @@ assert.equal((exported.match(/<\/style>/g)||[]).length,1);
 assert.ok(exported.includes("<h1>Studio &lt;hello&gt;</h1>"));
 
 const invalid=renderDesignedStudioHtml(blocks,{theme:"javascript:alert(1)",alignment:"left;evil",density:"infinite"},renderPageHtml);
-assert.ok(invalid.includes("background:#e9f0f0"));
+assert.ok(invalid.includes("background:#eee9e4"));
 assert.ok(!invalid.includes("javascript:"));
 console.log("Studio design presets and safe static export passed.");
