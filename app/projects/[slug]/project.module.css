@@ -712,3 +712,78 @@
 }
 .studio .evidence>a:hover{border-color:#a2e0d9}
 .studio .practice>section{border-color:#446e72;background:#192a30}
+
+/* Monitor case study / clear incident-analysis product identity. */
+.monitor{
+ --case-bg:#09141d;--case-surface:#142934;
+ --case-raised:#1b3947;--case-text:#effaff;
+ --case-muted:#b5d3df;--case-accent:#8ed7ea;--case-line:#385e72;
+ background:
+ radial-gradient(ellipse at 92% 4%,#2a7e9b28,transparent 61%),
+ #09141d;
+}
+.monitor .header{border-color:#34586a;background:#0a1720ee;backdrop-filter:blur(12px)}
+.monitor .brand>span:first-child{
+ border:1px solid #61a3bc;border-radius:9px;
+ background:linear-gradient(135deg,#23566e,#133244);
+ color:#d6f6ff;box-shadow:0 0 25px -16px #71c4e7;
+}
+.monitor .brand b,.monitor .eyebrow{color:#a8e8f7}
+.monitor .headerLinks .cv{
+ border:1px solid #5b8da2;border-radius:7px;background:#1a3746;color:#d9f1fb;
+}
+.monitor .headerLinks .cv:hover{background:#24516a}
+.monitor .languages>a[aria-current="page"]{
+ background:#1b4658;border:1px solid #69bbd4;color:#e2faff;
+}
+.monitor .hero{
+ min-height:490px;
+ border:1px solid #4b7a91;border-radius:18px;
+ padding:clamp(22px,3.5vw,51px);
+ background:
+ radial-gradient(ellipse at 88% 7%,#3a98bc35,transparent 64%),
+ radial-gradient(ellipse at 0% 100%,#1a6a8f20,transparent 72%),
+ linear-gradient(140deg,#142f40,#0b1b2a);
+ box-shadow:0 31px 84px -52px #000,inset 0 1px #d1f7ff1a;
+}
+.monitor .hero h1{
+ font:850 clamp(50px,5.8vw,94px)/1.03 var(--font-geist-sans),Arial,sans-serif;
+ letter-spacing:-.062em;color:#f0faff;
+}
+.monitor .lead{color:#c4dce7;line-height:1.75;font-size:clamp(14px,1.2vw,18px)}
+.monitor .heroVisual{overflow:visible;border:0;background:transparent;box-shadow:none}
+.monitor .heroVisual>div{
+ border:1px solid #5d9bb4;border-radius:13px;
+ box-shadow:0 27px 65px -39px #000,0 0 25px -21px #6cc0e7;
+}
+.monitor .heroVisual figcaption{color:#a4c3d4;border:0}
+.monitor .primary{
+ color:#12364a;background:linear-gradient(112deg,#c7f2fa,#90d5e9);
+ border:1px solid #baf0ff;border-radius:8px;box-shadow:0 15px 28px -23px #7fceeb;
+}
+.monitor .primary:hover{background:#dcfaff;filter:none}
+.monitor .secondary{
+ color:#e2f8ff;background:#1c3c4e;
+ border:1px solid #71a4ba;border-radius:8px;
+}
+.monitor .secondary:hover{border-color:#a8e8f7}
+.monitor .tech>span{
+ color:#d3eef7;background:#193747;border-color:#436c7e;border-radius:6px;
+}
+.monitor .facts{border:1px solid #41677b;background:linear-gradient(145deg,#183442,#101f2c);border-radius:12px}
+.monitor .facts dt,.monitor .sectionNumber,.monitor .decisions>li>span{color:#a6e7f4}
+.monitor .facts dd,.monitor .section p,.monitor .list{color:#c4dbe5}
+.monitor .section{border-color:#365b6d}
+.monitor .section h2{color:#effaff;letter-spacing:-.035em}
+.monitor .decisions>li{border-color:#34576a}
+.monitor .evidence>a{
+ border:1px solid #426c7e;background:linear-gradient(140deg,#193747,#0e1d2a);
+ border-radius:11px;
+}
+.monitor .evidence>a:hover{border-color:#94d3e7}
+.monitor .evidence strong{color:#e8f9ff}
+.monitor .evidence p{color:#b7d4df}
+.monitor .practice>section{border:1px solid #416a7e;background:#152d3d;border-radius:11px}
+.monitor .footer{border-color:#3c6278}
+@media(max-width:900px){.monitor .hero{grid-template-columns:minmax(0,1fr);min-height:0}}
+@media(max-width:600px){.monitor .hero{padding:19px 14px;border-radius:12px}.monitor .hero h1{font-size:clamp(42px,11vw,65px)}}
