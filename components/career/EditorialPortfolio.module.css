@@ -653,3 +653,43 @@
 @media(max-width:660px){
  .projectCard[data-project="monitor"] .projectPicture{height:315px}
 }
+
+/* Monitor featured case / a clinical workstation rather than a generic SaaS card. */
+.projectCard[data-project="monitor"]{
+ --project-accent:#198d73;--project-line:#b2daca;
+ border:1px solid #acd6c6;border-radius:19px;
+ background:#f4fbf7;
+ box-shadow:0 25px 75px -53px #467c66b8;
+}
+.projectCard[data-project="monitor"] .projectPicture{
+ height:clamp(326px,31vw,430px);min-height:326px;
+ background:
+ radial-gradient(ellipse at 87% 7%,#bce9d787,transparent 72%),
+ linear-gradient(135deg,#f9fffb,#e7f6ee);
+}
+.projectCard[data-project="monitor"] .projectCopy{
+ border-top:1px solid #bdddcf;
+ background:linear-gradient(146deg,#fff,#f3faf5);
+}
+.projectCard[data-project="monitor"] .cardTop b{color:#157b66}
+.projectCard[data-project="monitor"] .cardTop span{color:#568979}
+.projectCard[data-project="monitor"] .projectTitle h3 a{color:#173e34;letter-spacing:-.05em}
+.projectCard[data-project="monitor"] .projectTitle h3 a:hover{color:#087a62}
+.projectCard[data-project="monitor"] .projectCopy>p{color:#4d7467;line-height:1.86}
+.projectCard[data-project="monitor"] .tags span{
+ border:1px solid #b3d9c9;border-radius:6px;
+ background:#e6f5ec;color:#205d4e;
+}
+.projectCard[data-project="monitor"] .studyLink{
+ color:#fff;border:1px solid #08846c;border-radius:8px;
+ background:linear-gradient(115deg,#12967c,#056c5f);
+ box-shadow:0 13px 22px -18px #168470;
+}
+.projectCard[data-project="monitor"] .studyLink:hover{background:#056d5d}
+.projectCard[data-project="monitor"] .demoLink{color:#0b806c}
+.projectCard[data-project="monitor"]:hover{
+ box-shadow:0 33px 82px -48px #497b677a,0 0 0 1px #4cbea453;
+}
+@media(max-width:660px){
+ .projectCard[data-project="monitor"] .projectPicture{height:330px}
+}
