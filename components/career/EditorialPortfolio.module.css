@@ -741,3 +741,47 @@
 @media(max-width:660px){
  .projectCard[data-project="studio"] .projectPicture{height:318px}
 }
+
+/* Featured Software Factory: premium industrial operations software. */
+.projectCard[data-project="factory"]{
+ --project-accent:#ffc488;--project-line:#8e704e;
+ border:1px solid #967650;border-radius:17px;
+ background:#141c27;
+ box-shadow:0 30px 69px -47px #000,0 0 27px -23px #d49c5f;
+}
+.projectCard[data-project="factory"] .projectPicture{
+ height:clamp(315px,32vw,428px);min-height:315px;
+ background:
+ radial-gradient(ellipse at 86% 5%,#db9f5f3b,transparent 67%),
+ linear-gradient(155deg,#272b35,#111b27);
+}
+.projectCard[data-project="factory"] .projectCopy{
+ border-top:1px solid #6b5745;
+ background:
+ radial-gradient(ellipse at 100% 0%,#c78c542a,transparent 68%),
+ linear-gradient(150deg,#24252d,#151b26);
+}
+.projectCard[data-project="factory"] .cardTop b{color:#ffd39b}
+.projectCard[data-project="factory"] .cardTop span{color:#cbbcad}
+.projectCard[data-project="factory"] .projectTitle h3 a{
+ color:#fff4e2;letter-spacing:-.045em;font-weight:820;
+}
+.projectCard[data-project="factory"] .projectTitle h3 a:hover{color:#ffce92}
+.projectCard[data-project="factory"] .projectCopy>p{color:#d2c3b1;line-height:1.85}
+.projectCard[data-project="factory"] .tags span{
+ border:1px solid #74604c;border-radius:6px;
+ background:#383129;color:#f3d6ae;
+}
+.projectCard[data-project="factory"] .studyLink{
+ border:1px solid #ffd9a1;border-radius:8px;
+ color:#322516;background:linear-gradient(111deg,#ffdea7,#edae6f);
+ box-shadow:0 16px 28px -23px #ffc079;
+}
+.projectCard[data-project="factory"] .studyLink:hover{background:#ffeac2}
+.projectCard[data-project="factory"] .demoLink{color:#f9ca95}
+.projectCard[data-project="factory"]:hover{
+ box-shadow:0 34px 84px -45px #000,0 0 33px -20px #e9ac6d;
+}
+@media(max-width:660px){
+ .projectCard[data-project="factory"] .projectPicture{height:326px}
+}
