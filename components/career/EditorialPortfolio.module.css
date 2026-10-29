@@ -345,7 +345,9 @@
     transform:translateY(-6px);
   }
   .heroPortrait{
-    left:13%;
+    /* Match the approved reference: the face sits over the center of PORTFOLIO,
+       leaving the name and intro column readable. */
+    left:23%;
     width:58%;
     max-width:900px;
     height:auto;
