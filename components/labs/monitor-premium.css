@@ -1,0 +1,280 @@
+/* NEXUS MONITOR / an honest, high-contrast observability workstation.
+   Only actual, manually collected checks are shown. No synthetic data. */
+.nexus-lab-shell[data-lab="monitor"]{
+ --lab-accent:#83d6f0;--lab-accent-soft:#19394a;--lab-border:#386479;
+ --lab-surface:#172833;--lab-ink:#e8f5fc;
+ color:#e7f3f9;
+ background:radial-gradient(ellipse at 92% 0%,#347b9830,transparent 60%),#090f16;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-project-mark{
+ border:1px solid #55a6ca;border-radius:12px;
+ background:linear-gradient(140deg,#255b74,#122b3c);
+ box-shadow:0 0 23px -11px #53aed8;color:#d3f5ff;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-project-heading h1{
+ font:800 clamp(38px,5vw,70px)/1.04 var(--font-geist-sans),Arial,sans-serif;
+ letter-spacing:-.055em;color:#f2f9fc;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-project-kicker{color:#8ccee3}
+.nexus-lab-shell[data-lab="monitor"] .lab-project-description{color:#b7ceda}
+.nexus-lab-shell[data-lab="monitor"] .nexus-lab-workspace{
+ background:linear-gradient(160deg,#10202b,#0b1520 78%);
+ border:1px solid #2d4c5f;border-radius:17px;
+ box-shadow:0 32px 85px -56px #000;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor{
+ border:1px solid #3a6880;border-radius:18px;
+ background:
+  radial-gradient(ellipse 75% 90% at 100% 0%,#3184ab26,transparent 76%),
+  linear-gradient(135deg,#132d3c,#0d1a28);
+ box-shadow:inset 0 1px #8fdbf022,0 27px 55px -45px #000;
+ min-height:320px;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-kicker{
+ color:#80cde4;font-size:10px;letter-spacing:.16em;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-intro h2{
+ color:#f5fcff;
+ font-size:clamp(37px,4.7vw,69px);font-weight:770;letter-spacing:-.06em;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-intro p{color:#c1d8e3}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-stats{
+ border-color:#34576c;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-stats b{color:#d8f7ff}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-stats span{color:#b3ccda}
+.nexus-lab-shell[data-lab="monitor"] .lab-product-overview-monitor .lab-overview-cta{
+ border:1px solid #90d5e8;border-radius:8px;background:#b2e7f3;
+ color:#143444;font-weight:800;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-screen-monitor{
+ border:1px solid #44778e;border-radius:11px;
+ background:#0b1b28;
+ box-shadow:0 24px 40px -31px #000;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-screen-monitor .lab-screen-top{
+ border-color:#345269;background:#112f3f;color:#c8ebf7;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-screen-monitor .lab-monitor-chart{
+ background:repeating-linear-gradient(0deg,transparent 0 27px,#4a7a9440 28px),#0b202d;
+}
+.nexus-lab-shell[data-lab="monitor"] .lab-monitor-chart-axis{color:#a6c6d8}
+.nexus-lab-shell[data-lab="monitor"] .lab-screen-monitor .lab-screen-bottom{
+ background:#112a3b;border-color:#42657b;color:#9bc7dc;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-console{display:flex;flex-direction:column;gap:16px}
+.monitor-status-dashboard{
+ --monitor-good:#68dec0;--monitor-bad:#ff8799;--monitor-idle:#e7b87a;
+ border:1px solid #39677d;border-radius:17px;overflow:hidden;
+ background:radial-gradient(ellipse at 94% 0%,#1b617d36,transparent 45%),#10202b;
+ box-shadow:0 27px 65px -53px #000;
+ color:#eaf7fc;
+}
+.monitor-dashboard-top{
+ display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
+ gap:18px;padding:clamp(19px,2.7vw,29px) clamp(17px,2.5vw,30px);
+ border-bottom:1px solid #345366;
+}
+.monitor-dashboard-brand{display:flex;align-items:center;gap:15px}
+.monitor-brand-symbol{
+ display:grid;place-items:center;flex:none;width:51px;height:51px;
+ border:1px solid #5599b7;border-radius:13px;
+ background:linear-gradient(150deg,#224d60,#163040);
+ color:#9be8f1;font-size:36px;
+ box-shadow:0 0 20px -12px #6bcbe6;
+}
+.monitor-overline{
+ display:block;
+ color:#8ebacf;font:800 10px/1.5 ui-monospace,Consolas,monospace;
+ letter-spacing:.11em;
+}
+.monitor-dashboard-brand h2{
+ margin:4px 0 5px;color:#f3fbfe;
+ font-size:clamp(23px,3.1vw,34px);line-height:1.12;
+ font-weight:800;letter-spacing:-.04em;
+}
+.monitor-dashboard-brand p{font-size:12px;color:#b1c9d5;line-height:1.6}
+.monitor-status-chip{
+ display:inline-flex;align-items:center;gap:9px;
+ min-height:39px;max-width:100%;padding:8px 12px;
+ font:800 10px/1.35 ui-monospace,Consolas,monospace;
+ letter-spacing:.035em;text-transform:uppercase;
+ border:1px solid #9b7c516c;background:#6d503027;color:#efc88c;
+ border-radius:7px;
+}
+.monitor-status-led{flex:none;width:9px;height:9px;border-radius:50%;background:var(--monitor-idle);box-shadow:0 0 13px #f0ba7980}
+[data-monitor-status="ok"] .monitor-status-chip{background:#1b5f524d;color:#a0f3d9;border-color:#388e777d}
+[data-monitor-status="ok"] .monitor-status-led{background:var(--monitor-good);box-shadow:0 0 12px #65d9ba}
+[data-monitor-status="error"] .monitor-status-chip{background:#7535444b;color:#ffb1be;border-color:#ad5563}
+[data-monitor-status="error"] .monitor-status-led{background:var(--monitor-bad);box-shadow:0 0 11px #f47c8f}
+.monitor-target-bar{
+ display:flex;align-items:center;flex-wrap:wrap;gap:15px;
+ padding:16px clamp(17px,2.5vw,30px);
+ background:#0c1924;
+ border-bottom:1px solid #2f4e5e;
+}
+.monitor-target-bar>div:first-child{min-width:0;flex:1}
+.monitor-target-bar code{
+ display:block;margin-top:7px;overflow-wrap:anywhere;
+ color:#e1f2fb;font:700 13px/1.45 ui-monospace,Consolas,monospace;
+}
+.monitor-target-bar>div:nth-child(2){
+ display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+}
+.monitor-mode-tag{
+ font:800 10px/1.35 ui-monospace,Consolas,monospace;color:#a2cce1;
+}
+.monitor-target-bar small{font-size:10px;color:#8aaabd}
+.nexus-lab-shell[data-lab="monitor"] .monitor-run-button{
+ min-height:45px;padding:10px 17px;border:1px solid #a6ddec;
+ border-radius:8px;white-space:nowrap;display:flex;gap:15px;align-items:center;
+ background:linear-gradient(120deg,#c5eff8,#8dcfe3);color:#103445;
+ font-size:12px;font-weight:850;box-shadow:0 15px 25px -20px #8cddf2;
+}
+.monitor-run-button span{font-size:17px}
+.monitor-run-button:hover:not(:disabled){background:#dbf7ff}
+.monitor-run-button:disabled{opacity:.55;cursor:progress}
+.monitor-metrics-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;padding:19px clamp(17px,2.5vw,30px);
+}
+.monitor-metric{
+ position:relative;min-width:0;overflow:hidden;min-height:125px;
+ padding:17px;border:1px solid #33586d;border-radius:10px;
+ background:linear-gradient(135deg,#1b3545,#122734);
+ box-shadow:inset 0 1px #b4eaff0c;
+}
+.monitor-metric-label{
+ display:block;max-width:80%;color:#afcedd;font-size:11px;font-weight:650;
+}
+.monitor-metric strong{
+ display:block;margin-top:14px;
+ font-size:clamp(26px,3.25vw,41px);line-height:1;
+ letter-spacing:-.06em;font-weight:800;color:#f2faff;
+}
+.monitor-metric-unit{font-size:15px;font-weight:650;letter-spacing:0;color:#a4c6d6}
+.monitor-metric>small{display:block;margin-top:11px;color:#9cb7c7;font-size:10px}
+.monitor-metric-icon{
+ position:absolute;top:11px;right:12px;
+ color:#6a9eb8;font-size:25px;opacity:.85;
+}
+.monitor-metric:nth-child(2) strong{color:#8ee6cc}
+.monitor-metric:nth-child(3) strong{color:#a4deff}
+.monitor-graph-panel{
+ margin:0 clamp(17px,2.5vw,30px) 15px;
+ overflow:hidden;border:1px solid #32596d;border-radius:11px;
+ background:#0a1a27;
+}
+.monitor-graph-heading{
+ display:flex;justify-content:space-between;align-items:center;
+ flex-wrap:wrap;gap:12px;
+ padding:17px 18px 14px;
+ border-bottom:1px solid #29485b;
+}
+.monitor-graph-heading strong{display:block;margin-top:5px;font-size:14px;color:#eaf9ff}
+.monitor-graph-legend{display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+.monitor-graph-legend span{display:inline-flex;align-items:center;gap:6px;color:#a8c4d3;font-size:10px}
+.monitor-graph-legend i{display:block;width:8px;height:8px;border-radius:2px}
+.monitor-legend-ok{background:#5fdbb9}.monitor-legend-error{background:#f37d94}
+.monitor-graph-surface{
+ position:relative;
+ min-height:178px;margin:12px 17px 0;
+ background:repeating-linear-gradient(0deg,transparent 0 41px,#47708a32 42px);
+}
+.monitor-graph-empty{
+ position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:7px;text-align:center;padding:12px;
+}
+.monitor-graph-empty>span{font-size:35px;line-height:1;color:#44829d}
+.monitor-graph-empty>strong{font:800 12px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.07em;color:#c3dee9}
+.monitor-graph-empty p{max-width:340px;color:#96b7ca;font-size:11px;line-height:1.6}
+.monitor-graph-bars{display:flex;align-items:flex-end;gap:5px;height:175px;width:100%;padding:11px 3px 0}
+.monitor-graph-bars>span{
+ display:block;flex:1;min-width:3px;max-width:38px;
+ background:linear-gradient(180deg,#8af4d1,#288b80);
+ border-radius:4px 4px 0 0;
+ box-shadow:0 0 10px -8px #8af4d1;
+}
+.monitor-graph-bars>span[data-result="error"]{
+ background:linear-gradient(180deg,#ffa5ae,#ad3b51);
+ box-shadow:0 0 10px -7px #ffa1a9;
+}
+.monitor-graph-axis{
+ display:flex;justify-content:space-between;gap:8px;
+ padding:0 18px 16px;
+ font:750 10px/1.3 ui-monospace,Consolas,monospace;color:#86adc0;
+}
+.monitor-dashboard-foot{
+ display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;
+ padding:13px clamp(17px,2.5vw,30px);
+ border-top:1px solid #335467;color:#9dbbcc;
+ font-size:10px;line-height:1.65;
+}
+.monitor-source-bar{
+ border:1px solid #3c6277!important;background:linear-gradient(105deg,#152f3f,#152733)!important;
+ border-radius:11px!important;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-source-bar button{
+ min-height:43px;border:1px solid #527f91;background:#1e4050;
+ color:#d8f2ff;border-radius:7px;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-source-bar .text-stone-400{color:#a9c6d5}
+.nexus-lab-shell[data-lab="monitor"] .monitor-alert-banner{border-radius:11px}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel{
+ border:1px solid #3d6578;border-radius:15px!important;padding:clamp(17px,2vw,25px);
+ background:linear-gradient(155deg,#172d3c,#0e1e2b);
+ box-shadow:0 19px 50px -40px #000;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel h3{
+ font:800 clamp(22px,2.4vw,30px)/1.2 var(--font-geist-sans),Arial,sans-serif;letter-spacing:-.04em;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .lab-button-primary{
+ background:#b2e3f2;border:1px solid #b7edff;border-radius:8px;
+ color:#113344;font-weight:800;min-height:44px;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .lab-button-primary:hover:not(:disabled){background:#d8f6ff}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .grid>div{
+ background:#102838;border:1px solid #34566a;border-radius:10px;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .grid>div strong,
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .grid>div p.text-xl{color:#edf8ff}
+.nexus-lab-shell[data-lab="monitor"] .monitor-incident-panel,
+.nexus-lab-shell[data-lab="monitor"] .monitor-window-panel{
+ border:1px solid #345d70;background:#122938;border-radius:11px!important;
+ box-shadow:none;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .text-stone-400{color:#a9c7d6}
+.nexus-lab-shell[data-lab="monitor"] .monitor-window-panel select{
+ min-height:41px;border-color:#507d91;color:#eff9fe;background:#1b3949;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-check-history>div{
+ border:1px solid #34576b;
+ border-left:3px solid #64c9b2;
+ background:#122b3a;border-radius:8px;gap:11px;flex-wrap:wrap;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-check-history>div:has(.text-rose-400){border-left-color:#ff7d91}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .lab-button{
+ border-color:#527a8f;background:#193747;color:#d8f0fb;border-radius:7px;min-height:43px;
+}
+.nexus-lab-shell[data-lab="monitor"] .monitor-diagnostics-panel .lab-button:hover{background:#255064}
+@media(max-width:750px){
+ .monitor-metrics-grid{gap:8px;padding:14px}
+ .monitor-metric{min-height:112px;padding:12px}
+ .monitor-graph-panel{margin-inline:14px}
+ .monitor-target-bar{padding:13px 14px}
+ .monitor-dashboard-top{padding:16px}
+ .monitor-dashboard-foot{padding:12px 14px}
+}
+@media(max-width:510px){
+ .monitor-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .monitor-metric:last-child{grid-column:1 / -1;min-height:94px}
+ .monitor-target-bar>div:first-child{flex-basis:100%}
+ .nexus-lab-shell[data-lab="monitor"] .monitor-run-button{width:100%;justify-content:space-between}
+ .monitor-graph-heading{padding:13px}
+ .monitor-graph-surface{margin-inline:11px}
+ .monitor-dashboard-brand{align-items:flex-start}
+ .monitor-brand-symbol{width:40px;height:40px;font-size:29px}
+}
+@media(prefers-reduced-motion:reduce){
+ .nexus-lab-shell[data-lab="monitor"] .monitor-run-button{transition:none}
+}
