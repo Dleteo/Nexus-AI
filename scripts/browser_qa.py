@@ -550,11 +550,13 @@ def audit(browser, width, label):
     page.get_by_role("button", name="Use local SQLite").click()
     page.get_by_text("Studio SQLite unavailable.", exact=False).wait_for(state="visible", timeout=10000)
     expect(page.get_by_role("button", name="Export HTML").is_visible(), "Browser editor must remain usable without SQLite")
+    original_studio_text = page.get_by_label("Selected block text").input_value()
     page.get_by_label("Selected block text").fill("Browser editor test")
     expect(page.get_by_text("Browser editor test", exact=True).count() >= 1, "Live editing failed")
     page.get_by_label("Selected block text").blur()
     page.get_by_role("button", name="Undo", exact=True).click()
-    expect(page.get_by_text("Build something remarkable.", exact=True).count() >= 1, "Undo text edit failed")
+    expect(page.get_by_label("Selected block text").input_value() == original_studio_text,
+           "Undo text edit must restore the actual initial document content")
     page.get_by_role("button", name="Redo", exact=True).click()
     expect(page.get_by_text("Browser editor test", exact=True).count() >= 1, "Redo text edit failed")
 
