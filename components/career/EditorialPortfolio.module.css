@@ -693,3 +693,51 @@
 @media(max-width:660px){
  .projectCard[data-project="monitor"] .projectPicture{height:330px}
 }
+
+
+/* STUDIO / FEATURED CARD — creative product, not a generic tinted panel. */
+.projectCard[data-project="studio"]{
+ --project-accent:#ffab8b;--project-line:#9a7167;
+ border:1px solid #91695e;border-radius:17px;
+ background:linear-gradient(145deg,#33282a,#191a20);
+ box-shadow:0 30px 73px -51px #000,0 0 28px -24px #e78a71;
+}
+.projectCard[data-project="studio"] .projectPicture{
+ height:clamp(312px,32vw,423px);
+ background:
+ radial-gradient(ellipse at 82% 6%,#d37b6440,transparent 58%),
+ linear-gradient(150deg,#362b2d,#1b1c23);
+}
+.projectCard[data-project="studio"] .projectCopy{
+ border-top:1px solid #715452;
+ background:
+ radial-gradient(ellipse at 100% 0%,#bf745a19,transparent 64%),
+ linear-gradient(145deg,#2c2628,#191b20);
+}
+.projectCard[data-project="studio"] .cardTop b{color:#ffc09f}
+.projectCard[data-project="studio"] .cardTop span{color:#ddc1b4}
+.projectCard[data-project="studio"] .projectTitle h3 a{
+ color:#fff7ed;font-weight:800;letter-spacing:-.052em;
+}
+.projectCard[data-project="studio"] .projectTitle h3 a:hover{color:#ffc3a7}
+.projectCard[data-project="studio"] .projectCopy>p{
+ color:#d8c6bb;line-height:1.8;
+}
+.projectCard[data-project="studio"] .tags span{
+ border:1px solid #80625a;border-radius:6px;
+ background:#403130;color:#ffdfcd;
+}
+.projectCard[data-project="studio"] .studyLink{
+ border:1px solid #ffd1b7;border-radius:7px;
+ background:linear-gradient(116deg,#ffd0b5,#f4a184);
+ box-shadow:0 15px 28px -23px #ffa887;
+ color:#321b1c;
+}
+.projectCard[data-project="studio"] .studyLink:hover{background:#ffe0cd}
+.projectCard[data-project="studio"] .demoLink{color:#ffc5a7}
+.projectCard[data-project="studio"]:hover{
+ box-shadow:0 36px 86px -52px #000,0 0 31px -19px #ff9b7d;
+}
+@media(max-width:660px){
+ .projectCard[data-project="studio"] .projectPicture{height:318px}
+}
