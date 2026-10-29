@@ -27,7 +27,7 @@ const messages: Record<SiteLanguage, { title: string; detail: string }> = {
 export default function FactoryExecutionStatus({ language }: { language: SiteLanguage }) {
   const message = messages[language];
   return (
-    <section aria-label={message.title} className="rounded-xl border border-amber-300/20 bg-amber-300/5 p-4">
+    <section aria-label={message.title} className="factory-execution-notice rounded-xl border border-amber-300/20 bg-amber-300/5 p-4">
       <h3 className="text-sm font-semibold text-amber-100">{message.title}</h3>
       <p className="mt-2 text-xs leading-5 text-stone-300">{message.detail}</p>
     </section>
