@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import FactoryExecutionStatus from "./FactoryExecutionStatus";
+import ProjectLanguageSwitcher from "./ProjectLanguageSwitcher";
 import FactoryWorkflowBoard from "./FactoryWorkflowBoard";
 import NexusFactoryIntake from "./NexusFactoryIntake";
 import FactoryDeliveryDesk from "../factory/FactoryDeliveryDesk";
@@ -431,6 +432,7 @@ export default function LabsWorkspace({language="es",initialLab="commerce",stand
             </nav>
           </details>}
         </div>
+        <ProjectLanguageSwitcher language={language} lab={active} standalone={standalone}/>
         <div className="lab-project-heading">
           {standalone&&<span className="lab-project-mark" aria-hidden="true">{projectMarks[active]}</span>}
           <div><p className="lab-project-kicker">{standalone?ui.demo:"NEXUS / ENGINEERING LABS"}</p>

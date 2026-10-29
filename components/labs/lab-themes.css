@@ -342,3 +342,13 @@
 @media(max-width:430px){
   .commerce-cart-item .commerce-product-photo-compact{flex-basis:38px;width:38px;height:38px}
 }
+
+/* Project language remains available inside every dedicated demo and the hub. */
+.lab-language-selector{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:-8px 0 25px;padding:12px 0;border-top:1px solid var(--lab-border);border-bottom:1px solid var(--lab-border);color:var(--lab-ink);font-size:11px}
+.lab-language-selector>span{font-weight:600}
+.lab-language-selector>div{display:flex;flex-wrap:wrap;gap:5px}
+.lab-language-selector a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 12px;border:1px solid transparent;border-radius:6px;color:var(--lab-ink);font-size:11px;text-decoration:none}
+.lab-language-selector a:hover{background:var(--lab-surface);border-color:var(--lab-border)}
+.lab-language-selector a[aria-current="page"]{border-color:var(--lab-accent);color:var(--lab-accent);background:var(--lab-surface)}
+.lab-language-selector a:focus-visible{outline:2px solid var(--lab-accent);outline-offset:3px}
+@media(max-width:500px){.lab-language-selector{margin:0 0 22px;align-items:flex-start;flex-direction:column;gap:8px}.lab-language-selector a{padding:8px 9px;min-height:44px}.lab-language-selector>div{gap:2px}}
