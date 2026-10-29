@@ -447,3 +447,37 @@
 @media(prefers-reduced-motion:reduce){
   .projectCard{transition:none}
 }
+
+/* Commerce portfolio feature: graphite / ivory / copper editorial retail,
+   intentionally distinct from Nexus AI's obsidian/gold assistant identity. */
+.projectCard[data-project="commerce"]{
+  --project-accent:#e4b08c;
+  --project-line:#89634e;
+  border:1px solid #89634e;
+  background:linear-gradient(145deg,#242128,#17171d 80%);
+  box-shadow:0 26px 65px -53px #000,0 0 36px -29px #dca07a;
+}
+.projectCard[data-project="commerce"] .projectPicture{
+  background:radial-gradient(ellipse at 75% 8%,#be8b6860,transparent 70%),#1b1b24;
+}
+.projectCard[data-project="commerce"] .projectCopy{
+  background:radial-gradient(ellipse at 95% 0%,#bf83602a,transparent 67%),#1b191e;
+}
+.projectCard[data-project="commerce"] .cardTop b{color:#edbd98}
+.projectCard[data-project="commerce"] .cardTop span{color:#e2c9b2}
+.projectCard[data-project="commerce"] .projectTitle h3 a{
+  color:#fff3e6;font-family:Georgia,serif;font-weight:550;letter-spacing:-.045em;
+}
+.projectCard[data-project="commerce"] .projectTitle h3 a:hover{color:#e8b68f}
+.projectCard[data-project="commerce"] .projectCopy>p{color:#ddcfc4}
+.projectCard[data-project="commerce"] .tags span{
+  border:1px solid #82624f;background:#332b2a;color:#f1d7bd;
+}
+.projectCard[data-project="commerce"] .studyLink{
+  color:#1d1517;
+  border-color:#e3b28e;
+  background:#e3b28e;
+  border-radius:7px;
+}
+.projectCard[data-project="commerce"] .studyLink:hover{background:#f5d5bb}
+.projectCard[data-project="commerce"] .demoLink{color:#f1cead}
