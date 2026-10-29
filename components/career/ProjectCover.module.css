@@ -663,3 +663,146 @@
 }
 .studio .studioWindowFoot span:first-child{color:#c1d0db}
 .studio .studioWindowFoot i{background:#8bbacb;box-shadow:none}
+
+
+/* STUDIO / ART DIRECTION v2 — cool architectural chrome and expressive artwork.
+   Unlike the old monochrome sketch, this is a composed creative-document preview. */
+.studio.cover{
+  background:
+    radial-gradient(ellipse at 75% 3%,#4da9ae24 0%,transparent 51%),
+    linear-gradient(132deg,#1b252b,#11171b 78%);
+}
+.studio .studioWindow{
+  border:1px solid #627781;
+  border-radius:11px;
+  background:#11191e;
+  box-shadow:0 22px 52px #080c1088,0 0 0 1px #d3e7ef0d inset;
+}
+.studio .studioChrome{
+  border-bottom:1px solid #465963;
+  padding-block:10px;
+  background:linear-gradient(100deg,#28343b,#20292f);
+}
+.studio .studioChromeSymbol{
+  color:#a3e5e2;background:#243f46;border-color:#5c9da0;
+}
+.studio .studioChromeAction{
+  background:#bce6e0;color:#163038;
+  font-weight:850;
+}
+.studio .studioChromeControls span:first-child{background:#30616b;color:#dcf8f6}
+.studio .studioEditorShell{
+  background:#1c262b;
+  grid-template-columns:minmax(58px,19%) minmax(0,1fr) minmax(65px,19%);
+}
+.studio .studioLayerPanel,.studio .studioPropertyPanel{
+  background:#1a2329;border-color:#364751;
+}
+.studio .studioPanelHeading{color:#b5c8d0;border-color:#344750}
+.studio .studioLayer,.studio .studioLayerActive{
+  min-height:25px;border-color:#2f444c;
+}
+.studio .studioLayerActive{
+  color:#e9ffff;background:#28545a;border-color:#51989a;
+  box-shadow:inset 2px 0 #83e0d7;
+}
+.studio .studioCanvasArea{
+  padding:10px;
+  background-color:#2b363d;
+  background-image:radial-gradient(#70808a5c 1px,transparent 1px);
+  background-size:15px 15px;
+}
+.studio .studioCanvasPaper{
+  overflow:hidden;position:relative;isolation:isolate;
+  background:#f8f9f6;border:1px solid #d7e2e3;
+  box-shadow:0 13px 28px #0710168c;
+}
+.studio .studioPaperRibbon{
+  position:relative;z-index:5;
+  background:#f8faf7;color:#60787c;border-color:#e6eceb;
+}
+.studio .studioPaperBody{
+  position:relative;z-index:4;
+  width:59%;max-width:59%;min-width:0;
+  align-items:flex-start;
+  padding-right:3px;
+}
+.studio .studioPaperEyebrow{color:#437985;font-size:7px}
+.studio .studioPaperHeadline{
+  color:#202e33;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(16px,2vw,29px);
+  font-weight:700;line-height:1.02;letter-spacing:-.055em;
+}
+.studio .studioPaperDescription{color:#687d83;font-size:8px;line-height:1.5}
+.studio .studioPaperButton{
+  background:#193d46;color:#effffd;border-radius:4px;
+  box-shadow:0 8px 14px #254f5233;
+}
+.studio .studioPaperArtwork{
+  position:absolute;z-index:2;
+  top:22px;bottom:0;right:0;
+  width:46%;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 75% 83%,#f5b689a6,transparent 47%),
+    radial-gradient(ellipse at 27% 32%,#8ce1dc92,transparent 53%),
+    linear-gradient(150deg,#d5ebe8,#9dbfbc 62%,#425f67);
+}
+.studio .studioArtworkHalo{
+  position:absolute;display:block;width:133%;aspect-ratio:1;
+  top:5%;left:-22%;
+  border:1px solid #ffffffa8;border-radius:50%;
+  box-shadow:0 0 0 18px #ffffff2a,0 0 0 45px #ffffff27,0 0 0 68px #ffffff16;
+  transform:rotate(22deg);
+}
+.studio .studioArtworkShape{
+  position:absolute;display:block;
+  width:85%;height:78%;
+  right:-17%;top:4%;
+  border-radius:49% 51% 44% 56% / 46% 28% 72% 54%;
+  background:linear-gradient(132deg,#ccf6ef,#397c86 51%,#133e51 88%);
+  box-shadow:inset -14px -17px 22px #102b3b44,0 12px 28px #183c4b6f;
+  transform:rotate(-21deg);
+}
+.studio .studioArtworkOrb{
+  position:absolute;display:block;
+  width:54%;aspect-ratio:1;right:36%;bottom:-9%;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,#ffedcd,#f3bd89 36%,#cf7657 72%,#8a4948 100%);
+  box-shadow:0 10px 24px #1a343c73,inset -9px -12px 17px #8d5b4b30;
+}
+.studio .studioArtworkShine{
+  position:absolute;display:block;
+  width:80%;height:45%;top:2%;left:12%;
+  background:radial-gradient(ellipse,#ffffffa0,transparent 64%);
+  transform:rotate(-40deg);
+}
+.studio .studioArtworkNumber{
+  position:absolute;bottom:9px;right:6px;
+  color:#fff;font:750 6px/1.3 monospace;
+  letter-spacing:.08em;text-shadow:0 1px 4px #16333b;
+}
+.studio .studioSelectionOutline{
+  z-index:5;inset:18% 4% 10%;border-color:#4ea7a9;box-shadow:0 0 0 1px #d9fff89b;
+}
+.studio .studioSelectionOutline>span{background:#21777e;color:#fff}
+.studio .studioSelectionOutline i{border-color:#2a8d93}
+.studio .studioSwatches i:first-child{background:#58b4b2;border-color:#abf2ef}
+.studio .studioPropertyBars i:nth-child(2){background:#80c4c2}
+.studio .studioWindowFoot i{background:#72d2c6}
+.studio.spacious .studioPaperArtwork{top:24px}
+.studio.spacious .studioPaperBody{padding:22px 10px 22px 20px}
+.studio.spacious .studioPaperHeadline{font-size:clamp(24px,2.3vw,35px)}
+@media(max-width:700px){
+ .studio .studioCanvasArea{padding:7px}
+ .studio .studioPaperArtwork{top:21px;width:44%}
+ .studio .studioPaperBody{width:64%;max-width:64%;padding-right:2px}
+ .studio .studioPaperHeadline{font-size:clamp(13px,2.65vw,21px)}
+ .studio.spacious .studioPaperBody{padding:10px 7px}
+}
+@media(max-width:390px){
+ .studio .studioArtworkNumber{display:none}
+ .studio .studioPaperArtwork{width:42%}
+ .studio .studioPaperBody{width:67%;max-width:67%}
+}
