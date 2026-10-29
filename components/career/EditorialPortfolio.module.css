@@ -793,6 +793,8 @@
 /* Neutral frames and copy throughout the lower portfolio sections. */
 .socials a{border-color:#3c393c;color:#e5e2e5}.socials a:hover{border-color:var(--red)}.contactTitle>span,.contactOverline,.location{color:#aaa}.contactText{color:#bcbcbc}.contactArtwork{border-color:#292929}.screen{color:var(--red)}
 
-/* Unify only the outer project frames with the portfolio identity. */
-.projectCard[data-project],
-.projectCard[data-project]:hover{border-color:var(--red)}
+/* One frame color across the portfolio, including embedded contact and chat.
+   Only recolor existing borders; preserve their widths, layout and surfaces.
+   This scoped identity rule takes precedence over individual component themes. */
+.page,
+.page *{border-color:var(--red)!important}
