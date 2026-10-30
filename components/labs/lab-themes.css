@@ -1,0 +1,354 @@
+/* Distinct product interfaces: palettes are scoped to the active lab only.
+   No behavior, safety gate, or local data flow is modified. */
+.nexus-lab-shell{--lab-accent:#34d6a3;--lab-accent-soft:#153a32;--lab-border:#28685a;--lab-surface:#112521;--lab-ink:#dcfff2;background:radial-gradient(ellipse at 80% 0%,#133d32 0%,transparent 52%),#081713;transition:background-color .18s ease}
+.nexus-lab-shell[data-lab="studio"]{--lab-accent:#c2d3e3;--lab-accent-soft:#2d353c;--lab-border:#5b6b7a;--lab-surface:#22282d;--lab-ink:#f1f5f8;background:radial-gradient(ellipse at 83% 0%,#37414b 0%,transparent 52%),#13171a}
+.nexus-lab-shell[data-lab="monitor"]{--lab-accent:#69cafa;--lab-accent-soft:#17394c;--lab-border:#2e6885;--lab-surface:#152632;--lab-ink:#e8f8ff;background:radial-gradient(ellipse at 83% 0%,#16415a 0%,transparent 52%),#081620}
+.nexus-lab-shell[data-lab="factory"]{--lab-accent:#f7b46b;--lab-accent-soft:#482c1b;--lab-border:#926039;--lab-surface:#2c211a;--lab-ink:#fff0dd;background:radial-gradient(ellipse at 83% 0%,#50301b 0%,transparent 52%),#19130f}
+.nexus-lab-shell>div>header{border-color:var(--lab-border)}
+.nexus-lab-shell>div>header h1{font-family:var(--font-editorial-condensed),Arial,sans-serif;letter-spacing:.015em}
+.nexus-lab-shell>div>header p:first-child{color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button{min-width:0;border-radius:12px;text-align:left;transition:border-color .16s,background-color .16s,transform .16s}
+.nexus-lab-shell [data-lab-navigation] button[aria-pressed="true"]{border-color:var(--lab-accent);background:var(--lab-accent-soft);box-shadow:inset 3px 0 var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button:hover{border-color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] button span{color:var(--lab-accent)}
+.nexus-lab-intro{border-color:var(--lab-border)!important;background:linear-gradient(110deg,var(--lab-accent-soft),var(--lab-surface))!important}
+.nexus-lab-intro h2{color:var(--lab-ink);font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(1.8rem,3vw,2.7rem)}
+.nexus-lab-workspace>div:not(.nexus-lab-intro) :is(section,aside,article){min-width:0}
+.nexus-lab-workspace a:focus-visible,.nexus-lab-workspace button:focus-visible{outline:3px solid var(--lab-accent);outline-offset:3px}
+.nexus-lab-shell[data-lab="commerce"] .nexus-lab-workspace article>div[aria-hidden="true"]{background:linear-gradient(145deg,#17564a,#0c2924)}
+.nexus-lab-shell[data-lab="studio"] .nexus-lab-workspace [aria-label="Active engineering lab"]{background-color:transparent}
+.nexus-lab-shell[data-lab="monitor"] .nexus-lab-workspace [role="status"]{border-color:var(--lab-border)}
+.nexus-lab-shell[data-lab="factory"] .nexus-lab-intro{border-left:4px solid var(--lab-accent)!important}
+@media(max-width:700px){.nexus-lab-shell{padding-inline:14px}.nexus-lab-shell [data-lab-navigation]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nexus-lab-shell [data-lab-navigation] button{padding:12px}.nexus-lab-intro{padding:16px!important}}
+@media(prefers-reduced-motion:reduce){.nexus-lab-shell,.nexus-lab-shell [data-lab-navigation] button{transition:none}}
+
+/* Product-specific compositions use real controls beneath these banners. */
+.lab-product-banner{position:relative;isolation:isolate;overflow:hidden;min-height:190px;padding:clamp(20px,3vw,32px);border-radius:20px;border:1px solid var(--lab-border);background:linear-gradient(120deg,var(--lab-accent-soft),var(--lab-surface));display:flex;flex-direction:column;justify-content:center;gap:8px}
+.lab-product-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,color-mix(in srgb,var(--lab-accent),transparent 87%));pointer-events:none}
+.lab-product-banner-kicker{color:var(--lab-accent);font-size:11px;letter-spacing:.23em;font-weight:800}
+.lab-product-banner strong{position:relative;z-index:1;color:white;font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(31px,4vw,50px);letter-spacing:.01em}
+.lab-product-banner p{position:relative;z-index:1;max-width:48ch;font-size:13px;line-height:1.7;color:var(--lab-ink)}
+.lab-product-banner-art{position:absolute;right:4%;top:50%;transform:translateY(-50%);font-size:clamp(75px,14vw,160px);line-height:1;color:var(--lab-accent);opacity:.20;pointer-events:none}
+.commerce-storefront article{border-color:#235b4e;background:linear-gradient(160deg,#15352e,#14231f)}
+.commerce-storefront article h3{color:#effff8}
+.commerce-storefront article button:not(:disabled){border-color:#337b67}
+.studio-designer aside{border-color:#52606e;background:#1d2227}
+.studio-designer aside button[aria-pressed="true"]{border-color:#c2d3e3}
+.studio-designer textarea,.studio-designer input{accent-color:#c2d3e3}
+.monitor-console section{border-color:#32647e;background:linear-gradient(145deg,#162c3a,#141f2b)}
+.monitor-console [role="img"]{border-bottom:1px solid #32647e}
+.factory-pipeline section{border-color:#775035;background:linear-gradient(145deg,#30241b,#211b18)}
+.factory-pipeline [role="status"]{border-color:#926039}
+@media(max-width:600px){.lab-product-banner{min-height:160px}.lab-product-banner-art{opacity:.11}.lab-product-banner p{max-width:38ch}}
+
+/* Application composition: commerce reads as a store, Studio as a canvas,
+   Monitor as telemetry, and Factory as a review pipeline. */
+.commerce-storefront [aria-label="Product catalog"]>div:first-child{padding:16px;border:1px solid #28685a;border-radius:16px;background:#102b25}
+.commerce-storefront [aria-label="Product catalog"] article{overflow:hidden;box-shadow:0 14px 35px -28px #000}
+.commerce-storefront [aria-label="Product catalog"] article>div[aria-hidden="true"]{border:1px solid #397b68;border-radius:13px}
+.commerce-storefront [aria-label="Product catalog"] article h3{letter-spacing:-.025em}
+.commerce-storefront [aria-label="Product catalog"] article p{overflow-wrap:anywhere}
+.commerce-storefront [aria-label="Cart price breakdown"]{border-color:#28685a;background:#0c201b}
+.studio-designer>div:nth-child(n+2){min-width:0}
+.studio-designer [class*="xl:grid-cols-"]>aside{box-shadow:inset 3px 0 #c2d3e3}
+.studio-designer [class*="xl:grid-cols-"]>aside button{transition:border-color .16s,background-color .16s}
+.studio-designer [class*="xl:grid-cols-"]>aside button:hover{border-color:#a7c0d7}
+.monitor-console [role="img"]{border-radius:12px;background:repeating-linear-gradient(0deg,transparent 0 23px,#34617c45 24px),linear-gradient(180deg,#101e2b,#0a1822);padding:14px}
+.monitor-console [role="img"]>div{min-width:3px}
+.monitor-console section h3{color:#e8f8ff}
+.factory-pipeline [aria-label="Factory job board"]{background:#211a15}
+.factory-pipeline [aria-label="Local factory pipeline counts"]>div{border:1px solid #775035;background:#2b2119}
+.factory-pipeline textarea,.factory-pipeline select{border-color:#775035;background:#17120f}
+.nexus-lab-workspace :is(input,select,textarea){max-width:100%}
+.nexus-lab-workspace :is(button,a){overflow-wrap:anywhere}
+@media(max-width:480px){
+  .nexus-lab-shell [data-lab-navigation] button{font-size:12px;min-height:78px}
+  .nexus-lab-shell [data-lab-navigation] strong{font-size:13px;line-height:1.3}
+  .nexus-lab-workspace .lab-product-banner{padding:19px}
+  .nexus-lab-workspace .lab-product-banner strong{font-size:32px}
+}
+
+/* Actual distinct UI compositions: storefront / editor / telemetry / pipeline.
+   Decorative displays contain no fabricated production measurements. */
+.lab-product-banner{min-height:300px;padding-right:min(47%,470px)}
+.lab-visual{position:absolute;top:50%;right:3%;transform:translateY(-50%);width:42%;height:225px;border:1px solid var(--lab-border);border-radius:15px;box-shadow:0 22px 55px #0008;overflow:hidden;background:#0d171b;color:#fff;pointer-events:none;font-family:var(--font-geist-sans),Arial,sans-serif}
+.lab-visual-heading,.lab-monitor-title,.lab-factory-title{display:flex;justify-content:space-between;align-items:center;padding:13px;font-size:10px;font-weight:800;letter-spacing:.08em;border-bottom:1px solid #ffffff24}
+.lab-visual-heading span,.lab-monitor-title span,.lab-factory-title span{color:var(--lab-accent);font-size:9px}
+.lab-commerce-visual{background:#0b2822}
+.lab-commerce-items{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px 12px}
+.lab-commerce-items span{display:flex;align-items:center;justify-content:center;flex-direction:column;min-width:0;aspect-ratio:1;background:linear-gradient(145deg,#205c4a,#102b26);border:1px solid #397960;border-radius:9px;font-size:30px}
+.lab-commerce-items small{font-size:8px;margin-top:7px;letter-spacing:.08em}
+.lab-commerce-cart{display:flex;justify-content:space-between;margin:0 12px;padding:8px 12px;background:#abf3cc;color:#0b2822;border-radius:5px;font-size:10px;font-weight:800}
+.lab-commerce-cart strong{font-size:15px}
+.lab-studio-visual{display:grid;grid-template-columns:38px minmax(0,1fr) 62px;background:#21272c}
+.lab-studio-tools{display:flex;flex-direction:column;align-items:center;gap:16px;padding:18px 0;background:#191d21;color:#ccdae8;font-size:18px}
+.lab-studio-tools span{font-size:14px}
+.lab-studio-canvas{margin:22px 10px;background:#f4f7fa;color:#242a30;border-radius:3px;padding:13px 9px;display:flex;flex-direction:column;gap:9px}
+.lab-studio-canvas small{font-size:8px;letter-spacing:.08em;color:#5a7ea0}
+.lab-studio-canvas strong{font-size:clamp(12px,1.4vw,19px);line-height:1.2}
+.lab-studio-canvas i{height:5px;width:100%;background:#b5cade}
+.lab-studio-canvas i+i{width:70%}
+.lab-studio-canvas b{align-self:flex-start;padding:7px 9px;background:#607181;color:#fff;font-size:8px}
+.lab-studio-inspector{display:flex;flex-direction:column;gap:12px;padding:20px 9px;background:#1d2227}
+.lab-studio-inspector span{font-size:9px}
+.lab-studio-inspector i{height:11px;border:1px solid #576776;border-radius:3px}
+.lab-monitor-visual{background:#081e2e}
+.lab-monitor-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.lab-monitor-metrics span{padding:10px;background:#12344a;border:1px solid #245b78;border-radius:6px}
+.lab-monitor-metrics small{display:block;font-size:8px;color:#80bbd9}
+.lab-monitor-metrics strong{display:block;font-size:25px}
+.lab-monitor-plot{height:60px;display:flex;gap:5px;align-items:end;margin:3px 12px 7px;padding:6px;background:repeating-linear-gradient(to bottom,#27536b50 0 1px,transparent 1px 17px)}
+.lab-monitor-plot i{flex:1;background:#61badd;opacity:.75;height:37%}
+.lab-monitor-plot i:nth-child(3n){height:63%}
+.lab-monitor-plot i:nth-child(4n){height:82%}
+.lab-monitor-visual>small{display:block;margin:4px 14px;color:#a6cadf;font-size:8px}
+.lab-factory-visual{background:#221a15}
+.lab-factory-flow{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:22px 12px}
+.lab-factory-flow span{min-width:0;flex:1;display:flex;flex-direction:column;gap:7px;padding:12px 7px;border:1px solid #7d5738;background:#392719;border-radius:6px;color:#e2b47c;font-size:14px}
+.lab-factory-flow span b{font-size:8px;color:#fff}
+.lab-factory-flow em{font-size:13px;color:#f0bd83}
+.lab-factory-terminal{display:flex;flex-direction:column;gap:8px;margin:0 12px;padding:11px;background:#0e1110;border:1px solid #665035;border-radius:5px;font-family:monospace}
+.lab-factory-terminal small{color:#c9a676;font-size:9px}
+.lab-factory-terminal strong{color:#f6cd92;font-size:10px}
+@media(max-width:950px){.lab-product-banner{padding-right:26px;padding-bottom:250px}.lab-visual{top:auto;bottom:18px;right:20px;left:20px;transform:none;width:auto;height:210px}.lab-product-banner p{max-width:70ch}}
+@media(max-width:560px){.lab-product-banner{padding-bottom:190px}.lab-visual{height:165px;right:12px;left:12px;bottom:12px}.lab-visual-heading,.lab-monitor-title,.lab-factory-title{padding:7px;font-size:8px}.lab-commerce-items{padding:8px}.lab-commerce-items span{font-size:19px}.lab-commerce-items small{font-size:6px}.lab-studio-canvas{margin:10px 5px;padding:7px}.lab-studio-tools{padding:10px 0;gap:6px}.lab-studio-inspector{padding:10px 5px}.lab-monitor-metrics{padding:6px}.lab-monitor-plot{height:34px}.lab-factory-flow{padding:8px}.lab-factory-flow span{padding:7px 4px}.lab-factory-terminal{padding:7px}}
+
+/* Product-grade layout: the four applications no longer use the same chrome.
+   Functionality and accessibility stay attached to their existing controls. */
+.nexus-lab-shell .nexus-labs-layout{align-items:start}
+.nexus-lab-shell [data-lab-navigation]{position:sticky;top:18px;padding:12px;border:1px solid var(--lab-border);border-radius:20px;background:color-mix(in srgb,var(--lab-surface),#000 20%);box-shadow:0 20px 45px -30px #000}
+.nexus-lab-shell [data-lab-navigation] button{width:100%}
+.nexus-lab-shell [data-lab-navigation] button[aria-pressed="true"]{box-shadow:inset 4px 0 var(--lab-accent),0 8px 22px -15px var(--lab-accent)}
+.nexus-lab-shell .nexus-lab-workspace{border:1px solid var(--lab-border);padding:clamp(12px,2vw,24px);border-radius:24px;background:color-mix(in srgb,var(--lab-surface),#050607 38%);box-shadow:0 28px 65px -40px #000}
+.commerce-storefront .commerce-layout{align-items:start}
+.commerce-storefront .commerce-catalog{padding:18px;border:1px solid #27614f;border-radius:18px;background:#0d241e}
+.commerce-storefront .commerce-catalog>div:has(label){background:#102d25}
+.commerce-storefront .commerce-catalog article{display:flex;flex-direction:column;min-height:315px;border-radius:17px}
+.commerce-storefront .commerce-catalog article button{margin-top:auto}
+.commerce-storefront .commerce-cart{position:sticky;top:18px;border-color:#348167;background:#09271e;box-shadow:0 25px 50px -35px #000}
+.commerce-storefront .commerce-cart h3{padding-bottom:12px;border-bottom:1px solid #31715c}
+.studio-designer .studio-editor-layout{align-items:start;gap:12px;padding:12px;border:1px solid #566674;border-radius:18px;background:#13171a}
+.studio-designer .studio-editor-layout>aside{border:1px solid #607282;border-radius:12px;min-height:480px}
+.studio-designer .studio-editor-layout>div{min-width:0;border:1px solid #45515d;border-radius:12px;background:#1e2429;padding:12px}
+.studio-designer .studio-editor-layout textarea{min-height:95px}
+.monitor-console section{box-shadow:0 18px 55px -38px #000}
+.monitor-console section .grid>div{border:1px solid #28657d;background:#0d2738}
+.monitor-console [role="img"]{min-height:110px}
+.factory-pipeline>div[class*="grid"]{align-items:start;padding:12px;border:1px solid #795138;border-radius:18px;background:#19130e}
+.factory-pipeline section{box-shadow:0 18px 40px -30px #000}
+.factory-pipeline [aria-label="Factory job board"]{border-left:3px solid #dc9d5d}
+@media(max-width:1023px){.nexus-lab-shell [data-lab-navigation]{position:relative;top:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.commerce-storefront .commerce-cart{position:relative;top:auto}}
+@media(max-width:640px){.nexus-lab-shell .nexus-lab-workspace{padding:10px;border-radius:14px}.commerce-storefront .commerce-catalog{padding:10px}.studio-designer .studio-editor-layout{padding:7px}.studio-designer .studio-editor-layout>aside{min-height:0}}
+
+/* Dedicated pages: links have the same geometry as legacy lab-switch buttons. */
+.nexus-lab-shell [data-lab-navigation] a{display:block;min-width:0;width:100%;border-radius:12px;text-decoration:none;transition:border-color .16s,background-color .16s}
+.nexus-lab-shell [data-lab-navigation] a[aria-current="page"]{border-color:var(--lab-accent);background:var(--lab-accent-soft);box-shadow:inset 4px 0 var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] a:hover{border-color:var(--lab-accent)}
+.nexus-lab-shell [data-lab-navigation] a span{color:var(--lab-accent)}
+.nexus-lab-shell [data-standalone="true"]{min-height:100vh}
+
+/* Real data-driven product overviews: no fake metrics, no screenshot overlays. */
+.lab-product-overview{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:22px;min-height:360px;border:1px solid var(--lab-border);border-radius:22px;padding:22px;background:linear-gradient(125deg,var(--lab-accent-soft),var(--lab-surface) 50%,#0c1015);overflow:hidden}
+.lab-overview-intro{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-width:0}
+.lab-overview-kicker{font-size:10px;font-weight:800;letter-spacing:.19em;color:var(--lab-accent)}
+.lab-overview-intro h2{font-family:var(--font-editorial-condensed),Arial,sans-serif;font-size:clamp(34px,4vw,57px);font-weight:800;line-height:1.03;letter-spacing:-.02em;color:white}
+.lab-overview-intro p{font-size:13px;line-height:1.65;color:var(--lab-ink);max-width:45ch}
+.lab-overview-stats{display:flex;flex-wrap:wrap;gap:16px;padding-block:9px}
+.lab-overview-stats div{display:flex;flex-direction:column;gap:5px}
+.lab-overview-stats b{font-size:clamp(17px,2vw,26px);font-weight:800;color:white}
+.lab-overview-stats span{font-size:10px;color:var(--lab-ink)}
+.lab-overview-cta{display:inline-flex;align-items:center;gap:20px;padding:12px 16px;border-radius:9px;border:1px solid var(--lab-accent);background:var(--lab-accent);color:#10151a!important;font-size:12px;font-weight:800;text-decoration:none}
+.lab-overview-cta:hover{filter:brightness(1.11)}
+.lab-overview-screen{min-width:0;align-self:center;border:1px solid var(--lab-border);border-radius:15px;overflow:hidden;box-shadow:0 25px 50px #0008;min-height:260px}
+.lab-screen-top,.lab-screen-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 16px;font-size:10px;font-weight:800;letter-spacing:.07em}
+.lab-screen-top{border-bottom:1px solid #ffffff26}.lab-screen-bottom{border-top:1px solid #ffffff26;color:var(--lab-accent)}
+.lab-screen-commerce{background:#102a23}
+.lab-screen-products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:12px}
+.lab-screen-product{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:10px}
+.lab-screen-product-photo{display:grid;place-items:center;aspect-ratio:1;border-radius:8px;background:linear-gradient(155deg,#356c56,#14362b);font-size:clamp(20px,4vw,50px)}
+.lab-screen-product small{font-size:8px;color:#b4dac9}
+.lab-screen-product b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab-screen-product span{color:#9fedbe}
+.lab-screen-studio{display:grid;grid-template-columns:42px minmax(0,1fr) 100px;background:#1c2126}
+.lab-studio-rail{display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px 0;background:#14181c;color:#ccdae8}
+.lab-studio-artboard{padding:12px;background:#272e34}
+.lab-studio-artboard-top{display:flex;justify-content:space-between;padding:6px;color:#cbdae8;font-size:9px}
+.lab-studio-artboard-body{min-height:210px;background:#f5f8fb;color:#20262b;padding:20px 12px;display:flex;flex-direction:column;gap:12px;overflow-wrap:anywhere}
+.lab-studio-preview-hero{font-size:clamp(17px,2vw,30px);font-weight:900;line-height:1.1}
+.lab-studio-preview-text{font-size:12px}.lab-studio-preview-button{align-self:flex-start;background:#5a6b7a;color:white;padding:7px;font-size:10px}
+.lab-studio-properties{display:flex;flex-direction:column;gap:12px;padding:18px 9px;font-size:10px;background:#1d2328}
+.lab-studio-properties strong{color:#dae5ef;font-size:9px}.lab-studio-properties span{color:#95adc3}.lab-studio-properties b{border:1px solid #586978;padding:5px}
+.lab-studio-swatches{display:flex;gap:3px}.lab-studio-swatches i{width:14px;height:14px;background:#698bab}.lab-studio-swatches i:nth-child(2){background:#d1deea}.lab-studio-swatches i:nth-child(3){background:#303942}
+.lab-screen-monitor{background:#081e2b}.lab-monitor-chart{display:flex;align-items:flex-end;justify-content:space-around;gap:6px;height:130px;margin:20px 18px 8px;padding:10px;background:repeating-linear-gradient(0deg,#2a536344 0 1px,transparent 1px 24px)}
+.lab-monitor-chart div:not(.lab-monitor-empty){flex:1;min-width:4px;border-radius:3px 3px 0 0}
+.lab-monitor-bar-ok{background:#6bd0f6}.lab-monitor-bar-fail{background:#f48196}.lab-monitor-empty{display:grid;place-items:center;width:100%;height:100%;color:#9bc7d8;font:11px monospace}
+.lab-monitor-chart-axis{display:flex;justify-content:space-between;gap:5px;padding:0 18px 15px;font-size:9px;color:#9bc7d8}
+.lab-screen-factory{background:#211811}.lab-factory-stages{display:flex;align-items:center;gap:6px;padding:23px 12px}
+.lab-factory-stages>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;padding:15px 8px;border:1px solid #83593b;background:#39291c;border-radius:7px}
+.lab-factory-stages small{font-size:9px;color:#ffc58b}.lab-factory-stages strong{font-size:10px;overflow-wrap:anywhere}
+.lab-factory-console{display:flex;flex-direction:column;gap:9px;margin:0 12px 16px;padding:14px;background:#0b100c;border:1px solid #685037;border-radius:7px;font:11px monospace}
+.lab-factory-console span{color:#b1b7b2}.lab-factory-console strong{color:#f7ce90}.lab-factory-console small{color:#9ac39c}
+@media(max-width:1120px){.lab-product-overview{grid-template-columns:1fr}.lab-overview-screen{width:100%}}
+@media(max-width:500px){.lab-product-overview{padding:14px;gap:15px}.lab-screen-studio{grid-template-columns:27px minmax(0,1fr) 65px}.lab-studio-rail{gap:12px}.lab-studio-properties{padding:9px 4px}.lab-studio-artboard{padding:5px}.lab-studio-artboard-body{padding:10px 6px}.lab-factory-stages{padding:10px 6px;gap:3px}.lab-factory-stages>div{padding:8px 3px}.lab-factory-stages strong{font-size:8px}.lab-overview-stats{gap:12px}}
+
+
+/* Each direct route presents one product; the legacy hub keeps its tab navigation. */
+.lab-project-header{position:relative}
+.lab-project-topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px;min-height:42px}
+.lab-portfolio-return{display:inline-flex;align-items:center;gap:10px;color:var(--lab-ink);font-size:12px;text-decoration:none;min-height:44px}
+.lab-portfolio-return:hover{text-decoration:underline;text-underline-offset:5px}
+.lab-project-heading{display:flex;align-items:center;gap:22px;padding-block:6px 14px;min-width:0}
+.lab-project-heading>div{min-width:0;flex:1}
+.lab-project-kicker{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--lab-accent)}
+.nexus-lab-shell .lab-project-heading h1{font-size:clamp(30px,4.4vw,61px);line-height:1.06;margin-top:10px;overflow-wrap:anywhere}
+.lab-project-description{font-size:14px;line-height:1.7;color:var(--lab-ink);opacity:.8;margin-top:12px;max-width:63ch}
+.lab-project-mark{display:grid;place-items:center;flex:0 0 78px;width:78px;height:78px;border:1px solid var(--lab-border);border-radius:18px;background:var(--lab-accent-soft);color:var(--lab-accent);font-size:44px;line-height:1}
+.lab-project-scope{flex:none;align-self:flex-start;border:1px solid var(--lab-border);border-radius:5px;padding:8px 11px;font:10px/1.5 monospace;color:var(--lab-accent);text-transform:uppercase;letter-spacing:.04em}
+.lab-project-switcher{position:relative;z-index:20;flex:none}
+.lab-project-switcher>summary{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:44px;padding:10px 14px;border:1px solid var(--lab-border);border-radius:8px;background:var(--lab-surface);color:var(--lab-ink);font-size:12px;cursor:pointer;list-style:none}
+.lab-project-switcher>summary::-webkit-details-marker,.lab-project-guide>summary::-webkit-details-marker{display:none}
+.nexus-lab-shell .lab-project-switcher [data-lab-navigation]{position:absolute;top:calc(100% + 9px);right:0;display:grid;grid-template-columns:1fr;gap:4px;width:min(330px,calc(100vw - 40px));padding:8px;border-radius:12px;background:var(--lab-surface);box-shadow:0 18px 40px #0008}
+.nexus-lab-shell .lab-project-switcher [data-lab-navigation] a{display:flex;align-items:center;gap:12px;min-height:48px;padding:12px;font-size:12px;line-height:1.5;border:1px solid transparent}
+.nexus-lab-shell .lab-project-switcher [data-lab-navigation] a span{font-size:20px;flex:none}
+.nexus-lab-shell[data-standalone="true"] .nexus-labs-layout{grid-template-columns:minmax(0,1fr)}
+.nexus-lab-shell[data-standalone="true"] .nexus-lab-workspace{border:0;border-radius:0;background:transparent;box-shadow:none;padding:0}
+.lab-project-guide{border-block:1px solid var(--lab-border);color:var(--lab-ink);margin-bottom:24px}
+.lab-project-guide>summary{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:54px;padding:12px 4px;cursor:pointer;font-size:12px;font-weight:700;list-style:none}
+.lab-project-guide>summary>span:last-child{font-size:18px;color:var(--lab-accent)}
+.lab-project-guide[open]>summary>span:last-child{transform:rotate(45deg)}
+.lab-project-guide-content{padding:4px 0 20px}
+.lab-study-link{display:inline-flex;align-items:center;gap:15px;color:var(--lab-accent);font-size:13px;text-decoration:underline;text-underline-offset:5px;margin-bottom:18px}
+.nexus-lab-shell :is(a,button,summary,input,textarea,select):focus-visible{outline:3px solid var(--lab-accent);outline-offset:4px}
+.nexus-lab-shell .lab-button-primary{background:var(--lab-accent);color:#102019;border-color:transparent}
+.nexus-lab-shell .lab-button-primary:hover:not(:disabled){background:color-mix(in srgb,var(--lab-accent),white 16%)}
+.nexus-lab-shell .lab-button{border-color:var(--lab-border);color:var(--lab-ink)}
+.nexus-lab-shell .lab-panel{border-color:var(--lab-border)}
+.nexus-lab-shell[data-standalone="true"] .lab-product-overview{min-height:330px;border-radius:16px;margin-bottom:26px}
+
+/* Commerce: cream product shelves and a dark green checkout. */
+.nexus-lab-shell[data-standalone="true"][data-lab="commerce"] .lab-project-mark{border-radius:50%;background:#e7e6d5;color:#205341}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-commerce{background:#f0efe5;color:#17382b;border-color:#c1cbbd;box-shadow:0 16px 36px #0003}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-commerce .lab-screen-top{border-color:#c8d2c5}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-commerce .lab-screen-bottom{border-color:#c8d2c5;color:#214f3d}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-commerce .lab-screen-product small{color:#4b6856}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-commerce .lab-screen-product span{color:#235c3c;font-weight:700}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-product-photo{background:linear-gradient(145deg,#e4e5d5,#cbd4bd);color:#355644;border-radius:3px}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog{padding:22px;background:#f4f2e9;color:#17382b;border-color:#d9decd;border-radius:12px}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog>div:has(label){background:transparent}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog :is(.text-stone-400,.text-stone-500){color:#536857}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog :is(input,select){background:#fffef7;color:#183b2d;border-color:#a3b69d}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog article{background:#fcfbf5;border-color:#d0dac9;box-shadow:none;border-radius:6px}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog article h3{color:#17382b}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog article>div[aria-hidden="true"]{background:linear-gradient(140deg,#e2e7d6,#cbd8bd);color:#325c43;border:0;border-radius:3px}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog article>p:not(.text-xs){color:#29633e}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog .lab-button-primary{background:#20543e;color:#fffef5;border-radius:5px}
+.nexus-lab-shell[data-standalone="true"] .commerce-catalog .lab-button-primary:hover:not(:disabled){background:#123b2a}
+
+/* Studio: editor chrome around a paper artboard. */
+.nexus-lab-shell[data-standalone="true"][data-lab="studio"] .lab-project-mark{border-radius:12px;background:#c8d8e6;color:#38424b}
+.nexus-lab-shell[data-standalone="true"] .lab-product-overview-studio{background:#1d2328;border-radius:8px}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-studio{border-radius:4px;box-shadow:0 20px 45px #0006}
+.nexus-lab-shell[data-standalone="true"] .studio-editor-layout{border-radius:8px;background:#0f1215}
+.nexus-lab-shell[data-standalone="true"] .studio-editor-layout>aside{border-radius:4px;border-top:3px solid #c2d3e3;box-shadow:none}
+.nexus-lab-shell[data-standalone="true"] .studio-editor-layout>div{padding:20px;background:radial-gradient(#44505c 1px,transparent 1px),#23292f;background-size:16px 16px;border-radius:4px}
+
+/* Monitor: telemetry grid, square readouts and monospace headings. */
+.nexus-lab-shell[data-standalone="true"][data-lab="monitor"]{background:linear-gradient(#1e415523 1px,transparent 1px),linear-gradient(90deg,#1e415523 1px,transparent 1px),#081620;background-size:38px 38px}
+.nexus-lab-shell[data-standalone="true"][data-lab="monitor"] .lab-project-mark{border-radius:4px;background:#0d2c3d}
+.nexus-lab-shell[data-standalone="true"][data-lab="monitor"] .lab-project-heading h1{font-family:monospace;font-size:clamp(26px,4vw,52px);letter-spacing:-.045em}
+.nexus-lab-shell[data-standalone="true"] .lab-product-overview-monitor{border-radius:4px;background:#0b202d}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-monitor{border-radius:3px;box-shadow:none}
+.nexus-lab-shell[data-standalone="true"] .monitor-console :is(section,.rounded-xl){border-radius:5px}
+.nexus-lab-shell[data-standalone="true"] .monitor-console h3{font-family:monospace;letter-spacing:-.035em}
+
+/* Factory: ordered review stations with amber industrial rules. */
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .lab-project-header{border-bottom:3px solid #b88650}
+.nexus-lab-shell[data-standalone="true"][data-lab="factory"] .lab-project-mark{border-radius:3px;background:#37291b;border-top:5px solid #d6a46e}
+.nexus-lab-shell[data-standalone="true"] .lab-product-overview-factory{border-radius:4px;border-top:3px solid #b88650;background:#231c14}
+.nexus-lab-shell[data-standalone="true"] .lab-screen-factory{border-radius:3px;box-shadow:none}
+.nexus-lab-shell[data-standalone="true"] .lab-factory-stages>div{border-radius:2px;border-top:3px solid #c6955a}
+.nexus-lab-shell[data-standalone="true"] .factory-pipeline :is(section,.rounded-2xl){border-radius:5px}
+.nexus-lab-shell[data-standalone="true"] .factory-pipeline>div[class*="grid"]{border-radius:5px;background:transparent;padding:0;border:0;gap:22px}
+.nexus-lab-shell[data-standalone="true"] .factory-pipeline .lab-panel{border-top:3px solid #b88650}
+@media(min-width:1121px){.nexus-lab-shell[data-standalone="true"] .lab-product-overview{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:40px;padding:34px}.nexus-lab-shell[data-standalone="true"] .lab-overview-intro h2{font-size:clamp(36px,4vw,58px)}}
+@media(max-width:700px){.lab-project-topline{gap:10px;margin-bottom:20px;align-items:flex-start}.lab-portfolio-return{font-size:11px}.lab-project-switcher>summary{font-size:11px;gap:12px;padding:10px}.lab-project-heading{align-items:flex-start;gap:13px}.lab-project-mark{flex-basis:49px;width:49px;height:49px;font-size:29px;border-radius:10px}.lab-project-kicker{font-size:8px;letter-spacing:.1em}.lab-project-description{font-size:12px;line-height:1.6}.lab-project-scope{display:none}.nexus-lab-shell[data-standalone="true"] .commerce-catalog{padding:12px}.nexus-lab-shell[data-standalone="true"] .studio-editor-layout>div{padding:12px}.lab-project-guide{margin-bottom:18px}}
+
+.studio-block-actions>.lab-button{flex:1 0 auto;padding-inline:10px;white-space:nowrap}
+
+
+/* Commerce product photos: actual photography, not emoji/card mockups. */
+.commerce-product-photo{
+  position:relative;
+  isolation:isolate;
+  display:block;
+  width:100%;
+  aspect-ratio:8/5;
+  overflow:hidden;
+  border:1px solid #34715d;
+  border-radius:12px;
+  background:linear-gradient(135deg,#204d3e,#0d241d);
+  margin-bottom:9px;
+}
+.commerce-product-photo::after{
+  content:"";
+  position:absolute;
+  inset:45% 0 0;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(transparent,#08171058);
+}
+.commerce-product-photo img{
+  object-fit:cover;
+  object-position:center;
+  transition:transform .3s ease;
+}
+.commerce-storefront article:hover .commerce-product-photo img{transform:scale(1.045)}
+.commerce-product-photo-fallback{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#a0f1c9;
+  font-size:clamp(24px,4vw,58px);
+}
+.commerce-photo-caption{
+  margin:0 0 12px;
+  font-size:10px;
+  color:#9abbaa;
+}
+.lab-screen-product .commerce-product-photo-compact{
+  width:100%;
+  aspect-ratio:1;
+  border-radius:8px;
+  margin:0;
+}
+.lab-screen-product .commerce-product-photo-compact img{object-fit:cover}
+@media(prefers-reduced-motion:reduce){
+  .commerce-product-photo img{transition:none}
+  .commerce-storefront article:hover .commerce-product-photo img{transform:none}
+}
+
+.commerce-cart-item{padding:8px 0;border-bottom:1px solid #34715d5c}
+.commerce-cart-item .commerce-product-photo-compact{
+  flex:0 0 46px;
+  width:46px;
+  height:46px;
+  aspect-ratio:1;
+  border-radius:7px;
+  margin:0;
+}
+.commerce-cart-item>span{flex:1;min-width:0;overflow-wrap:anywhere}
+.commerce-cart-item>div:last-child{flex-shrink:0}
+@media(max-width:430px){
+  .commerce-cart-item .commerce-product-photo-compact{flex-basis:38px;width:38px;height:38px}
+}
+
+/* Project language remains available inside every dedicated demo and the hub. */
+.lab-language-selector{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:-8px 0 25px;padding:12px 0;border-top:1px solid var(--lab-border);border-bottom:1px solid var(--lab-border);color:var(--lab-ink);font-size:11px}
+.lab-language-selector>span{font-weight:600}
+.lab-language-selector>div{display:flex;flex-wrap:wrap;gap:5px}
+.lab-language-selector a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 12px;border:1px solid transparent;border-radius:6px;color:var(--lab-ink);font-size:11px;text-decoration:none}
+.lab-language-selector a:hover{background:var(--lab-surface);border-color:var(--lab-border)}
+.lab-language-selector a[aria-current="page"]{border-color:var(--lab-accent);color:var(--lab-accent);background:var(--lab-surface)}
+.lab-language-selector a:focus-visible{outline:2px solid var(--lab-accent);outline-offset:3px}
+@media(max-width:500px){.lab-language-selector{margin:0 0 22px;align-items:flex-start;flex-direction:column;gap:8px}.lab-language-selector a{padding:8px 9px;min-height:44px}.lab-language-selector>div{gap:2px}}

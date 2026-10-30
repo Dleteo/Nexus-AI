@@ -1,0 +1,30 @@
+import assert from "node:assert/strict";
+import {seedProducts,addToCart,placeOrder,moveBlock,escapeHtml,renderPageHtml,summarizeChecks,observedAvailability,renderFactoryIssueMarkdown,buildFactoryProposal,filterProducts,successfulLatencyP95,reviewFactoryPlan} from "../lib/labs-core.mjs";
+const inventory=seedProducts.map(p=>({...p}));
+const first=addToCart({},inventory,"keyboard");assert.equal(first.ok,true);assert.equal(first.cart.keyboard,1);
+const order=placeOrder(first.cart,inventory);assert.equal(order.ok,true);assert.equal(order.total,79);assert.equal(order.inventory[0].stock,7);
+assert.equal(placeOrder({keyboard:999},inventory).ok,false);assert.equal(placeOrder({},inventory).ok,false);assert.equal(Array.isArray(placeOrder({},inventory).inventory),true);
+assert.equal(addToCart({keyboard:8},inventory,"keyboard").ok,false);
+const blocks=[{id:"a",type:"hero",text:"Hello"},{id:"b",type:"text",text:"world"}];assert.equal(moveBlock(blocks,0,1)[0].id,"b");assert.equal(moveBlock(blocks,0,-1)[0].id,"a");assert.notEqual(moveBlock(blocks,0,-1),blocks);
+assert.equal(escapeHtml("<script>"),"&lt;script&gt;");assert.ok(!renderPageHtml([{id:"x",type:"hero",text:"<script>alert(1)</script>"}]).includes("<script>"));
+assert.deepEqual(summarizeChecks([{at:"now",ok:true,ms:20},{at:"now",ok:false,ms:200}]),{total:2,successful:1,failed:1,averageMs:20});
+assert.equal(buildFactoryProposal("tiny"),null);const plan=buildFactoryProposal("Implement registration validation");assert.equal(plan.status,"awaiting-review");assert.equal(plan.stages[2].completed,false);
+assert.deepEqual(observedAvailability([]),{sampleCount:0,percent:null,minMs:null,maxMs:null});
+assert.deepEqual(observedAvailability([{ok:true,ms:10},{ok:false,ms:30}]),{sampleCount:2,percent:50,minMs:10,maxMs:30});
+const draft=renderFactoryIssueMarkdown(plan);
+assert.match(draft,/Engineering request/);assert.match(draft,/No AI inference/);
+assert.deepEqual(filterProducts(inventory,"keyboard").map(p=>p.id),["keyboard"]);
+assert.deepEqual(filterProducts(inventory,"", "Audio").map(p=>p.id),["headset"]);
+assert.equal(filterProducts(inventory,"nonexistent").length,0);
+assert.equal(addToCart({keyboard:-1},inventory,"keyboard").ok,false);
+assert.equal(addToCart({keyboard:1.5},inventory,"keyboard").ok,false);
+for(const invalidCart of [{keyboard:-2},{keyboard:0.5},{keyboard:1,missing:1},{keyboard:NaN}]) {
+  assert.equal(placeOrder(invalidCart,inventory).ok,false,"Invalid cart must be rejected");
+}
+assert.equal(successfulLatencyP95([]),null);
+assert.equal(successfulLatencyP95([{ok:false,ms:100},{ok:true,ms:20},{ok:true,ms:10}]),20);
+assert.equal(successfulLatencyP95(Array.from({length:100},(_,i)=>({ok:true,ms:i+1}))),95);
+assert.equal(reviewFactoryPlan(plan,false).status,"awaiting-review");
+assert.equal(reviewFactoryPlan(plan,true).status,"approved-for-manual-work");
+assert.equal(reviewFactoryPlan(reviewFactoryPlan(plan,true),true).status,"approved-for-manual-work");
+console.log("Nexus labs: domain assertions passed");

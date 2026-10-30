@@ -42,7 +42,7 @@ function TextLines({ value }: { value: string }) {
   );
 }
 
-export default function MessageContent({ content }: { content: string }) {
+export default function MessageContent({ content, copyCodeLabel="Copy code", copiedLabel="Copied!", copyCodeAriaLabel="Copy {language} code" }: { content: string; copyCodeLabel?:string; copiedLabel?:string; copyCodeAriaLabel?:string }) {
   const [copied, setCopied] = useState<number | null>(null);
   async function copySnippet(value: string, index: number) {
     try {
@@ -58,7 +58,7 @@ export default function MessageContent({ content }: { content: string }) {
         <div key={index} className="min-w-0 overflow-hidden rounded-xl border border-[#3A3836] bg-[#242424] text-[#F5F1EA]">
           <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-[#30302F] px-3 py-2">
             <span className="truncate text-[11px] font-semibold text-[#E6D7C7]">{block.language}</span>
-            <button type="button" onClick={() => void copySnippet(block.value, index)} aria-label={"Copy " + block.language + " code"} className="rounded-md border border-white/20 px-2.5 py-1 text-[11px] font-medium text-white transition hover:bg-white/10">{copied === index ? "Copied!" : "Copy code"}</button>
+            <button type="button" onClick={() => void copySnippet(block.value, index)} aria-label={copyCodeAriaLabel.replace("{language}",block.language)} className="rounded-md border border-white/20 px-2.5 py-1 text-[11px] font-medium text-white transition hover:bg-white/10">{copied === index ? copiedLabel : copyCodeLabel}</button>
           </div>
           <pre className="max-w-full overflow-x-auto p-4 text-xs leading-6 sm:text-sm"><code>{block.value}</code></pre>
         </div>

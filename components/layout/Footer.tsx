@@ -11,9 +11,9 @@ export default function Footer() {
         </div>
         <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-3 text-sm">
           <Link href="/" className="hover:text-[#F4F1EB]">Home</Link>
-          <Link href="/#features" className="hover:text-[#F4F1EB]">Features</Link>
-          <Link href="/portfolio" className="hover:text-[#F4F1EB]">Portfolio</Link>
-          <Link href="/portfolio#certifications" className="hover:text-[#F4F1EB]">Certificates</Link>
+          <Link href="/#proyectos" className="hover:text-[#F4F1EB]">Projects</Link>
+          <Link href="/#habilidades" className="hover:text-[#F4F1EB]">Skills</Link>
+          <Link href="/#certificados" className="hover:text-[#F4F1EB]">Certificates</Link>
           <Link href="/login" className="hover:text-[#F4F1EB]">Sign in</Link>
         </nav>
       </div>

@@ -1,21 +1,11 @@
-import Footer from "../components/layout/Footer";
-import Navbar from "../components/layout/Navbar";
-import Features from "../components/sections/Features";
-import FinalCTA from "../components/sections/FinalCTA";
-import Hero from "../components/sections/Hero";
-import Process from "../components/sections/Process";
+import type { Metadata } from "next";
+import EditorialPortfolio from "../components/career/EditorialPortfolio";
+
+export const metadata: Metadata = {
+  title: "Joshua Vallejo Sanchez | Junior Web Developer & AI Projects",
+  description: "Developer portfolio featuring documented projects, 94 hours of training, certificates, a resume and Nexus AI.",
+};
 
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main id="top" className="min-h-screen">
-        <Hero />
-        <Features />
-        <Process />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </>
-  );
+  return <EditorialPortfolio language="en" />;
 }

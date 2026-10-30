@@ -10,6 +10,20 @@ jobs:
   validate:
     name: Lint, type-check, and build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nexus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -26,14 +40,96 @@ jobs:
       - name: Audit all dependencies
         run: npm audit --audit-level=high
 
+      - name: Check Nexus Software Factory workflow and source inventory
+        run: npm run factory:test && npm run factory:sources && node scripts/portfolio_guide_unit_qa.mjs && node scripts/portfolio_interview_unit_qa.mjs
+
       - name: Run ESLint
         run: npm run lint
 
       - name: Check TypeScript
         run: npx tsc --noEmit
 
+      - name: Verify workspace migration in disposable PostgreSQL
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: nexus_test
+        run: |
+          set -e
+          for file in tests/db/bootstrap.sql \
+            supabase/migrations/20261023000000_create_projects.sql \
+            supabase/migrations/20261023130000_assistant_copilot_foundation.sql \
+            supabase/migrations/20261023130001_index_assistant_foreign_keys.sql \
+            supabase/migrations/20261023130002_lock_down_assistant_privileged_rpcs.sql \
+            tests/db/seed.sql \
+            supabase/migrations/20261027040000_assistant_workspace_scope.sql \
+            supabase/migrations/20261027122157_enforce_assistant_project_ownership.sql \
+            tests/db/workspace_assertions.sql \
+            tests/db/project_ownership_assertions.sql; do
+            psql -v ON_ERROR_STOP=1 -f "$file"
+          done
+
+      - name: Test assistant providers and safety gates
+        run: node scripts/assistant_unit_qa.mjs
+
+      - name: Verify optional live-model probe without real providers
+        run: node scripts/live_model_probe_qa.mjs
+
+      - name: Test four engineering labs domain logic
+        run: |
+          node scripts/labs_unit_qa.mjs
+          node scripts/studio_design_qa.mjs
+          node scripts/nexus_factory_qa.mjs
+
+      - name: Test local evidence exports and interview preparation
+        run: |
+          node scripts/labs_exports_qa.mjs
+          node scripts/interview_prep_qa.mjs
+          node scripts/labs_demo_tools_qa.mjs
+          node scripts/labs_insights_qa.mjs
+
+      - name: Test local HTTP security and trusted Python process bounds
+        run: |
+          node scripts/labs_http_unit_qa.mjs
+          node scripts/labs_runner_qa.mjs
+
+      - name: Test private SQLite paths and disabled sandbox preflight
+        run: |
+          python -m unittest discover -s labs -p "test_sqlite_storage.py" -v
+          python -m unittest discover -s scripts -p "test_sandbox_preflight.py" -v
+
+      - name: Test local SQLite backend and concurrent checkout
+        run: python -m unittest discover -s labs/commerce -p "test_*.py" -v
+
+      - name: Test Studio SQLite revisions and concurrent editing
+        run: python -m unittest discover -s labs/studio -p "test_*.py" -v
+
+      - name: Test Monitor SQLite history and local alert rules
+        run: python -m unittest discover -s labs/monitor -p "test_*.py" -v
+
+      - name: Test Factory SQLite approvals, artifact generation and concurrency
+        run: python -m unittest discover -s labs/factory -p "test_*.py" -v
+
+      - name: Integration-test all four local SQLite APIs with one Next.js server
+        run: |
+          set -e
+          demo_dir=$(mktemp -d)
+          NEXUS_LABS_SQLITE=1 NEXUS_LABS_STUDIO_SQLITE=1 NEXUS_COMMERCE_DB="$demo_dir/commerce.sqlite3" NEXUS_STUDIO_DB="$demo_dir/studio.sqlite3" NEXUS_LABS_MONITOR_SQLITE=1 NEXUS_MONITOR_DB="$demo_dir/monitor.sqlite3" NEXUS_LABS_FACTORY=1 NEXUS_FACTORY_DB="$demo_dir/factory.sqlite3" npm run dev -- --hostname 127.0.0.1 --port 3108 > /tmp/nexus-labs-dev.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf "$demo_dir"' EXIT
+          node scripts/commerce_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+          node scripts/studio_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+          node scripts/monitor_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+          node scripts/factory_http_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+          node scripts/labs_http_security_qa.mjs http://127.0.0.1:3108 || { cat /tmp/nexus-labs-dev.log; exit 1; }
+
       - name: Build production app
         run: npm run build
+
+      - name: Integration-test both assistant APIs with isolated model and database emulators
+        run: node scripts/assistant_integration_qa.mjs
 
       - name: Smoke-test compiled pages and signed-out routes
         run: |
@@ -42,13 +138,37 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           node scripts/smoke.mjs http://127.0.0.1:3100 || { cat /tmp/nexus-smoke.log; exit 1; }
 
+      - name: Validate localized CV PDFs
+        run: |
+          python -m pip install pypdf==6.1.1
+          npm run start -- --port 3104 > /tmp/nexus-pdf.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          NEXUS_QA_BASE=http://127.0.0.1:3104 python scripts/pdf_qa.py || { cat /tmp/nexus-pdf.log; exit 1; }
+
+      - name: Upload CV PDFs for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-cv-pdfs
+          path: qa-pdfs/
+          if-no-files-found: ignore
+
       - name: Browser QA for responsive layouts and navigation
         run: |
           python -m pip install playwright==1.56.0
           npm run start -- --port 3102 > /tmp/nexus-browser.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_mobile_regression_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_evidence_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_assistant_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_assistant_experience_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_interview_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/project_languages_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/factory_delivery_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/browser_qa.py || { cat /tmp/nexus-browser.log; exit 1; }
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/visual_accessibility_qa.py || { cat /tmp/nexus-browser.log; exit 1; }
 
       - name: Verify mocked dashboard and assistant interactions
         run: |

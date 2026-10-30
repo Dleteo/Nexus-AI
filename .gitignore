@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Nexus Labs local SQLite sandbox; never commit user data
+/.nexus-local/
+**/__pycache__/
+*.pyc
+
+# Sites build and local Worker state
+/dist/
+/.wrangler/
+/.vinext/
+/qa-pdfs/

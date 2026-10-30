@@ -1,67 +1,112 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import Link from "next/link";
-import Navbar from "../../components/layout/Navbar";
-import Footer from "../../components/layout/Footer";
-import { professionalProfile as profile } from "../../data/profile";
-import { certifications } from "../../data/certifications";
-import { professionalExperience, foundationResearch } from "../../data/portfolio-evidence";
+import {certifications,totalTrainingHours} from "../../data/certifications";
+import {professionalProfile as profile} from "../../data/profile";
+import {resumeCopy,type ResumeLang} from "../../data/resume-copy";
+import {siteLanguages,isSiteLanguage,cvDownloadPath,cvDownloadLabels,portfolioPath} from "../../data/site-languages";
+import {skillEvidence,proficiency,skillRatingCopy} from "../../data/professional-development";
+import styles from "./Resume.module.css";
 
-export const metadata: Metadata = {
-  title: "Joshua Vallejo Sanchez | CV",
-  description: "Professional résumé for Joshua Vallejo Sanchez, aspiring Junior Web Developer and creator of Nexus AI.",
+export const metadata:Metadata={
+  title:"Joshua Vallejo Sanchez | Curriculum vitae",
+  description:"Currículum profesional de desarrollador web junior: proyectos verificables, formación documentada y contacto.",
 };
 
-export default function ResumePage() {
-  return (
-    <>
-      <div className="print:hidden"><Navbar /></div>
-      <main className="flex-1 px-5 py-12 text-[#F4F1EB] sm:px-8 sm:py-16 print:p-0 print:text-black">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-7 flex flex-wrap items-center justify-between gap-4 print:hidden">
-            <Link href="/portfolio" className="text-sm font-semibold text-[#D9B77B] hover:underline">← Back to portfolio</Link>
-            <a href="/Joshua-Vallejo-Sanchez-Resume.pdf" download="Joshua-Vallejo-Sanchez-Resume.pdf" className="nexus-primary-button">Download CV (PDF) ↓</a>
+
+
+export default async function ResumePage({searchParams}:{searchParams:Promise<{lang?:string}>}){
+  const {lang}=await searchParams;
+  const language:ResumeLang=lang&&isSiteLanguage(lang)?lang:"en";
+  const copy=resumeCopy[language];
+  const ratings=skillRatingCopy[language];
+  const t=(es:string,en:string,de:string,fr:string,pt:string)=>({es,en,de,fr,pt})[language];
+  const sortedTraining=[...certifications].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
+  return <main className={styles.resumePage} lang={language}>
+    <article className={styles.sheet} id="resume-print-sheet">
+      <nav className={styles.minimalControls} aria-label={t("Opciones del CV","Resume controls","Lebenslauf-Optionen","Options du CV","Opções do currículo")}>
+        <details className={styles.langPicker}>
+          <summary aria-label={t("Cambiar idioma","Change language","Sprache ändern","Changer de langue","Alterar idioma")}>{language.toUpperCase()} <span aria-hidden="true">⌄</span></summary>
+          <div className={styles.langMenu}>
+            {siteLanguages.map(x=><Link key={x.code} href={"/resume?lang="+x.code} lang={x.code} hrefLang={x.code} aria-current={x.code===language?"page":undefined}>{x.nativeName}</Link>)}
           </div>
-          <article id="resume-print-sheet" className="rounded-2xl border border-[#34322F] bg-[#1D1E20] p-7 shadow-[0_15px_50px_-38px_rgba(95,52,31,.25)] sm:p-12 print:rounded-none print:border-0 print:bg-white print:p-0 print:shadow-none">
-            <header className="border-b-2 border-[#D9B77B] pb-7">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9B77B]">Developer résumé</p>
-              <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
-              <p className="mt-2 text-lg font-medium">{profile.role}</p>
-              <p className="mt-3 text-sm text-[#CBC3B7]">{profile.location} · <a className="underline" href={profile.github}>github.com/Dleteo</a></p>
-            </header>
-            <section className="mt-7"><h2 className="text-lg font-bold">Professional summary</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]">Aspiring Junior Web Developer building practical experience with React, Next.js, TypeScript, responsive UI, authentication and database-backed features. Creator of Nexus AI, an evolving application that brings project management and an AI copilot together. Comfortable using AI-assisted development tools while reviewing code and verifying user flows.</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Featured project: Nexus AI</h2>
-              <p className="mt-1 text-sm text-[#D9B77B]"><a href={profile.repository} className="underline">github.com/Dleteo/Nexus-AI</a> · Portfolio project</p>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-[#D9B77B]">
-                <li>Built a responsive Next.js and TypeScript interface with separate product, portfolio and account pages.</li>
-                <li>Implemented account and project-management workflows backed by Supabase and Next.js API routes.</li>
-                <li>Integrated a multi-mode AI assistant with saved conversations for planning, debugging, learning and interview preparation.</li>
-                <li>Added automated ESLint, TypeScript, production-build, HTTP and browser tests through GitHub Actions.</li>
-              </ul>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Technical toolkit</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Frontend practiced:</strong> HTML5, CSS3, Flexbox, Grid, Bootstrap 5, JavaScript ES6, DOM. <strong>Project-integrated with AI assistance:</strong> React, Next.js, TypeScript, Tailwind CSS</p>
-              <p className="text-sm leading-7 text-[#D9B77B]"><strong>Application and workflow:</strong> Supabase authentication, PostgreSQL/RLS, Next.js API routes, Gemini integration, Git/GitHub, CI, linting, type checking and browser QA. <strong>PC background:</strong> Windows setup, drivers and basic troubleshooting.</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Work experience and research</h2>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{professionalExperience.title}:</strong> {professionalExperience.summary} {professionalExperience.note}</p>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>{foundationResearch.title}:</strong> {foundationResearch.summary} {foundationResearch.limitation}</p>
-              <p className="mt-2 text-sm leading-7 text-[#D9B77B]"><strong>Languages:</strong> Spanish (native), English (intermediate).</p>
-            </section>
-            <section className="mt-7"><h2 className="text-lg font-bold">Education and professional learning</h2>
-              <p className="mt-2 text-sm text-[#CBC3B7]">Selected certificates and training records, not professional employment experience:</p>
-              <ul className="mt-3 space-y-2 text-sm leading-6 text-[#D9B77B]">
-                {certifications.map((item) => <li key={item.id}><strong>{item.title}</strong> — {item.issuer}, {item.hours} training hours ({item.credentialType.toLowerCase()})</li>)}
-              </ul>
-            </section>
-            <div className="mt-8 border-t border-[#34322F] pt-5 text-xs text-[#D9B77B]">
-              Contact email and additional social profiles can be added once verified. No unverified employment or academic degree is listed.
-            </div>
-          </article>
+        </details>
+        <Link className={styles.backButton} href={portfolioPath(language)}>← {t("Volver al portafolio","Back to portfolio","Zum Portfolio zurück","Retour au portfolio","Voltar ao portfólio")}</Link>
+      </nav>
+      <header className={styles.hero}>
+        <div className={styles.heroText}>
+          <p className={styles.kicker}>{t("CURRÍCULUM VITAE","CURRICULUM VITAE","LEBENSLAUF","CURRICULUM VITAE","CURRÍCULO")}</p>
+          <h1 className={styles.name}><span>JOSHUA</span><span>VALLEJO</span><em>SANCHEZ</em></h1>
+          <p className={styles.role}>{copy.role}</p>
+          <p className={styles.summary}>{copy.summary}</p>
+          <div className={styles.pillRow}>
+            <a className={styles.pill} href={"mailto:"+profile.email}>✉ {profile.email}</a>
+            <a className={styles.pill} href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            {profile.linkedin&&<a className={styles.pill} href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>}
+          </div>
+          <p className={styles.location}>⌖ {t("Pensilvania, EE. UU.","Pennsylvania, USA","Pennsylvania, USA","Pennsylvanie, États-Unis","Pensilvânia, EUA")}</p>
         </div>
-      </main>
-      <div className="print:hidden"><Footer /></div>
-    </>
-  );
+
+        <div className={styles.heroPhoto} role="img" aria-label={t("Retrato del desarrollador del portafolio original","Portrait from the developer's previous portfolio","Porträt aus dem früheren Portfolio","Portrait du portfolio précédent","Retrato do portfólio anterior")}>
+          <div className={styles.heroLinks}>
+            <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            {profile.linkedin&&<a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>}
+          </div>
+        </div>
+
+        <aside className={styles.heroAside} aria-label={t("Información del CV","Resume details","Lebenslaufdetails","Détails du CV","Detalhes do currículo")}>
+          <div className={styles.stats}>
+            <div className={styles.stat}><strong>{totalTrainingHours}<small>h</small></strong><span>{t("Formación documentada","Documented training","Dokumentierte Weiterbildung","Formation documentée","Formação documentada")}</span></div>
+            <div className={styles.stat}><strong>11</strong><span>{t("Repositorios revisados","Repositories reviewed","Geprüfte Repositories","Dépôts examinés","Repositórios revisados")}</span></div>
+            <div className={styles.stat}><strong>{String(certifications.length).padStart(2,"0")}</strong><span>{t("Certificados y constancias","Training records","Zertifikate und Nachweise","Certificats et attestations","Certificados e comprovantes")}</span></div>
+          </div>
+          <a className={styles.cta} href={cvDownloadPath(language)} download>{cvDownloadLabels[language]} <span>↗</span></a>
+        </aside>
+      </header>
+
+      <div className={styles.topCards}>
+        <section className={styles.infoCard} aria-labelledby="profile-heading"><h2 id="profile-heading" className={styles.cardHeader}><span>♧</span>{copy.headings.profile}</h2><p>{copy.summary}</p></section>
+        <section className={styles.infoCard} aria-labelledby="goal-heading"><h2 id="goal-heading" className={styles.cardHeader}><span>◎</span>{t("OBJETIVO PROFESIONAL","CAREER GOAL","BERUFSZIEL","OBJECTIF PROFESSIONNEL","OBJETIVO PROFISSIONAL")}</h2><p>{t("Conseguir mi primera oportunidad en desarrollo web o frontend y contribuir con proyectos verificables, disciplina y aprendizaje continuo.","Earn my first web or frontend developer role, contributing documented projects, reliable execution and continuous learning.","Meine erste Stelle in der Web- oder Frontend-Entwicklung finden und mit nachweisbaren Projekten und kontinuierlichem Lernen beitragen.","Obtenir mon premier poste en développement web ou frontend en apportant des projets vérifiables et un apprentissage continu.","Conquistar minha primeira vaga em desenvolvimento web ou frontend, contribuindo com projetos verificáveis e aprendizado contínuo.")}</p></section>
+        <section className={styles.infoCard} aria-labelledby="available-heading"><h2 id="available-heading" className={styles.cardHeader}><span>▣</span>{t("DISPONIBILIDAD","AVAILABILITY","VERFÜGBARKEIT","DISPONIBILITÉ","DISPONIBILIDADE")}</h2><p>{t("Abierto a oportunidades junior y conversaciones con equipos de tecnología.","Open to junior opportunities and discussions with engineering teams.","Offen für Junior-Stellen und Gespräche mit Entwicklungsteams.","Ouvert aux postes juniors et aux échanges avec des équipes techniques.","Aberto a oportunidades júnior e conversas com equipes de tecnologia.")}</p><div className={styles.avail}><span className={styles.dot}/>{t("Disponible para entrevistas","Available for interviews","Für Gespräche verfügbar","Disponible pour des entretiens","Disponível para entrevistas")}</div></section>
+      </div>
+
+      <div className={styles.columns}>
+        <section className={styles.block} aria-labelledby="experience-heading">
+          <h2 className={styles.blockHeading} id="experience-heading"><span>♧</span>{copy.headings.experience}</h2>
+          <div className={styles.timeline}>
+            <div className={styles.timelineItem}><span className={styles.year}>{t("Previo","Prior","Früher","Avant","Anterior")}</span><strong>{t("Trabajos físicos: floristería, supermercado y hotelería","Physical work: floristry, supermarkets and hospitality","Körperliche Arbeit: Floristik, Supermarkt und Hotelgewerbe","Travaux physiques : fleuristerie, supermarché et hôtellerie","Trabalhos físicos: floricultura, supermercado e hotelaria")}</strong><p>{copy.experience}</p></div>
+          </div>
+          <p className={styles.note}>{t("Los proyectos son experiencia práctica de aprendizaje; no son puestos profesionales de desarrollo.","Projects demonstrate practical learning; they are not paid developer positions.","Projekte belegen praktische Lernarbeit, keine bezahlten Entwicklerstellen.","Les projets prouvent la pratique, pas des emplois rémunérés en développement.","Projetos demonstram prática, não empregos remunerados em desenvolvimento.")}</p>
+        </section>
+        <section className={styles.block} aria-labelledby="training-heading">
+          <h2 className={styles.blockHeading} id="training-heading"><span>▢</span>{copy.headings.training}</h2>
+          <ul className={styles.learning}>{sortedTraining.map(c=><li key={c.id}><b>{new Date(c.date).getFullYear()}</b><div><strong>{c.title}</strong><small>{c.issuer} · {c.hours} h · {c.credentialType==="Course completion"?copy.completedLabel:copy.attendanceLabel}</small></div></li>)}</ul>
+          <p className={styles.note}>{copy.trainingNote}</p>
+          <Link className={styles.actionLink} href={portfolioPath(language)+"#proyectos"}>{t("Ver proyectos y evidencia","View project evidence","Projektnachweise ansehen","Voir les projets","Ver evidências dos projetos")} ↗</Link>
+        </section>
+      </div>
+
+      <div className={styles.bottom}>
+        <section className={styles.block} aria-labelledby="projects-heading"><h2 className={styles.blockHeading} id="projects-heading"><span>▣</span>{copy.headings.projects}</h2>
+          {copy.projects.map((item,i)=><a className={styles.projectItem} href={item.url} key={item.name} target="_blank" rel="noopener noreferrer"><span className={styles.projectNumber}>{String(i+1).padStart(2,"0")}</span><span><strong>{item.name}</strong><small>{item.stack} · {item.summary}</small></span><span className={styles.arrow}>↗</span></a>)}
+        </section>
+        <section className={styles.block} aria-labelledby="skills-heading"><h2 className={styles.blockHeading} id="skills-heading"><span>✧</span>{copy.headings.skills}</h2>
+          <div className={styles.ratedSkills}>{skillEvidence.map(skill=><div className={styles.ratedSkill} key={skill.id}>
+            <strong>{skill.name}</strong>
+            {([{label:ratings.usage,value:skill.projects},{label:ratings.knowledge,value:proficiency[skill.id]??0}]).map(rating=><div className={styles.ratingRow} key={rating.label}>
+              <span>{rating.label}</span><span className={styles.ratingDots} aria-label={`${rating.label}: ${rating.value}/5`}>
+                {Array.from({length:5},(_,i)=><i key={i} aria-hidden="true" data-filled={i<rating.value}/>)}
+              </span><small aria-hidden="true">{rating.value}/5</small>
+            </div>)}
+          </div>)}</div>
+          <p className={styles.note}>{ratings.note}</p>
+          {copy.skillGroups.map(group=><p key={group.title} className={styles.subtle}><strong>{group.title}:</strong> {group.items}</p>)}
+        </section>
+      </div>
+      <div className={styles.bottom}>
+        <section className={styles.block}><h2 className={styles.blockHeading}><span>✳</span>{copy.headings.research}</h2><p className={styles.subtle}>{copy.research}</p></section>
+        <section className={styles.block}><h2 className={styles.blockHeading}><span>◎</span>{copy.headings.languages}</h2><p className={styles.subtle}>{copy.languages}</p><p className={styles.email}>✉ <a href={"mailto:"+profile.email}>{profile.email}</a></p></section>
+      </div>
+      <footer className={styles.foot}>© {new Date().getFullYear()} {profile.name} · {t("Información de proyectos y formación verificable. El motor Nexus Foundation sigue siendo experimental.","Documented projects and training. Nexus Foundation remains experimental.","Dokumentierte Projekte und Kurse. Nexus Foundation bleibt experimentell.","Projets et formations documentés. Nexus Foundation reste expérimental.","Projetos e formação documentados. Nexus Foundation continua experimental.")} · <a href={profile.github}>GitHub ↗</a></footer>
+    </article>
+  </main>;
 }

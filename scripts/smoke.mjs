@@ -38,6 +38,16 @@ async function checkPublicPage(path, markers) {
   console.log("PASS public page " + path);
 }
 
+async function checkPortfolioRedirect(path, expectedPath) {
+  const response = await request(path, { redirect: "manual" });
+  assert.equal(response.status, 307, path + " must redirect to the current portfolio");
+  const destination = new URL(response.headers.get("location") ?? "", origin);
+  assert.equal(destination.origin, new URL(origin).origin, "Portfolio redirect must remain on this site");
+  assert.equal(destination.pathname, expectedPath, path + " must preserve a supported language");
+  assert.equal(destination.search, "", "Legacy portfolio query must not leak into the canonical URL");
+  console.log("PASS canonical portfolio redirect " + path);
+}
+
 async function checkSignedOutRedirect(path) {
   const response = await request(path, { redirect: "manual" });
   assert.ok([302, 303, 307, 308].includes(response.status), path + " must redirect unsigned-in visitors");
@@ -56,22 +66,55 @@ async function checkSignedOutApi(path, options = {}) {
 }
 
 await waitUntilReady();
-await checkPublicPage("/", [
-  "Build with",
-  "Your AI workspace for bigger possibilities.",
-]);
-await checkPublicPage("/portfolio", ["Hi, I", "Nexus AI, built from the ground up.", "Small projects. Real practice.", "Task Tracker", "Hangman Game", "Text Encoder / Decoder", "Interested in my work?", "Hacking Ético", "Certifications &amp; Training"]);
-await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "Professional summary", "Featured project: Nexus AI"]);
+await checkSignedOutApi("/api/assistant/status");
+await checkPublicPage("/", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER","Nexus AI Workspace","NEXUS / CONTACT"]);
+await checkPublicPage("/es", ["PORTFOLIO","PROYECTOS DESTACADOS","TRABAJEMOS"]);
+await checkPublicPage("/en", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER"]);
+await checkPublicPage("/de", ["PORTFOLIO","AUSGEWÄHLTE PROJEKTE"]);
+await checkPublicPage("/fr", ["PORTFOLIO","PROJETS À LA UNE"]);
+await checkPublicPage("/pt", ["PORTFOLIO","PROJETOS EM DESTAQUE"]);
+for (const [path, destination] of [
+  ["/portfolio", "/en"],
+  ["/portfolio?lang=es", "/es"],
+  ["/portfolio?lang=en", "/en"],
+  ["/portfolio?lang=de", "/de"],
+  ["/portfolio?lang=fr", "/fr"],
+  ["/portfolio?lang=pt", "/pt"],
+  ["/portfolio?lang=unknown", "/en"],
+  ["/portfolio?lang=en&lang=de", "/en"],
+]) {
+  await checkPortfolioRedirect(path, destination);
+}
+await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "SELECTED PROJECTS", "Nexus AI", "TECHNICAL SKILLS"]);
+await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
+await checkPublicPage("/projects/nexus-ai", ["Nexus AI", "El problema", "Decisiones e implementación", "Evidencia en el código"]);
+await checkPublicPage("/projects/task-tracker", ["Task Tracker", "Lo que aprendí", "innerHTML"]);
+await checkPublicPage("/projects/hangman", ["Hangman Game", "Límites y trabajo pendiente"]);
+await checkPublicPage("/projects/nexus-foundation", ["Nexus Foundation", "Experimental", "Transformer"]);
+for (const [lang, sample] of [["en","The problem"],["de","Die Herausforderung"],["fr","Le problème"],["pt","O problema"]]) {
+  await checkPublicPage("/projects/nexus-ai?lang="+lang,[sample,"Nexus AI"]);
+  await checkPublicPage("/resume?lang="+lang,[lang==="en"?"PROFESSIONAL PROFILE":lang==="de"?"TECHNISCHE KENNTNISSE":lang==="fr"?"COMPÉTENCES TECHNIQUES":"COMPETÊNCIAS TÉCNICAS"]);
+  const response = await request("/api/resume/pdf?lang="+lang);
+  assert.equal(response.status,200);
+  assert.ok((response.headers.get("content-type") ?? "").includes("application/pdf"));
+  assert.ok((await response.arrayBuffer()).byteLength > 1000);
+}
 await checkPublicPage("/login", ["Welcome back.", "Forgot password?"]);
 await checkPublicPage("/register", ["Create your account.", "At least 10 characters"]);
 await checkPublicPage("/forgot-password", ["Reset your password.", "Send recovery link"]);
 await checkPublicPage("/reset-password", ["Choose a new password.", "Confirm new password"]);
 
-const pdf = await request("/Joshua-Vallejo-Sanchez-Resume.pdf");
+const pdf = await request("/api/resume/pdf?lang=es");
 assert.equal(pdf.status, 200, "CV PDF must be downloadable");
 assert.match(pdf.headers.get("content-type") ?? "", /application\/pdf/i);
 assert.ok((await pdf.arrayBuffer()).byteLength > 1000, "CV PDF should not be empty");
 console.log("PASS downloadable CV PDF");
+const englishPdf = await request("/api/resume/pdf?lang=en");
+assert.equal(englishPdf.status, 200);
+assert.match(englishPdf.headers.get("content-type") ?? "", /application\/pdf/i);
+assert.ok((await englishPdf.arrayBuffer()).byteLength > 1000);
+console.log("PASS English CV PDF");
+await checkPublicPage("/resume?lang=en", ["PROFESSIONAL PROFILE", "SELECTED PROJECTS", "DOCUMENTED TRAINING"]);
 
 const image = await request("/certificates/ethical-hacking.webp", { method: "HEAD" });
 assert.equal(image.status, 200, "Ethical hacking certificate image must exist");
@@ -96,5 +139,51 @@ await checkSignedOutApi("/api/assistant/chat", {
     message: "test",
   }),
 });
+
+// The local-only SQLite backend must never be remotely writable on production builds.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({cart:{keyboard:1}}) }],
+]) {
+  const response = await request("/api/labs/commerce", options);
+  assert.equal(response.status, 503, "SQLite API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production SQLite backend remains disabled");
+
+// Studio SQLite writes must remain strictly disabled on production builds.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({action:"save",expectedRevision:0,blocks:[]}) }],
+]) {
+  const response = await request("/api/labs/studio", options);
+  assert.equal(response.status, 503, "Studio local API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production Studio SQLite backend remains disabled");
+
+// The monitor backend performs no probes or writes in production.
+for (const [method, options] of [
+  ["GET", {}],
+  ["POST", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }],
+]) {
+  const response = await request("/api/labs/monitor", options);
+  assert.equal(response.status, 503, "Monitor local API must be disabled in production: " + method);
+  assert.equal((await response.json()).reason, "local-backend-disabled");
+}
+console.log("PASS production Monitor SQLite backend remains disabled");
+
+// A factory that can produce source artifacts is never remotely accessible in production.
+for(const [method, options] of [
+  ["GET", {}],
+  ["POST", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"propose",request:"Build a website starter",kind:"feature"})}],
+]){
+  const response=await request("/api/labs/factory",options);
+  assert.equal(response.status,503,"Factory write API must be disabled in production: "+method);
+  assert.equal((await response.json()).reason,"local-backend-disabled");
+}
+const artifactResponse=await request("/api/labs/factory?artifact=1234567890abcdef1234567890abcdef");
+assert.equal(artifactResponse.status,503,"Factory artifact download must be disabled in production");
+console.log("PASS production Factory pipeline and artifacts remain disabled");
 
 console.log("All production HTTP smoke checks passed.");

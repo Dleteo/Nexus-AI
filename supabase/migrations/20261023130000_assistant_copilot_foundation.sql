@@ -25,7 +25,19 @@ alter table public.assistant_messages enable row level security;
 drop policy if exists "Users can read their own assistant conversations" on public.assistant_conversations;
 create policy "Users can read their own assistant conversations" on public.assistant_conversations for select to authenticated using ((select auth.uid()) = user_id);
 drop policy if exists "Users can create their own assistant conversations" on public.assistant_conversations;
-create policy "Users can create their own assistant conversations" on public.assistant_conversations for insert to authenticated with check ((select auth.uid()) = user_id and (project_id is null or exists (select 1 from public.projects p where p.id = project_id and p.user_id = (select auth.uid())));
+create policy "Users can create their own assistant conversations"
+on public.assistant_conversations for insert to authenticated
+with check (
+  (select auth.uid()) = user_id
+  and (
+    project_id is null
+    or exists (
+      select 1 from public.projects p
+      where p.id = assistant_conversations.project_id
+        and p.user_id = (select auth.uid())
+    )
+  )
+);
 drop policy if exists "Users can update their own assistant conversations" on public.assistant_conversations;
 create policy "Users can update their own assistant conversations" on public.assistant_conversations for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 drop policy if exists "Users can delete their own assistant conversations" on public.assistant_conversations;

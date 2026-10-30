@@ -1,15 +1,43 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "./fonts/Geist.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  weight: "100 900",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "./fonts/GeistMono.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "100 900",
+  display: "swap",
+});
+
+const poster = localFont({
+  src: "./fonts/Anton-Regular.woff2",
+  variable: "--font-editorial-poster",
+  weight: "400",
+  display: "swap",
+});
+const condensed = localFont({
+  src: [
+    { path: "./fonts/BarlowCondensed-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/BarlowCondensed-Medium.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/BarlowCondensed-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/BarlowCondensed-Bold.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/BarlowCondensed-ExtraBold.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-editorial-condensed",
+  display: "swap",
+});
+const script = localFont({
+  src: "./fonts/DancingScript.woff2",
+  variable: "--font-editorial-script",
+  weight: "500 600",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${poster.variable} ${condensed.variable} ${script.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
