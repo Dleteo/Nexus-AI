@@ -12,3 +12,10 @@
 @media(max-width:600px){.dock{right:12px;bottom:12px}.launcher{padding:8px 14px 8px 8px;min-height:52px}.launcher .mark{width:33px;height:33px;font-size:22px}.panel{max-height:calc(100dvh - 91px)}.messages{height:220px}.shortcuts a,.tabs button{min-height:44px}.panel>header{padding:13px}}
 
 @media(max-width:760px){.panel input{font-size:16px}.panel form{min-width:0}.panel>header>div{min-width:0;overflow-wrap:anywhere}}
+
+.panel{overflow-y:auto}.panel>header,.tabs,.shortcuts,.panel form{flex-shrink:0}.messages{flex:1 1 260px;min-height:70px}
+.tabs .reset{margin-left:auto;padding-inline:10px;background:#191315}
+.prompts{display:grid;gap:7px;margin-bottom:12px}.prompts button{text-align:left;border:1px solid #3c393c;padding:10px;background:#171114;color:#eee;font-size:11px;cursor:pointer;border-radius:4px;min-height:40px}
+.prompts button:hover,.answerLinks a:hover{background:#3a101b}.answerLinks{display:flex;gap:6px;flex-wrap:wrap}.answerLinks a{font-size:11px;color:#eee;border:1px solid #6c2636;padding:9px;border-radius:3px;overflow-wrap:anywhere;min-height:40px}
+.unavailable{padding:0 16px 14px;font-size:11px;line-height:1.6;color:#ddd}.unavailable button{margin-right:7px;margin-top:4px;padding:9px;border:1px solid #6c2636;background:#201015;color:#fff;cursor:pointer;min-height:44px;border-radius:3px}
+@media(max-width:600px){.tabs{gap:5px;padding-inline:12px}.tabs button{padding-inline:12px}.tabs .reset{padding-inline:8px}.panel .prompts button{min-height:44px}.messages{min-height:60px}}

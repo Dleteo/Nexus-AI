@@ -41,7 +41,7 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Check Nexus Software Factory workflow and source inventory
-        run: npm run factory:test && npm run factory:sources
+        run: npm run factory:test && npm run factory:sources && node scripts/portfolio_guide_unit_qa.mjs
 
       - name: Run ESLint
         run: npm run lint
@@ -162,6 +162,7 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_mobile_regression_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_evidence_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_assistant_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/project_languages_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/factory_delivery_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/browser_qa.py || { cat /tmp/nexus-browser.log; exit 1; }

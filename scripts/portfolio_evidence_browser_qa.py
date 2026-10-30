@@ -39,6 +39,7 @@ with sync_playwright() as p:
  # An authenticated session uses the existing protected APIs, always portfolio scope.
  ctx=browser.new_context(viewport={'width':1100,'height':1000});page=ctx.new_page();calls=[]
  page.route('**/api/auth/session',lambda route:route.fulfill(json={'user':{'id':'synthetic-user'}}))
+ page.route('**/api/assistant/status',lambda route:route.fulfill(json={'assistants':[{'scope':'portfolio','status':'ready'}]}))
  def create(route):
   calls.append(('create',route.request.post_data_json));route.fulfill(json={'conversation':{'id':'11111111-1111-4111-8111-111111111111'}})
  def chat(route):

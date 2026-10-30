@@ -3,6 +3,7 @@
 import {useState, type FormEvent} from "react";
 import Link from "next/link";
 import type {SiteLanguage} from "../../data/site-languages";
+import {answerPortfolioQuestion} from "../../lib/portfolio-guide";
 import styles from "./CareerHome.module.css";
 import {professionalProfile} from "../../data/profile";
 
@@ -21,16 +22,6 @@ const featuredCaseStudies=[
 ] as const;
 
 type Topic="projects"|"skills"|"social"|"email"|"technical"|"unknown";
-function classify(query:string):Topic {
-  const q=query.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-  if(/corre|email|mail|contact|contrat|hire|job|recrut|escribir|contat/.test(q))return "email";
-  if(/github|linkedin|instagram|red|social|network|perfil|reseau/.test(q))return "social";
-  if(/nexus\s*technical|tecnico|technical|technisch|technique|tecnico\s*nexus/.test(q))return "technical";
-  if(/proyec|project|projet|portfolio|portafolio|nexus|projeto|projekt/.test(q))return "projects";
-  if(/habil|skill|exper|certif|curso|stack|learn|techno|bildung|formac/.test(q))return "skills";
-  if(/python|code|codi|program|software|hardware|typescript|error|cve|security|segurid/.test(q))return "technical";
-  return "unknown";
-}
 const sentences:Record<Topic,[string,string,string,string,string]>={
   projects:[
     "Estos son mis cinco proyectos destacados: Nexus AI Workspace (portafolio y asistentes), Commerce (inventario y compras simuladas), Studio (editor y revisiones), Monitor (sondeos manuales) y Software Factory (plantillas revisadas, sin ejecutar código). Puedes abrir sus casos de estudio aquí mismo.",
@@ -80,7 +71,7 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
   const locale={es:0,en:1,de:2,fr:3,pt:4}[language];
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>[es,en,de,fr,pt][locale];
   const [question,setQuestion]=useState("");
-  const [conversation,setConversation]=useState<{topic:Topic;question:string;reply:string}|null>(null);
+  const [conversation,setConversation]=useState<{topic:Topic;question:string;reply:string;links?:{href:string;label:string}[];project?:string}|null>(null);
   const [showEmail,setShowEmail]=useState(false);
   const [visitor,setVisitor]=useState("");
   const [replyEmail,setReplyEmail]=useState("");
@@ -94,7 +85,10 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     event.preventDefault();
     const q=question.trim().slice(0,500);
     if(!q)return;
-    answer(classify(q),q);
+    const result=answerPortfolioQuestion(q,language,conversation?.project);
+    const topic:Topic=result.topic==="projects"?"projects":result.topic==="contact"?"email":result.topic==="technical"?"technical":"unknown";
+    setConversation({topic,question:q,reply:topic==="technical"?sentences.technical[locale]:result.text,links:result.links,project:result.project});
+    if(topic==="email")setShowEmail(true);
     setQuestion("");
   }
   const missing=t("No indicado","Not provided","Nicht angegeben","Non indiqué","Não informado");
@@ -112,6 +106,9 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     {conversation?.topic==="projects"&&<nav aria-label={t("Casos de estudio destacados","Featured case studies","Fallstudien der Hauptprojekte","Études de cas principales","Estudos de caso em destaque")} className="mt-3 grid gap-2 sm:grid-cols-2">
       {featuredCaseStudies.map(study=><Link key={study.slug} href={"/projects/"+study.slug+"?lang="+language}
         className="rounded-lg border border-[#3c393c] bg-[#141315] px-3 py-2 text-xs font-semibold text-[#ece9ec] hover:border-[#f1283c] focus-visible:outline-2 focus-visible:outline-[#f1283c]">{study.name} ↗</Link>)}
+    </nav>}
+    {conversation?.links&&conversation.topic!=="projects"&&<nav className={styles.portfolioContactLinks} aria-label={t("Enlaces de la respuesta","Answer links","Antwortlinks","Liens de réponse","Links da resposta")}>
+      {conversation.links.map(link=><Link href={link.href} key={link.href}>{link.label} ↗</Link>)}
     </nav>}
     <div className={styles.portfolioContactChoices}>
       <button type="button" onClick={()=>answer("projects",t("Proyectos","Projects","Projekte","Projets","Projetos"))}>{t("Proyectos","Projects","Projekte","Projets","Projetos")}</button>

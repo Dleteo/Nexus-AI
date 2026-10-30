@@ -1,46 +1,139 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useRef,useState,type FormEvent} from 'react';
+import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import type {SiteLanguage} from '@/data/site-languages';
+import {answerPortfolioQuestion} from '@/lib/portfolio-guide';
 import {words} from './DevelopmentEvidence';
 import s from './PortfolioCompanion.module.css';
+
+type Mode='guide'|'ai';
+type Access='checking'|'signed_out'|'ready'|'unavailable';
+type Message={role:'user'|'guide'|'ai';text:string;mode:Mode;links?:{href:string;label:string}[]};
+
 export default function PortfolioCompanion({language}:{language:SiteLanguage}){
  const t=(es:string,en:string,de:string,fr:string,pt:string)=>words(language,es,en,de,fr,pt);
- const [open,setOpen]=useState(false),[mode,setMode]=useState<'guide'|'ai'>('guide');
- const [signedIn,setSignedIn]=useState<boolean|null>(null),[draft,setDraft]=useState(''),[messages,setMessages]=useState<{role:string;text:string}[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
- const identity=useRef<string|null>(null);
- const launcher=useRef<HTMLButtonElement>(null),input=useRef<HTMLInputElement>(null),thread=useRef<string|null>(null),pending=useRef(false),abort=useRef<AbortController|null>(null),log=useRef<HTMLDivElement>(null);
- useEffect(()=>{if(!open)return;input.current?.focus();const controller=new AbortController();fetch('/api/auth/session',{cache:'no-store',signal:controller.signal}).then(r=>r.json()).then(d=>{const next=typeof d.user?.id==="string"?d.user.id:null;if(identity.current!==null&&identity.current!==next){abort.current?.abort();thread.current=null;setMessages([]);setDraft("");}identity.current=next;setSignedIn(!!next);}).catch(()=>{});return()=>controller.abort();},[open]);
- useEffect(()=>()=>abort.current?.abort(),[]);
- useEffect(()=>{log.current?.scrollTo({top:log.current.scrollHeight});},[messages,busy]);
- function close(){setOpen(false);launcher.current?.focus();}
- async function submit(e:FormEvent){
-  e.preventDefault();const text=draft.trim();if(!text||pending.current)return;setError('');
-  if(mode==='guide'){
-   const normalized=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-   const reply=/certif|curso|training|formation|bildung/.test(normalized)?t('Tienes seis certificados y 94 horas de formación documentada. Abre Certificados para ver y ampliar cada documento.','There are six certificates and 94 documented training hours. Open Certificates to inspect each record.','Sechs Nachweise und 94 Kursstunden sind im Zertifikatsbereich einsehbar.','Six attestations et 94 heures de formation sont consultables.','Seis certificados e 94 horas de formação podem ser consultados.'):/habil|skill|compet|kennt/.test(normalized)?t('La sección Habilidades distingue el uso en los cinco proyectos y la familiaridad estimada a partir de trabajo asistido por IA.','Skills distinguishes project usage and estimated familiarity from AI-assisted work.','Kenntnisse unterscheiden Projektnutzung und geschätzte Vertrautheit.','Les compétences distinguent usage et familiarité estimée.','Habilidades distinguem uso e familiaridade estimada.'):t('Puedo orientarte sobre los cinco proyectos, certificados, habilidades y contacto. Usa los accesos de abajo. Para respuestas generadas por IA, elige IA y accede a tu cuenta.','I can guide you through five projects, certificates, skills and contact. Use the links below. For generated answers, choose AI and sign in.','Ich helfe bei Projekten, Nachweisen und Kontakt. Für generierte Antworten wähle KI und melde dich an.','Je présente projets, attestations et contact. Pour des réponses générées, choisissez IA et connectez-vous.','Posso orientar sobre projetos, certificados e contato. Para respostas geradas, escolha IA e entre na conta.');
-   setMessages(m=>[...m,{role:'user',text},{role:'guide',text:reply}].slice(-24));setDraft('');return;
+ const [open,setOpen]=useState(false),[mode,setMode]=useState<Mode>('guide');
+ const [access,setAccess]=useState<Access>('checking'),[checkVersion,setCheckVersion]=useState(0);
+ const [sessionVerified,setSessionVerified]=useState(false);
+ const [draft,setDraft]=useState(''),[messages,setMessages]=useState<Message[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const identity=useRef<string|null>(null),previousProject=useRef<string|undefined>(undefined);
+ const launcher=useRef<HTMLButtonElement>(null),input=useRef<HTMLInputElement>(null),thread=useRef<string|null>(null);
+ const pending=useRef(false),abort=useRef<AbortController|null>(null),log=useRef<HTMLDivElement>(null),epoch=useRef(0);
+
+ const reset=useCallback(()=>{
+  epoch.current++;abort.current?.abort();pending.current=false;thread.current=null;previousProject.current=undefined;
+  setBusy(false);setMessages([]);setDraft('');setError('');
+ },[]);
+ useEffect(()=>{
+  if(!open)return;
+  input.current?.focus();let disposed=false;let check:AbortController|undefined;
+  async function refresh(){
+   check?.abort();const controller=new AbortController();check=controller;
+   const timeout=setTimeout(()=>controller.abort(),8000);setAccess('checking');setSessionVerified(false);
+   try{
+    const response=await fetch('/api/auth/session',{cache:'no-store',signal:controller.signal});
+    if(!response.ok)throw Error('session-unavailable');
+    const data=await response.json();if(disposed||check!==controller)return;
+    const next=typeof data.user?.id==='string'?data.user.id:null;
+    if(identity.current!==null&&identity.current!==next)reset();
+    identity.current=next;setSessionVerified(!!next);
+    if(!next){setAccess('signed_out');return;}
+    const status=await fetch('/api/assistant/status',{cache:'no-store',signal:controller.signal});
+    if(disposed||check!==controller)return;
+    if(status.status===401){reset();identity.current=null;setSessionVerified(false);setAccess('signed_out');return;}
+    if(!status.ok)throw Error('status-unavailable');
+    const config=await status.json();if(disposed||check!==controller)return;
+    setAccess(config.assistants?.some((a:{scope?:string;status?:string})=>a.scope==='portfolio'&&a.status==='ready')?'ready':'unavailable');
+   }catch{if(!disposed&&check===controller)setAccess('unavailable');}
+   finally{clearTimeout(timeout);}
   }
-  if(!signedIn)return;pending.current=true;setBusy(true);const controller=new AbortController();abort.current=controller;const timeout=setTimeout(()=>controller.abort(),30000);
+  void refresh();window.addEventListener('focus',refresh);
+  return()=>{disposed=true;check?.abort();window.removeEventListener('focus',refresh);};
+ },[open,checkVersion,reset]);
+ useEffect(()=>()=>{epoch.current++;abort.current?.abort();},[]);
+ useEffect(()=>{log.current?.scrollTo({top:log.current.scrollHeight});},[messages,busy,mode]);
+ function close(){setSessionVerified(false);setOpen(false);launcher.current?.focus();}
+ function guide(text:string){
+  const answer=answerPortfolioQuestion(text,language,previousProject.current);
+  previousProject.current=answer.project;
+  setMessages(m=>[...m,{role:'user' as const,text,mode:'guide' as const},{role:'guide' as const,text:answer.text,links:answer.links,mode:'guide' as const}].slice(-24));
+  setDraft('');setError('');
+ }
+ async function submit(e:FormEvent){
+  e.preventDefault();const text=draft.trim();if(!text||pending.current)return;
+  if(mode==='guide'){guide(text);return;}
+  if(access!=='ready')return;
+  setError('');pending.current=true;setBusy(true);setDraft('');
+  setMessages(m=>[...m,{role:'user' as const,text,mode:'ai' as const}].slice(-24));
+  const requestEpoch=epoch.current,controller=new AbortController();abort.current=controller;
+  const timeout=setTimeout(()=>controller.abort(),30000);
+  async function read(response:Response){
+   if(response.status===401)throw Error('expired');
+   if(response.status===429)throw Error('limit');
+   if(response.status===503)throw Error('unavailable');
+   if(!response.ok)throw Error('request-failed');
+   return response.json();
+  }
   try{
    let id=thread.current;
-   if(!id){const r=await fetch('/api/assistant/conversations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'assistant',scope:'portfolio'}),signal:controller.signal});const d=await r.json();if(!r.ok||!d.conversation?.id)throw Error(d.error||t('No se pudo abrir la conversación.','Could not open conversation.','Gespräch nicht verfügbar.','Conversation indisponible.','Conversa indisponível.'));id=d.conversation.id as string;thread.current=id;}
-   const r=await fetch('/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conversationId:id,message:text,scope:'portfolio',mode:'assistant',expertise:'general',currentResearch:false}),signal:controller.signal});const d=await r.json();if(!r.ok||typeof d.answer!=='string')throw Error(d.error||t('Motor no disponible.','Engine unavailable.','Engine nicht verfügbar.','Moteur indisponible.','Motor indisponível.'));
-   setMessages(m=>[...m,{role:'user',text},{role:'ai',text:d.answer.slice(0,20000)}].slice(-24));setDraft('');
-  }catch(e){setError(e instanceof Error?e.message:t('No disponible.','Unavailable.','Nicht verfügbar.','Indisponible.','Indisponível.'));}finally{clearTimeout(timeout);pending.current=false;setBusy(false);}
+   if(!id){
+    const response=await fetch('/api/assistant/conversations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'assistant',scope:'portfolio'}),signal:controller.signal});
+    const data=await read(response);
+    if(typeof data.conversation?.id!=='string')throw Error('invalid-response');
+    if(epoch.current!==requestEpoch)return;
+    id=data.conversation.id;thread.current=id;
+   }
+   const response=await fetch('/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conversationId:id,message:text,scope:'portfolio',language,mode:'assistant',expertise:'general',currentResearch:false}),signal:controller.signal});
+   const data=await read(response);
+   if(typeof data.answer!=='string'||!data.answer.trim())throw Error('invalid-response');
+   if(epoch.current!==requestEpoch)return;
+   setMessages(m=>[...m,{role:'ai' as const,text:data.answer.slice(0,20000),mode:'ai' as const}].slice(-24));
+   // The visitor may already be typing their next question: never clear it here.
+  }catch(cause){
+   if(epoch.current!==requestEpoch)return;
+   const code=cause instanceof Error?cause.message:'';
+   if(code==='expired'){reset();identity.current=null;setSessionVerified(false);setAccess('signed_out');return;}
+   if(code==='unavailable')setAccess('unavailable');
+   setDraft(current=>current||text);
+   setError(controller.signal.aborted?t('La respuesta tardó demasiado. Conservé tu pregunta.','The response timed out. Your question was kept.','Zeitüberschreitung. Deine Frage bleibt erhalten.','Délai dépassé. Votre question est conservée.','O tempo esgotou. Sua pergunta foi mantida.'):code==='limit'?t('Has alcanzado el límite de consultas. Tu pregunta se conserva.','The request limit was reached. Your question was kept.','Anfragelimit erreicht. Deine Frage bleibt erhalten.','Limite de demandes atteinte. Votre question est conservée.','Limite de consultas atingido. Sua pergunta foi mantida.'):t('No pude obtener una respuesta. Conservé tu pregunta; puedes usar la Guía o intentarlo más tarde.','I could not get an answer. Your question was kept; use Guide or try again later.','Keine Antwort verfügbar. Die Frage bleibt erhalten; nutze den Guide oder versuche es später.','Réponse indisponible. Votre question est conservée ; utilisez le Guide ou réessayez plus tard.','Não consegui uma resposta. Sua pergunta foi mantida; use o Guia ou tente mais tarde.'));
+  }finally{
+   clearTimeout(timeout);
+   if(epoch.current===requestEpoch){pending.current=false;setBusy(false);}
+  }
  }
- return <>
- <div className={s.dock}>
+ const prompts=[
+  t('¿Qué proyectos puedo probar?','Which projects can I try?','Welche Projekte kann ich testen ?','Quels projets puis-je essayer ?','Quais projetos posso testar?'),
+  t('Explícame Nexus Factory','Explain Nexus Factory','Erkläre Nexus Factory','Explique Nexus Factory','Explique o Nexus Factory'),
+  t('¿Qué experiencia tienes?','What experience do you have?','Welche Erfahrung hast du?','Quelle expérience avez-vous ?','Qual é a sua experiência?'),
+  t('Muéstrame el CV','Show me the CV','Zeige den Lebenslauf','Montre le CV','Mostre o currículo'),
+ ];
+ return <div className={s.dock}>
  {open&&<section className={s.panel} id="nexus-floating-chat" role="dialog" aria-label={t('Nexus asistente flotante','Nexus floating assistant','Nexus schwebender Assistent','Nexus assistant flottant','Nexus assistente flutuante')} onKeyDown={e=>{if(e.key==='Escape')close();}}>
- <header><span className={s.mark}>N</span><div><strong>NEXUS / PORTFOLIO</strong><small>{t('Tu guía del portafolio','Your portfolio guide','Dein Portfolio-Guide','Votre guide portfolio','Seu guia do portfólio')}</small></div><button onClick={close} aria-label={t('Cerrar chat','Close chat','Chat schließen','Fermer le chat','Fechar chat')}>×</button></header>
- <div className={s.tabs}><button disabled={busy} aria-pressed={mode==='guide'} onClick={()=>setMode('guide')}>{t('Guía','Guide','Guide','Guide','Guia')}</button><button disabled={busy} aria-pressed={mode==='ai'} onClick={()=>setMode('ai')}>{t('IA','AI','KI','IA','IA')}</button></div>
- <p className={s.notice}>{mode==='guide'?t('Respuestas locales sobre el portafolio.','Local portfolio answers.','Lokale Portfolio-Antworten.','Réponses locales sur le portfolio.','Respostas locais sobre o portfólio.'):t('IA con el proveedor configurado. Requiere sesión; los mensajes se guardan en tu cuenta.','AI uses the configured provider. Sign-in required; messages are saved to your account.','KI benötigt Anmeldung; Nachrichten werden im Konto gespeichert.','IA avec connexion ; messages enregistrés dans votre compte.','IA exige login; mensagens ficam salvas na sua conta.')}</p>
- <div className={s.messages} role="log" aria-live="polite" ref={log}><p className={s.greeting}>{t('Hola, soy Nexus. ¿Qué te gustaría conocer?','Hello, I’m Nexus. What would you like to explore?','Hallo, ich bin Nexus. Was möchtest du entdecken?','Bonjour, je suis Nexus. Que souhaitez-vous découvrir ?','Olá, sou Nexus. O que gostaria de conhecer?')}</p>{messages.map((m,i)=><article key={i} data-role={m.role}><small>{m.role==='user'?t('Tú','You','Du','Vous','Você'):m.role==='ai'?'Nexus AI':'Nexus Guide'}</small><p>{m.text}</p></article>)}{busy&&<p>{t('Preparando respuesta…','Preparing an answer…','Antwort wird vorbereitet…','Préparation de la réponse…','Preparando resposta…')}</p>}</div>
- <nav className={s.shortcuts}>{[['#proyectos',t('Proyectos','Projects','Projekte','Projets','Projetos')],['#certificados',t('Certificados','Certificates','Nachweise','Attestations','Certificados')],['#contacto',t('Contacto','Contact','Kontakt','Contact','Contato')]].map(([href,label])=><a key={href} href={href} onClick={close}>{label} →</a>)}</nav>
- {mode==='ai'&&!signedIn?<Link className={s.login} href="/login?next=%2Fassistant%3Fscope%3Dportfolio">{signedIn===null?t('Comprobar acceso / iniciar sesión','Check access / sign in','Zugang prüfen / anmelden','Vérifier / se connecter','Verificar / entrar'):t('Iniciar sesión para usar IA','Sign in to use AI','Für KI anmelden','Se connecter pour utiliser IA','Entrar para usar IA')} →</Link>:<form onSubmit={submit}><label className={s.sr} htmlFor="floating-nexus-question">{t('Pregunta al asistente flotante','Ask the floating assistant','Frage an Assistenten','Question à l’assistant','Pergunta ao assistente')}</label><input ref={input} id="floating-nexus-question" maxLength={2000} value={draft} onChange={e=>setDraft(e.target.value)} placeholder={t('Escribe tu pregunta…','Write your question…','Deine Frage…','Votre question…','Sua pergunta…')}/><button disabled={busy||!draft.trim()} aria-label={t('Enviar pregunta flotante','Send floating question','Frage senden','Envoyer la question','Enviar pergunta')}>↑</button></form>}
- {error&&<p className={s.error} role="alert">{error}</p>}
+  <header><span className={s.mark}>N</span><div><strong>NEXUS / PORTFOLIO</strong><small>{t('Tu guía del portafolio','Your portfolio guide','Dein Portfolio-Guide','Votre guide portfolio','Seu guia do portfólio')}</small></div><button onClick={close} aria-label={t('Cerrar chat','Close chat','Chat schließen','Fermer le chat','Fechar chat')}>×</button></header>
+  <div className={s.tabs}>
+   <button disabled={busy} aria-pressed={mode==='guide'} onClick={()=>{setMode('guide');setError('');}}>{t('Guía','Guide','Guide','Guide','Guia')}</button>
+   <button disabled={busy} aria-pressed={mode==='ai'} onClick={()=>{setMode('ai');setError('');}}>{t('IA','AI','KI','IA','IA')}</button>
+   <button className={s.reset} disabled={busy} onClick={reset} aria-label={t('Nueva conversación; no borra el historial guardado','New conversation; saved history is not deleted','Neues Gespräch; gespeicherter Verlauf bleibt','Nouvelle conversation ; historique enregistré conservé','Nova conversa; histórico salvo mantido')}>{t('Nuevo chat','New chat','Neu','Nouveau','Novo chat')}</button>
+  </div>
+  <p className={s.notice}>{mode==='guide'?t('Respuestas locales con enlaces a los datos públicos del portafolio.','Local answers with links to public portfolio evidence.','Lokale Antworten mit Links zu öffentlichen Nachweisen.','Réponses locales avec liens vers les preuves publiques.','Respostas locais com links para evidências públicas.'):t('IA con el proveedor configurado. Requiere sesión; los mensajes se guardan en tu cuenta.','AI uses the configured provider. Sign-in required; messages are saved to your account.','KI benötigt Anmeldung; Nachrichten werden im Konto gespeichert.','IA avec connexion ; messages enregistrés dans votre compte.','IA exige login; mensagens ficam salvas na sua conta.')}</p>
+  <div className={s.messages} role="log" aria-live="polite" aria-busy={busy} ref={log}>
+   <p className={s.greeting}>{t('Hola, soy Nexus. ¿Qué te gustaría conocer?','Hello, I’m Nexus. What would you like to explore?','Hallo, ich bin Nexus. Was möchtest du entdecken?','Bonjour, je suis Nexus. Que souhaitez-vous découvrir ?','Olá, sou Nexus. O que gostaria de conhecer?')}</p>
+   {mode==='guide'&&<div className={s.prompts}>{prompts.map(prompt=><button key={prompt} type="button" onClick={()=>guide(prompt)}>{prompt}</button>)}</div>}
+   {messages.filter(m=>m.mode===mode&&(mode!=='ai'||sessionVerified)).map((m,i)=><article key={i} data-role={m.role}><small>{m.role==='user'?t('Tú','You','Du','Vous','Você'):m.role==='ai'?'Nexus AI':'Nexus Guide'}</small><p>{m.text}</p>{m.links&&<div className={s.answerLinks}>{m.links.map(link=><Link key={link.href} href={link.href}>{link.label} →</Link>)}</div>}</article>)}
+   {busy&&<p role="status">{t('Preparando respuesta…','Preparing an answer…','Antwort wird vorbereitet…','Préparation de la réponse…','Preparando resposta…')}</p>}
+  </div>
+  <nav className={s.shortcuts}>{[['#proyectos',t('Proyectos','Projects','Projekte','Projets','Projetos')],['#certificados',t('Certificados','Certificates','Nachweise','Attestations','Certificados')],['#contacto',t('Contacto','Contact','Kontakt','Contact','Contato')]].map(([href,label])=><a key={href} href={href} onClick={close}>{label} →</a>)}</nav>
+  {mode==='ai'&&access==='checking'?<p className={s.notice} role="status">{t('Comprobando disponibilidad…','Checking availability…','Verfügbarkeit wird geprüft…','Vérification de disponibilité…','Verificando disponibilidade…')}</p>:mode==='ai'&&access==='signed_out'?<Link className={s.login} href="/login?next=%2Fassistant%3Fscope%3Dportfolio">{t('Iniciar sesión para usar IA','Sign in to use AI','Für KI anmelden','Se connecter pour utiliser IA','Entrar para usar IA')} →</Link>:mode==='ai'&&access==='unavailable'?<div className={s.unavailable}>
+   <p>{t('El motor de IA no está disponible. La Guía del portafolio sigue funcionando.','The AI engine is unavailable. The portfolio Guide still works.','Die KI ist nicht verfügbar. Der Portfolio-Guide funktioniert weiterhin.','Le moteur IA est indisponible. Le Guide reste disponible.','O motor de IA está indisponível. O Guia continua funcionando.')}</p>
+   <button type="button" onClick={()=>{setMode('guide');setError('');}}>{t('Usar Guía','Use Guide','Guide nutzen','Utiliser le Guide','Usar Guia')}</button>
+   <button type="button" onClick={()=>setCheckVersion(v=>v+1)}>{t('Comprobar de nuevo','Check again','Erneut prüfen','Vérifier à nouveau','Verificar novamente')}</button>
+  </div>:<form onSubmit={submit}>
+   <label className={s.sr} htmlFor="floating-nexus-question">{t('Pregunta al asistente flotante','Ask the floating assistant','Frage an Assistenten','Question à l’assistant','Pergunta ao assistente')}</label>
+   <input ref={input} id="floating-nexus-question" maxLength={2000} value={draft} onChange={e=>setDraft(e.target.value)} placeholder={t('Escribe tu pregunta…','Write your question…','Deine Frage…','Votre question…','Sua pergunta…')}/>
+   <button disabled={busy||!draft.trim()} aria-label={t('Enviar pregunta flotante','Send floating question','Frage senden','Envoyer la question','Enviar pergunta')}>↑</button>
+  </form>}
+  {error&&<p className={s.error} role="alert">{error}</p>}
  </section>}
  <button ref={launcher} className={s.launcher} aria-expanded={open} aria-controls="nexus-floating-chat" aria-label={t('Abrir asistente Nexus','Open Nexus assistant','Nexus Assistent öffnen','Ouvrir l’assistant Nexus','Abrir assistente Nexus')} onClick={()=>open?close():setOpen(true)}><span className={s.mark}>{open?'×':'N'}</span><span>NEXUS <small>{t('Hablemos','Let’s talk','Sprechen wir','Parlons','Vamos conversar')}</small></span></button>
- </div>
- </>;
+ </div>;
 }
