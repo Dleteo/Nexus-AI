@@ -13,7 +13,7 @@ export type PortfolioGuideAnswer={
  project?:string;
 };
 const projects=[
- {slug:'nexus-ai',name:'Nexus AI Workspace',pattern:/\b(?:workspace|nexus\s+ai)\b/},
+ {slug:'nexus-ai',name:'Nexus AI Workspace',pattern:/\b(?:workspace|nexus[\s-]+ai)\b/},
  {slug:'nexus-commerce',name:'Nexus Commerce',pattern:/\bcommerce\b/},
  {slug:'nexus-studio',name:'Nexus Studio',pattern:/\bstudio\b/},
  {slug:'nexus-monitor',name:'Nexus Monitor',pattern:/\bmonitor\b/},
@@ -28,6 +28,29 @@ export function answerPortfolioQuestion(question:string,language:SiteLanguage,pr
  const projectLink=(slug:string,label:string)=>({href:'/projects/'+slug+'?lang='+language,label});
  const allProjectLinks=projects.map(p=>projectLink(p.slug,p.name));
  const sectionLink=(id:string,label:string)=>({href:'#'+id,label});
+ // Compare only explicitly named public projects, preserving their mention order.
+ const wantsComparison=/\b(?:compar(?:e|es|ed|ing|a|ar|as|aisons?|isons?|er|ez|ons|ando|acao|acoes|acion|aciones)|vergleichen|vergleiche|vergleich|versus|vs|differences?|diferencias?|diferencas?|unterschiede?|differenzen?)\b/.test(q);
+ if(wantsComparison){
+  const mentioned=projects.map(project=>({project,index:q.search(project.pattern)}))
+   .filter(match=>match.index>=0).sort((a,b)=>a.index-b.index).map(match=>match.project);
+  if(mentioned.length<2)return {
+   topic:'comparison-choice',
+   text:t('¿Qué proyectos quieres comparar? Elige al menos dos de estos cinco proyectos documentados.','Which projects would you like to compare? Choose at least two of these five documented projects.','Welche Projekte möchtest du vergleichen? Wähle mindestens zwei dieser fünf dokumentierten Projekte.','Quels projets souhaitez-vous comparer ? Choisissez au moins deux de ces cinq projets documentés.','Quais projetos gostaria de comparar? Escolha pelo menos dois destes cinco projetos documentados.'),
+   links:allProjectLinks,
+  };
+  const purpose=t('Propósito','Purpose','Zweck','Objectif','Objetivo');
+  const technologies=t('Tecnologías','Technologies','Technologien','Technologies','Tecnologias');
+  const limitation=t('Límite documentado','Documented limitation','Dokumentierte Grenze','Limite documentée','Limite documentado');
+  const blocks=mentioned.map(project=>{
+   const study=translatedCaseStudy(getCaseStudy(project.slug)!,language);
+   return project.name+'\n'+purpose+': '+study.lead+'\n'+technologies+': '+study.tech.join(' · ')+'\n'+limitation+': '+study.limitations[0];
+  });
+  return {
+   topic:'project-comparison',
+   text:t('Comparación de proyectos','Project comparison','Projektvergleich','Comparaison des projets','Comparação de projetos')+'\n\n'+blocks.join('\n\n'),
+   links:mentioned.map(project=>projectLink(project.slug,project.name)),
+  };
+ }
  const explicit=projects.find(p=>p.pattern.test(q));
  const wantsTests=/\b(?:tests?|testing|tested|pruebas?|probar|pruefe?n|prufungen?|testes?|testee?s?|gepruft|verificacoes)\b/.test(q);
  const wantsLimits=/\b(?:limits?|limitations?|limites?|limitaciones|restricciones|grenzen|einschrankungen|limitations|restricoes|cannot|disabled|execution|execute|ejecutar|executar|ausfuhrung|sandbox|autonomous|autonomos)\b/.test(q);

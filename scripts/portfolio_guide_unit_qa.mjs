@@ -73,6 +73,41 @@ for(const language of locales){
   }
  }
 }
+// Comparisons must use documented projects, preserve the visitor's order and keep locales.
+const compareWords={es:['Compara','con'],en:['Compare','with'],de:['Vergleiche','mit'],fr:['Comparer','avec'],pt:['Compara','com']};
+const {getCaseStudy}=await import('../data/case-studies.ts');
+const {translatedCaseStudy}=await import('../data/localized-case-studies.ts');
+for(const language of locales){
+ const [verb,join]=compareWords[language];
+ for(const names of [['Monitor','Commerce'],['Commerce','Monitor']]){
+  const result=answer(`${verb} Nexus ${names[0]} ${join} Nexus ${names[1]}`,language);
+  assert.equal(result.topic,'project-comparison');
+  assert.equal(result.project,undefined,'A comparison must not silently select one project for later follow-ups');
+  assert.deepEqual(result.links.map(link=>link.href),names.map(name=>`/projects/nexus-${name.toLowerCase()}?lang=${language}`));
+  assert.ok(result.text.indexOf('Nexus '+names[0])<result.text.indexOf('Nexus '+names[1]),'Comparison order must follow the question');
+  for(const name of names){
+   const study=translatedCaseStudy(getCaseStudy('nexus-'+name.toLowerCase()),language);
+   assert.ok(result.text.includes(study.lead),'Each purpose must come from the public case study');
+   assert.ok(result.text.includes(study.tech.join(' · ')),'Each stack must match the public case study');
+   assert.ok(result.text.includes(study.limitations[0]),'Each project must retain a documented limitation');
+  }
+ }
+ for(const query of ['Compare projects','Factory vs UnlistedRocket','Compare UnlistedRocket with UnknownApp','Compare Factory versus Factory']){
+  const result=answer(query,language,'nexus-commerce');
+  assert.equal(result.topic,'comparison-choice');
+  assert.equal(result.links.length,5);
+  assert.equal(result.project,undefined);
+  assert.ok(!result.text.includes('UnlistedRocket')&&!result.text.includes('UnknownApp'));
+  assert.ok(result.links.every(link=>link.href.endsWith('?lang='+language)));
+ }
+}
+for(const verb of ['versus','vs.','difference','differences','diferencias','différence','diferenças','vergleichen','comparar','comparaison','comparaisons','comparison','comparisons','comparação','comparações']){
+ assert.equal(answer(`Studio ${verb} Factory`,'en').topic,'project-comparison',verb);
+}
+const three=answer('Compare Studio, Factory and Commerce','en');
+assert.equal(three.links.length,3);
+assert.deepEqual(three.links.map(link=>link.href.split('?')[0]),['/projects/nexus-studio','/projects/nexus-factory','/projects/nexus-commerce']);
+assert.ok(!/winner|best|faster|percent|%/.test(three.text),'Comparisons must not invent rankings or performance metrics');
 const skills=answer('React skills','en');
 assert.match(skills.text,/project usage 5\/5/);assert.match(skills.text,/estimated familiarity 2\/5/);
 assert.match(answer('Factory tests','en').text,/does not execute generated code/);
@@ -80,4 +115,6 @@ assert.match(answer('AI','en').text,/simulated tests do not establish live infer
 assert.match(answer('experience','en').text,/first professional web development opportunity/);
 assert.match(answer('training','en').text,/not tracked time/);
 assert.equal(answer('show projects','en').links.length,5);
-console.log('PASS guide: five projects/locales, contextual follow-ups, 94 vs 100 hours, current skills, scoped technical routing and controlled links');
+console.log('PASS guide: five projects/locales, grounded comparisons, contextual follow-ups, 94 vs 100 hours, current skills, scoped technical routing and controlled links');
+
+assert.equal(answer('Tests for nexus-ai','en','nexus-factory').project,'nexus-ai','Explicit canonical slug must override previous project');

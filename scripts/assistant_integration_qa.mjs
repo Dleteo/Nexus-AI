@@ -341,6 +341,7 @@ try{
   assert.match(generations[1].messages[0].content,/defensive cybersecurity/i);
   assert.ok(!generations[1].messages[0].content.includes("Response language:"),"Portfolio locale instructions leaked into technical scope");
   assert.ok(!generations[1].messages[0].content.includes('"programmingPractice"'),"Personal portfolio facts leaked into technical scope");
+  assert.ok(!generations[1].messages[0].content.includes("Portfolio coaching mode:"),"Portfolio coaching instructions leaked into technical scope");
   assert.equal(generations[1].messages.at(-1).content,"How do I defend against phishing?");
   assert.equal(saves,2,"Successful calls were not persisted");
 
@@ -415,6 +416,32 @@ try{
   const defaultLanguage=await request("/api/assistant/chat",{method:"POST",payload:{scope:"portfolio",conversationId:portfolioId,message:"What should a recruiter know?"}});
   assert.equal(defaultLanguage.status,200,JSON.stringify(defaultLanguage));
   assert.match(generations.at(-1).messages[0].content,/Response language: English/);
+  assert.match(generations.at(-1).messages[0].content,/Portfolio coaching mode: assistant/);
+
+  console.log("Checking grounded portfolio coaching modes and technical isolation");
+  const coachingCases=[
+    {mode:"interview",message:"Help me practice an interview about Nexus Commerce.",checks:[/Ask one interview question at a time/,/wait for the candidate’s answer/,/practice example, not Joshua’s actual experience/]},
+    {mode:"plan",message:"Plan an improvement to the portfolio contact flow.",checks:[/reviewable milestones, acceptance criteria/,/Separate suggested work from completed work/,/Do not claim tools, file edits, commits or publication/]},
+    {mode:"debug",message:"Help debug an issue in the portfolio.",checks:[/exact error, relevant public code and reproduction steps/,/smallest safe fix/,/verification step/]},
+    {mode:"explain",message:"Explain how Nexus Studio stores versions.",checks:[/plain language/,/documented project/,/examples are not claims about work Joshua performed/]},
+  ];
+  for(const {mode,message,checks} of coachingCases){
+    const coached=await request("/api/assistant/chat",{method:"POST",payload:{scope:"portfolio",conversationId:portfolioId,mode,message,language:"en"}});
+    assert.equal(coached.status,200,JSON.stringify({mode,coached}));
+    const prompt=generations.at(-1).messages[0].content;
+    assert.ok(prompt.includes("Portfolio coaching mode: "+mode),`Portfolio ignored requested coaching mode: ${mode}`);
+    for(const check of checks)assert.match(prompt,check);
+    assert.match(prompt,/"documentedCourseHours":94/);
+    assert.match(prompt,/"programmingPractice":\{"hours":100/);
+    assert.match(prompt,/generated-code execution and autonomous agents are disabled/);
+  }
+  const technicalPlan=await request("/api/assistant/chat",{method:"POST",payload:{scope:"technical",conversationId:technicalId,mode:"plan",message:"Plan how to diagnose a software issue."}});
+  assert.equal(technicalPlan.status,200,JSON.stringify(technicalPlan));
+  const technicalPlanPrompt=generations.at(-1).messages[0].content;
+  assert.match(technicalPlanPrompt,/Nexus AI's project planner/);
+  assert.ok(!technicalPlanPrompt.includes("Portfolio coaching mode:"),"Portfolio planning behavior leaked into Technical");
+  assert.ok(!technicalPlanPrompt.includes('"programmingPractice"'),"Personal portfolio facts leaked into technical planning");
+
   assert.deepEqual(mockErrors,[],"Synthetic backend assertions failed");
 
   console.log("PASS authentication, owner/workspace isolation, input validation, history ordering/limits, quota guards, safe model parsing/redirects, database errors/timeouts, and persistence");

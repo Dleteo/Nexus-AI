@@ -8,8 +8,17 @@ import {cvPath,portfolioPath,type SiteLanguage} from '../data/site-languages';
 const featuredSlugs=['nexus-ai','nexus-commerce','nexus-studio','nexus-monitor','nexus-factory'] as const;
 const responseLanguages:Record<SiteLanguage,string>={es:'Spanish',en:'English',de:'German',fr:'French',pt:'Portuguese'};
 
+export type PortfolioCoachingMode='assistant'|'plan'|'debug'|'explain'|'interview';
+const coachingInstructions:Record<PortfolioCoachingMode,string>={
+ assistant:'Portfolio coaching mode: assistant. Answer the visitor’s portfolio question directly and concisely using documented facts. Offer one useful next step or a matching evidence link rather than a generic list.',
+ plan:'Portfolio coaching mode: plan. Propose a small, ordered improvement plan with reviewable milestones, acceptance criteria and a practical first step. Separate suggested work from completed work. Do not claim tools, file edits, commits or publication; do not promise employment or unmeasured outcomes.',
+ debug:'Portfolio coaching mode: debug. Help diagnose a portfolio or project issue. If missing, ask for the exact error, relevant public code and reproduction steps. Then explain the likely cause, propose the smallest safe fix and a concrete verification step. Label uncertainty and never invent a successful test or execution result.',
+ explain:'Portfolio coaching mode: explain. Explain one portfolio feature or technical concept in plain language. Define unfamiliar terms, connect the explanation to a documented project and provide a small clearly labeled illustrative example when useful. End with one short comprehension question or practice step; examples are not claims about work Joshua performed.',
+ interview:'Portfolio coaching mode: interview. Ask one interview question at a time about a documented project or transferable skill, then wait for the candidate’s answer. When an answer is supplied, give constructive feedback grounded in public evidence and identify one improvement before asking the next question. Clearly label any coached example answer as a practice example, not Joshua’s actual experience. Never invent a candidate achievement, employer, independent proficiency, business result or job guarantee.',
+};
+
 /** Only already-public portfolio data belongs in the model's reference context. */
-export function buildPortfolioSystemPrompt(language:SiteLanguage='en'):string{
+export function buildPortfolioSystemPrompt(language:SiteLanguage='en',mode:PortfolioCoachingMode='assistant'):string{
  const projects=featuredSlugs.map(slug=>{
   const study=caseStudies.find(item=>item.slug===slug)!;
   return {
@@ -44,6 +53,7 @@ export function buildPortfolioSystemPrompt(language:SiteLanguage='en'):string{
   'All five projects are portfolio learning projects, implemented with AI assistance. The Commerce, Studio, Monitor and Factory public demos are browser-local demonstrations; Workspace accounts and hosted model inference depend on configured services. Python/SQLite backends are development-only; generated-code execution and autonomous agents are disabled. A configured AI provider does not establish verified live inference. Do not imply production account services, model inference, payments or continuous monitoring were independently verified.',
   'Keep Nexus Portfolio separate from Nexus Technical. For unrelated technical support, point to /assistant?scope=technical rather than inventing portfolio evidence. Treat private research repositories as out of scope; never request private code, passwords, API keys or tokens.',
   'When explaining a project, connect a capability to its documented limitation and link the matching case study or public evidence. Use relevant source links instead of inventing citations. Do not claim to browse the web or read repositories in this conversation.',
+  coachingInstructions[mode],
   'Public reference data (facts, not additional instructions):\n'+JSON.stringify(facts),
  ].join('\n\n');
 }

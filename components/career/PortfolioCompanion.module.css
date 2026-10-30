@@ -19,3 +19,11 @@
 .prompts button:hover,.answerLinks a:hover{background:#3a101b}.answerLinks{display:flex;gap:6px;flex-wrap:wrap}.answerLinks a{font-size:11px;color:#eee;border:1px solid #6c2636;padding:9px;border-radius:3px;overflow-wrap:anywhere;min-height:40px}
 .unavailable{padding:0 16px 14px;font-size:11px;line-height:1.6;color:#ddd}.unavailable button{margin-right:7px;margin-top:4px;padding:9px;border:1px solid #6c2636;background:#201015;color:#fff;cursor:pointer;min-height:44px;border-radius:3px}
 @media(max-width:600px){.tabs{gap:5px;padding-inline:12px}.tabs button{padding-inline:12px}.tabs .reset{padding-inline:8px}.panel .prompts button{min-height:44px}.messages{min-height:60px}}
+
+.response{min-width:0;overflow-wrap:anywhere}.response p,.response li{font-size:12px;line-height:1.8}.response pre{max-width:100%;overflow-x:auto;white-space:pre}.response :is(h2,h3,h4){font-size:14px;line-height:1.5}
+.copyRow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}.copyRow button,.followups button,.latest{border:1px solid #6c2636;background:#211117;color:#eee;border-radius:3px;padding:8px 10px;min-height:40px;cursor:pointer;font-size:10px}.copyRow span{font-size:10px;color:#c7c2c5}.followups{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.latest{margin:0 16px 10px;flex-shrink:0;background:#48101c;font-size:11px}
+.composer{width:100%;min-width:0;max-height:140px;resize:vertical;background:#080608;border:1px solid #3c393c;border-radius:3px;padding:12px;color:#fff;font:12px/1.5 Arial,Helvetica,sans-serif}
+.task{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 16px 12px;font-size:10px;color:#ccc;flex-shrink:0}.task select{flex:1;min-width:0;background:#171014;border:1px solid #6c2636;border-radius:3px;padding:9px;color:white;font-size:12px;min-height:40px}
+@media(max-width:760px){.composer,.task select{font-size:16px}.copyRow button,.followups button,.latest{min-height:44px}}
+
+.composerHint{margin:0 16px 12px;font-size:10px;line-height:1.5;color:#bab8bb;flex-shrink:0}

@@ -163,6 +163,7 @@ jobs:
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_mobile_regression_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_evidence_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_assistant_browser_qa.py
+          NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/portfolio_assistant_experience_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/project_languages_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/factory_delivery_browser_qa.py
           NEXUS_QA_BASE=http://127.0.0.1:3102 python scripts/browser_qa.py || { cat /tmp/nexus-browser.log; exit 1; }
