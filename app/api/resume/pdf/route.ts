@@ -100,7 +100,7 @@ function makePdf(lang:ResumeLang):Uint8Array {
 export async function GET(request:Request){
  const url=new URL(request.url);
  const requested=url.searchParams.get("lang");
- const lang:ResumeLang=requested&&isSiteLanguage(requested)?requested:"es";
+ const lang:ResumeLang=requested&&isSiteLanguage(requested)?requested:"en";
  const bytes=makePdf(lang);
  const buffer=new ArrayBuffer(bytes.byteLength);
  new Uint8Array(buffer).set(bytes);

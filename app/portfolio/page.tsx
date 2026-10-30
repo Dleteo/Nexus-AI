@@ -8,5 +8,5 @@ export default async function PortfolioPage({
   searchParams: Promise<{ lang?: string | string[] }>;
 }) {
   const { lang } = await searchParams;
-  redirect(portfolioPath(typeof lang === "string" && isSiteLanguage(lang) ? lang : "es"));
+  redirect(portfolioPath(typeof lang === "string" && isSiteLanguage(lang) ? lang : "en"));
 }

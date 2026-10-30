@@ -7,7 +7,7 @@ export const siteLanguages = [
 ] as const;
 export type SiteLanguage=(typeof siteLanguages)[number]["code"];
 export function isSiteLanguage(value:string):value is SiteLanguage {return siteLanguages.some(x=>x.code===value);}
-export const portfolioPath=(code:SiteLanguage)=>code==="es"?"/":"/"+code;
+export const portfolioPath=(code:SiteLanguage)=>"/"+code;
 export const cvPath=(code:SiteLanguage)=>"/resume?lang="+code;
 export const cvDownloadPath=(code:SiteLanguage)=>"/api/resume/pdf?lang="+code;
 export const cvFileName=(code:SiteLanguage)=>"Joshua-Vallejo-Sanchez-CV-"+code+".pdf";

@@ -72,7 +72,7 @@ def audit_featured_case_studies(browser):
               "de": "Fallstudie lesen", "fr": "Voir l’étude de cas",
               "pt": "Ver estudo de caso"}
     for language, button_label in labels.items():
-        home = "/" if language == "es" else "/" + language
+        home = "/es" if language == "es" else "/" + language
         page.goto(BASE + home, wait_until="networkidle")
         study_links = page.get_by_role("link", name=button_label, exact=False)
         expect(study_links.count() == 5, f"Expected five case-study links for {language}")
@@ -137,7 +137,7 @@ def audit_contact_guide_multilingual(browser):
     context = browser.new_context(viewport={"width": 1280, "height": 900})
     page = context.new_page()
     translations = {
-        "es": ("/", "Asistente de contacto", "Proyectos", "Casos de estudio destacados"),
+        "es": ("/es", "Asistente de contacto", "Proyectos", "Casos de estudio destacados"),
         "en": ("/en", "Contact assistant", "Projects", "Featured case studies"),
         "de": ("/de", "Kontaktassistent", "Projekte", "Fallstudien der Hauptprojekte"),
         "fr": ("/fr", "Assistant de contact", "Projets", "Études de cas principales"),
@@ -160,7 +160,7 @@ def audit_contact_guide_multilingual(browser):
                "Featured answer must not revert to the outdated project listing")
         page.screenshot(path=str(ARTIFACTS / f"contact-five-projects-{lang}.png"),full_page=False)
     # Typed technical questions have a different scope from the portfolio guide.
-    page.goto(BASE + "/", wait_until="networkidle")
+    page.goto(BASE + "/es", wait_until="networkidle")
     contact = page.get_by_role("region", name="Asistente de contacto")
     contact.get_by_role("textbox", name="Tu pregunta").fill("Nexus Technical")
     contact.get_by_role("button", name="Preguntar").click()
@@ -230,7 +230,7 @@ def audit_labs_keyboard_and_localization(browser):
 def audit(browser, width, label):
     context = browser.new_context(viewport={"width": width, "height": 900}, device_scale_factor=1)
     page = context.new_page()
-    page.goto(BASE, wait_until="networkidle")
+    page.goto(BASE + "/es", wait_until="networkidle")
     expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").count() == 1,
            "Editorial portfolio headline missing")
     expect(page.get_by_role("heading", name="PROYECTOS DESTACADOS").count() == 1,
@@ -362,8 +362,8 @@ def audit(browser, width, label):
         expect(page.locator('[class*="heroBackdrop"]').count() == 1, "Different layout in localized page")
         dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
         expect(dimensions["page"] <= dimensions["viewport"] + 2, f"Localized page overflow at {width}px: {language}")
-    page.goto(BASE + "/portfolio", wait_until="networkidle")
-    expect(page.url == BASE + "/", "Legacy portfolio must redirect to the current Spanish portfolio")
+    page.goto(BASE + "/portfolio?lang=es", wait_until="networkidle")
+    expect(page.url == BASE + "/es", "Legacy portfolio must redirect to the current Spanish portfolio")
     featured = page.locator("#proyectos")
     expect(featured.locator("article").count() == 5, "Canonical portfolio must show five current projects")
     for project in ["Nexus AI Workspace", "Nexus Commerce", "Nexus Studio", "Nexus Monitor", "Nexus Software Factory"]:
@@ -382,7 +382,7 @@ def audit(browser, width, label):
     expect(page.get_by_role("heading", name="FEATURED PROJECTS", exact=False).count() == 1,
            "Localized canonical portfolio missing after redirect")
     print(f"PASS canonical portfolio redirects, five projects, training and CV at {width}px", flush=True)
-    page.goto(BASE + "/resume", wait_until="networkidle")
+    page.goto(BASE + "/resume?lang=es", wait_until="networkidle")
     expect(page.get_by_role("heading", name="JOSHUA VALLEJO SANCHEZ").is_visible(), "Missing resume heading")
     expect(page.get_by_role("link", name="Descargar CV en español (PDF)").is_visible(), "Missing resume PDF download")
     controls = page.get_by_role("navigation", name="Opciones del CV")
@@ -416,7 +416,7 @@ def audit(browser, width, label):
         dimensions = page.evaluate("""() => ({page: document.documentElement.scrollWidth, viewport: window.innerWidth})""")
         expect(dimensions["page"] <= dimensions["viewport"] + 2,
                f"Resume horizontal overflow at {width}px in {lang}: {dimensions}")
-    page.goto(BASE + "/resume", wait_until="networkidle")
+    page.goto(BASE + "/resume?lang=es", wait_until="networkidle")
     page.screenshot(path=str(ARTIFACTS / f"resume-{label}.png"), full_page=True)
     page.goto(BASE + "/interview", wait_until="networkidle")
     expect(page.get_by_role("heading", name="Presentación profesional para entrevistas").is_visible(), "Missing interview guide")

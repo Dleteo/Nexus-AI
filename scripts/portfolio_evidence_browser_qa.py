@@ -8,7 +8,7 @@ with sync_playwright() as p:
  browser=p.chromium.launch(executable_path=shutil.which('chromium') or shutil.which('google-chrome'),headless=True,args=['--no-sandbox'])
  ctx=browser.new_context(viewport={'width':1440,'height':1000})
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
- page.goto(BASE+'/')
+ page.goto(BASE+'/es')
  certificates=page.locator('#certificados')
  assert certificates.get_by_role('heading',level=3).count()==6
  assert '94' in certificates.inner_text() and '100' in certificates.inner_text() and 'Estimación personal' in certificates.inner_text()
@@ -44,7 +44,7 @@ with sync_playwright() as p:
  def chat(route):
   calls.append(('chat',route.request.post_data_json));route.fulfill(json={'answer':'Respuesta simulada para comprobar el flujo, sin inferencia real.'})
  page.route('**/api/assistant/conversations',create);page.route('**/api/assistant/chat',chat)
- page.goto(BASE+'/');page.get_by_role('button',name='Abrir asistente Nexus',exact=True).click()
+ page.goto(BASE+'/es');page.get_by_role('button',name='Abrir asistente Nexus',exact=True).click()
  panel=page.get_by_role('dialog',name='Nexus asistente flotante');panel.get_by_role('button',name='IA',exact=True).click()
  panel.get_by_label('Pregunta al asistente flotante').wait_for()
  panel.get_by_label('Pregunta al asistente flotante').fill('Ayúdame con el portafolio')

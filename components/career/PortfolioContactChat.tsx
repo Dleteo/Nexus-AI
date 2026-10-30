@@ -97,8 +97,9 @@ export default function PortfolioContactChat({language}:{language:SiteLanguage})
     answer(classify(q),q);
     setQuestion("");
   }
-  const body=["Hola, me gustaría contactar contigo.","Nombre: "+(visitor||"No indicado"),"Correo de respuesta: "+(replyEmail||"No indicado"),"",message].join("\n").slice(0,1600);
-  const mailto="mailto:"+email+"?subject="+encodeURIComponent("Contacto desde Nexus AI")+"&body="+encodeURIComponent(body);
+  const missing=t("No indicado","Not provided","Nicht angegeben","Non indiqué","Não informado");
+  const body=[t("Hola, me gustaría contactar contigo.","Hello, I would like to get in touch.","Hallo, ich möchte Kontakt aufnehmen.","Bonjour, je souhaite vous contacter.","Olá, gostaria de entrar em contato."),t("Nombre","Name","Name","Nom","Nome")+": "+(visitor||missing),t("Correo de respuesta","Reply email","Antwort-E-Mail","E-mail de réponse","E-mail de resposta")+": "+(replyEmail||missing),"",message].join("\n").slice(0,1600);
+  const mailto="mailto:"+email+"?subject="+encodeURIComponent(t("Contacto desde Nexus AI","Contact from Nexus AI","Kontakt über Nexus AI","Contact depuis Nexus AI","Contato pelo Nexus AI"))+"&body="+encodeURIComponent(body);
   return <section className={styles.portfolioContactChat} aria-label={t("Asistente de contacto","Contact assistant","Kontaktassistent","Assistant de contact","Assistente de contato")}>
     <div className={styles.portfolioContactHead}>
       <span className={styles.portfolioContactSymbol}>N</span>

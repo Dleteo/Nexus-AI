@@ -337,3 +337,14 @@
 .contact{margin-top:70px}
 @media(max-width:900px){.projectGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.section{padding-top:55px}.processColumn{padding-block:22px}}
 @media(max-width:600px){.projectGrid{grid-template-columns:minmax(0,1fr)}.certificateImage{height:170px}.section{padding-top:42px}.contact{margin-top:55px}}
+
+/* User-entered text must wrap without increasing the contact grid width. */
+.portfolioContactChat,.portfolioContactBody,.portfolioContactReply,.portfolioContactQuestion,.portfolioContactAsk,.portfolioContactAsk>div,.portfolioContactMail{min-width:0;max-width:100%;box-sizing:border-box}
+.portfolioContactQuestion,.portfolioContactReply{overflow-wrap:anywhere;white-space:pre-wrap}
+.portfolioContactAsk input{width:0;min-width:0;flex:1 1 0}
+.portfolioContactMail input,.portfolioContactMail textarea{width:100%;max-width:100%;box-sizing:border-box}
+.portfolioContactHead{flex-wrap:wrap}
+.portfolioContactSymbol{flex-shrink:0}
+@media(max-width:760px){
+ .portfolioContactAsk input,.portfolioContactMail input,.portfolioContactMail textarea{font-size:16px}
+}

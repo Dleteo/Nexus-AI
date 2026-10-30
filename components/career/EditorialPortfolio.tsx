@@ -87,8 +87,8 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
         <Link href={cvPath(language)} className={s.cv}>{t("Ver CV","View CV","Lebenslauf","Voir CV","Ver CV")} <span aria-hidden="true">→</span></Link>
         <button ref={mobileMenuButton} className={s.menuToggle} type="button" aria-controls="mobile-portfolio-nav" onClick={()=>setMenu(previous=>!previous)} aria-expanded={menu} aria-label={t("Menú","Menu","Menü","Menu","Menu")}>{menu?"✕":"☰"}</button>
       </div>
-    </header>
     {menu&&<nav id="mobile-portfolio-nav" className={s.mobileNav} aria-label="Mobile portfolio navigation" onKeyDown={event=>{if(event.key==="Escape"){setMenu(false);mobileMenuButton.current?.focus();}}}>{nav.map(n=><a href={n.href} onClick={()=>setMenu(false)} key={n.href}>{n.label}</a>)}</nav>}
+    </header>
     <main id="main-content" tabIndex={-1}>
       <section className={s.hero} aria-labelledby="hero-title">
         <div className={s.heroBackdrop} aria-hidden="true">PORTFOLIO</div>

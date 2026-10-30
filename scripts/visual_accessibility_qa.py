@@ -65,7 +65,7 @@ def audit(browser):
             if label in {"home","resume","commerce","case-study","interview"}:
                 page.screenshot(path=str(OUTPUT / f"visual-audit-{label}-mobile.png"),full_page=True)
 
-        page.goto(BASE+"/", wait_until="networkidle")
+        page.goto(BASE+"/es", wait_until="networkidle")
         primary = page.locator('a[href="#proyectos"][class*="primary"]').first
         check(primary.count()==1, "Portfolio primary call-to-action missing")
         ratio = button_contrast(primary)
@@ -88,7 +88,7 @@ def audit(browser):
             (v.includes("ms")?1:1000)))""")
         check(duration <= 30,f"Reduced-motion preference ignored by project card: {duration} ms")
 
-        page.goto(BASE+"/resume",wait_until="networkidle")
+        page.goto(BASE+"/resume?lang=es",wait_until="networkidle")
         download=page.locator("a[download]").first
         check(download.count()==1, "CV download action missing")
         ratio=button_contrast(download)

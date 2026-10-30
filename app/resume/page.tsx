@@ -16,7 +16,7 @@ export const metadata:Metadata={
 
 export default async function ResumePage({searchParams}:{searchParams:Promise<{lang?:string}>}){
   const {lang}=await searchParams;
-  const language:ResumeLang=lang&&isSiteLanguage(lang)?lang:"es";
+  const language:ResumeLang=lang&&isSiteLanguage(lang)?lang:"en";
   const copy=resumeCopy[language];
   const ratings=skillRatingCopy[language];
   const t=(es:string,en:string,de:string,fr:string,pt:string)=>({es,en,de,fr,pt})[language];
