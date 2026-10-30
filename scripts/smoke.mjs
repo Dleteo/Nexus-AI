@@ -67,24 +67,25 @@ async function checkSignedOutApi(path, options = {}) {
 
 await waitUntilReady();
 await checkSignedOutApi("/api/assistant/status");
-await checkPublicPage("/", ["PORTFOLIO","PROYECTOS DESTACADOS","TRABAJEMOS","Nexus AI Workspace","NEXUS / CONTACT"]);
+await checkPublicPage("/", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER","Nexus AI Workspace","NEXUS / CONTACT"]);
+await checkPublicPage("/es", ["PORTFOLIO","PROYECTOS DESTACADOS","TRABAJEMOS"]);
 await checkPublicPage("/en", ["PORTFOLIO","FEATURED PROJECTS","TOGETHER"]);
 await checkPublicPage("/de", ["PORTFOLIO","AUSGEWÄHLTE PROJEKTE"]);
 await checkPublicPage("/fr", ["PORTFOLIO","PROJETS À LA UNE"]);
 await checkPublicPage("/pt", ["PORTFOLIO","PROJETOS EM DESTAQUE"]);
 for (const [path, destination] of [
-  ["/portfolio", "/"],
-  ["/portfolio?lang=es", "/"],
+  ["/portfolio", "/en"],
+  ["/portfolio?lang=es", "/es"],
   ["/portfolio?lang=en", "/en"],
   ["/portfolio?lang=de", "/de"],
   ["/portfolio?lang=fr", "/fr"],
   ["/portfolio?lang=pt", "/pt"],
-  ["/portfolio?lang=unknown", "/"],
-  ["/portfolio?lang=en&lang=de", "/"],
+  ["/portfolio?lang=unknown", "/en"],
+  ["/portfolio?lang=en&lang=de", "/en"],
 ]) {
   await checkPortfolioRedirect(path, destination);
 }
-await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "PROYECTOS SELECCIONADOS", "Nexus AI", "COMPETENCIAS TÉCNICAS"]);
+await checkPublicPage("/resume", ["Joshua Vallejo Sanchez", "SELECTED PROJECTS", "Nexus AI", "TECHNICAL SKILLS"]);
 await checkPublicPage("/interview", ["Presentación profesional para entrevistas", "Cuéntame sobre ti", "Preguntas para practicar"]);
 await checkPublicPage("/projects/nexus-ai", ["Nexus AI", "El problema", "Decisiones e implementación", "Evidencia en el código"]);
 await checkPublicPage("/projects/task-tracker", ["Task Tracker", "Lo que aprendí", "innerHTML"]);
