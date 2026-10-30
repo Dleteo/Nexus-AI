@@ -3,11 +3,12 @@ import Link from 'next/link';
 import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import type {SiteLanguage} from '@/data/site-languages';
 import {answerPortfolioQuestion} from '@/lib/portfolio-guide';
+import PortfolioInterviewPractice,{type InterviewPracticeState} from './PortfolioInterviewPractice';
 import PortfolioResponse from './PortfolioResponse';
 import {words} from './DevelopmentEvidence';
 import s from './PortfolioCompanion.module.css';
 
-type Mode='guide'|'ai';
+type Mode='guide'|'ai'|'practice';
 type Task='assistant'|'explain'|'interview'|'plan'|'debug';
 type Access='checking'|'signed_out'|'ready'|'unavailable';
 type Message={role:'user'|'guide'|'ai';text:string;mode:Mode;project?:string;links?:{href:string;label:string}[]};
@@ -15,10 +16,11 @@ type Message={role:'user'|'guide'|'ai';text:string;mode:Mode;project?:string;lin
 export default function PortfolioCompanion({language}:{language:SiteLanguage}){
  const t=(es:string,en:string,de:string,fr:string,pt:string)=>words(language,es,en,de,fr,pt);
  const [open,setOpen]=useState(false),[mode,setMode]=useState<Mode>('guide');
+ const [practice,setPractice]=useState<InterviewPracticeState>({index:0,answers:{}});
  const [task,setTask]=useState<Task>('assistant');
  const [hasUnread,setHasUnread]=useState(false);const followOutput=useRef(true);
  const [access,setAccess]=useState<Access>('checking'),[checkVersion,setCheckVersion]=useState(0);
- const [sessionVerified,setSessionVerified]=useState(false);
+ const [sessionVerified,setSessionVerified]=useState(false),[hadAccount,setHadAccount]=useState(false);
  const [draft,setDraft]=useState(''),[messages,setMessages]=useState<Message[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const identity=useRef<string|null>(null),previousProject=useRef<string|undefined>(undefined);
  const launcher=useRef<HTMLButtonElement>(null),input=useRef<HTMLTextAreaElement>(null),thread=useRef<string|null>(null);
@@ -26,7 +28,7 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
 
  const reset=useCallback(()=>{
   epoch.current++;abort.current?.abort();pending.current=false;thread.current=null;previousProject.current=undefined;
-  followOutput.current=true;setHasUnread(false);setTask('assistant');
+  followOutput.current=true;setHasUnread(false);setTask('assistant');setPractice({index:0,answers:{}});
   setBusy(false);setMessages([]);setDraft('');setError('');
  },[]);
  useEffect(()=>{
@@ -41,11 +43,11 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
     const data=await response.json();if(disposed||check!==controller)return;
     const next=typeof data.user?.id==='string'?data.user.id:null;
     if(identity.current!==null&&identity.current!==next)reset();
-    identity.current=next;setSessionVerified(!!next);
+    identity.current=next;setHadAccount(!!next);setSessionVerified(!!next);
     if(!next){setAccess('signed_out');return;}
     const status=await fetch('/api/assistant/status',{cache:'no-store',signal:controller.signal});
     if(disposed||check!==controller)return;
-    if(status.status===401){reset();identity.current=null;setSessionVerified(false);setAccess('signed_out');return;}
+    if(status.status===401){reset();identity.current=null;setHadAccount(false);setSessionVerified(false);setAccess('signed_out');return;}
     if(!status.ok)throw Error('status-unavailable');
     const config=await status.json();if(disposed||check!==controller)return;
     setAccess(config.assistants?.some((a:{scope?:string;status?:string})=>a.scope==='portfolio'&&a.status==='ready')?'ready':'unavailable');
@@ -73,7 +75,7 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
  async function submit(e:FormEvent){
   e.preventDefault();const text=draft.trim();if(!text||pending.current)return;
   if(mode==='guide'){guide(text);return;}
-  if(access!=='ready')return;
+  if(mode!=='ai'||access!=='ready')return;
   followOutput.current=true;setHasUnread(false);setError('');pending.current=true;setBusy(true);setDraft('');
   setMessages(m=>[...m,{role:'user' as const,text,mode:'ai' as const}].slice(-24));
   const requestEpoch=epoch.current,controller=new AbortController();abort.current=controller;
@@ -104,7 +106,7 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
   }catch(cause){
    if(epoch.current!==requestEpoch)return;
    const code=cause instanceof Error?cause.message:'';
-   if(code==='expired'){reset();identity.current=null;setSessionVerified(false);setAccess('signed_out');return;}
+   if(code==='expired'){reset();identity.current=null;setHadAccount(false);setSessionVerified(false);setAccess('signed_out');return;}
    if(code==='unavailable')setAccess('unavailable');
    setDraft(current=>current||text);
    setError(controller.signal.aborted?t('La respuesta tardó demasiado. Conservé tu pregunta.','The response timed out. Your question was kept.','Zeitüberschreitung. Deine Frage bleibt erhalten.','Délai dépassé. Votre question est conservée.','O tempo esgotou. Sua pergunta foi mantida.'):code==='limit'?t('Has alcanzado el límite de consultas. Tu pregunta se conserva.','The request limit was reached. Your question was kept.','Anfragelimit erreicht. Deine Frage bleibt erhalten.','Limite de demandes atteinte. Votre question est conservée.','Limite de consultas atingido. Sua pergunta foi mantida.'):t('No pude obtener una respuesta. Conservé tu pregunta; puedes usar la Guía o intentarlo más tarde.','I could not get an answer. Your question was kept; use Guide or try again later.','Keine Antwort verfügbar. Die Frage bleibt erhalten; nutze den Guide oder versuche es später.','Réponse indisponible. Votre question est conservée ; utilisez le Guide ou réessayez plus tard.','Não consegui uma resposta. Sua pergunta foi mantida; use o Guia ou tente mais tarde.'));
@@ -126,8 +128,10 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
   <div className={s.tabs}>
    <button disabled={busy} aria-pressed={mode==='guide'} onClick={()=>changeMode('guide')}>{t('Guía','Guide','Guide','Guide','Guia')}</button>
    <button disabled={busy} aria-pressed={mode==='ai'} onClick={()=>changeMode('ai')}>{t('IA','AI','KI','IA','IA')}</button>
-   <button className={s.reset} disabled={busy} onClick={reset} aria-label={t('Nueva conversación; no borra el historial guardado','New conversation; saved history is not deleted','Neues Gespräch; gespeicherter Verlauf bleibt','Nouvelle conversation ; historique enregistré conservé','Nova conversa; histórico salvo mantido')}>{t('Nuevo chat','New chat','Neu','Nouveau','Novo chat')}</button>
+   <button disabled={busy} aria-pressed={mode==='practice'} onClick={()=>changeMode('practice')}>{t('Práctica','Practice','Üben','Pratique','Prática')}</button>
+   <button className={s.reset} disabled={busy} onClick={reset} aria-label={t('Nueva conversación; borra las notas locales, no el historial guardado','New conversation; clears local notes, not saved history','Neues Gespräch; lokale Notizen werden gelöscht, gespeicherter Verlauf bleibt','Nouvelle conversation ; notes locales effacées, historique enregistré conservé','Nova conversa; limpa notas locais, mantém histórico salvo')}>{t('Nuevo chat','New chat','Neu','Nouveau','Novo chat')}</button>
   </div>
+  {mode==='practice'?(hadAccount&&!sessionVerified&&Object.keys(practice.answers).length>0?<div className={s.unavailable}><p role="status">{access==='unavailable'?t('No pude verificar la sesión. Tus notas permanecen ocultas.','Could not verify the session. Your notes remain hidden.','Sitzung nicht prüfbar. Deine Notizen bleiben verborgen.','Session non vérifiée. Vos notes restent masquées.','Não foi possível verificar a sessão. Suas notas continuam ocultas.'):t('Verificando acceso a tus notas…','Checking access to your notes…','Zugriff auf Notizen wird geprüft…','Vérification de l’accès à vos notes…','Verificando acesso às suas notas…')}</p><button type="button" disabled={access==='checking'} onClick={()=>setCheckVersion(v=>v+1)}>{t('Verificar acceso','Recheck access','Zugriff erneut prüfen','Revérifier l’accès','Verificar acesso')}</button></div>:<PortfolioInterviewPractice language={language} state={practice} onChange={setPractice}/>):<>
   <p className={s.notice}>{mode==='guide'?t('Respuestas locales con enlaces a los datos públicos del portafolio.','Local answers with links to public portfolio evidence.','Lokale Antworten mit Links zu öffentlichen Nachweisen.','Réponses locales avec liens vers les preuves publiques.','Respostas locais com links para evidências públicas.'):t('IA con el proveedor configurado. Requiere sesión; los mensajes se guardan en tu cuenta.','AI uses the configured provider. Sign-in required; messages are saved to your account.','KI benötigt Anmeldung; Nachrichten werden im Konto gespeichert.','IA avec connexion ; messages enregistrés dans votre compte.','IA exige login; mensagens ficam salvas na sua conta.')}</p>
   <div className={s.messages} role="log" aria-live="polite" aria-busy={busy} ref={log} onScroll={event=>{const node=event.currentTarget;const atBottom=node.scrollHeight-node.clientHeight-node.scrollTop<40;followOutput.current=atBottom;if(atBottom)setHasUnread(false);}}>
    <p className={s.greeting}>{t('Hola, soy Nexus. ¿Qué te gustaría conocer?','Hello, I’m Nexus. What would you like to explore?','Hallo, ich bin Nexus. Was möchtest du entdecken?','Bonjour, je suis Nexus. Que souhaitez-vous découvrir ?','Olá, sou Nexus. O que gostaria de conhecer?')}</p>
@@ -158,6 +162,7 @@ export default function PortfolioCompanion({language}:{language:SiteLanguage}){
   </form>}
   {(mode==='guide'||access==='ready')&&<p id="floating-nexus-composer-hint" className={s.composerHint}>{t('Enter para enviar · Mayús+Enter para otra línea','Enter to send · Shift+Enter for a new line','Enter zum Senden · Umschalt+Enter für neue Zeile','Entrée pour envoyer · Maj+Entrée pour une nouvelle ligne','Enter para enviar · Shift+Enter para nova linha')}</p>}
   {error&&<p className={s.error} role="alert">{error}</p>}
+  </>}
  </section>}
  <button ref={launcher} className={s.launcher} aria-expanded={open} aria-controls="nexus-floating-chat" aria-label={t('Abrir asistente Nexus','Open Nexus assistant','Nexus Assistent öffnen','Ouvrir l’assistant Nexus','Abrir assistente Nexus')} onClick={()=>open?close():setOpen(true)}><span className={s.mark}>{open?'×':'N'}</span><span>NEXUS <small>{t('Hablemos','Let’s talk','Sprechen wir','Parlons','Vamos conversar')}</small></span></button>
  </div>;

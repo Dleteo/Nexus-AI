@@ -17,3 +17,9 @@ The local guide now compares explicitly named projects using public purposes, st
 The floating chat reuses the existing text-only response renderer for headings, lists and fenced code. It never inserts generated HTML. Answers have localized copy feedback and contextual project checks/limits actions. The multiline composer supports Enter to send, Shift+Enter for a new line and IME composition. Incoming AI answers preserve a reader's scroll position and offer a latest-answer button.
 
 Authenticated configured AI can select Portfolio, Explain, Interview practice, Plan improvements or Debug. The existing API mode is honored in portfolio prompts; Technical remains separate. Interview coaching asks one question at a time and distinguishes proposed examples from actual employment. These instructions and request modes are verified against a synthetic provider, not live inference.
+
+## Local interview practice
+
+The public Practice tab works without sign-in or model requests. Five localized questions use documented project decisions, checks and limits. Visitors write their own answers, reveal review criteria and a labeled sample explanation, and explicitly mark their own review. Progress is self-review, not an AI grade or hiring outcome. Editing an answer removes its reviewed status.
+
+Drafts remain in this page's React memory across question navigation, mode changes and closing the floating panel. New chat, account changes and reloading/leaving the page clear them. Previously authenticated notes stay hidden while session identity cannot be verified. An explicit local plain-text download contains only the visitor's answers, review status, criteria and public source links; sample explanations are not exported as the visitor's work. No practice answers are sent to the server or saved in browser storage.
