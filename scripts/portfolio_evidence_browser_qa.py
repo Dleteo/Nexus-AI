@@ -11,7 +11,7 @@ with sync_playwright() as p:
  page.goto(BASE+'/')
  certificates=page.locator('#certificados')
  assert certificates.get_by_role('heading',level=3).count()==6
- assert '94' in certificates.inner_text() and '4 realizados + 2 previstos' in certificates.inner_text()
+ assert '94' in certificates.inner_text() and '100' in certificates.inner_text() and 'Estimación personal' in certificates.inner_text()
  certificates.get_by_role('button',name='AI & Agents',exact=True).click()
  assert certificates.get_by_role('heading',level=3).count()==3
  certificates.get_by_role('button',name='Todos',exact=True).click()

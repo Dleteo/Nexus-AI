@@ -1,6 +1,6 @@
 // Usage is repository evidence, not a test of independent proficiency.
-// Personal practice hours and self-assessment must be supplied by the owner.
-export const personalPracticeHours: number | null = null;
+// Personal practice time is estimated by the owner, separately from course hours.
+export const personalPracticeHours = 100;
 export const portfolioDevelopment = { completedDays: 4, estimatedTotalDays: 6, basis: "owner-reported calendar days, not tracked working hours" };
 // Provisional familiarity inferred from AI-assisted project evidence, not an independent skills test.
 export const proficiency: Record<string, number | null> = { html:2, javascript:2, typescript:1, react:2, python:1, git:2, supabase:1, sql:1, tests:2, accessibility:1, storage:2, ai:2 };

@@ -8,6 +8,7 @@ import {siteLanguages, cvPath, portfolioPath, type SiteLanguage} from "../../dat
 import PortfolioContactChat from "./PortfolioContactChat";
 import DevelopmentEvidence from "./DevelopmentEvidence";
 import PortfolioCompanion from "./PortfolioCompanion";
+import {personalPracticeHours} from "../../data/professional-development";
 import ContactIcon from "./ContactIcon";
 import ProjectCover from "./ProjectCover";
 import s from "./EditorialPortfolio.module.css";
@@ -103,7 +104,7 @@ export default function EditorialPortfolio({language="es"}:{language?:SiteLangua
           <p className={s.heroManifesto}><span className={s.spark}>✦</span>{t("CONVIERTO IDEAS EN EXPERIENCIAS DIGITALES CON PROPÓSITO.","I TURN IDEAS INTO PURPOSEFUL DIGITAL EXPERIENCES.","ICH MACHE AUS IDEEN SINNVOLLE DIGITALE ERLEBNISSE.","JE TRANSFORME LES IDÉES EN EXPÉRIENCES NUMÉRIQUES UTILES.","TRANSFORMO IDEIAS EM EXPERIÊNCIAS DIGITAIS COM PROPÓSITO.")}</p>
           <div className={s.numbers}>
             <div><strong>{totalTrainingHours.toLocaleString(language)}<small>h</small></strong><span>{t("FORMACIÓN DOCUMENTADA","DOCUMENTED TRAINING","DOKUMENTIERTE KURSE","FORMATION DOCUMENTÉE","FORMAÇÃO DOCUMENTADA")}</span></div>
-            <div><strong>4<small> / 6 d</small></strong><span>{t("DÍAS REALIZADOS / ESTIMADOS","DAYS COMPLETED / ESTIMATED","TAGE UMGESETZT / GESCHÄTZT","JOURS RÉALISÉS / ESTIMÉS","DIAS REALIZADOS / ESTIMADOS")}</span></div>
+            <div><strong>{personalPracticeHours}<small> h</small></strong><span>{t("TIEMPO PROGRAMANDO · ESTIMADO","PROGRAMMING TIME · ESTIMATED","PROGRAMMIERZEIT · GESCHÄTZT","TEMPS DE PROGRAMMATION · ESTIMÉ","TEMPO PROGRAMANDO · ESTIMADO")}</span></div>
             <div><strong>{String(certifications.length).padStart(2,"0")}</strong><span>{t("CERTIFICADOS Y CONSTANCIAS","TRAINING RECORDS","ZERTIFIKATE","ATTESTATIONS","CERTIFICADOS")}</span></div>
           </div>
         </div>
