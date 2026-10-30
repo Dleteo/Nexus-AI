@@ -44,3 +44,9 @@ next-env.d.ts
 /.nexus-local/
 **/__pycache__/
 *.pyc
+
+# Sites build and local Worker state
+/dist/
+/.wrangler/
+/.vinext/
+/qa-pdfs/
